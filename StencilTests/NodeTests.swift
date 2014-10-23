@@ -10,6 +10,19 @@ import Cocoa
 import XCTest
 import Stencil
 
+class ErrorNodeError : Error {
+    var description: String {
+        return "Node Error"
+    }
+}
+
+class ErrorNode : Node {
+    func render(context: Context) -> (String?, Error?) {
+
+        return (nil, ErrorNodeError())
+    }
+}
+
 class NodeTests: XCTestCase {
     var context:Context!
 
@@ -43,5 +56,23 @@ class VariableNodeTests: NodeTests {
         let result = node.render(context)
 
         XCTAssertEqual(result.0!, "27")
+    }
+}
+
+class RenderNodeTests: NodeTests {
+    func testRenderingNodes() {
+        let nodes = [TextNode(text:"Hello "), VariableNode(variable: "name")] as [Node]
+        let (result:String?, error:Error?) = render(nodes, context)
+
+        XCTAssertEqual(result!, "Hello Kyle")
+        XCTAssertTrue(error == nil)
+    }
+
+    func testRenderingNodesWithFailure() {
+        let nodes = [TextNode(text:"Hello "), VariableNode(variable: "name"), ErrorNode()] as [Node]
+        let (result:String?, error:Error?) = render(nodes, context)
+
+        XCTAssertEqual(error!.description, "Node Error")
+        XCTAssertTrue(result == nil)
     }
 }

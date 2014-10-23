@@ -16,6 +16,37 @@ public protocol Node {
     func render(context:Context) -> (String?, Error?)
 }
 
+extension Array {
+    func map<U>(block:((Element) -> (U?, Error?))) -> ([U]?, Error?) {
+        var results = [U]()
+
+        for item in self {
+            let (result, error) = block(item)
+
+            if let error = error {
+                return (nil, error)
+            } else if (result != nil) {
+                // let result = result exposing a bug in the Swift compier :(
+                results.append(result!)
+            }
+        }
+
+        return (results, nil)
+    }
+}
+
+public func render(nodes:[Node], context:Context) -> (String?, Error?) {
+    let result:(results:[String]?, error:Error?) = nodes.map {
+        return $0.render(context)
+    }
+
+    if let result = result.0 {
+        return ("".join(result), nil)
+    }
+
+    return (nil, result.1)
+}
+
 public class TextNode : Node {
     public let text:String
 
