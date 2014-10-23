@@ -12,7 +12,7 @@ public protocol Error : Printable {
 
 }
 
-public protocol Node : Equatable {
+public protocol Node {
     func render(context:Context) -> (String?, Error?)
 }
 
@@ -28,12 +28,8 @@ public class TextNode : Node {
     }
 }
 
-public func ==(lhs:TextNode, rhs:TextNode) -> Bool {
-    return true
-}
-
 public class VariableNode : Node {
-    let variable:Variable
+    public let variable:Variable
 
     public init(variable:Variable) {
         self.variable = variable
@@ -54,8 +50,4 @@ public class VariableNode : Node {
 
         return (nil, nil)
     }
-}
-
-public func ==(lhs:VariableNode, rhs:VariableNode) -> Bool {
-    return true
 }

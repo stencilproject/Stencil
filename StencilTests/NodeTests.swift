@@ -28,12 +28,6 @@ class TextNodeTests: NodeTests {
 
         XCTAssertEqual(result.0!, "Hello World")
     }
-
-    func testTwoIdenticalTextNodesAreEqual() {
-        let node1 = TextNode(text:"Hello World")
-        let node2 = TextNode(text:"Hello World")
-        XCTAssertEqual(node1, node2)
-    }
 }
 
 class VariableNodeTests: NodeTests {
@@ -49,11 +43,5 @@ class VariableNodeTests: NodeTests {
         let result = node.render(context)
 
         XCTAssertEqual(result.0!, "27")
-    }
-
-    func testTwoIdenticalVariableNodesAreEqual() {
-        let node1 = VariableNode(variable:Variable("name"))
-        let node2 = VariableNode(variable:Variable("name"))
-        XCTAssertEqual(node1, node2)
     }
 }

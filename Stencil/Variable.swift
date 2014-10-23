@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct Variable {
+public struct Variable : Equatable {
     public let variable:String
 
     public init(_ variable:String) {
@@ -48,4 +48,8 @@ public struct Variable {
 
         return current
     }
+}
+
+public func ==(lhs:Variable, rhs:Variable) -> Bool {
+    return lhs.variable == rhs.variable
 }

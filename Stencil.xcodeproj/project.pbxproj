@@ -9,8 +9,11 @@
 /* Begin PBXBuildFile section */
 		7725B3CB19F92B4F002CF74B /* VariableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7725B3CA19F92B4F002CF74B /* VariableTests.swift */; };
 		7725B3CD19F92B61002CF74B /* Variable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7725B3CC19F92B61002CF74B /* Variable.swift */; };
+		7725B3CF19F94214002CF74B /* Tokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7725B3CE19F94214002CF74B /* Tokenizer.swift */; };
 		7725B3D319F9437F002CF74B /* NodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7725B3D219F9437F002CF74B /* NodeTests.swift */; };
 		7725B3D519F9438F002CF74B /* Node.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7725B3D419F9438F002CF74B /* Node.swift */; };
+		7725B3D719F94A43002CF74B /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7725B3D619F94A43002CF74B /* Parser.swift */; };
+		7725B3D919F94A61002CF74B /* ParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7725B3D819F94A61002CF74B /* ParserTests.swift */; };
 		77FAAE5819F91E480029DC5E /* Stencil.h in Headers */ = {isa = PBXBuildFile; fileRef = 77FAAE5719F91E480029DC5E /* Stencil.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		77FAAE5E19F91E480029DC5E /* Stencil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 77FAAE5219F91E480029DC5E /* Stencil.framework */; };
 		77FAAE6519F91E480029DC5E /* StencilTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77FAAE6419F91E480029DC5E /* StencilTests.swift */; };
@@ -31,8 +34,11 @@
 /* Begin PBXFileReference section */
 		7725B3CA19F92B4F002CF74B /* VariableTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VariableTests.swift; sourceTree = "<group>"; };
 		7725B3CC19F92B61002CF74B /* Variable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Variable.swift; sourceTree = "<group>"; };
+		7725B3CE19F94214002CF74B /* Tokenizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tokenizer.swift; sourceTree = "<group>"; };
 		7725B3D219F9437F002CF74B /* NodeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NodeTests.swift; sourceTree = "<group>"; };
 		7725B3D419F9438F002CF74B /* Node.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Node.swift; sourceTree = "<group>"; };
+		7725B3D619F94A43002CF74B /* Parser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Parser.swift; sourceTree = "<group>"; };
+		7725B3D819F94A61002CF74B /* ParserTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParserTests.swift; sourceTree = "<group>"; };
 		77FAAE5219F91E480029DC5E /* Stencil.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Stencil.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		77FAAE5619F91E480029DC5E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		77FAAE5719F91E480029DC5E /* Stencil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Stencil.h; sourceTree = "<group>"; };
@@ -86,7 +92,9 @@
 				77FAAE5719F91E480029DC5E /* Stencil.h */,
 				77FAAE6E19F920750029DC5E /* Context.swift */,
 				7725B3CC19F92B61002CF74B /* Variable.swift */,
+				7725B3CE19F94214002CF74B /* Tokenizer.swift */,
 				7725B3D419F9438F002CF74B /* Node.swift */,
+				7725B3D619F94A43002CF74B /* Parser.swift */,
 				77FAAE5519F91E480029DC5E /* Supporting Files */,
 			);
 			path = Stencil;
@@ -107,6 +115,7 @@
 				77FAAE7019F9208C0029DC5E /* ContextTests.swift */,
 				7725B3CA19F92B4F002CF74B /* VariableTests.swift */,
 				7725B3D219F9437F002CF74B /* NodeTests.swift */,
+				7725B3D819F94A61002CF74B /* ParserTests.swift */,
 				77FAAE6219F91E480029DC5E /* Supporting Files */,
 			);
 			path = StencilTests;
@@ -228,6 +237,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				77FAAE6F19F920750029DC5E /* Context.swift in Sources */,
+				7725B3CF19F94214002CF74B /* Tokenizer.swift in Sources */,
+				7725B3D719F94A43002CF74B /* Parser.swift in Sources */,
 				7725B3CD19F92B61002CF74B /* Variable.swift in Sources */,
 				7725B3D519F9438F002CF74B /* Node.swift in Sources */,
 			);
@@ -239,6 +250,7 @@
 			files = (
 				77FAAE6519F91E480029DC5E /* StencilTests.swift in Sources */,
 				7725B3D319F9437F002CF74B /* NodeTests.swift in Sources */,
+				7725B3D919F94A61002CF74B /* ParserTests.swift in Sources */,
 				7725B3CB19F92B4F002CF74B /* VariableTests.swift in Sources */,
 				77FAAE7119F9208C0029DC5E /* ContextTests.swift in Sources */,
 			);
