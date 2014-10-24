@@ -62,7 +62,7 @@ class VariableNodeTests: NodeTests {
 class RenderNodeTests: NodeTests {
     func testRenderingNodes() {
         let nodes = [TextNode(text:"Hello "), VariableNode(variable: "name")] as [Node]
-        let (result:String?, error:Error?) = render(nodes, context)
+        let (result:String?, error:Error?) = renderNodes(nodes, context)
 
         XCTAssertEqual(result!, "Hello Kyle")
         XCTAssertTrue(error == nil)
@@ -70,7 +70,7 @@ class RenderNodeTests: NodeTests {
 
     func testRenderingNodesWithFailure() {
         let nodes = [TextNode(text:"Hello "), VariableNode(variable: "name"), ErrorNode()] as [Node]
-        let (result:String?, error:Error?) = render(nodes, context)
+        let (result:String?, error:Error?) = renderNodes(nodes, context)
 
         XCTAssertEqual(error!.description, "Node Error")
         XCTAssertTrue(result == nil)

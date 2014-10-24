@@ -35,7 +35,7 @@ extension Array {
     }
 }
 
-public func render(nodes:[Node], context:Context) -> (String?, Error?) {
+public func renderNodes(nodes:[Node], context:Context) -> (String?, Error?) {
     let result:(results:[String]?, error:Error?) = nodes.map {
         return $0.render(context)
     }

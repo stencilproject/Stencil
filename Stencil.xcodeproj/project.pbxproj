@@ -14,6 +14,10 @@
 		7725B3D519F9438F002CF74B /* Node.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7725B3D419F9438F002CF74B /* Node.swift */; };
 		7725B3D719F94A43002CF74B /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7725B3D619F94A43002CF74B /* Parser.swift */; };
 		7725B3D919F94A61002CF74B /* ParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7725B3D819F94A61002CF74B /* ParserTests.swift */; };
+		77EB082519F96E88001870F1 /* Template.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77EB082419F96E88001870F1 /* Template.swift */; };
+		77EB082719F96E9C001870F1 /* TemplateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77EB082619F96E9C001870F1 /* TemplateTests.swift */; };
+		77EB082919FA85F2001870F1 /* LexerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77EB082819FA85F2001870F1 /* LexerTests.swift */; };
+		77EB082B19FA8600001870F1 /* Lexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77EB082A19FA8600001870F1 /* Lexer.swift */; };
 		77FAAE5819F91E480029DC5E /* Stencil.h in Headers */ = {isa = PBXBuildFile; fileRef = 77FAAE5719F91E480029DC5E /* Stencil.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		77FAAE5E19F91E480029DC5E /* Stencil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 77FAAE5219F91E480029DC5E /* Stencil.framework */; };
 		77FAAE6519F91E480029DC5E /* StencilTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77FAAE6419F91E480029DC5E /* StencilTests.swift */; };
@@ -39,6 +43,10 @@
 		7725B3D419F9438F002CF74B /* Node.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Node.swift; sourceTree = "<group>"; };
 		7725B3D619F94A43002CF74B /* Parser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Parser.swift; sourceTree = "<group>"; };
 		7725B3D819F94A61002CF74B /* ParserTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParserTests.swift; sourceTree = "<group>"; };
+		77EB082419F96E88001870F1 /* Template.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Template.swift; sourceTree = "<group>"; };
+		77EB082619F96E9C001870F1 /* TemplateTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TemplateTests.swift; sourceTree = "<group>"; };
+		77EB082819FA85F2001870F1 /* LexerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LexerTests.swift; sourceTree = "<group>"; };
+		77EB082A19FA8600001870F1 /* Lexer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Lexer.swift; sourceTree = "<group>"; };
 		77FAAE5219F91E480029DC5E /* Stencil.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Stencil.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		77FAAE5619F91E480029DC5E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		77FAAE5719F91E480029DC5E /* Stencil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Stencil.h; sourceTree = "<group>"; };
@@ -95,6 +103,8 @@
 				7725B3CE19F94214002CF74B /* Tokenizer.swift */,
 				7725B3D419F9438F002CF74B /* Node.swift */,
 				7725B3D619F94A43002CF74B /* Parser.swift */,
+				77EB082A19FA8600001870F1 /* Lexer.swift */,
+				77EB082419F96E88001870F1 /* Template.swift */,
 				77FAAE5519F91E480029DC5E /* Supporting Files */,
 			);
 			path = Stencil;
@@ -116,6 +126,8 @@
 				7725B3CA19F92B4F002CF74B /* VariableTests.swift */,
 				7725B3D219F9437F002CF74B /* NodeTests.swift */,
 				7725B3D819F94A61002CF74B /* ParserTests.swift */,
+				77EB082819FA85F2001870F1 /* LexerTests.swift */,
+				77EB082619F96E9C001870F1 /* TemplateTests.swift */,
 				77FAAE6219F91E480029DC5E /* Supporting Files */,
 			);
 			path = StencilTests;
@@ -237,8 +249,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				77FAAE6F19F920750029DC5E /* Context.swift in Sources */,
+				77EB082B19FA8600001870F1 /* Lexer.swift in Sources */,
 				7725B3CF19F94214002CF74B /* Tokenizer.swift in Sources */,
 				7725B3D719F94A43002CF74B /* Parser.swift in Sources */,
+				77EB082519F96E88001870F1 /* Template.swift in Sources */,
 				7725B3CD19F92B61002CF74B /* Variable.swift in Sources */,
 				7725B3D519F9438F002CF74B /* Node.swift in Sources */,
 			);
@@ -251,7 +265,9 @@
 				77FAAE6519F91E480029DC5E /* StencilTests.swift in Sources */,
 				7725B3D319F9437F002CF74B /* NodeTests.swift in Sources */,
 				7725B3D919F94A61002CF74B /* ParserTests.swift in Sources */,
+				77EB082719F96E9C001870F1 /* TemplateTests.swift in Sources */,
 				7725B3CB19F92B4F002CF74B /* VariableTests.swift in Sources */,
+				77EB082919FA85F2001870F1 /* LexerTests.swift in Sources */,
 				77FAAE7119F9208C0029DC5E /* ContextTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
