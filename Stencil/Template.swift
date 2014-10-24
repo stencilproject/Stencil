@@ -18,7 +18,7 @@ public struct Template {
         nodes = parser.parse()
     }
 
-    public func render(context:Context) -> (String?, Error?) {
+    public func render(context:Context) -> (string:String?, error:Error?) {
         return renderNodes(nodes, context)
     }
 }
