@@ -45,4 +45,14 @@ class TokenParserTests: XCTestCase {
 
         XCTAssertEqual(nodes.count, 0)
     }
+
+    func testParsingTagToken() {
+        let parser = TokenParser(tokens: [
+            Token.Block(value: "now"),
+        ])
+
+        let nodes = parser.parse()
+        let node = nodes.first as NowNode!
+        XCTAssertEqual(nodes.count, 1)
+    }
 }

@@ -10,9 +10,11 @@ import Foundation
 
 public class TokenParser {
     private var tokens:[Token]
+    private var tags = Dictionary<String, ((TokenParser, Token) -> (Node))>()
 
     public init(tokens:[Token]) {
         self.tokens = tokens
+        tags["now"] = NowNode.parse
     }
 
     public func parse() -> [Node] {
@@ -31,7 +33,21 @@ public class TokenParser {
             case .Variable(let variable):
                 nodes.append(VariableNode(variable: variable))
             case .Block(let value):
-                continue
+                let tag = token.components().first
+
+                if let parse_until = parse_until {
+                    if parse_until(parser: self, token: token) {
+                        prependToken(token)
+                        return nodes
+                    }
+                }
+
+                if let tag = tag {
+                    if let parser = self.tags[tag] {
+                        let node = parser(self, token)
+                        nodes.append(node)
+                    }
+                }
             case .Comment(let value):
                 continue
             }

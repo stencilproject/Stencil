@@ -82,3 +82,14 @@ public class VariableNode : Node {
         return (nil, nil)
     }
 }
+
+public class NowNode : Node {
+    public class func parse(parser:TokenParser, token:Token) -> Node {
+        return NowNode()
+    }
+
+    public func render(context: Context) -> (String?, Error?) {
+        let date = NSDate()
+        return ("\(date)", nil)
+    }
+}
