@@ -43,7 +43,7 @@ public struct Lexer {
         let nsTemplateString = templateString as NSString
         regex.enumerateMatchesInString(templateString, options: nil, range: range) { (result, flags, b) in
             if result.range.location != lastIndex {
-                let previousMatch = nsTemplateString.substringWithRange(NSMakeRange(lastIndex, result.range.location))
+                let previousMatch = nsTemplateString.substringWithRange(NSMakeRange(lastIndex, result.range.location - lastIndex))
                 tokens.append(self.createToken(previousMatch))
             }
 
