@@ -8,29 +8,32 @@
 
 import Cocoa
 import XCTest
+import Stencil
 
 class StencilTests: XCTestCase {
-    
-    override func setUp() {
-        super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+    func testReadmeExample() {
+        let templateString = "There are {{ articles.count }} articles.\n" +
+            "\n" +
+            "{% for article in articles %}" +
+            "    - {{ article.title }} by {{ article.author }}.\n" +
+            "{% endfor %}\n"
+
+        let context = Context(dictionary: [
+            "articles": [
+                [ "title": "Migrating from OCUnit to XCTest", "author": "Kyle Fuller" ],
+                [ "title": "Memory Management with ARC", "author": "Kyle Fuller" ],
+            ]
+        ])
+
+        let template = Template(templateString:templateString)
+        let result = template.render(context)
+
+        let fixture = "There are 2 articles.\n" +
+            "\n" +
+            "    - Migrating from OCUnit to XCTest by Kyle Fuller.\n" +
+            "    - Memory Management with ARC by Kyle Fuller.\n" +
+            "\n"
+
+        XCTAssertEqual(result.string!, fixture)
     }
-    
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-        super.tearDown()
-    }
-    
-    func testExample() {
-        // This is an example of a functional test case.
-        XCTAssert(true, "Pass")
-    }
-    
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measureBlock() {
-            // Put the code you want to measure the time of here.
-        }
-    }
-    
 }
