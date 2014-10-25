@@ -22,11 +22,11 @@ let context = Context(dictionary: [
     ]
 ])
 
-let template = Template(path:"template.stencil")
+let template = Template(named: "template.stencil")
 let result = template.render(context)
 
 if let error = result.error {
-    println("There was a syntax error parsing your template (\(error)).")
+    println("There was an error rendering your template (\(error)).")
 }
 
 println("\(result.string)")
