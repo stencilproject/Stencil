@@ -30,6 +30,19 @@ public enum Token : Equatable {
                 return value.value.stringByTrimmingCharactersInSet(characterSet).componentsSeparatedByCharactersInSet(characterSet)
         }
     }
+
+    var contents:String {
+        switch self {
+            case .Block(let value):
+                return value
+            case .Variable(let value):
+                return value
+            case .Text(let value):
+                return value
+            case .Comment(let value):
+                return value
+        }
+    }
 }
 
 public func ==(lhs:Token, rhs:Token) -> Bool {

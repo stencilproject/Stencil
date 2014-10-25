@@ -30,6 +30,7 @@ class NodeTests: XCTestCase {
         context = Context(dictionary: [
             "name": "Kyle",
             "age": 27,
+            "items": [1,2,3],
         ])
     }
 }
@@ -74,5 +75,14 @@ class RenderNodeTests: NodeTests {
 
         XCTAssertEqual(error!.description, "Node Error")
         XCTAssertTrue(result == nil)
+    }
+}
+
+class ForNodeTests: NodeTests {
+    func testForNodeRender() {
+        let node = ForNode(variable: "items", loopVariable: "item", nodes: [VariableNode(variable: "item")], emptyNodes:[])
+        let result = node.render(context)
+
+        XCTAssertEqual(result.0!, "123")
     }
 }

@@ -93,3 +93,64 @@ public class NowNode : Node {
         return ("\(date)", nil)
     }
 }
+
+public class ForNode : Node {
+    let variable:Variable
+    let loopVariable:String
+    let nodes:[Node]
+
+    public class func parse(parser:TokenParser, token:Token) -> Node {
+        let components = token.components()
+        let count = countElements(components)
+
+        if count == 4 && components[2] == "in" {
+            let loopVariable = components[1]
+            let variable = components[3]
+            let nodes = parser.parse(until(["endfor", "empty"]))
+            var emptyNodes = [Node]()
+
+            if let token = parser.nextToken() {
+                if token.contents == "empty" {
+                    emptyNodes = parser.parse(until(["endfor"]))
+                    parser.nextToken()
+                }
+            }
+
+            return ForNode(variable: variable, loopVariable: loopVariable, nodes: nodes, emptyNodes:emptyNodes)
+        } else {
+            // TODO error
+        }
+
+        return TextNode(text: "TODO return some error")
+    }
+
+    public init(variable:String, loopVariable:String, nodes:[Node], emptyNodes:[Node]) {
+        self.variable = Variable(variable)
+        self.loopVariable = loopVariable
+        self.nodes = nodes
+    }
+
+    public func render(context: Context) -> (String?, Error?) {
+        let values = variable.resolve(context) as? [AnyObject]
+        var result = ""
+
+        if let values = values {
+            for item in values {
+                context.push()
+                context[loopVariable] = item
+                let (string, error) = renderNodes(nodes, context)
+                context.pop()
+
+                if let error = error {
+                    return (nil, error)
+                }
+
+                if let string = string {
+                    result += string
+                }
+            }
+        }
+
+        return (result, nil)
+    }
+}

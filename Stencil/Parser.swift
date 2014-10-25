@@ -8,12 +8,25 @@
 
 import Foundation
 
+public func until(tags:[String])(parser:TokenParser, token:Token) -> Bool {
+    if let name = token.components().first {
+        for tag in tags {
+            if name == tag {
+                return true
+            }
+        }
+    }
+
+    return false
+}
+
 public class TokenParser {
     private var tokens:[Token]
     private var tags = Dictionary<String, ((TokenParser, Token) -> (Node))>()
 
     public init(tokens:[Token]) {
         self.tokens = tokens
+        tags["for"] = ForNode.parse
         tags["now"] = NowNode.parse
     }
 
