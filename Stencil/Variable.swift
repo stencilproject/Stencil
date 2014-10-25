@@ -38,6 +38,8 @@ public struct Variable : Equatable {
                     current = array.first
                 } else if bit == "last" {
                     current = array.last
+                } else if bit == "count" {
+                    current = countElements(array)
                 }
             } else if let object = current as? NSObject {
                 current = object.valueForKey(bit)
