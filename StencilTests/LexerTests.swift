@@ -46,4 +46,13 @@ class LexerTests: XCTestCase {
         XCTAssertEqual(tokens[2], Token.Text(value: "."))
     }
 
+    func testTokenizeTwoVariables() { // Don't be greedy
+        let lexer = Lexer(templateString:"{{ thing }}{{ name }}")
+        let tokens = lexer.tokenize()
+
+        XCTAssertEqual(tokens.count, 2)
+        XCTAssertEqual(tokens[0], Token.Variable(value: "thing"))
+        XCTAssertEqual(tokens[1], Token.Variable(value: "name"))
+    }
+
 }

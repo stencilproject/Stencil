@@ -10,7 +10,7 @@ import Foundation
 
 public struct Lexer {
     public let templateString:String
-    let regex = NSRegularExpression(pattern: "(\\{\\{.*\\}\\}|\\{%.*%\\}|\\{#.*#\\})", options: nil, error: nil)
+    let regex = NSRegularExpression(pattern: "(\\{\\{.*?\\}\\}|\\{%.*?%\\}|\\{#.*?#\\})", options: nil, error: nil)
 
     public init(templateString:String) {
         self.templateString = templateString
