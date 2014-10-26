@@ -89,9 +89,8 @@ A tag can also effect the context and define variables as follows:
 {% endfor %}
 ```
 
-Stencil has a couple of built in tags which are listed below. You will also be
-able to use the Stencil API to build your own in future versions. This is
-tracked by a ticket [#6](https://github.com/kylef/Stencil/issues/6).
+Stencil has a couple of built in tags which are listed below. You can also
+extend Stencil and provide your own tags.
 
 #### for
 
