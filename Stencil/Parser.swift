@@ -13,8 +13,15 @@ public func until(tags:[String])(parser:TokenParser, token:Token) -> Bool {
 }
 
 public class TokenParser {
+    public enum Result {
+        case Success(node: Node)
+        case Error(error: Stencil.Error)
+    }
+    
+    typealias TagParser = (TokenParser, Token) -> Result
+
     private var tokens:[Token]
-    private var tags = Dictionary<String, ((TokenParser, Token) -> ((node:Node?, error:Error?)))>()
+    private var tags = Dictionary<String, TagParser>()
 
     public init(tokens:[Token]) {
         self.tokens = tokens
@@ -51,14 +58,11 @@ public class TokenParser {
 
                 if let tag = tag {
                     if let parser = self.tags[tag] {
-                        let (node, error) = parser(self, token)
-
-                        if let error = error {
-                            return (nil, error)
-                        }
-
-                        if let node = node {
-                            nodes.append(node)
+                        switch parser(self, token) {
+                            case .Success(let node):
+                                nodes.append(node)
+                            case .Error(let error):
+                                return (nil, error)
                         }
                     }
                 }
