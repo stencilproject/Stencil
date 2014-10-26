@@ -10,7 +10,7 @@ import Foundation
 
 public struct Lexer {
     public let templateString:String
-    let regex = NSRegularExpression(pattern: "(\\{\\{.*?\\}\\}|\\{%.*?%\\}|\\{#.*?#\\})", options: nil, error: nil)
+    let regex = NSRegularExpression(pattern: "(\\{\\{.*?\\}\\}|\\{%.*?%\\}|\\{#.*?#\\})", options: nil, error: nil)!
 
     public init(templateString:String) {
         self.templateString = templateString
@@ -41,7 +41,8 @@ public struct Lexer {
         let range = NSMakeRange(0, countElements(templateString))
         var lastIndex = 0
         let nsTemplateString = templateString as NSString
-        regex.enumerateMatchesInString(templateString, options: nil, range: range) { (result, flags, b) in
+        let options = NSMatchingOptions(0)
+        regex.enumerateMatchesInString(templateString, options: options, range: range) { (result, flags, b) in
             if result.range.location != lastIndex {
                 let previousMatch = nsTemplateString.substringWithRange(NSMakeRange(lastIndex, result.range.location - lastIndex))
                 tokens.append(self.createToken(previousMatch))
