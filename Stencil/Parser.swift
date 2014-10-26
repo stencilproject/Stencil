@@ -31,10 +31,14 @@ public class TokenParser {
 
     public init(tokens:[Token]) {
         self.tokens = tokens
-        tags["for"] = ForNode.parse
-        tags["now"] = NowNode.parse
-        tags["if"] = IfNode.parse
-        tags["ifnot"] = IfNode.parse_ifnot
+        registerTag("for", ForNode.parse)
+        registerTag("if", IfNode.parse)
+        registerTag("ifnot", IfNode.parse_ifnot)
+        registerTag("now", NowNode.parse)
+    }
+
+    public func registerTag(name:String, parser:TagParser) {
+        tags[name] = parser
     }
 
     public func parse() -> Results {
