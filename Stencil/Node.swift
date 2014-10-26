@@ -84,8 +84,8 @@ public class VariableNode : Node {
 }
 
 public class NowNode : Node {
-    public class func parse(parser:TokenParser, token:Token) -> Node {
-        return NowNode()
+    public class func parse(parser:TokenParser, token:Token) -> (node:Node?, error:Error?) {
+        return (NowNode(), nil)
     }
 
     public func render(context: Context) -> (String?, Error?) {
@@ -99,29 +99,41 @@ public class ForNode : Node {
     let loopVariable:String
     let nodes:[Node]
 
-    public class func parse(parser:TokenParser, token:Token) -> Node {
+    public class func parse(parser:TokenParser, token:Token) -> (node:Node?, error:Error?) {
         let components = token.components()
         let count = countElements(components)
 
         if count == 4 && components[2] == "in" {
             let loopVariable = components[1]
             let variable = components[3]
-            let nodes = parser.parse(until(["endfor", "empty"]))
+            let (nodes, error) = parser.parse(until(["endfor", "empty"]))
             var emptyNodes = [Node]()
+
+            if let error = error {
+                return (nil, error)
+            }
 
             if let token = parser.nextToken() {
                 if token.contents == "empty" {
-                    emptyNodes = parser.parse(until(["endfor"]))
+                    let (nodes, error) = parser.parse(until(["endfor"]))
                     parser.nextToken()
+
+                    if let error = error {
+                        return (nil, error)
+                    }
+
+                    if let nodes = nodes {
+                        emptyNodes = nodes
+                    }
                 }
             }
 
-            return ForNode(variable: variable, loopVariable: loopVariable, nodes: nodes, emptyNodes:emptyNodes)
+            return (ForNode(variable: variable, loopVariable: loopVariable, nodes: nodes!, emptyNodes:emptyNodes), nil)
         } else {
             // TODO error
         }
 
-        return TextNode(text: "TODO return some error")
+        return (TextNode(text: "TODO return some error"), nil)
     }
 
     public init(variable:String, loopVariable:String, nodes:[Node], emptyNodes:[Node]) {
@@ -160,36 +172,59 @@ public class IfNode : Node {
     public let trueNodes:[Node]
     public let falseNodes:[Node]
 
-    public class func parse(parser:TokenParser, token:Token) -> Node {
+    public class func parse(parser:TokenParser, token:Token) -> (node:Node?, error:Error?) {
         let variable = token.components()[1]
 
-        let trueNodes = parser.parse(until(["endif", "else"]))
+        let (trueNodes, error) = parser.parse(until(["endif", "else"]))
+        if let error = error {
+            return (nil, error)
+        }
+
         var falseNodes = [Node]()
 
         if let token = parser.nextToken() {
             if token.contents == "else" {
-                falseNodes = parser.parse(until(["endif"]))
+                let (nodes, error) = parser.parse(until(["endif"]))
                 parser.nextToken()
+
+                if let error = error {
+                    return (nil, error)
+                }
+
+                if let nodes = nodes {
+                    falseNodes = nodes
+                }
             }
         }
 
-        return IfNode(variable: variable, trueNodes: trueNodes, falseNodes: falseNodes)
+        return (IfNode(variable: variable, trueNodes: trueNodes!, falseNodes: falseNodes), nil)
     }
 
-    public class func parse_ifnot(parser:TokenParser, token:Token) -> Node {
+    public class func parse_ifnot(parser:TokenParser, token:Token) -> (node:Node?, error:Error?) {
         let variable = token.components()[1]
 
-        let falseNodes = parser.parse(until(["endif", "else"]))
+        let (falseNodes, error) = parser.parse(until(["endif", "else"]))
+        if let error = error {
+            return (nil, error)
+        }
         var trueNodes = [Node]()
 
         if let token = parser.nextToken() {
             if token.contents == "else" {
-                trueNodes = parser.parse(until(["endif"]))
+                let (nodes, error) = parser.parse(until(["endif"]))
+                if let error = error {
+                    return (nil, error)
+                }
+
+                if let nodes = nodes {
+                    trueNodes = nodes
+                }
+
                 parser.nextToken()
             }
         }
 
-        return IfNode(variable: variable, trueNodes: trueNodes, falseNodes: falseNodes)
+        return (IfNode(variable: variable, trueNodes: trueNodes, falseNodes: falseNodes!), nil)
     }
 
     public init(variable:String, trueNodes:[Node], falseNodes:[Node]) {

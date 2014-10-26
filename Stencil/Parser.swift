@@ -22,7 +22,7 @@ public func until(tags:[String])(parser:TokenParser, token:Token) -> Bool {
 
 public class TokenParser {
     private var tokens:[Token]
-    private var tags = Dictionary<String, ((TokenParser, Token) -> (Node))>()
+    private var tags = Dictionary<String, ((TokenParser, Token) -> ((node:Node?, error:Error?)))>()
 
     public init(tokens:[Token]) {
         self.tokens = tokens
@@ -32,11 +32,11 @@ public class TokenParser {
         tags["ifnot"] = IfNode.parse_ifnot
     }
 
-    public func parse() -> [Node] {
+    public func parse() -> (nodes:[Node]?, error:Error?) {
         return parse(nil)
     }
 
-    public func parse(parse_until:((parser:TokenParser, token:Token) -> (Bool))?) -> [Node] {
+    public func parse(parse_until:((parser:TokenParser, token:Token) -> (Bool))?) -> (nodes:[Node]?, error:Error?) {
         var nodes = [Node]()
 
         while tokens.count > 0 {
@@ -53,14 +53,21 @@ public class TokenParser {
                 if let parse_until = parse_until {
                     if parse_until(parser: self, token: token) {
                         prependToken(token)
-                        return nodes
+                        return (nodes, nil)
                     }
                 }
 
                 if let tag = tag {
                     if let parser = self.tags[tag] {
-                        let node = parser(self, token)
-                        nodes.append(node)
+                        let (node, error) = parser(self, token)
+
+                        if let error = error {
+                            return (nil, error)
+                        }
+
+                        if let node = node {
+                            nodes.append(node)
+                        }
                     }
                 }
             case .Comment(let value):
@@ -68,7 +75,7 @@ public class TokenParser {
             }
         }
 
-        return nodes
+        return (nodes, nil)
     }
 
     public func nextToken() -> Token? {

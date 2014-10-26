@@ -101,12 +101,13 @@ class IfNodeTests: NodeTests {
         ]
 
         let parser = TokenParser(tokens: tokens)
-        let nodes = parser.parse()
-        let node = nodes.first! as IfNode
+        let (nodes, error) = parser.parse()
+        let node = nodes!.first! as IfNode
         let trueNode = node.trueNodes.first! as TextNode
         let falseNode = node.falseNodes.first! as TextNode
 
-        XCTAssertEqual(nodes.count, 1)
+        XCTAssertTrue(error == nil)
+        XCTAssertEqual(nodes!.count, 1)
         XCTAssertEqual(node.variable.variable, "value")
         XCTAssertEqual(node.trueNodes.count, 1)
         XCTAssertEqual(trueNode.text, "true")
@@ -124,12 +125,13 @@ class IfNodeTests: NodeTests {
         ]
 
         let parser = TokenParser(tokens: tokens)
-        let nodes = parser.parse()
-        let node = nodes.first! as IfNode
+        let (nodes, error) = parser.parse()
+        let node = nodes!.first! as IfNode
         let trueNode = node.trueNodes.first! as TextNode
         let falseNode = node.falseNodes.first! as TextNode
 
-        XCTAssertEqual(nodes.count, 1)
+        XCTAssertTrue(error == nil)
+        XCTAssertEqual(nodes!.count, 1)
         XCTAssertEqual(node.variable.variable, "value")
         XCTAssertEqual(node.trueNodes.count, 1)
         XCTAssertEqual(trueNode.text, "true")

@@ -9,7 +9,7 @@
 import Foundation
 
 public class Template {
-    let nodes:[Node]
+    let parser:TokenParser
 
     public convenience init(named:String) {
         self.init(named:named, inBundle:nil)
@@ -36,11 +36,18 @@ public class Template {
     public init(templateString:String) {
         let lexer = Lexer(templateString: templateString)
         let tokens = lexer.tokenize()
-        let parser = TokenParser(tokens: tokens)
-        nodes = parser.parse()
+        parser = TokenParser(tokens: tokens)
     }
 
     public func render(context:Context) -> (string:String?, error:Error?) {
-        return renderNodes(nodes, context)
+        let (nodes, error) = parser.parse()
+
+        if let error = error {
+            return (nil, error)
+        } else if let nodes = nodes {
+            return renderNodes(nodes, context)
+        }
+
+        return (nil, nil)
     }
 }
