@@ -15,7 +15,7 @@ struct NodeError : Error {
 }
 
 public protocol Node {
-    func render(context:Context) -> (String?, Error?)
+    func render(context:Context) -> Result
 }
 
 extension Array {
@@ -38,15 +38,18 @@ extension Array {
 }
 
 public func renderNodes(nodes:[Node], context:Context) -> Result {
-    let result:(results:[String]?, error:Error?) = nodes.map {
-        return $0.render(context)
+    var result = ""
+
+    for item in nodes {
+        switch item.render(context) {
+        case .Success(let string):
+            result += string
+        case .Error(let error):
+            return .Error(error:error)
+        }
     }
 
-    if let result = result.0 {
-        return .Success(string:"".join(result))
-    }
-
-    return .Error(error:result.1!)
+    return .Success(string:result)
 }
 
 public class TextNode : Node {
@@ -56,8 +59,8 @@ public class TextNode : Node {
         self.text = text
     }
 
-    public func render(context:Context) -> (String?, Error?) {
-        return (self.text, nil)
+    public func render(context:Context) -> Result {
+        return .Success(string:self.text)
     }
 }
 
@@ -72,16 +75,16 @@ public class VariableNode : Node {
         self.variable = Variable(variable)
     }
 
-    public func render(context:Context) -> (String?, Error?) {
+    public func render(context:Context) -> Result {
         let result:AnyObject? = variable.resolve(context)
 
         if let result = result as? String {
-            return (result, nil)
+            return .Success(string:result)
         } else if let result = result as? NSObject {
-            return (result.description, nil)
+            return .Success(string:result.description)
         }
 
-        return (nil, nil)
+        return .Success(string:"")
     }
 }
 
@@ -107,7 +110,7 @@ public class NowNode : Node {
         }
     }
 
-    public func render(context: Context) -> (String?, Error?) {
+    public func render(context: Context) -> Result {
         let date = NSDate()
         let format: AnyObject? = self.format.resolve(context)
         var formatter:NSDateFormatter?
@@ -118,11 +121,10 @@ public class NowNode : Node {
             formatter = NSDateFormatter()
             formatter!.dateFormat = format
         } else {
-            // TODO Error
-            return (nil, nil)
+            return .Success(string:"")
         }
 
-        return ("\(formatter!.stringFromDate(date))", nil)
+        return .Success(string:formatter!.stringFromDate(date))
     }
 }
 
@@ -176,7 +178,7 @@ public class ForNode : Node {
         self.nodes = nodes
     }
 
-    public func render(context: Context) -> (String?, Error?) {
+    public func render(context: Context) -> Result {
         let values = variable.resolve(context) as? [AnyObject]
         var output = ""
 
@@ -191,12 +193,12 @@ public class ForNode : Node {
                     case .Success(let string):
                         output += string
                     case .Error(let error):
-                        return (nil, error)
+                        return .Error(error:error)
                 }
             }
         }
 
-        return (output, nil)
+        return .Success(string:output)
     }
 }
 
@@ -269,7 +271,7 @@ public class IfNode : Node {
         self.falseNodes = falseNodes
     }
 
-    public func render(context: Context) -> (String?, Error?) {
+    public func render(context: Context) -> Result {
         let result: AnyObject? = variable.resolve(context)
         var truthy = false
 
@@ -285,11 +287,6 @@ public class IfNode : Node {
         let output = renderNodes(truthy ? trueNodes : falseNodes, context)
         context.pop()
 
-        switch output {
-            case .Success(let string):
-                return (string, nil)
-            case .Error(let error):
-                return (nil, error)
-        }
+        return output
     }
 }

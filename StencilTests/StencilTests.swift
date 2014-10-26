@@ -21,8 +21,8 @@ func assertFailure(result:TokenParser.Results, description:String) {
 }
 
 class CustomNode : Node {
-    func render(context:Context) -> (String?, Error?) {
-        return ("Hello World", nil)
+    func render(context:Context) -> Result {
+        return .Success(string:"Hello World")
     }
 }
 

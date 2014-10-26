@@ -9,9 +9,9 @@ class ErrorNodeError : Error {
 }
 
 class ErrorNode : Node {
-    func render(context: Context) -> (String?, Error?) {
+    func render(context: Context) -> Result {
 
-        return (nil, ErrorNodeError())
+        return .Error(error:ErrorNodeError())
     }
 }
 
@@ -32,7 +32,12 @@ class TextNodeTests: NodeTests {
         let node = TextNode(text:"Hello World")
         let result = node.render(context)
 
-        XCTAssertEqual(result.0!, "Hello World")
+        switch node.render(context) {
+            case .Success(let string):
+                XCTAssertEqual(string, "Hello World")
+            case .Error(let error):
+                XCTAssert(false, "Unexpected error")
+        }
     }
 }
 
@@ -41,14 +46,24 @@ class VariableNodeTests: NodeTests {
         let node = VariableNode(variable:Variable("name"))
         let result = node.render(context)
 
-        XCTAssertEqual(result.0!, "Kyle")
+        switch node.render(context) {
+            case .Success(let string):
+                XCTAssertEqual(string, "Kyle")
+            case .Error(let error):
+                XCTAssert(false, "Unexpected error")
+        }
     }
 
     func testVariableNodeResolvesNonStringVariable() {
         let node = VariableNode(variable:Variable("age"))
         let result = node.render(context)
 
-        XCTAssertEqual(result.0!, "27")
+        switch node.render(context) {
+        case .Success(let string):
+            XCTAssertEqual(string, "27")
+        case .Error(let error):
+            XCTAssert(false, "Unexpected error")
+        }
     }
 }
 
@@ -80,7 +95,12 @@ class ForNodeTests: NodeTests {
         let node = ForNode(variable: "items", loopVariable: "item", nodes: [VariableNode(variable: "item")], emptyNodes:[])
         let result = node.render(context)
 
-        XCTAssertEqual(result.0!, "123")
+        switch node.render(context) {
+        case .Success(let string):
+            XCTAssertEqual(string, "123")
+        case .Error(let error):
+            XCTAssert(false, "Unexpected error")
+        }
     }
 }
 
@@ -160,14 +180,24 @@ class IfNodeTests: NodeTests {
         let node = IfNode(variable: "items", trueNodes: [TextNode(text: "true")], falseNodes: [TextNode(text: "false")])
         let result = node.render(context)
 
-        XCTAssertEqual(result.0!, "true")
+        switch node.render(context) {
+        case .Success(let string):
+            XCTAssertEqual(string, "true")
+        case .Error(let error):
+            XCTAssert(false, "Unexpected error")
+        }
     }
 
     func testIfNodeRenderFalse() {
         let node = IfNode(variable: "unknown", trueNodes: [TextNode(text: "true")], falseNodes: [TextNode(text: "false")])
         let result = node.render(context)
 
-        XCTAssertEqual(result.0!, "false")
+        switch node.render(context) {
+        case .Success(let string):
+            XCTAssertEqual(string, "false")
+        case .Error(let error):
+            XCTAssert(false, "Unexpected error")
+        }
     }
 
 }
@@ -208,7 +238,12 @@ class NowNodeTests: NodeTests {
         formatter.dateFormat = "yyyy-MM-dd"
         let date = formatter.stringFromDate(NSDate())
 
-        XCTAssertEqual(result.0!, date)
+        switch node.render(context) {
+        case .Success(let string):
+            XCTAssertEqual(string, date)
+        case .Error(let error):
+            XCTAssert(false, "Unexpected error")
+        }
     }
 
 }
