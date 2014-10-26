@@ -39,13 +39,7 @@ public class Template {
     public func render(context:Context) -> Result {
         switch parser.parse() {
             case .Success(let nodes):
-                let (result, error) = renderNodes(nodes, context)
-                if let result = result {
-                    return .Success(string:result)
-                } else if let error = error {
-                    return .Error(error:error)
-                }
-                return .Success(string:"")
+                return renderNodes(nodes, context)
 
             case .Error(let error):
                 return .Error(error:error)

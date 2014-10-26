@@ -55,18 +55,23 @@ class VariableNodeTests: NodeTests {
 class RenderNodeTests: NodeTests {
     func testRenderingNodes() {
         let nodes = [TextNode(text:"Hello "), VariableNode(variable: "name")] as [Node]
-        let (result:String?, error:Error?) = renderNodes(nodes, context)
-
-        XCTAssertEqual(result!, "Hello Kyle")
-        XCTAssertTrue(error == nil)
+        switch renderNodes(nodes, context) {
+        case .Success(let result):
+            XCTAssertEqual(result, "Hello Kyle")
+        case .Error(let error):
+            XCTAssert(false, "Unexpected error")
+        }
     }
 
     func testRenderingNodesWithFailure() {
         let nodes = [TextNode(text:"Hello "), VariableNode(variable: "name"), ErrorNode()] as [Node]
-        let (result:String?, error:Error?) = renderNodes(nodes, context)
 
-        XCTAssertEqual(error!.description, "Node Error")
-        XCTAssertTrue(result == nil)
+        switch renderNodes(nodes, context) {
+        case .Success(let result):
+            XCTAssert(false, "Unexpected success")
+        case .Error(let error):
+            XCTAssertEqual("\(error)", "Node Error")
+        }
     }
 }
 

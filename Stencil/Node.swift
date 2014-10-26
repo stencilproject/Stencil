@@ -37,16 +37,16 @@ extension Array {
     }
 }
 
-public func renderNodes(nodes:[Node], context:Context) -> (String?, Error?) {
+public func renderNodes(nodes:[Node], context:Context) -> Result {
     let result:(results:[String]?, error:Error?) = nodes.map {
         return $0.render(context)
     }
 
     if let result = result.0 {
-        return ("".join(result), nil)
+        return .Success(string:"".join(result))
     }
 
-    return (nil, result.1)
+    return .Error(error:result.1!)
 }
 
 public class TextNode : Node {
@@ -178,26 +178,25 @@ public class ForNode : Node {
 
     public func render(context: Context) -> (String?, Error?) {
         let values = variable.resolve(context) as? [AnyObject]
-        var result = ""
+        var output = ""
 
         if let values = values {
             for item in values {
                 context.push()
                 context[loopVariable] = item
-                let (string, error) = renderNodes(nodes, context)
+                let result = renderNodes(nodes, context)
                 context.pop()
 
-                if let error = error {
-                    return (nil, error)
-                }
-
-                if let string = string {
-                    result += string
+                switch result {
+                    case .Success(let string):
+                        output += string
+                    case .Error(let error):
+                        return (nil, error)
                 }
             }
         }
 
-        return (result, nil)
+        return (output, nil)
     }
 }
 
@@ -283,9 +282,14 @@ public class IfNode : Node {
         }
 
         context.push()
-        let (string, error) = renderNodes(truthy ? trueNodes : falseNodes, context)
+        let output = renderNodes(truthy ? trueNodes : falseNodes, context)
         context.pop()
 
-        return (string, error)
+        switch output {
+            case .Success(let string):
+                return (string, nil)
+            case .Error(let error):
+                return (nil, error)
+        }
     }
 }
