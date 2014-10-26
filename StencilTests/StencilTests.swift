@@ -34,6 +34,6 @@ class StencilTests: XCTestCase {
             "    - Memory Management with ARC by Kyle Fuller.\n" +
             "\n"
 
-        XCTAssertEqual(result.string!, fixture)
+        XCTAssertEqual(result, Result.Success(string: fixture))
     }
 }

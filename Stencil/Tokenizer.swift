@@ -18,16 +18,20 @@ public enum Token : Equatable {
     func components() -> [String] {
         // TODO: Make this smarter and treat quoted strings as a single component
         let characterSet = NSCharacterSet.whitespaceAndNewlineCharacterSet()
+        
+        func strip(value: String) -> [String] {
+            return value.stringByTrimmingCharactersInSet(characterSet).componentsSeparatedByCharactersInSet(characterSet)
+        }
 
         switch self {
             case .Block(let value):
-                return value.value.stringByTrimmingCharactersInSet(characterSet).componentsSeparatedByCharactersInSet(characterSet)
+                return strip(value)
             case .Variable(let value):
-                return value.value.stringByTrimmingCharactersInSet(characterSet).componentsSeparatedByCharactersInSet(characterSet)
+                return strip(value)
             case .Text(let value):
-                return value.value.stringByTrimmingCharactersInSet(characterSet).componentsSeparatedByCharactersInSet(characterSet)
+                return strip(value)
             case .Comment(let value):
-                return value.value.stringByTrimmingCharactersInSet(characterSet).componentsSeparatedByCharactersInSet(characterSet)
+                return strip(value)
         }
     }
 
