@@ -99,12 +99,12 @@
 		77FAAE5419F91E480029DC5E /* Stencil */ = {
 			isa = PBXGroup;
 			children = (
+				77FAAE5719F91E480029DC5E /* Stencil.h */,
 				77FAAE6E19F920750029DC5E /* Context.swift */,
 				77EB082A19FA8600001870F1 /* Lexer.swift */,
 				7725B3D419F9438F002CF74B /* Node.swift */,
 				7725B3D619F94A43002CF74B /* Parser.swift */,
 				71CE4C0919FD29D000B9E0C5 /* Result.swift */,
-				77FAAE5719F91E480029DC5E /* Stencil.h */,
 				77EB082419F96E88001870F1 /* Template.swift */,
 				7725B3CE19F94214002CF74B /* Tokenizer.swift */,
 				7725B3CC19F92B61002CF74B /* Variable.swift */,

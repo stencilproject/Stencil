@@ -1,11 +1,3 @@
-//
-//  Result.swift
-//  Stencil
-//
-//  Created by Marius Rackwitz on 26/10/14.
-//  Copyright (c) 2014 Cocode. All rights reserved.
-//
-
 import Foundation
 
 public protocol Error : Printable {
