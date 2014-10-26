@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		71CE4C0A19FD29D000B9E0C5 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71CE4C0919FD29D000B9E0C5 /* Result.swift */; };
 		7725B3CB19F92B4F002CF74B /* VariableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7725B3CA19F92B4F002CF74B /* VariableTests.swift */; };
 		7725B3CD19F92B61002CF74B /* Variable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7725B3CC19F92B61002CF74B /* Variable.swift */; };
 		7725B3CF19F94214002CF74B /* Tokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7725B3CE19F94214002CF74B /* Tokenizer.swift */; };
@@ -36,6 +37,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		71CE4C0919FD29D000B9E0C5 /* Result.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
 		7725B3CA19F92B4F002CF74B /* VariableTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VariableTests.swift; sourceTree = "<group>"; };
 		7725B3CC19F92B61002CF74B /* Variable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Variable.swift; sourceTree = "<group>"; };
 		7725B3CE19F94214002CF74B /* Tokenizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tokenizer.swift; sourceTree = "<group>"; };
@@ -97,14 +99,15 @@
 		77FAAE5419F91E480029DC5E /* Stencil */ = {
 			isa = PBXGroup;
 			children = (
-				77FAAE5719F91E480029DC5E /* Stencil.h */,
 				77FAAE6E19F920750029DC5E /* Context.swift */,
-				7725B3CC19F92B61002CF74B /* Variable.swift */,
-				7725B3CE19F94214002CF74B /* Tokenizer.swift */,
+				77EB082A19FA8600001870F1 /* Lexer.swift */,
 				7725B3D419F9438F002CF74B /* Node.swift */,
 				7725B3D619F94A43002CF74B /* Parser.swift */,
-				77EB082A19FA8600001870F1 /* Lexer.swift */,
+				71CE4C0919FD29D000B9E0C5 /* Result.swift */,
+				77FAAE5719F91E480029DC5E /* Stencil.h */,
 				77EB082419F96E88001870F1 /* Template.swift */,
+				7725B3CE19F94214002CF74B /* Tokenizer.swift */,
+				7725B3CC19F92B61002CF74B /* Variable.swift */,
 				77FAAE5519F91E480029DC5E /* Supporting Files */,
 			);
 			path = Stencil;
@@ -254,6 +257,7 @@
 				7725B3D719F94A43002CF74B /* Parser.swift in Sources */,
 				77EB082519F96E88001870F1 /* Template.swift in Sources */,
 				7725B3CD19F92B61002CF74B /* Variable.swift in Sources */,
+				71CE4C0A19FD29D000B9E0C5 /* Result.swift in Sources */,
 				7725B3D519F9438F002CF74B /* Node.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

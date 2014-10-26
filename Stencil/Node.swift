@@ -8,10 +8,6 @@
 
 import Foundation
 
-public protocol Error : Printable {
-
-}
-
 struct NodeError : Error {
     let token:Token
     let message:String

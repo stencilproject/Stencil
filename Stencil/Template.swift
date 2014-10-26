@@ -44,15 +44,19 @@ public class Template {
         parser = TokenParser(tokens: tokens)
     }
 
-    public func render(context:Context) -> (string:String?, error:Error?) {
+    public func render(context:Context) -> Result {
         let (nodes, error) = parser.parse()
 
         if let error = error {
-            return (nil, error)
+            return .Error(error: error)
         } else if let nodes = nodes {
-            return renderNodes(nodes, context)
+            let result = renderNodes(nodes, context)
+            if let string = result.0 {
+                return .Success(string: string)
+            } else {
+                return .Error(error: result.1!)
+            }
         }
-
-        return (nil, nil)
+        return .Success(string: "")
     }
 }
