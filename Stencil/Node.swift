@@ -12,6 +12,20 @@ public protocol Error : Printable {
 
 }
 
+struct NodeError : Error {
+    let token:Token
+    let message:String
+
+    init(token:Token, message:String) {
+        self.token = token
+        self.message = message
+    }
+
+    var description:String {
+        return "\(token.components().first!): \(message)"
+    }
+}
+
 public protocol Node {
     func render(context:Context) -> (String?, Error?)
 }
@@ -126,14 +140,14 @@ public class ForNode : Node {
                         emptyNodes = nodes
                     }
                 }
+            } else {
+                return (nil, NodeError(token: token, message: "`endfor` was not found."))
             }
 
             return (ForNode(variable: variable, loopVariable: loopVariable, nodes: nodes!, emptyNodes:emptyNodes), nil)
-        } else {
-            // TODO error
         }
 
-        return (TextNode(text: "TODO return some error"), nil)
+        return (nil, NodeError(token: token, message: "Invalid syntax. Expected `for x in y`."))
     }
 
     public init(variable:String, loopVariable:String, nodes:[Node], emptyNodes:[Node]) {
@@ -195,6 +209,8 @@ public class IfNode : Node {
                     falseNodes = nodes
                 }
             }
+        } else {
+            return (nil, NodeError(token: token, message: "`endif` was not found."))
         }
 
         return (IfNode(variable: variable, trueNodes: trueNodes!, falseNodes: falseNodes), nil)
@@ -222,6 +238,8 @@ public class IfNode : Node {
 
                 parser.nextToken()
             }
+        } else {
+            return (nil, NodeError(token: token, message: "`endif` was not found."))
         }
 
         return (IfNode(variable: variable, trueNodes: trueNodes, falseNodes: falseNodes!), nil)

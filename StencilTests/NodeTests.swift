@@ -139,6 +139,30 @@ class IfNodeTests: NodeTests {
         XCTAssertEqual(falseNode.text, "false")
     }
 
+    func testParseIfWithoutEndIfError() {
+        let tokens = [
+            Token.Block(value: "if value"),
+        ]
+
+        let parser = TokenParser(tokens: tokens)
+        let (nodes, error) = parser.parse()
+
+        XCTAssertTrue(nodes == nil)
+        XCTAssertEqual(error!.description, "if: `endif` was not found.")
+    }
+
+    func testParseIfNotWithoutEndIfError() {
+        let tokens = [
+            Token.Block(value: "ifnot value"),
+        ]
+
+        let parser = TokenParser(tokens: tokens)
+        let (nodes, error) = parser.parse()
+
+        XCTAssertTrue(nodes == nil)
+        XCTAssertEqual(error!.description, "ifnot: `endif` was not found.")
+    }
+
     // MARK: Rendering
 
     func testIfNodeRenderTruth() {
