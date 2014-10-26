@@ -154,3 +154,66 @@ public class ForNode : Node {
         return (result, nil)
     }
 }
+
+public class IfNode : Node {
+    public let variable:Variable
+    public let trueNodes:[Node]
+    public let falseNodes:[Node]
+
+    public class func parse(parser:TokenParser, token:Token) -> Node {
+        let variable = token.components()[1]
+
+        let trueNodes = parser.parse(until(["endif", "else"]))
+        var falseNodes = [Node]()
+
+        if let token = parser.nextToken() {
+            if token.contents == "else" {
+                falseNodes = parser.parse(until(["endif"]))
+                parser.nextToken()
+            }
+        }
+
+        return IfNode(variable: variable, trueNodes: trueNodes, falseNodes: falseNodes)
+    }
+
+    public class func parse_ifnot(parser:TokenParser, token:Token) -> Node {
+        let variable = token.components()[1]
+
+        let falseNodes = parser.parse(until(["endif", "else"]))
+        var trueNodes = [Node]()
+
+        if let token = parser.nextToken() {
+            if token.contents == "else" {
+                trueNodes = parser.parse(until(["endif"]))
+                parser.nextToken()
+            }
+        }
+
+        return IfNode(variable: variable, trueNodes: trueNodes, falseNodes: falseNodes)
+    }
+
+    public init(variable:String, trueNodes:[Node], falseNodes:[Node]) {
+        self.variable = Variable(variable)
+        self.trueNodes = trueNodes
+        self.falseNodes = falseNodes
+    }
+
+    public func render(context: Context) -> (String?, Error?) {
+        let result: AnyObject? = variable.resolve(context)
+        var truthy = false
+
+        if let result = result as? [AnyObject] {
+            if result.count > 0 {
+                truthy = true
+            }
+        } else if let result: AnyObject = result {
+            truthy = true
+        }
+
+        context.push()
+        let (string, error) = renderNodes(truthy ? trueNodes : falseNodes, context)
+        context.pop()
+
+        return (string, error)
+    }
+}

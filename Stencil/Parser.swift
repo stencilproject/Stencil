@@ -28,6 +28,8 @@ public class TokenParser {
         self.tokens = tokens
         tags["for"] = ForNode.parse
         tags["now"] = NowNode.parse
+        tags["if"] = IfNode.parse
+        tags["ifnot"] = IfNode.parse_ifnot
     }
 
     public func parse() -> [Node] {
