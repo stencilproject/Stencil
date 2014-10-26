@@ -20,6 +20,12 @@ func assertFailure(result:TokenParser.Results, description:String) {
     }
 }
 
+class CustomNode : Node {
+    func render(context:Context) -> (String?, Error?) {
+        return ("Hello World", nil)
+    }
+}
+
 class StencilTests: XCTestCase {
     func testReadmeExample() {
         let templateString = "There are {{ articles.count }} articles.\n" +
@@ -45,5 +51,17 @@ class StencilTests: XCTestCase {
             "\n"
 
         XCTAssertEqual(result, Result.Success(string: fixture))
+    }
+
+    func testCustomTag() {
+        let templateString = "{% custom %}"
+        let template = Template(templateString:templateString)
+
+        template.parser.registerTag("custom") { parser, token in
+            return .Success(node:CustomNode())
+        }
+
+        let result = template.render()
+        XCTAssertEqual(result, Result.Success(string: "Hello World"))
     }
 }

@@ -8,6 +8,10 @@ public class Context : Equatable {
         dictionaries = [dictionary]
     }
 
+    public init() {
+        dictionaries = []
+    }
+
     public subscript(key: String) -> AnyObject? {
         get {
             for dictionary in reverse(dictionaries) {

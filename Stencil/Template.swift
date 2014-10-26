@@ -1,7 +1,7 @@
 import Foundation
 
 public class Template {
-    let parser:TokenParser
+    public let parser:TokenParser
 
     public convenience init?(named:String) {
         self.init(named:named, inBundle:nil)
@@ -44,5 +44,10 @@ public class Template {
             case .Error(let error):
                 return .Error(error:error)
         }
+    }
+
+    public func render() -> Result {
+        let context = Context()
+        return render(context)
     }
 }
