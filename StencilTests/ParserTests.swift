@@ -8,12 +8,11 @@ class TokenParserTests: XCTestCase {
             Token.Text(value: "Hello World")
         ])
 
-        let (nodes, error) = parser.parse()
-        let node = nodes!.first as TextNode!
-
-        XCTAssertTrue(error == nil)
-        XCTAssertEqual(nodes!.count, 1)
-        XCTAssertEqual(node.text, "Hello World")
+        assertSuccess(parser.parse()) { nodes in
+            let node = nodes.first as TextNode!
+            XCTAssertEqual(nodes.count, 1)
+            XCTAssertEqual(node.text, "Hello World")
+        }
     }
 
     func testParsingVariableToken() {
@@ -21,13 +20,11 @@ class TokenParserTests: XCTestCase {
             Token.Variable(value: "name")
         ])
 
-        let (nodes, error) = parser.parse()
-        let node = nodes!.first as VariableNode!
-        let variable = node.variable
-
-        XCTAssertTrue(error == nil)
-        XCTAssertEqual(nodes!.count, 1)
-        XCTAssertEqual(variable, Variable("name"))
+        assertSuccess(parser.parse()) { nodes in
+            let node = nodes.first as VariableNode!
+            XCTAssertEqual(nodes.count, 1)
+            XCTAssertEqual(node.variable, Variable("name"))
+        }
     }
 
     func testParsingCommentToken() {
@@ -35,9 +32,9 @@ class TokenParserTests: XCTestCase {
             Token.Comment(value: "Secret stuff!")
         ])
 
-        let (nodes, error) = parser.parse()
-
-        XCTAssertEqual(nodes!.count, 0)
+        assertSuccess(parser.parse()) { nodes in
+            XCTAssertEqual(nodes.count, 0)
+        }
     }
 
     func testParsingTagToken() {
@@ -45,9 +42,8 @@ class TokenParserTests: XCTestCase {
             Token.Block(value: "now"),
         ])
 
-        let (nodes, error) = parser.parse()
-        let node = nodes!.first as NowNode!
-        XCTAssertTrue(error == nil)
-        XCTAssertEqual(nodes!.count, 1)
+        assertSuccess(parser.parse()) { nodes in
+            XCTAssertEqual(nodes.count, 1)
+        }
     }
 }

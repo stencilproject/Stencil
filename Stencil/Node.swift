@@ -138,31 +138,33 @@ public class ForNode : Node {
         if count == 4 && components[2] == "in" {
             let loopVariable = components[1]
             let variable = components[3]
-            let (nodes, error) = parser.parse(until(["endfor", "empty"]))
+
+            var forNodes:[Node]!
             var emptyNodes = [Node]()
 
-            if let error = error {
-                return .Error(error: error)
+            switch parser.parse(until(["endfor", "empty"])) {
+                case .Success(let nodes):
+                    forNodes = nodes
+                case .Error(let error):
+                    return .Error(error)
             }
 
             if let token = parser.nextToken() {
                 if token.contents == "empty" {
-                    let (nodes, error) = parser.parse(until(["endfor"]))
-                    parser.nextToken()
-
-                    if let error = error {
-                        return .Error(error: error)
-                    }
-
-                    if let nodes = nodes {
+                    switch parser.parse(until(["endfor"])) {
+                    case .Success(let nodes):
                         emptyNodes = nodes
+                    case .Error(let error):
+                        return .Error(error)
                     }
+
+                    parser.nextToken()
                 }
             } else {
                 return .Error(error: NodeError(token: token, message: "`endfor` was not found."))
             }
 
-            return .Success(node:ForNode(variable: variable, loopVariable: loopVariable, nodes: nodes!, emptyNodes:emptyNodes))
+            return .Success(node:ForNode(variable: variable, loopVariable: loopVariable, nodes: forNodes, emptyNodes:emptyNodes))
         }
 
         return .Error(error: NodeError(token: token, message: "Invalid syntax. Expected `for x in y`."))
@@ -206,61 +208,60 @@ public class IfNode : Node {
 
     public class func parse(parser:TokenParser, token:Token) -> TokenParser.Result {
         let variable = token.components()[1]
-
-        let (trueNodes, error) = parser.parse(until(["endif", "else"]))
-        if let error = error {
-            return .Error(error:error)
-        }
-
+        var trueNodes = [Node]()
         var falseNodes = [Node]()
+
+        switch parser.parse(until(["endif", "else"])) {
+            case .Success(let nodes):
+                trueNodes = nodes
+            case .Error(let error):
+                return .Error(error)
+        }
 
         if let token = parser.nextToken() {
             if token.contents == "else" {
-                let (nodes, error) = parser.parse(until(["endif"]))
+                switch parser.parse(until(["endif"])) {
+                    case .Success(let nodes):
+                        falseNodes = nodes
+                    case .Error(let error):
+                        return .Error(error)
+                }
                 parser.nextToken()
-
-                if let error = error {
-                    return .Error(error:error)
-                }
-
-                if let nodes = nodes {
-                    falseNodes = nodes
-                }
             }
         } else {
             return .Error(error:NodeError(token: token, message: "`endif` was not found."))
         }
 
-        return .Success(node:IfNode(variable: variable, trueNodes: trueNodes!, falseNodes: falseNodes))
+        return .Success(node:IfNode(variable: variable, trueNodes: trueNodes, falseNodes: falseNodes))
     }
 
     public class func parse_ifnot(parser:TokenParser, token:Token) -> TokenParser.Result {
         let variable = token.components()[1]
-
-        let (falseNodes, error) = parser.parse(until(["endif", "else"]))
-        if let error = error {
-            return .Error(error:error)
-        }
         var trueNodes = [Node]()
+        var falseNodes = [Node]()
+
+        switch parser.parse(until(["endif", "else"])) {
+        case .Success(let nodes):
+            falseNodes = nodes
+        case .Error(let error):
+            return .Error(error)
+        }
 
         if let token = parser.nextToken() {
             if token.contents == "else" {
-                let (nodes, error) = parser.parse(until(["endif"]))
-                if let error = error {
-                    return .Error(error:error)
-                }
-
-                if let nodes = nodes {
+                switch parser.parse(until(["endif"])) {
+                case .Success(let nodes):
                     trueNodes = nodes
+                case .Error(let error):
+                    return .Error(error)
                 }
-
                 parser.nextToken()
             }
         } else {
-            return .Error(error: NodeError(token: token, message: "`endif` was not found."))
+            return .Error(error:NodeError(token: token, message: "`endif` was not found."))
         }
 
-        return .Success(node: IfNode(variable: variable, trueNodes: trueNodes, falseNodes: falseNodes!))
+        return .Success(node:IfNode(variable: variable, trueNodes: trueNodes, falseNodes: falseNodes))
     }
 
     public init(variable:String, trueNodes:[Node], falseNodes:[Node]) {

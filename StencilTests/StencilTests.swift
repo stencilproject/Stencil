@@ -2,6 +2,24 @@ import Cocoa
 import XCTest
 import Stencil
 
+func assertSuccess(result:TokenParser.Results, block:(([Node]) -> ())) {
+    switch result {
+    case .Success(let nodes):
+        block(nodes)
+    case .Error(let error):
+        XCTAssert(false, "Unexpected error")
+    }
+}
+
+func assertFailure(result:TokenParser.Results, description:String) {
+    switch result {
+    case .Success(let nodes):
+        XCTAssert(false, "Unexpected error")
+    case .Error(let error):
+        XCTAssertEqual("\(error)", description)
+    }
+}
+
 class StencilTests: XCTestCase {
     func testReadmeExample() {
         let templateString = "There are {{ articles.count }} articles.\n" +

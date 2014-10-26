@@ -93,18 +93,18 @@ class IfNodeTests: NodeTests {
         ]
 
         let parser = TokenParser(tokens: tokens)
-        let (nodes, error) = parser.parse()
-        let node = nodes!.first! as IfNode
-        let trueNode = node.trueNodes.first! as TextNode
-        let falseNode = node.falseNodes.first! as TextNode
+        assertSuccess(parser.parse()) { nodes in
+            let node = nodes.first! as IfNode
+            let trueNode = node.trueNodes.first! as TextNode
+            let falseNode = node.falseNodes.first! as TextNode
 
-        XCTAssertTrue(error == nil)
-        XCTAssertEqual(nodes!.count, 1)
-        XCTAssertEqual(node.variable.variable, "value")
-        XCTAssertEqual(node.trueNodes.count, 1)
-        XCTAssertEqual(trueNode.text, "true")
-        XCTAssertEqual(node.falseNodes.count, 1)
-        XCTAssertEqual(falseNode.text, "false")
+            XCTAssertEqual(nodes.count, 1)
+            XCTAssertEqual(node.variable.variable, "value")
+            XCTAssertEqual(node.trueNodes.count, 1)
+            XCTAssertEqual(trueNode.text, "true")
+            XCTAssertEqual(node.falseNodes.count, 1)
+            XCTAssertEqual(falseNode.text, "false")
+        }
     }
 
     func testParseIfNot() {
@@ -117,18 +117,18 @@ class IfNodeTests: NodeTests {
         ]
 
         let parser = TokenParser(tokens: tokens)
-        let (nodes, error) = parser.parse()
-        let node = nodes!.first! as IfNode
-        let trueNode = node.trueNodes.first! as TextNode
-        let falseNode = node.falseNodes.first! as TextNode
+        assertSuccess(parser.parse()) { nodes in
+            let node = nodes.first! as IfNode
+            let trueNode = node.trueNodes.first! as TextNode
+            let falseNode = node.falseNodes.first! as TextNode
 
-        XCTAssertTrue(error == nil)
-        XCTAssertEqual(nodes!.count, 1)
-        XCTAssertEqual(node.variable.variable, "value")
-        XCTAssertEqual(node.trueNodes.count, 1)
-        XCTAssertEqual(trueNode.text, "true")
-        XCTAssertEqual(node.falseNodes.count, 1)
-        XCTAssertEqual(falseNode.text, "false")
+            XCTAssertEqual(nodes.count, 1)
+            XCTAssertEqual(node.variable.variable, "value")
+            XCTAssertEqual(node.trueNodes.count, 1)
+            XCTAssertEqual(trueNode.text, "true")
+            XCTAssertEqual(node.falseNodes.count, 1)
+            XCTAssertEqual(falseNode.text, "false")
+        }
     }
 
     func testParseIfWithoutEndIfError() {
@@ -137,10 +137,7 @@ class IfNodeTests: NodeTests {
         ]
 
         let parser = TokenParser(tokens: tokens)
-        let (nodes, error) = parser.parse()
-
-        XCTAssertTrue(nodes == nil)
-        XCTAssertEqual(error!.description, "if: `endif` was not found.")
+        assertFailure(parser.parse(), "if: `endif` was not found.")
     }
 
     func testParseIfNotWithoutEndIfError() {
@@ -149,10 +146,7 @@ class IfNodeTests: NodeTests {
         ]
 
         let parser = TokenParser(tokens: tokens)
-        let (nodes, error) = parser.parse()
-
-        XCTAssertTrue(nodes == nil)
-        XCTAssertEqual(error!.description, "ifnot: `endif` was not found.")
+        assertFailure(parser.parse(), "ifnot: `endif` was not found.")
     }
 
     // MARK: Rendering
@@ -180,25 +174,23 @@ class NowNodeTests: NodeTests {
     func testParseDefaultNow() {
         let tokens = [ Token.Block(value: "now") ]
         let parser = TokenParser(tokens: tokens)
-        let (nodes, error) = parser.parse()
 
-        let node = nodes!.first! as NowNode
-
-        XCTAssertTrue(error == nil)
-        XCTAssertEqual(nodes!.count, 1)
-        XCTAssertEqual(node.format.variable, "\"yyyy-MM-dd 'at' HH:mm\"")
+        assertSuccess(parser.parse()) { nodes in
+            let node = nodes.first! as NowNode
+            XCTAssertEqual(nodes.count, 1)
+            XCTAssertEqual(node.format.variable, "\"yyyy-MM-dd 'at' HH:mm\"")
+        }
     }
 
     func testParseNowWithFormat() {
         let tokens = [ Token.Block(value: "now \"HH:mm\"") ]
         let parser = TokenParser(tokens: tokens)
-        let (nodes, error) = parser.parse()
 
-        let node = nodes!.first! as NowNode
-
-        XCTAssertTrue(error == nil)
-        XCTAssertEqual(nodes!.count, 1)
-        XCTAssertEqual(node.format.variable, "\"HH:mm\"")
+        assertSuccess(parser.parse()) { nodes in
+            let node = nodes.first! as NowNode
+            XCTAssertEqual(nodes.count, 1)
+            XCTAssertEqual(node.format.variable, "\"HH:mm\"")
+        }
     }
 
     // MARK: Rendering

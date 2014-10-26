@@ -13,12 +13,18 @@ public func until(tags:[String])(parser:TokenParser, token:Token) -> Bool {
 }
 
 public class TokenParser {
+    public typealias TagParser = (TokenParser, Token) -> Result
+    public typealias NodeList = [Node]
+
     public enum Result {
         case Success(node: Node)
         case Error(error: Stencil.Error)
     }
-    
-    typealias TagParser = (TokenParser, Token) -> Result
+
+    public enum Results {
+        case Success(nodes: NodeList)
+        case Error(error: Stencil.Error)
+    }
 
     private var tokens:[Token]
     private var tags = Dictionary<String, TagParser>()
@@ -31,12 +37,12 @@ public class TokenParser {
         tags["ifnot"] = IfNode.parse_ifnot
     }
 
-    public func parse() -> (nodes:[Node]?, error:Error?) {
+    public func parse() -> Results {
         return parse(nil)
     }
 
-    public func parse(parse_until:((parser:TokenParser, token:Token) -> (Bool))?) -> (nodes:[Node]?, error:Error?) {
-        var nodes = [Node]()
+    public func parse(parse_until:((parser:TokenParser, token:Token) -> (Bool))?) -> TokenParser.Results {
+        var nodes = NodeList()
 
         while tokens.count > 0 {
             let token = nextToken()!
@@ -52,7 +58,7 @@ public class TokenParser {
                 if let parse_until = parse_until {
                     if parse_until(parser: self, token: token) {
                         prependToken(token)
-                        return (nodes, nil)
+                        return .Success(nodes:nodes)
                     }
                 }
 
@@ -62,7 +68,7 @@ public class TokenParser {
                             case .Success(let node):
                                 nodes.append(node)
                             case .Error(let error):
-                                return (nil, error)
+                                return .Error(error:error)
                         }
                     }
                 }
@@ -71,7 +77,7 @@ public class TokenParser {
             }
         }
 
-        return (nodes, nil)
+        return .Success(nodes:nodes)
     }
 
     public func nextToken() -> Token? {
