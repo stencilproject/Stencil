@@ -74,7 +74,7 @@ Followed by {{ people.1 }}.
 
 ### Tags
 
-Tags are a mechanism to execute a piece of code which can allows you to have
+Tags are a mechanism to execute a piece of code, allowing you to have
 control flow within your template.
 
 ```html+django
@@ -83,7 +83,7 @@ control flow within your template.
 {% endif %}
 ```
 
-A tag can also effect the context and define variables as follows:
+A tag can also affect the context and define variables as follows:
 
 ```html+django
 {% for item in items %}
@@ -91,8 +91,8 @@ A tag can also effect the context and define variables as follows:
 {% endfor %}
 ```
 
-Stencil has a couple of built in tags which are listed below. You can also
-extend Stencil and provide your own tags.
+Stencil has a couple of built-in tags which are listed below. You can also
+extend Stencil by providing your own tags.
 
 #### for
 
@@ -142,13 +142,13 @@ of code allowing you to modify or retrieve a value from the context. Then
 return either a string rendered in your template, or an error.
 
 If you want to accept arguments or to capture different tokens between two sets
-of template tags. You will need to the `registerTag` API which accepts a
+of template tags. You will need to call the `registerTag` API which accepts a
 closure to handle the parsing. You can find examples of the `now`, `if` and
 `for` tags found inside `Node.swift`.
 
 ### Comments
 
-To comment out part of your template you can use the following syntax:
+To comment out part of your template, you can use the following syntax:
 
 ```html+django
 {# My comment is completely hidden #}
