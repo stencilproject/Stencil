@@ -125,6 +125,26 @@ A for loop allows you to iterate over an array found by variable lookup.
 {% endif %}
 ```
 
+#### Building custom tags
+
+You can build a custom template tag. There are a couple of APIs to allow
+you to write your own custom tags. The following is the simplest form:
+
+```swift
+template.parser.registerSimpleTag("custom") { context in
+  return .Success("Hello World")
+}
+```
+
+When your tag is used via `{% custom %}` it will execute the registered block
+of code allowing you to modify or retrieve a value from the context. Then
+return either a string rendered in your template, or an error.
+
+If you want to accept arguments or to capture different tokens between two sets
+of template tags. You will need to the `registerTag` API which accepts a
+closure to handle the parsing. You can find examples of the `now`, `if` and
+`for` tags found inside `Node.swift`.
+
 ### Comments
 
 To comment out part of your template you can use the following syntax:

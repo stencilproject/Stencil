@@ -64,4 +64,16 @@ class StencilTests: XCTestCase {
         let result = template.render()
         XCTAssertEqual(result, Result.Success("Hello World"))
     }
+
+    func testSimpleCustomTag() {
+        let templateString = "{% custom %}"
+        let template = Template(templateString:templateString)
+
+        template.parser.registerSimpleTag("custom") { context in
+            return .Success("Hello World")
+        }
+
+        let result = template.render()
+        XCTAssertEqual(result, Result.Success("Hello World"))
+    }
 }

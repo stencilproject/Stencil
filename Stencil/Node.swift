@@ -52,6 +52,18 @@ public func renderNodes(nodes:[Node], context:Context) -> Result {
     return .Success(result)
 }
 
+public class SimpleNode : Node {
+    let handler:(Context) -> (Result)
+
+    public init(handler:((Context) -> (Result))) {
+        self.handler = handler
+    }
+
+    public func render(context:Context) -> Result {
+        return handler(context)
+    }
+}
+
 public class TextNode : Node {
     public let text:String
 

@@ -41,6 +41,12 @@ public class TokenParser {
         tags[name] = parser
     }
 
+    public func registerSimpleTag(name:String, handler:((Context) -> (Stencil.Result))) {
+        registerTag(name, parser: { (parser, token) -> TokenParser.Result in
+            return .Success(node:SimpleNode(handler: handler))
+        })
+    }
+
     public func parse() -> Results {
         return parse(nil)
     }
