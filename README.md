@@ -26,11 +26,12 @@ let context = Context(dictionary: [
 let template = Template(named: "template.stencil")
 let result = template.render(context)
 
-if let error = result.error {
-    println("There was an error rendering your template (\(error)).")
+switch result {
+    case .Error(let error):
+        println("There was an error rendering your template (\(error)).")
+    case .Success(let string):
+        println("\(string)")
 }
-
-println("\(result.string)")
 ```
 
 ## Philosophy
