@@ -180,3 +180,47 @@ class IfNodeTests: NodeTests {
     }
 
 }
+
+class NowNodeTests: NodeTests {
+
+    // MARK: Parsing
+
+    func testParseDefaultNow() {
+        let tokens = [ Token.Block(value: "now") ]
+        let parser = TokenParser(tokens: tokens)
+        let (nodes, error) = parser.parse()
+
+        let node = nodes!.first! as NowNode
+
+        XCTAssertTrue(error == nil)
+        XCTAssertEqual(nodes!.count, 1)
+        XCTAssertEqual(node.format.variable, "\"yyyy-MM-dd 'at' HH:mm\"")
+    }
+
+    func testParseNowWithFormat() {
+        let tokens = [ Token.Block(value: "now \"HH:mm\"") ]
+        let parser = TokenParser(tokens: tokens)
+        let (nodes, error) = parser.parse()
+
+        let node = nodes!.first! as NowNode
+
+        XCTAssertTrue(error == nil)
+        XCTAssertEqual(nodes!.count, 1)
+        XCTAssertEqual(node.format.variable, "\"HH:mm\"")
+    }
+
+    // MARK: Rendering
+
+    func testRenderNowNode() {
+        let node = NowNode(format: Variable("\"yyyy-MM-dd\""))
+        let result = node.render(context)
+
+        let formatter = NSDateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        let date = formatter.stringFromDate(NSDate())
+
+        XCTAssertEqual(result.0!, date)
+    }
+
+}
+

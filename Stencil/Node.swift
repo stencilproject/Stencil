@@ -98,13 +98,43 @@ public class VariableNode : Node {
 }
 
 public class NowNode : Node {
+    public let format:Variable
+
     public class func parse(parser:TokenParser, token:Token) -> (node:Node?, error:Error?) {
-        return (NowNode(), nil)
+        var format:Variable?
+
+        let components = token.components()
+        if components.count == 2 {
+            format = Variable(components[1])
+        }
+
+        return (NowNode(format:format), nil)
+    }
+
+    public init(format:Variable?) {
+        if let format = format {
+            self.format = format
+        } else {
+            self.format = Variable("\"yyyy-MM-dd 'at' HH:mm\"")
+        }
     }
 
     public func render(context: Context) -> (String?, Error?) {
         let date = NSDate()
-        return ("\(date)", nil)
+        let format: AnyObject? = self.format.resolve(context)
+        var formatter:NSDateFormatter?
+
+        if let format = format as? NSDateFormatter {
+            formatter = format
+        } else if let format = format as? String {
+            formatter = NSDateFormatter()
+            formatter!.dateFormat = format
+        } else {
+            // TODO Error
+            return (nil, nil)
+        }
+
+        return ("\(formatter!.stringFromDate(date))", nil)
     }
 }
 
