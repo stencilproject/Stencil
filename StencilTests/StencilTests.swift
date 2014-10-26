@@ -22,7 +22,7 @@ func assertFailure(result:TokenParser.Results, description:String) {
 
 class CustomNode : Node {
     func render(context:Context) -> Result {
-        return .Success(string:"Hello World")
+        return .Success("Hello World")
     }
 }
 
@@ -50,7 +50,7 @@ class StencilTests: XCTestCase {
             "    - Memory Management with ARC by Kyle Fuller.\n" +
             "\n"
 
-        XCTAssertEqual(result, Result.Success(string: fixture))
+        XCTAssertEqual(result, Result.Success(fixture))
     }
 
     func testCustomTag() {
@@ -62,6 +62,6 @@ class StencilTests: XCTestCase {
         }
 
         let result = template.render()
-        XCTAssertEqual(result, Result.Success(string: "Hello World"))
+        XCTAssertEqual(result, Result.Success("Hello World"))
     }
 }

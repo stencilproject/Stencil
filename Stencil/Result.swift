@@ -9,8 +9,8 @@ public func ==(lhs:Error, rhs:Error) -> Bool {
 }
 
 public enum Result : Equatable {
-    case Success(string: String)
-    case Error(error: Stencil.Error)
+    case Success(String)
+    case Error(Stencil.Error)
 }
 
 public func ==(lhs:Result, rhs:Result) -> Bool {

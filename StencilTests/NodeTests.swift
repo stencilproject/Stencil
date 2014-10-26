@@ -11,7 +11,7 @@ class ErrorNodeError : Error {
 class ErrorNode : Node {
     func render(context: Context) -> Result {
 
-        return .Error(error:ErrorNodeError())
+        return .Error(ErrorNodeError())
     }
 }
 

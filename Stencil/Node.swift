@@ -45,11 +45,11 @@ public func renderNodes(nodes:[Node], context:Context) -> Result {
         case .Success(let string):
             result += string
         case .Error(let error):
-            return .Error(error:error)
+            return .Error(error)
         }
     }
 
-    return .Success(string:result)
+    return .Success(result)
 }
 
 public class TextNode : Node {
@@ -60,7 +60,7 @@ public class TextNode : Node {
     }
 
     public func render(context:Context) -> Result {
-        return .Success(string:self.text)
+        return .Success(self.text)
     }
 }
 
@@ -79,12 +79,12 @@ public class VariableNode : Node {
         let result:AnyObject? = variable.resolve(context)
 
         if let result = result as? String {
-            return .Success(string:result)
+            return .Success(result)
         } else if let result = result as? NSObject {
-            return .Success(string:result.description)
+            return .Success(result.description)
         }
 
-        return .Success(string:"")
+        return .Success("")
     }
 }
 
@@ -121,10 +121,10 @@ public class NowNode : Node {
             formatter = NSDateFormatter()
             formatter!.dateFormat = format
         } else {
-            return .Success(string:"")
+            return .Success("")
         }
 
-        return .Success(string:formatter!.stringFromDate(date))
+        return .Success(formatter!.stringFromDate(date))
     }
 }
 
@@ -193,12 +193,12 @@ public class ForNode : Node {
                     case .Success(let string):
                         output += string
                     case .Error(let error):
-                        return .Error(error:error)
+                        return .Error(error)
                 }
             }
         }
 
-        return .Success(string:output)
+        return .Success(output)
     }
 }
 

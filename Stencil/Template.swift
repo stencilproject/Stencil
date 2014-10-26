@@ -42,7 +42,7 @@ public class Template {
                 return renderNodes(nodes, context)
 
             case .Error(let error):
-                return .Error(error:error)
+                return .Error(error)
         }
     }
 
