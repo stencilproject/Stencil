@@ -11,11 +11,11 @@ import Foundation
 public class Template {
     let parser:TokenParser
 
-    public convenience init(named:String) {
+    public convenience init?(named:String) {
         self.init(named:named, inBundle:nil)
     }
 
-    public convenience init(named:String, inBundle bundle:NSBundle?) {
+    public convenience init?(named:String, inBundle bundle:NSBundle?) {
         var url:NSURL?
 
         if let bundle = bundle {
@@ -27,10 +27,15 @@ public class Template {
         self.init(URL:url!)
     }
 
-    public convenience init(URL:NSURL) {
+    public convenience init?(URL:NSURL) {
         var error:NSError?
-        let templateString = NSString.stringWithContentsOfURL(URL, encoding: NSUTF8StringEncoding, error: &error)
-        self.init(templateString:templateString)
+        let maybeTemplateString = NSString(contentsOfURL: URL, encoding: NSUTF8StringEncoding, error: &error)
+        if let templateString = maybeTemplateString {
+            self.init(templateString:templateString)
+        } else {
+            self.init(templateString:"")
+            return nil
+        }
     }
 
     public init(templateString:String) {
