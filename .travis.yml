@@ -1,0 +1,7 @@
+language: objective-c
+osx_image: xcode61
+before_install:
+  - gem install cocoapods
+  - gem install xcpretty
+script: xcodebuild -project Stencil.xcodeproj -scheme Stencil test | xcpretty -c; exit ${PIPESTATUS[0]}
+
