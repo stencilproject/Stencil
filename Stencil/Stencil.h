@@ -7,7 +7,7 @@
 //  See LICENSE for more details.
 //
 
-#import <Cocoa/Cocoa.h>
+#import <Foundation/Foundation.h>
 
 //! Project version number for Stencil.
 FOUNDATION_EXPORT double StencilVersionNumber;
