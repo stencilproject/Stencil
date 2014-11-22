@@ -28,7 +28,7 @@ let context = Context(dictionary: [
 ])
 
 let template = Template(named: "template.stencil")
-let result = template.render(context)
+let result = template!.render(context)
 
 switch result {
     case .Error(let error):
