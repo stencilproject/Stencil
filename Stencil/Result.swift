@@ -1,19 +1,19 @@
 import Foundation
 
-public protocol Error : Printable {
+public protocol StencilError : Printable {
     
 }
 
-public func ==(lhs:Error, rhs:Error) -> Bool {
+public func ==(lhs:StencilError, rhs:StencilError) -> Bool {
     return lhs.description == rhs.description
 }
 
-public enum Result : Equatable {
+public enum StencilResult : Equatable {
     case Success(String)
-    case Error(Stencil.Error)
+    case Error(StencilError)
 }
 
-public func ==(lhs:Result, rhs:Result) -> Bool {
+public func ==(lhs:StencilResult, rhs:StencilResult) -> Bool {
     switch (lhs, rhs) {
     case (.Success(let lhsValue), .Success(let rhsValue)):
         return lhsValue == rhsValue

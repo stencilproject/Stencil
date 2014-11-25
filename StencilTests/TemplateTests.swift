@@ -1,4 +1,4 @@
-import Cocoa
+import Foundation
 import XCTest
 import Stencil
 
@@ -8,7 +8,7 @@ class TemplateTests: XCTestCase {
         let context = Context(dictionary: [ "name": "Kyle" ])
         let template = Template(templateString: "Hello World")
         let result = template.render(context)
-        XCTAssertEqual(result, Result.Success("Hello World"))
+        XCTAssertEqual(result, StencilResult.Success("Hello World"))
     }
 
 }

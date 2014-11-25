@@ -1,6 +1,6 @@
 import Foundation
 
-struct NodeError : Error {
+struct NodeError : StencilError {
     let token:Token
     let message:String
 
@@ -15,11 +15,11 @@ struct NodeError : Error {
 }
 
 public protocol Node {
-    func render(context:Context) -> Result
+    func render(context:Context) -> StencilResult
 }
 
 extension Array {
-    func map<U>(block:((Element) -> (U?, Error?))) -> ([U]?, Error?) {
+    func map<U>(block:((Element) -> (U?, StencilError?))) -> ([U]?, StencilError?) {
         var results = [U]()
 
         for item in self {
@@ -37,7 +37,7 @@ extension Array {
     }
 }
 
-public func renderNodes(nodes:[Node], context:Context) -> Result {
+public func renderNodes(nodes:[Node], context:Context) -> StencilResult {
     var result = ""
 
     for item in nodes {
@@ -53,13 +53,13 @@ public func renderNodes(nodes:[Node], context:Context) -> Result {
 }
 
 public class SimpleNode : Node {
-    let handler:(Context) -> (Result)
+    let handler:(Context) -> (StencilResult)
 
-    public init(handler:((Context) -> (Result))) {
+    public init(handler:((Context) -> (StencilResult))) {
         self.handler = handler
     }
 
-    public func render(context:Context) -> Result {
+    public func render(context:Context) -> StencilResult {
         return handler(context)
     }
 }
@@ -71,7 +71,7 @@ public class TextNode : Node {
         self.text = text
     }
 
-    public func render(context:Context) -> Result {
+    public func render(context:Context) -> StencilResult {
         return .Success(self.text)
     }
 }
@@ -87,7 +87,7 @@ public class VariableNode : Node {
         self.variable = Variable(variable)
     }
 
-    public func render(context:Context) -> Result {
+    public func render(context:Context) -> StencilResult {
         let result:AnyObject? = variable.resolve(context)
 
         if let result = result as? String {
@@ -122,7 +122,7 @@ public class NowNode : Node {
         }
     }
 
-    public func render(context: Context) -> Result {
+    public func render(context: Context) -> StencilResult {
         let date = NSDate()
         let format: AnyObject? = self.format.resolve(context)
         var formatter:NSDateFormatter?
@@ -190,7 +190,7 @@ public class ForNode : Node {
         self.nodes = nodes
     }
 
-    public func render(context: Context) -> Result {
+    public func render(context: Context) -> StencilResult {
         let values = variable.resolve(context) as? [AnyObject]
         var output = ""
 
@@ -283,7 +283,7 @@ public class IfNode : Node {
         self.falseNodes = falseNodes
     }
 
-    public func render(context: Context) -> Result {
+    public func render(context: Context) -> StencilResult {
         let result: AnyObject? = variable.resolve(context)
         var truthy = false
 

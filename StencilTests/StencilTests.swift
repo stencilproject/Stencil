@@ -1,4 +1,4 @@
-import Cocoa
+import Foundation
 import XCTest
 import Stencil
 
@@ -21,7 +21,7 @@ func assertFailure(result:TokenParser.Results, description:String) {
 }
 
 class CustomNode : Node {
-    func render(context:Context) -> Result {
+    func render(context:Context) -> StencilResult {
         return .Success("Hello World")
     }
 }
@@ -50,7 +50,7 @@ class StencilTests: XCTestCase {
             "    - Memory Management with ARC by Kyle Fuller.\n" +
             "\n"
 
-        XCTAssertEqual(result, Result.Success(fixture))
+        XCTAssertEqual(result, StencilResult.Success(fixture))
     }
 
     func testCustomTag() {
@@ -62,7 +62,7 @@ class StencilTests: XCTestCase {
         }
 
         let result = template.render()
-        XCTAssertEqual(result, Result.Success("Hello World"))
+        XCTAssertEqual(result, StencilResult.Success("Hello World"))
     }
 
     func testSimpleCustomTag() {
@@ -74,6 +74,6 @@ class StencilTests: XCTestCase {
         }
 
         let result = template.render()
-        XCTAssertEqual(result, Result.Success("Hello World"))
+        XCTAssertEqual(result, StencilResult.Success("Hello World"))
     }
 }
