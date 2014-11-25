@@ -18,12 +18,12 @@ public class TokenParser {
 
     public enum Result {
         case Success(node: Node)
-        case Error(error: Stencil.Error)
+        case Error(error: StencilError)
     }
 
     public enum Results {
         case Success(nodes: NodeList)
-        case Error(error: Stencil.Error)
+        case Error(error: StencilError)
     }
 
     private var tokens:[Token]
@@ -41,7 +41,7 @@ public class TokenParser {
         tags[name] = parser
     }
 
-    public func registerSimpleTag(name:String, handler:((Context) -> (Stencil.Result))) {
+    public func registerSimpleTag(name:String, handler:((Context) -> (StencilResult))) {
         registerTag(name, parser: { (parser, token) -> TokenParser.Result in
             return .Success(node:SimpleNode(handler: handler))
         })

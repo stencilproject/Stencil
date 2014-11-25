@@ -36,7 +36,7 @@ public class Template {
         parser = TokenParser(tokens: tokens)
     }
 
-    public func render(context:Context) -> Result {
+    public func render(context:Context) -> StencilResult {
         switch parser.parse() {
             case .Success(let nodes):
                 return renderNodes(nodes, context)
@@ -46,7 +46,7 @@ public class Template {
         }
     }
 
-    public func render() -> Result {
+    public func render() -> StencilResult {
         let context = Context()
         return render(context)
     }
