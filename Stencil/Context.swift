@@ -13,6 +13,7 @@ public class Context : Equatable {
     }
 
     public subscript(key: String) -> AnyObject? {
+        /// Retrieves a variable's value, starting at the current context and going upwards
         get {
             for dictionary in reverse(dictionaries) {
                 if let value:AnyObject = dictionary[key] {
@@ -23,6 +24,7 @@ public class Context : Equatable {
             return nil
         }
 
+        /// Set a variable in the current context, deleting the variable if it's nil
         set(value) {
             if dictionaries.count > 0 {
                 var dictionary = dictionaries.removeLast()

@@ -24,6 +24,7 @@ public struct Lexer {
         return Token.Text(value: string)
     }
 
+    /// Returns an array of tokens from a given template string.
     public func tokenize() -> [Token] {
         // Unfortunately NSRegularExpression doesn't have a split.
         // So here's a really terrible implementation

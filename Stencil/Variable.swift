@@ -1,8 +1,11 @@
 import Foundation
 
+
+/// A structure used to represent a template variable, and to resolve it in a given context.
 public struct Variable : Equatable {
     public let variable:String
 
+    /// Create a variable with a string representing the variable
     public init(_ variable:String) {
         self.variable = variable
     }
@@ -11,6 +14,7 @@ public struct Variable : Equatable {
         return variable.componentsSeparatedByString(".")
     }
 
+    /// Resolve the variable in the given context
     public func resolve(context:Context) -> AnyObject? {
         var current:AnyObject? = context
 

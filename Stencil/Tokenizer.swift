@@ -1,9 +1,17 @@
 import Foundation
 
+
 public enum Token : Equatable {
+    /// A token representing a piece of text.
     case Text(value:String)
+
+    /// A token representing a variable.
     case Variable(value:String)
+
+    /// A token representing a comment.
     case Comment(value:String)
+
+    /// A token representing a template block.
     case Block(value:String)
 
     /// Returns the underlying value as an array seperated by spaces

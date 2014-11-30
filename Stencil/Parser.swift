@@ -12,6 +12,7 @@ public func until(tags:[String])(parser:TokenParser, token:Token) -> Bool {
     return false
 }
 
+/// A class for parsing an array of tokens and converts them into a collection of Node's
 public class TokenParser {
     public typealias TagParser = (TokenParser, Token) -> Result
     public typealias NodeList = [Node]
@@ -37,16 +38,19 @@ public class TokenParser {
         registerTag("now", NowNode.parse)
     }
 
+    /// Registers a new template tag
     public func registerTag(name:String, parser:TagParser) {
         tags[name] = parser
     }
 
+    /// Registers a simple template tag with a name and a handler
     public func registerSimpleTag(name:String, handler:((Context) -> (Stencil.Result))) {
         registerTag(name, parser: { (parser, token) -> TokenParser.Result in
             return .Success(node:SimpleNode(handler: handler))
         })
     }
 
+    /// Parse the given tokens into nodes
     public func parse() -> Results {
         return parse(nil)
     }

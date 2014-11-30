@@ -148,6 +148,8 @@ of template tags. You will need to call the `registerTag` API which accepts a
 closure to handle the parsing. You can find examples of the `now`, `if` and
 `for` tags found inside `Node.swift`.
 
+The architecture of Stencil along with how to build advanced plugins can be found in the [architecture](ARCHITECTURE.md) document.
+
 ### Comments
 
 To comment out part of your template, you can use the following syntax:

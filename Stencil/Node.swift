@@ -15,6 +15,7 @@ struct NodeError : Error {
 }
 
 public protocol Node {
+    /// Return the node rendered as a string, or returns a failure
     func render(context:Context) -> Result
 }
 
