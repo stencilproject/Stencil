@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name = 'Stencil'
-  spec.version = '0.1.0'
+  spec.version = '0.1.1'
   spec.summary = 'Stencil is a simple and powerful template language for Swift.'
   spec.homepage = 'https://github.com/kylef/Stencil'
   spec.license = { :type => 'BSD', :file => 'LICENSE' }
