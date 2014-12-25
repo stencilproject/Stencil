@@ -3,5 +3,7 @@ osx_image: xcode61
 before_install:
   - gem install cocoapods
   - gem install xcpretty
-script: xcodebuild -project Stencil.xcodeproj -scheme Stencil test | xcpretty -c; exit ${PIPESTATUS[0]}
-
+script:
+- set -o pipefail
+- xcodebuild -project Stencil.xcodeproj -scheme Stencil test | xcpretty -c
+- xcodebuild -project Stencil.xcodeproj -scheme Stencil test -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO | xcpretty -c

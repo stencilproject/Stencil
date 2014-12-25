@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		27E2138D1A4CD5F50073E063 /* UniversalFramework_Base.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 27E2138A1A4CD5F50073E063 /* UniversalFramework_Base.xcconfig */; };
+		27E2138E1A4CD5F50073E063 /* UniversalFramework_Framework.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 27E2138B1A4CD5F50073E063 /* UniversalFramework_Framework.xcconfig */; };
+		27E2138F1A4CD5F50073E063 /* UniversalFramework_Test.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 27E2138C1A4CD5F50073E063 /* UniversalFramework_Test.xcconfig */; };
 		71CE4C0A19FD29D000B9E0C5 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71CE4C0919FD29D000B9E0C5 /* Result.swift */; };
 		7725B3CB19F92B4F002CF74B /* VariableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7725B3CA19F92B4F002CF74B /* VariableTests.swift */; };
 		7725B3CD19F92B61002CF74B /* Variable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7725B3CC19F92B61002CF74B /* Variable.swift */; };
@@ -37,6 +40,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		27E2138A1A4CD5F50073E063 /* UniversalFramework_Base.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = UniversalFramework_Base.xcconfig; sourceTree = "<group>"; };
+		27E2138B1A4CD5F50073E063 /* UniversalFramework_Framework.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = UniversalFramework_Framework.xcconfig; sourceTree = "<group>"; };
+		27E2138C1A4CD5F50073E063 /* UniversalFramework_Test.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = UniversalFramework_Test.xcconfig; sourceTree = "<group>"; };
 		71CE4C0919FD29D000B9E0C5 /* Result.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
 		7725B3CA19F92B4F002CF74B /* VariableTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VariableTests.swift; sourceTree = "<group>"; };
 		7725B3CC19F92B61002CF74B /* Variable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Variable.swift; sourceTree = "<group>"; };
@@ -78,11 +84,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		27E213891A4CD5F50073E063 /* Configurations */ = {
+			isa = PBXGroup;
+			children = (
+				27E2138A1A4CD5F50073E063 /* UniversalFramework_Base.xcconfig */,
+				27E2138B1A4CD5F50073E063 /* UniversalFramework_Framework.xcconfig */,
+				27E2138C1A4CD5F50073E063 /* UniversalFramework_Test.xcconfig */,
+			);
+			path = Configurations;
+			sourceTree = SOURCE_ROOT;
+		};
 		77FAAE4819F91E480029DC5E = {
 			isa = PBXGroup;
 			children = (
 				77FAAE5419F91E480029DC5E /* Stencil */,
 				77FAAE6119F91E480029DC5E /* StencilTests */,
+				27E213891A4CD5F50073E063 /* Configurations */,
 				77FAAE5319F91E480029DC5E /* Products */,
 			);
 			sourceTree = "<group>";
@@ -234,6 +251,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				27E2138F1A4CD5F50073E063 /* UniversalFramework_Test.xcconfig in Resources */,
+				27E2138E1A4CD5F50073E063 /* UniversalFramework_Framework.xcconfig in Resources */,
+				27E2138D1A4CD5F50073E063 /* UniversalFramework_Base.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -370,6 +390,7 @@
 		};
 		77FAAE6919F91E480029DC5E /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 27E2138B1A4CD5F50073E063 /* UniversalFramework_Framework.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -380,7 +401,6 @@
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = Stencil/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -389,6 +409,7 @@
 		};
 		77FAAE6A19F91E480029DC5E /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 27E2138B1A4CD5F50073E063 /* UniversalFramework_Framework.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -399,7 +420,6 @@
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = Stencil/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -407,32 +427,24 @@
 		};
 		77FAAE6C19F91E480029DC5E /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 27E2138C1A4CD5F50073E063 /* UniversalFramework_Test.xcconfig */;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-					"$(inherited)",
-				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = StencilTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
 		};
 		77FAAE6D19F91E480029DC5E /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 27E2138C1A4CD5F50073E063 /* UniversalFramework_Test.xcconfig */;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-					"$(inherited)",
-				);
 				INFOPLIST_FILE = StencilTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
