@@ -1,4 +1,5 @@
 import Foundation
+import PathKit
 
 /// A class representing a template
 public class Template {
@@ -28,6 +29,18 @@ public class Template {
         let maybeTemplateString = NSString(contentsOfURL: URL, encoding: NSUTF8StringEncoding, error: &error)
         if let templateString = maybeTemplateString {
             self.init(templateString:templateString)
+        } else {
+            self.init(templateString:"")
+            return nil
+        }
+    }
+
+    /// Create a template with a file found at the given path
+    public convenience init?(path:Path) {
+        var error:NSError?
+
+        if let string:String = path.read() {
+            self.init(templateString:string)
         } else {
             self.init(templateString:"")
             return nil

@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		27CE0ADE1A50BEC3004A105B /* TemplateLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27CE0ADD1A50BEC3004A105B /* TemplateLoader.swift */; };
+		27CE0AE01A50BF05004A105B /* TemplateLoaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27CE0ADF1A50BF05004A105B /* TemplateLoaderTests.swift */; };
+		27CE0AFA1A50C963004A105B /* test.html in Resources */ = {isa = PBXBuildFile; fileRef = 27CE0AF91A50C963004A105B /* test.html */; };
 		27E2138D1A4CD5F50073E063 /* UniversalFramework_Base.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 27E2138A1A4CD5F50073E063 /* UniversalFramework_Base.xcconfig */; };
 		27E2138E1A4CD5F50073E063 /* UniversalFramework_Framework.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 27E2138B1A4CD5F50073E063 /* UniversalFramework_Framework.xcconfig */; };
 		27E2138F1A4CD5F50073E063 /* UniversalFramework_Test.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 27E2138C1A4CD5F50073E063 /* UniversalFramework_Test.xcconfig */; };
@@ -30,16 +33,48 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		77FAAE5F19F91E480029DC5E /* PBXContainerItemProxy */ = {
+		27CE0AE61A50BFAF004A105B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 27CE0AE11A50BFAF004A105B /* PathKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 77DCBACA1A1E2A750054C841;
+			remoteInfo = PathKit;
+		};
+		27CE0AE81A50BFAF004A105B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 27CE0AE11A50BFAF004A105B /* PathKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 77DCBAD51A1E2A750054C841;
+			remoteInfo = PathKitTests;
+		};
+		27CE0AEA1A50BFBF004A105B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 27CE0AE11A50BFAF004A105B /* PathKit.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 77DCBAC91A1E2A750054C841;
+			remoteInfo = PathKit;
+		};
+		27CE0AF51A50C292004A105B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 77FAAE4919F91E480029DC5E /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 77FAAE5119F91E480029DC5E;
 			remoteInfo = Stencil;
 		};
+		27CE0AF71A50C299004A105B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 27CE0AE11A50BFAF004A105B /* PathKit.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 77DCBAC91A1E2A750054C841;
+			remoteInfo = PathKit;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		27CE0ADD1A50BEC3004A105B /* TemplateLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TemplateLoader.swift; sourceTree = "<group>"; };
+		27CE0ADF1A50BF05004A105B /* TemplateLoaderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TemplateLoaderTests.swift; sourceTree = "<group>"; };
+		27CE0AE11A50BFAF004A105B /* PathKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = PathKit.xcodeproj; path = PathKit/PathKit.xcodeproj; sourceTree = "<group>"; };
+		27CE0AF91A50C963004A105B /* test.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = test.html; sourceTree = "<group>"; };
 		27E2138A1A4CD5F50073E063 /* UniversalFramework_Base.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = UniversalFramework_Base.xcconfig; sourceTree = "<group>"; };
 		27E2138B1A4CD5F50073E063 /* UniversalFramework_Framework.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = UniversalFramework_Framework.xcconfig; sourceTree = "<group>"; };
 		27E2138C1A4CD5F50073E063 /* UniversalFramework_Test.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = UniversalFramework_Test.xcconfig; sourceTree = "<group>"; };
@@ -84,6 +119,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		27CE0AE21A50BFAF004A105B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				27CE0AE71A50BFAF004A105B /* PathKit.framework */,
+				27CE0AE91A50BFAF004A105B /* PathKitTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		27E213891A4CD5F50073E063 /* Configurations */ = {
 			isa = PBXGroup;
 			children = (
@@ -97,6 +141,7 @@
 		77FAAE4819F91E480029DC5E = {
 			isa = PBXGroup;
 			children = (
+				27CE0AE11A50BFAF004A105B /* PathKit.xcodeproj */,
 				77FAAE5419F91E480029DC5E /* Stencil */,
 				77FAAE6119F91E480029DC5E /* StencilTests */,
 				27E213891A4CD5F50073E063 /* Configurations */,
@@ -123,6 +168,7 @@
 				7725B3D619F94A43002CF74B /* Parser.swift */,
 				71CE4C0919FD29D000B9E0C5 /* Result.swift */,
 				77EB082419F96E88001870F1 /* Template.swift */,
+				27CE0ADD1A50BEC3004A105B /* TemplateLoader.swift */,
 				7725B3CE19F94214002CF74B /* Tokenizer.swift */,
 				7725B3CC19F92B61002CF74B /* Variable.swift */,
 				77FAAE5519F91E480029DC5E /* Supporting Files */,
@@ -148,6 +194,8 @@
 				7725B3D819F94A61002CF74B /* ParserTests.swift */,
 				77EB082819FA85F2001870F1 /* LexerTests.swift */,
 				77EB082619F96E9C001870F1 /* TemplateTests.swift */,
+				27CE0ADF1A50BF05004A105B /* TemplateLoaderTests.swift */,
+				27CE0AF91A50C963004A105B /* test.html */,
 				77FAAE6219F91E480029DC5E /* Supporting Files */,
 			);
 			path = StencilTests;
@@ -187,6 +235,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				27CE0AEB1A50BFBF004A105B /* PBXTargetDependency */,
 			);
 			name = Stencil;
 			productName = Stencil;
@@ -204,7 +253,8 @@
 			buildRules = (
 			);
 			dependencies = (
-				77FAAE6019F91E480029DC5E /* PBXTargetDependency */,
+				27CE0AF81A50C299004A105B /* PBXTargetDependency */,
+				27CE0AF61A50C292004A105B /* PBXTargetDependency */,
 			);
 			name = StencilTests;
 			productName = StencilTests;
@@ -238,6 +288,12 @@
 			mainGroup = 77FAAE4819F91E480029DC5E;
 			productRefGroup = 77FAAE5319F91E480029DC5E /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 27CE0AE21A50BFAF004A105B /* Products */;
+					ProjectRef = 27CE0AE11A50BFAF004A105B /* PathKit.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				77FAAE5119F91E480029DC5E /* Stencil */,
@@ -245,6 +301,23 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		27CE0AE71A50BFAF004A105B /* PathKit.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = PathKit.framework;
+			remoteRef = 27CE0AE61A50BFAF004A105B /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		27CE0AE91A50BFAF004A105B /* PathKitTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = PathKitTests.xctest;
+			remoteRef = 27CE0AE81A50BFAF004A105B /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		77FAAE5019F91E480029DC5E /* Resources */ = {
@@ -261,6 +334,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				27CE0AFA1A50C963004A105B /* test.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -279,6 +353,7 @@
 				7725B3CD19F92B61002CF74B /* Variable.swift in Sources */,
 				71CE4C0A19FD29D000B9E0C5 /* Result.swift in Sources */,
 				7725B3D519F9438F002CF74B /* Node.swift in Sources */,
+				27CE0ADE1A50BEC3004A105B /* TemplateLoader.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -288,6 +363,7 @@
 			files = (
 				77FAAE6519F91E480029DC5E /* StencilTests.swift in Sources */,
 				7725B3D319F9437F002CF74B /* NodeTests.swift in Sources */,
+				27CE0AE01A50BF05004A105B /* TemplateLoaderTests.swift in Sources */,
 				7725B3D919F94A61002CF74B /* ParserTests.swift in Sources */,
 				77EB082719F96E9C001870F1 /* TemplateTests.swift in Sources */,
 				7725B3CB19F92B4F002CF74B /* VariableTests.swift in Sources */,
@@ -299,10 +375,20 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		77FAAE6019F91E480029DC5E /* PBXTargetDependency */ = {
+		27CE0AEB1A50BFBF004A105B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = PathKit;
+			targetProxy = 27CE0AEA1A50BFBF004A105B /* PBXContainerItemProxy */;
+		};
+		27CE0AF61A50C292004A105B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 77FAAE5119F91E480029DC5E /* Stencil */;
-			targetProxy = 77FAAE5F19F91E480029DC5E /* PBXContainerItemProxy */;
+			targetProxy = 27CE0AF51A50C292004A105B /* PBXContainerItemProxy */;
+		};
+		27CE0AF81A50C299004A105B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = PathKit;
+			targetProxy = 27CE0AF71A50C299004A105B /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
