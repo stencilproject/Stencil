@@ -38,6 +38,18 @@ switch result {
 }
 ```
 
+## Installation
+
+Installation with CocoaPods is recommended using CocoaPods 0.36.
+
+```ruby
+pod 'Stencil'
+```
+
+### Sub-projects
+
+Alternatively, you can clone Stencil via git or as a submodule and include `Stencil.xcodeproj` inside your project and add `Stencil.framework` as a target dependency.
+
 ## Philosophy
 
 Stencil follows the same philosophy of Django:
