@@ -7,4 +7,4 @@ script:
 - set -o pipefail
 - xcodebuild -project Stencil.xcodeproj -scheme Stencil test | xcpretty -c
 - xcodebuild -project Stencil.xcodeproj -scheme Stencil test -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO | xcpretty -c
-- pod lib lint
+- pod lib lint --quick
