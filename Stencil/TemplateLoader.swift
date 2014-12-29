@@ -11,7 +11,7 @@ import PathKit
 
 // A class for loading a template from disk
 public class TemplateLoader {
-    let paths:[Path]
+    public let paths:[Path]
 
     public init(paths:[Path]) {
         self.paths = paths

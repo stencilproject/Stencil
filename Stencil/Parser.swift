@@ -36,6 +36,7 @@ public class TokenParser {
         registerTag("if", IfNode.parse)
         registerTag("ifnot", IfNode.parse_ifnot)
         registerTag("now", NowNode.parse)
+        registerTag("include", IncludeNode.parse)
     }
 
     /// Registers a new template tag

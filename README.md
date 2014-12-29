@@ -128,6 +128,22 @@ A for loop allows you to iterate over an array found by variable lookup.
 {% endif %}
 ```
 
+#### include
+
+You can include another template using the `include` tag.
+
+```html+django
+{% include "comment.html" %}
+```
+
+The `include` tag requires a TemplateLoader to be found inside your context with the paths, or bundles used to lookup the template.
+
+```swift
+let context = Context(dictionary: [
+  "loader": TemplateLoader(bundle:[NSBundle.mainBundle()])
+])
+```
+
 #### Building custom tags
 
 You can build a custom template tag. There are a couple of APIs to allow
