@@ -8,6 +8,8 @@ Pod::Spec.new do |spec|
   spec.social_media_url = 'http://twitter.com/kylefuller'
   spec.source = { :git => 'https://github.com/kylef/Stencil.git', :tag => "#{spec.version}" }
   spec.source_files = 'Stencil/*.{h,swift}'
+  spec.ios.deployment_target = '8.0'
+  spec.osx.deployment_target = '10.9'
   spec.requires_arc = true
   spec.dependency 'PathKit', '~> 0.3.0'
 end
