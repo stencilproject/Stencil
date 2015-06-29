@@ -32,11 +32,11 @@ public class TokenParser {
 
     public init(tokens:[Token]) {
         self.tokens = tokens
-        registerTag("for", ForNode.parse)
-        registerTag("if", IfNode.parse)
-        registerTag("ifnot", IfNode.parse_ifnot)
-        registerTag("now", NowNode.parse)
-        registerTag("include", IncludeNode.parse)
+        registerTag("for", parser: ForNode.parse)
+        registerTag("if", parser: IfNode.parse)
+        registerTag("ifnot", parser: IfNode.parse_ifnot)
+        registerTag("now", parser: NowNode.parse)
+        registerTag("include", parser: IncludeNode.parse)
     }
 
     /// Registers a new template tag

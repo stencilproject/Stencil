@@ -28,7 +28,7 @@ class IncludeTests: NodeTests {
         let parser = TokenParser(tokens: tokens)
 
         assertSuccess(parser.parse()) { nodes in
-            let node = nodes.first! as IncludeNode
+            let node = nodes.first as! IncludeNode
             XCTAssertEqual(nodes.count, 1)
             XCTAssertEqual(node.templateName, "test.html")
         }

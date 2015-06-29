@@ -148,9 +148,8 @@ public class ForNode : Node {
 
     public class func parse(parser:TokenParser, token:Token) -> TokenParser.Result {
         let components = token.components()
-        let count = countElements(components)
 
-        if count == 4 && components[2] == "in" {
+        if count(components) == 4 && components[2] == "in" {
             let loopVariable = components[1]
             let variable = components[3]
 
@@ -161,7 +160,7 @@ public class ForNode : Node {
                 case .Success(let nodes):
                     forNodes = nodes
                 case .Error(let error):
-                    return .Error(error)
+                    return .Error(error: error)
             }
 
             if let token = parser.nextToken() {
@@ -170,7 +169,7 @@ public class ForNode : Node {
                     case .Success(let nodes):
                         emptyNodes = nodes
                     case .Error(let error):
-                        return .Error(error)
+                        return .Error(error: error)
                     }
 
                     parser.nextToken()
@@ -229,7 +228,7 @@ public class IfNode : Node {
             case .Success(let nodes):
                 trueNodes = nodes
             case .Error(let error):
-                return .Error(error)
+                return .Error(error: error)
         }
 
         if let token = parser.nextToken() {
@@ -238,7 +237,7 @@ public class IfNode : Node {
                     case .Success(let nodes):
                         falseNodes = nodes
                     case .Error(let error):
-                        return .Error(error)
+                        return .Error(error: error)
                 }
                 parser.nextToken()
             }
@@ -258,7 +257,7 @@ public class IfNode : Node {
         case .Success(let nodes):
             falseNodes = nodes
         case .Error(let error):
-            return .Error(error)
+            return .Error(error: error)
         }
 
         if let token = parser.nextToken() {
@@ -267,7 +266,7 @@ public class IfNode : Node {
                 case .Success(let nodes):
                     trueNodes = nodes
                 case .Error(let error):
-                    return .Error(error)
+                    return .Error(error: error)
                 }
                 parser.nextToken()
             }

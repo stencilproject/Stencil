@@ -35,7 +35,7 @@ public struct Variable : Equatable {
                 } else if bit == "last" {
                     current = array.last
                 } else if bit == "count" {
-                    current = countElements(array)
+                    current = count(array)
                 }
             } else if let object = current as? NSObject {
                 current = object.valueForKey(bit)

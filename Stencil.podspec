@@ -9,6 +9,6 @@ Pod::Spec.new do |spec|
   spec.source = { :git => 'https://github.com/kylef/Stencil.git', :tag => "#{spec.version}" }
   spec.source_files = 'Stencil/*.{h,swift}'
   spec.requires_arc = true
-  spec.dependency 'PathKit'
+  spec.dependency 'PathKit', '~> 0.3.0'
 end
 

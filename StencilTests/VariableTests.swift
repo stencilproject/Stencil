@@ -20,43 +20,43 @@ class VariableTests: XCTestCase {
 
     func testResolvingStringLiteral() {
         let variable = Variable("\"name\"")
-        let result = variable.resolve(context) as String!
+        let result = variable.resolve(context) as! String
         XCTAssertEqual(result, "name")
     }
 
     func testResolvingVariable() {
         let variable = Variable("name")
-        let result = variable.resolve(context) as String!
+        let result = variable.resolve(context) as! String
         XCTAssertEqual(result, "Kyle")
     }
 
     func testResolvingItemFromDictionary() {
         let variable = Variable("profiles.github")
-        let result = variable.resolve(context) as String!
+        let result = variable.resolve(context) as! String
         XCTAssertEqual(result, "kylef")
     }
 
     func testResolvingItemFromArrayWithIndex() {
         let variable = Variable("contacts.0")
-        let result = variable.resolve(context) as String!
+        let result = variable.resolve(context) as! String
         XCTAssertEqual(result, "Katie")
     }
 
     func testResolvingFirstItemFromArray() {
         let variable = Variable("contacts.first")
-        let result = variable.resolve(context) as String!
+        let result = variable.resolve(context) as! String
         XCTAssertEqual(result, "Katie")
     }
 
     func testResolvingLastItemFromArray() {
         let variable = Variable("contacts.last")
-        let result = variable.resolve(context) as String!
+        let result = variable.resolve(context) as! String
         XCTAssertEqual(result, "Orta")
     }
 
     func testResolvingValueViaKVO() {
         let variable = Variable("object.title")
-        let result = variable.resolve(context) as String!
+        let result = variable.resolve(context) as! String
         XCTAssertEqual(result, "Hello World")
     }
 }

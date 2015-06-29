@@ -7,8 +7,6 @@ Stencil is a simple and powerful template language for Swift. It provides a
 syntax similar to Django and Mustache. If you're familiar with these, you will
 feel right at home with Stencil.
 
-*NOTE: Stencil requires Xcode 6.1.*
-
 ### Example
 
 ```html+django
