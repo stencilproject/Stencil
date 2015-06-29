@@ -1,7 +1,7 @@
 Stencil
 =======
 
-[![Build Status](http://img.shields.io/travis/kylef/Stencil/master.svg?style=flat)](https://travis-ci.org/kylef/Stencil)
+[![Build Status](http://img.shields.io/circleci/project/kylef/Stencil/master.svg](https://circleci.com/gh/kylef/Stencil)
 
 Stencil is a simple and powerful template language for Swift. It provides a
 syntax similar to Django and Mustache. If you're familiar with these, you will
@@ -38,15 +38,11 @@ switch result {
 
 ## Installation
 
-Installation with CocoaPods is recommended using CocoaPods 0.36.
+Installation with CocoaPods is recommended.
 
 ```ruby
 pod 'Stencil'
 ```
-
-### Sub-projects
-
-Alternatively, you can clone Stencil via git or as a submodule and include `Stencil.xcodeproj` inside your project and add `Stencil.framework` as a target dependency.
 
 ## Philosophy
 

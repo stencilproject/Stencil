@@ -1,8 +1,0 @@
-language: objective-c
-osx_image: xcode63
-before_install:
-- gem install xcpretty
-script:
-- set -o pipefail
-- xcodebuild -workspace Stencil.xcworkspace -scheme Stencil test | xcpretty -c
-- pod lib lint
