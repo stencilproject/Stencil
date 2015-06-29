@@ -119,9 +119,9 @@ class IfNodeTests: NodeTests {
 
         let parser = TokenParser(tokens: tokens)
         assertSuccess(parser.parse()) { nodes in
-            let node = nodes.first! as IfNode
-            let trueNode = node.trueNodes.first! as TextNode
-            let falseNode = node.falseNodes.first! as TextNode
+            let node = nodes.first as! IfNode
+            let trueNode = node.trueNodes.first as! TextNode
+            let falseNode = node.falseNodes.first as! TextNode
 
             XCTAssertEqual(nodes.count, 1)
             XCTAssertEqual(node.variable.variable, "value")
@@ -143,9 +143,9 @@ class IfNodeTests: NodeTests {
 
         let parser = TokenParser(tokens: tokens)
         assertSuccess(parser.parse()) { nodes in
-            let node = nodes.first! as IfNode
-            let trueNode = node.trueNodes.first! as TextNode
-            let falseNode = node.falseNodes.first! as TextNode
+            let node = nodes.first as! IfNode
+            let trueNode = node.trueNodes.first as! TextNode
+            let falseNode = node.falseNodes.first as! TextNode
 
             XCTAssertEqual(nodes.count, 1)
             XCTAssertEqual(node.variable.variable, "value")
@@ -211,7 +211,7 @@ class NowNodeTests: NodeTests {
         let parser = TokenParser(tokens: tokens)
 
         assertSuccess(parser.parse()) { nodes in
-            let node = nodes.first! as NowNode
+            let node = nodes.first as! NowNode
             XCTAssertEqual(nodes.count, 1)
             XCTAssertEqual(node.format.variable, "\"yyyy-MM-dd 'at' HH:mm\"")
         }
@@ -222,7 +222,7 @@ class NowNodeTests: NodeTests {
         let parser = TokenParser(tokens: tokens)
 
         assertSuccess(parser.parse()) { nodes in
-            let node = nodes.first! as NowNode
+            let node = nodes.first as! NowNode
             XCTAssertEqual(nodes.count, 1)
             XCTAssertEqual(node.format.variable, "\"HH:mm\"")
         }

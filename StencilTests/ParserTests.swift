@@ -9,7 +9,7 @@ class TokenParserTests: XCTestCase {
         ])
 
         assertSuccess(parser.parse()) { nodes in
-            let node = nodes.first as TextNode!
+            let node = nodes.first as! TextNode
             XCTAssertEqual(nodes.count, 1)
             XCTAssertEqual(node.text, "Hello World")
         }
@@ -21,7 +21,7 @@ class TokenParserTests: XCTestCase {
         ])
 
         assertSuccess(parser.parse()) { nodes in
-            let node = nodes.first as VariableNode!
+            let node = nodes.first as! VariableNode
             XCTAssertEqual(nodes.count, 1)
             XCTAssertEqual(node.variable, Variable("name"))
         }

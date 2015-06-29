@@ -31,7 +31,7 @@ public struct Lexer {
 
         var tokens = [Token]()
 
-        let range = NSMakeRange(0, countElements(templateString))
+        let range = NSMakeRange(0, count(templateString))
         var lastIndex = 0
         let nsTemplateString = templateString as NSString
         let options = NSMatchingOptions(0)
@@ -47,7 +47,7 @@ public struct Lexer {
             lastIndex = result.range.location + result.range.length
         }
 
-        if lastIndex < countElements(templateString) {
+        if lastIndex < count(templateString) {
             let substring = (templateString as NSString).substringFromIndex(lastIndex)
             tokens.append(Token.Text(value: substring))
         }

@@ -28,7 +28,7 @@ public class Template {
         var error:NSError?
         let maybeTemplateString = NSString(contentsOfURL: URL, encoding: NSUTF8StringEncoding, error: &error)
         if let templateString = maybeTemplateString {
-            self.init(templateString:templateString)
+            self.init(templateString:templateString as String)
         } else {
             self.init(templateString:"")
             return nil
