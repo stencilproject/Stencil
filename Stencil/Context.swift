@@ -35,10 +35,10 @@ public class Context : Equatable {
   }
 
   public func push() {
-    push(Dictionary<String, String>())
+    push(Dictionary<String, AnyObject>())
   }
 
-  public func push(dictionary:Dictionary<String, String>) {
+  public func push(dictionary:Dictionary<String, AnyObject>) {
     dictionaries.append(dictionary)
   }
 
