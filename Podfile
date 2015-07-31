@@ -6,5 +6,6 @@ end
 
 target 'StencilTests' do
   podspec
+  pod "CatchingFire"
 end
 

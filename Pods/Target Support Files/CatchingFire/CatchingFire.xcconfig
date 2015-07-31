@@ -1,0 +1,2 @@
+CATCHINGFIRE_FRAMEWORK_SEARCH_PATHS = $(inherited) '$(PLATFORM_DIR)/Developer/Library/Frameworks' "$(DEVELOPER_LIBRARY_DIR)/Frameworks" "$(PLATFORM_DIR)/Developer/Library/Frameworks"
+CATCHINGFIRE_OTHER_LDFLAGS = -framework "XCTest"

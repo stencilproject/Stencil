@@ -1,0 +1,6 @@
+framework module CatchingFire {
+  umbrella header "CatchingFire-umbrella.h"
+
+  export *
+  module * { export * }
+}
