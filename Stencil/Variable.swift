@@ -28,14 +28,14 @@ public struct Variable : Equatable {
       } else if let dictionary = current as? Dictionary<String, AnyObject> {
         current = dictionary[bit]
       } else if let array = current as? [AnyObject] {
-        if let index = bit.toInt() {
+        if let index = Int(bit) {
           current = array[index]
         } else if bit == "first" {
           current = array.first
         } else if bit == "last" {
           current = array.last
         } else if bit == "count" {
-          current = count(array)
+          current = array.count
         }
       } else if let object = current as? NSObject {
         current = object.valueForKey(bit)

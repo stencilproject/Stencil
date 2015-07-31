@@ -2,7 +2,7 @@ import Foundation
 
 public struct Lexer {
   public let templateString:String
-  let regex = NSRegularExpression(pattern: "(\\{\\{.*?\\}\\}|\\{%.*?%\\}|\\{#.*?#\\})", options: nil, error: nil)!
+  let regex = try! NSRegularExpression(pattern: "(\\{\\{.*?\\}\\}|\\{%.*?%\\}|\\{#.*?#\\})", options: [])
 
   public init(templateString:String) {
     self.templateString = templateString
@@ -31,23 +31,26 @@ public struct Lexer {
 
     var tokens = [Token]()
 
-    let range = NSMakeRange(0, count(templateString))
+    let range = NSMakeRange(0, templateString.characters.count)
     var lastIndex = 0
     let nsTemplateString = templateString as NSString
-    let options = NSMatchingOptions(0)
+    let options = NSMatchingOptions(rawValue: 0)
     regex.enumerateMatchesInString(templateString, options: options, range: range) { (result, flags, b) in
-      if result.range.location != lastIndex {
-        let previousMatch = nsTemplateString.substringWithRange(NSMakeRange(lastIndex, result.range.location - lastIndex))
-        tokens.append(self.createToken(previousMatch))
+      if let result = result {
+        let location = result.range.location
+        if location != lastIndex {
+          let previousMatch = nsTemplateString.substringWithRange(NSMakeRange(lastIndex, location - lastIndex))
+          tokens.append(self.createToken(previousMatch))
+        }
+
+        let match = nsTemplateString.substringWithRange(result.range)
+        tokens.append(self.createToken(match))
+
+        lastIndex = result.range.location + result.range.length
       }
-
-      let match = nsTemplateString.substringWithRange(result.range)
-      tokens.append(self.createToken(match))
-
-      lastIndex = result.range.location + result.range.length
     }
 
-    if lastIndex < count(templateString) {
+    if lastIndex < templateString.characters.count {
       let substring = (templateString as NSString).substringFromIndex(lastIndex)
       tokens.append(Token.Text(value: substring))
     }
