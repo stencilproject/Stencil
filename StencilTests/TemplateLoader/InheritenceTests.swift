@@ -2,6 +2,7 @@ import Foundation
 import XCTest
 import Stencil
 import PathKit
+import CatchingFire
 
 class InheritenceTests: NodeTests {
   var loader:TemplateLoader!
@@ -16,13 +17,9 @@ class InheritenceTests: NodeTests {
   func testInheritence() {
     context = Context(dictionary: ["loader": loader])
     let template = loader.loadTemplate("child.html")!
-    let result = template.render(context)
-
-    switch result {
-    case .Success(let rendered):
-      XCTAssertEqual(rendered, "Header\nChild")
-    case .Error(let error):
-      XCTAssert(false, "Unexpected error")
+    AssertNoThrow {
+      let result = try template.render(context)
+      XCTAssertEqual(result, "Header\nChild")
     }
   }
 }

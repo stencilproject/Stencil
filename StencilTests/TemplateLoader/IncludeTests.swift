@@ -2,6 +2,7 @@ import Foundation
 import XCTest
 import Stencil
 import PathKit
+import CatchingFire
 
 class IncludeTests: NodeTests {
 
@@ -19,15 +20,18 @@ class IncludeTests: NodeTests {
   func testParseMissingTemplate() {
     let tokens = [ Token.Block(value: "include") ]
     let parser = TokenParser(tokens: tokens)
-
-    assertFailure(parser.parse(), "include: Tag takes one argument, the template file to be included")
+    
+    AssertThrows(ParseError(cause: .InvalidArgumentCount, token: tokens[0], message: "Tag takes one argument, the template file to be included")) {
+      try parser.parse()
+    }
   }
 
   func testParse() {
     let tokens = [ Token.Block(value: "include \"test.html\"") ]
     let parser = TokenParser(tokens: tokens)
 
-    assertSuccess(parser.parse()) { nodes in
+    AssertNoThrow {
+      let nodes = try parser.parse()
       let node = nodes.first as! IncludeNode
       XCTAssertEqual(nodes.count, 1)
       XCTAssertEqual(node.templateName, "test.html")
@@ -38,37 +42,25 @@ class IncludeTests: NodeTests {
 
   func testRenderWithoutLoader() {
     let node = IncludeNode(templateName: "test.html")
-    let result = node.render(Context())
-
-    switch result {
-    case .Success(let string):
-      XCTAssert(false, "Unexpected error")
-    case .Error(let error):
-      XCTAssertEqual("\(error)", "Template loader not in context")
+    AssertThrows(RenderError.TemplateLoaderNotInContext) {
+      try node.render(Context())
     }
   }
 
   func testRenderWithoutTemplateNamed() {
     let node = IncludeNode(templateName: "unknown.html")
-    let result = node.render(Context(dictionary:["loader":loader]))
-
-    switch result {
-    case .Success(let string):
-      XCTAssert(false, "Unexpected error")
-    case .Error(let error):
-      XCTAssertTrue("\(error)".hasPrefix("Template 'unknown.html' not found"))
+    
+    AssertThrows(RenderError.TemplateNotFound(name: "Template 'unknown.html' not found", paths: [])) {
+      try node.render(Context(dictionary:["loader":loader]))
     }
   }
 
   func testRender() {
     let node = IncludeNode(templateName: "test.html")
-    let result = node.render(Context(dictionary:["loader":loader, "target": "World"]))
-
-    switch result {
-    case .Success(let string):
+    
+    AssertNoThrow {
+      let string = try node.render(Context(dictionary:["loader":loader, "target": "World"]))
       XCTAssertEqual(string, "Hello World!")
-    case .Error(let error):
-      XCTAssert(false, "Unexpected error: \(error)")
     }
   }
 

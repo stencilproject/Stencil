@@ -1,6 +1,7 @@
 import Foundation
 import XCTest
 import Stencil
+import CatchingFire
 
 class TokenParserTests: XCTestCase {
   func testParsingTextToken() {
@@ -8,7 +9,8 @@ class TokenParserTests: XCTestCase {
       Token.Text(value: "Hello World")
       ])
 
-    assertSuccess(parser.parse()) { nodes in
+    AssertNoThrow {
+      let nodes = try parser.parse()
       let node = nodes.first as! TextNode
       XCTAssertEqual(nodes.count, 1)
       XCTAssertEqual(node.text, "Hello World")
@@ -20,7 +22,8 @@ class TokenParserTests: XCTestCase {
       Token.Variable(value: "name")
       ])
 
-    assertSuccess(parser.parse()) { nodes in
+    AssertNoThrow {
+      let nodes = try parser.parse()
       let node = nodes.first as! VariableNode
       XCTAssertEqual(nodes.count, 1)
       XCTAssertEqual(node.variable, Variable("name"))
@@ -32,7 +35,8 @@ class TokenParserTests: XCTestCase {
       Token.Comment(value: "Secret stuff!")
       ])
 
-    assertSuccess(parser.parse()) { nodes in
+    AssertNoThrow {
+      let nodes = try parser.parse()
       XCTAssertEqual(nodes.count, 0)
     }
   }
@@ -42,7 +46,8 @@ class TokenParserTests: XCTestCase {
       Token.Block(value: "now"),
       ])
 
-    assertSuccess(parser.parse()) { nodes in
+    AssertNoThrow {
+      let nodes = try parser.parse()
       XCTAssertEqual(nodes.count, 1)
     }
   }
