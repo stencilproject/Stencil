@@ -8,10 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		1474245D3CE34A8BC76F8D20 /* Pods_StencilTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 40E4E61A4F4EA12FE3FA6E39 /* Pods_StencilTests.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
-		27A848E41B42240E004ACA13 /* Inheritence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A848E31B42240E004ACA13 /* Inheritence.swift */; };
+		27A848E41B42240E004ACA13 /* Inheritance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A848E31B42240E004ACA13 /* Inheritance.swift */; };
 		27A848E91B42242C004ACA13 /* base.html in Resources */ = {isa = PBXBuildFile; fileRef = 27A848E71B42242C004ACA13 /* base.html */; };
 		27A848EA1B42242C004ACA13 /* child.html in Resources */ = {isa = PBXBuildFile; fileRef = 27A848E81B42242C004ACA13 /* child.html */; };
-		27A848EC1B42247D004ACA13 /* InheritenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A848EB1B42247D004ACA13 /* InheritenceTests.swift */; };
+		27A848EC1B42247D004ACA13 /* InheritanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A848EB1B42247D004ACA13 /* InheritanceTests.swift */; };
 		27CE0ADE1A50BEC3004A105B /* TemplateLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27CE0ADD1A50BEC3004A105B /* TemplateLoader.swift */; };
 		27CE0AE01A50BF05004A105B /* TemplateLoaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27CE0ADF1A50BF05004A105B /* TemplateLoaderTests.swift */; };
 		27CE0AFA1A50C963004A105B /* test.html in Resources */ = {isa = PBXBuildFile; fileRef = 27CE0AF91A50C963004A105B /* test.html */; };
@@ -48,10 +48,10 @@
 
 /* Begin PBXFileReference section */
 		216AE96E764D5BD92D11049B /* Pods-Stencil.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stencil.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Stencil/Pods-Stencil.debug.xcconfig"; sourceTree = "<group>"; };
-		27A848E31B42240E004ACA13 /* Inheritence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Inheritence.swift; sourceTree = "<group>"; };
+		27A848E31B42240E004ACA13 /* Inheritance.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Inheritance.swift; sourceTree = "<group>"; };
 		27A848E71B42242C004ACA13 /* base.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = base.html; sourceTree = "<group>"; };
 		27A848E81B42242C004ACA13 /* child.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = child.html; sourceTree = "<group>"; };
-		27A848EB1B42247D004ACA13 /* InheritenceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InheritenceTests.swift; sourceTree = "<group>"; };
+		27A848EB1B42247D004ACA13 /* InheritanceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InheritanceTests.swift; sourceTree = "<group>"; };
 		27CE0ADD1A50BEC3004A105B /* TemplateLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TemplateLoader.swift; sourceTree = "<group>"; };
 		27CE0ADF1A50BF05004A105B /* TemplateLoaderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TemplateLoaderTests.swift; sourceTree = "<group>"; };
 		27CE0AF91A50C963004A105B /* test.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = test.html; sourceTree = "<group>"; };
@@ -108,7 +108,7 @@
 			isa = PBXGroup;
 			children = (
 				27CE0B001A50CBD1004A105B /* Include.swift */,
-				27A848E31B42240E004ACA13 /* Inheritence.swift */,
+				27A848E31B42240E004ACA13 /* Inheritance.swift */,
 			);
 			path = TemplateLoader;
 			sourceTree = "<group>";
@@ -117,7 +117,7 @@
 			isa = PBXGroup;
 			children = (
 				27CE0B031A50CBEA004A105B /* IncludeTests.swift */,
-				27A848EB1B42247D004ACA13 /* InheritenceTests.swift */,
+				27A848EB1B42247D004ACA13 /* InheritanceTests.swift */,
 			);
 			path = TemplateLoader;
 			sourceTree = "<group>";
@@ -422,7 +422,7 @@
 				7725B3CD19F92B61002CF74B /* Variable.swift in Sources */,
 				7725B3D519F9438F002CF74B /* Node.swift in Sources */,
 				27CE0ADE1A50BEC3004A105B /* TemplateLoader.swift in Sources */,
-				27A848E41B42240E004ACA13 /* Inheritence.swift in Sources */,
+				27A848E41B42240E004ACA13 /* Inheritance.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -432,7 +432,7 @@
 			files = (
 				77FAAE6519F91E480029DC5E /* StencilTests.swift in Sources */,
 				7725B3D319F9437F002CF74B /* NodeTests.swift in Sources */,
-				27A848EC1B42247D004ACA13 /* InheritenceTests.swift in Sources */,
+				27A848EC1B42247D004ACA13 /* InheritanceTests.swift in Sources */,
 				27CE0AE01A50BF05004A105B /* TemplateLoaderTests.swift in Sources */,
 				7725B3D919F94A61002CF74B /* ParserTests.swift in Sources */,
 				77EB082719F96E9C001870F1 /* TemplateTests.swift in Sources */,

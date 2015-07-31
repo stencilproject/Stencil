@@ -4,7 +4,7 @@ import Stencil
 import PathKit
 import CatchingFire
 
-class InheritenceTests: NodeTests {
+class InheritanceTests: NodeTests {
   var loader:TemplateLoader!
 
   override func setUp() {
@@ -14,7 +14,7 @@ class InheritenceTests: NodeTests {
     loader = TemplateLoader(paths: [path])
   }
 
-  func testInheritence() {
+  func testInheritance() {
     context = Context(dictionary: ["loader": loader])
     let template = loader.loadTemplate("child.html")!
     AssertNoThrow {
