@@ -282,7 +282,9 @@
 		77FAAE4919F91E480029DC5E /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0630;
+				LastSwiftMigration = 0700;
+				LastSwiftUpdateCheck = 0700;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = Cocode;
 				TargetAttributes = {
 					77FAAE5119F91E480029DC5E = {
