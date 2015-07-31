@@ -61,15 +61,13 @@ public class TokenParser {
   public func parse(parse_until:((parser:TokenParser, token:Token) -> (Bool))?) -> TokenParser.Results {
     var nodes = NodeList()
 
-    while tokens.count > 0 {
-      let token = nextToken()!
-
+    while let token = nextToken() {
       switch token {
       case .Text(let text):
         nodes.append(TextNode(text: text))
       case .Variable(let variable):
         nodes.append(VariableNode(variable: variable))
-      case .Block(let value):
+      case .Block(_):
         let tag = token.components().first
 
         if let parse_until = parse_until {
@@ -89,7 +87,7 @@ public class TokenParser {
             }
           }
         }
-      case .Comment(let value):
+      case .Comment(_):
         continue
       }
     }
