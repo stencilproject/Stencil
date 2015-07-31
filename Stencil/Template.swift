@@ -3,42 +3,37 @@ import PathKit
 
 /// A class representing a template
 public class Template {
+  public enum Error : ErrorType {
+    case TemplateDoesNotExist(name: String, inBundle: NSBundle?)
+  }
+  
   public let parser:TokenParser
 
-  /// Create a template with the given name inside the main bundle
-  public convenience init?(named:String) {
-    self.init(named:named, inBundle:nil)
-  }
-
   /// Create a template with the given name inside the given bundle
-  public convenience init?(named:String, inBundle bundle:NSBundle?) {
+  public convenience init?(named name:String, inBundle bundle:NSBundle? = nil) throws {
     var url:NSURL?
 
     if let bundle = bundle {
-      url = bundle.URLForResource(named, withExtension: nil)
+      url = bundle.URLForResource(name, withExtension: nil)
     } else {
-      url = NSBundle.mainBundle().URLForResource(named, withExtension: nil)
+      url = NSBundle.mainBundle().URLForResource(name, withExtension: nil)
     }
 
-    self.init(URL:url!)
+    if let url = url {
+      try self.init(URL:url)
+    } else {
+      throw Error.TemplateDoesNotExist(name: name, inBundle: bundle)
+    }
   }
 
   /// Create a template with a file found at the given URL
-  public convenience init?(URL:NSURL) {
-    var error:NSError?
-    let maybeTemplateString = NSString(contentsOfURL: URL, encoding: NSUTF8StringEncoding, error: &error)
-    if let templateString = maybeTemplateString {
-      self.init(templateString:templateString as String)
-    } else {
-      self.init(templateString:"")
-      return nil
-    }
+  public convenience init(URL:NSURL) throws {
+    let templateString = try NSString(contentsOfURL: URL, encoding: NSUTF8StringEncoding)
+    self.init(templateString:templateString as String)
   }
 
   /// Create a template with a file found at the given path
   public convenience init?(path:Path) {
-    var error:NSError?
-
     if let string:String = path.read() {
       self.init(templateString:string)
     } else {
@@ -55,19 +50,8 @@ public class Template {
   }
 
   /// Render the given template in a context
-  public func render(context:Context) -> Result {
-    switch parser.parse() {
-    case .Success(let nodes):
-      return renderNodes(nodes, context)
-
-    case .Error(let error):
-      return .Error(error)
-    }
-  }
-
-  /// Render the given template without a context
-  public func render() -> Result {
-    let context = Context()
-    return render(context)
+  public func render(context:Context = Context()) throws -> String {
+    let nodes = try parser.parse()
+    return try renderNodes(nodes, context: context)
   }
 }
