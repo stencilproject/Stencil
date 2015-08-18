@@ -209,7 +209,7 @@ public class IfNode : Node {
   public let trueNodes:[Node]
   public let falseNodes:[Node]
 
-  public class func parse(parser:TokenParser, token:Token) throws -> (variable: String, ifNodes: [Node], elseNodes: [Node]) {
+  class func parse(parser:TokenParser, token:Token) throws -> (variable: String, ifNodes: [Node], elseNodes: [Node]) {
     let variable = token.components()[1]
     
     let ifNodes = try parser.parse(until(["endif", "else"]))
