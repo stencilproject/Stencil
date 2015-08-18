@@ -37,7 +37,6 @@ public class Template {
     if let string:String = path.read() {
       self.init(templateString:string)
     } else {
-      self.init(templateString:"")
       return nil
     }
   }
