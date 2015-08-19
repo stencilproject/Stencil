@@ -90,7 +90,7 @@ public struct Path : Hashable, CustomStringConvertible, StringLiteralConvertible
 
     /// Normalizes the path, this clenas up redundant ".." and "." and double slashes
     public func normalize() -> Path {
-        return Path(self.path.stringByStandardizingPath)
+        return Path((self.path as NSString).stringByStandardizingPath)
     }
 
     /// Returns whether a file or directory exists at a specified path
