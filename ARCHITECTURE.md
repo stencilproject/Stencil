@@ -92,7 +92,7 @@ Will result in a single Node (a `ForNode`) which contains the sub-node containin
 
 When the `ForNode` is rendered in a context, it will look up the variable `articles` and if it’s an array it will loop over it. Inserting the variable `article` into the context while rendered the `forNodes` for each article.
 
-### Custom Node’s
+### Custom Nodes
 
 There are two ways to register custom template tags. A simple way which allows you to map 1:1 a block token to a Node. You can also register a more advanced template tag which has it’s own block of code for handling parsing if you want to parse up until another token such as if you are trying to provide flow-control.
 
