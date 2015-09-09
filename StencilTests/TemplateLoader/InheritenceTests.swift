@@ -21,7 +21,7 @@ class InheritenceTests: NodeTests {
     switch result {
     case .Success(let rendered):
       XCTAssertEqual(rendered, "Header\nChild")
-    case .Error(let error):
+    case .Error:
       XCTAssert(false, "Unexpected error")
     }
   }

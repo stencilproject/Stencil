@@ -69,7 +69,7 @@ public class TokenParser {
         nodes.append(TextNode(text: text))
       case .Variable(let variable):
         nodes.append(VariableNode(variable: variable))
-      case .Block(let value):
+      case .Block:
         let tag = token.components().first
 
         if let parse_until = parse_until {
@@ -89,7 +89,7 @@ public class TokenParser {
             }
           }
         }
-      case .Comment(let value):
+      case .Comment:
         continue
       }
     }

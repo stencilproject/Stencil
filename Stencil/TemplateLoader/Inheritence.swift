@@ -41,9 +41,9 @@ class ExtendsNode : Node {
         return .Error(error:"'extends' cannot appear more than once in the same template")
       }
 
-      let blockNodes = filter(nodes) { node in node is BlockNode }
+      let blockNodes = nodes.filter { node in node is BlockNode }
 
-      let nodes = reduce(blockNodes, [String:BlockNode](), { (accumulator, node:Node) -> [String:BlockNode] in
+      let nodes = blockNodes.reduce([String:BlockNode](), combine: { (accumulator, node:Node) -> [String:BlockNode] in
         let node = (node as! BlockNode)
         var dict = accumulator
         dict[node.name] = node
@@ -71,9 +71,9 @@ class ExtendsNode : Node {
         return result
       }
 
-      let paths:String = join(", ", loader.paths.map { path in
+      let paths:String = loader.paths.map { path in
         return path.description
-        })
+        }.joinWithSeparator(", ")
       let error = "Template '\(templateName)' not found in \(paths)"
       return .Error(error)
     }
@@ -119,6 +119,6 @@ class BlockNode : Node {
       }
     }
 
-    return renderNodes(nodes, context)
+    return renderNodes(nodes, context: context)
   }
 }

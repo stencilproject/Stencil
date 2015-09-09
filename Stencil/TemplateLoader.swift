@@ -32,8 +32,8 @@ public class TemplateLoader {
       for templateName in templateNames {
         let templatePath = path + Path(templateName)
 
-        if templatePath.exists() {
-          if let template = Template(path: templatePath) {
+        if templatePath.exists {
+          if let template = try? Template(path: templatePath) {
             return template
           }
         }

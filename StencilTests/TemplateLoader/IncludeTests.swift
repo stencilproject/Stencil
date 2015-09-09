@@ -20,7 +20,7 @@ class IncludeTests: NodeTests {
     let tokens = [ Token.Block(value: "include") ]
     let parser = TokenParser(tokens: tokens)
 
-    assertFailure(parser.parse(), "include: Tag takes one argument, the template file to be included")
+    assertFailure(parser.parse(), description: "include: Tag takes one argument, the template file to be included")
   }
 
   func testParse() {
@@ -41,7 +41,7 @@ class IncludeTests: NodeTests {
     let result = node.render(Context())
 
     switch result {
-    case .Success(let string):
+    case .Success:
       XCTAssert(false, "Unexpected error")
     case .Error(let error):
       XCTAssertEqual("\(error)", "Template loader not in context")
@@ -53,7 +53,7 @@ class IncludeTests: NodeTests {
     let result = node.render(Context(dictionary:["loader":loader]))
 
     switch result {
-    case .Success(let string):
+    case .Success:
       XCTAssert(false, "Unexpected error")
     case .Error(let error):
       XCTAssertTrue("\(error)".hasPrefix("Template 'unknown.html' not found"))

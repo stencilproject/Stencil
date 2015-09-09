@@ -25,7 +25,7 @@ let context = Context(dictionary: [
     ]
 ])
 
-let template = Template(named: "template.stencil")
+let template = try? Template(named: "template.stencil")
 let result = template!.render(context)
 
 switch result {
