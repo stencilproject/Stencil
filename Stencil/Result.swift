@@ -1,6 +1,6 @@
 import Foundation
 
-public protocol Error : Printable {
+public protocol Error : CustomStringConvertible {
 
 }
 

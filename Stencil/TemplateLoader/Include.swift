@@ -30,9 +30,9 @@ public class IncludeNode : Node {
         return template.render(context)
       }
 
-      let paths:String = join(", ", loader.paths.map { path in
+      let paths:String = loader.paths.map { path in
         return path.description
-        })
+        }.joinWithSeparator(", ")
       let error = "Template '\(templateName)' not found in \(paths)"
       return .Error(error)
     }

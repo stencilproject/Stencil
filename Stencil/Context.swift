@@ -15,7 +15,7 @@ public class Context : Equatable {
   public subscript(key: String) -> AnyObject? {
     /// Retrieves a variable's value, starting at the current context and going upwards
     get {
-      for dictionary in reverse(dictionaries) {
+      for dictionary in Array(dictionaries.reverse()) {
         if let value:AnyObject = dictionary[key] {
           return value
         }

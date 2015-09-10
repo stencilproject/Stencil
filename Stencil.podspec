@@ -11,6 +11,6 @@ Pod::Spec.new do |spec|
   spec.ios.deployment_target = '8.0'
   spec.osx.deployment_target = '10.9'
   spec.requires_arc = true
-  spec.dependency 'PathKit', '~> 0.3.0'
+  spec.dependency 'PathKit', '~> 0.4.0-beta.1'
 end
 

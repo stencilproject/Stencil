@@ -149,7 +149,7 @@ public class ForNode : Node {
   public class func parse(parser:TokenParser, token:Token) -> TokenParser.Result {
     let components = token.components()
 
-    if count(components) == 4 && components[2] == "in" {
+    if components.count == 4 && components[2] == "in" {
       let loopVariable = components[1]
       let variable = components[3]
 
@@ -198,7 +198,7 @@ public class ForNode : Node {
       for item in values {
         context.push()
         context[loopVariable] = item
-        let result = renderNodes(nodes, context)
+        let result = renderNodes(nodes, context: context)
         context.pop()
 
         switch result {
@@ -291,12 +291,12 @@ public class IfNode : Node {
       if result.count > 0 {
         truthy = true
       }
-    } else if let result: AnyObject = result {
+    } else if result != nil {
       truthy = true
     }
 
     context.push()
-    let output = renderNodes(truthy ? trueNodes : falseNodes, context)
+    let output = renderNodes(truthy ? trueNodes : falseNodes, context: context)
     context.pop()
 
     return output

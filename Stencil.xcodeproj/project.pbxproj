@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1474245D3CE34A8BC76F8D20 /* Pods_StencilTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 40E4E61A4F4EA12FE3FA6E39 /* Pods_StencilTests.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		27A848E41B42240E004ACA13 /* Inheritence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A848E31B42240E004ACA13 /* Inheritence.swift */; };
 		27A848E91B42242C004ACA13 /* base.html in Resources */ = {isa = PBXBuildFile; fileRef = 27A848E71B42242C004ACA13 /* base.html */; };
 		27A848EA1B42242C004ACA13 /* child.html in Resources */ = {isa = PBXBuildFile; fileRef = 27A848E81B42242C004ACA13 /* child.html */; };
@@ -17,7 +16,6 @@
 		27CE0AFA1A50C963004A105B /* test.html in Resources */ = {isa = PBXBuildFile; fileRef = 27CE0AF91A50C963004A105B /* test.html */; };
 		27CE0B011A50CBD1004A105B /* Include.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27CE0B001A50CBD1004A105B /* Include.swift */; };
 		27CE0B041A50CBEA004A105B /* IncludeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27CE0B031A50CBEA004A105B /* IncludeTests.swift */; };
-		32C6976B95F3D42995990054 /* Pods_Stencil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A574F1600267822AA34CB00 /* Pods_Stencil.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		71CE4C0A19FD29D000B9E0C5 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71CE4C0919FD29D000B9E0C5 /* Result.swift */; };
 		7725B3CB19F92B4F002CF74B /* VariableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7725B3CA19F92B4F002CF74B /* VariableTests.swift */; };
 		7725B3CD19F92B61002CF74B /* Variable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7725B3CC19F92B61002CF74B /* Variable.swift */; };
@@ -35,6 +33,8 @@
 		77FAAE6519F91E480029DC5E /* StencilTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77FAAE6419F91E480029DC5E /* StencilTests.swift */; };
 		77FAAE6F19F920750029DC5E /* Context.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77FAAE6E19F920750029DC5E /* Context.swift */; };
 		77FAAE7119F9208C0029DC5E /* ContextTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77FAAE7019F9208C0029DC5E /* ContextTests.swift */; };
+		B47F77A0E91D074331ECA4BA /* Pods_StencilTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 993D1013A77A01814D8E4A04 /* Pods_StencilTests.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		EE07225918EA237F21D8B902 /* Pods_Stencil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19D2CE595625A4F7A865B0BD /* Pods_Stencil.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,7 +48,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		216AE96E764D5BD92D11049B /* Pods-Stencil.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stencil.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Stencil/Pods-Stencil.debug.xcconfig"; sourceTree = "<group>"; };
+		19D2CE595625A4F7A865B0BD /* Pods_Stencil.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Stencil.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1F9D5A26B78DADAECC18CA94 /* Pods-Stencil.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stencil.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Stencil/Pods-Stencil.debug.xcconfig"; sourceTree = "<group>"; };
 		27A848E31B42240E004ACA13 /* Inheritence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Inheritence.swift; sourceTree = "<group>"; };
 		27A848E71B42242C004ACA13 /* base.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = base.html; sourceTree = "<group>"; };
 		27A848E81B42242C004ACA13 /* child.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = child.html; sourceTree = "<group>"; };
@@ -58,8 +59,6 @@
 		27CE0AF91A50C963004A105B /* test.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = test.html; sourceTree = "<group>"; };
 		27CE0B001A50CBD1004A105B /* Include.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Include.swift; sourceTree = "<group>"; };
 		27CE0B031A50CBEA004A105B /* IncludeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IncludeTests.swift; sourceTree = "<group>"; };
-		40E4E61A4F4EA12FE3FA6E39 /* Pods_StencilTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_StencilTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		604897C26D7C87809187940C /* Pods-StencilTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StencilTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-StencilTests/Pods-StencilTests.release.xcconfig"; sourceTree = "<group>"; };
 		71CE4C0919FD29D000B9E0C5 /* Result.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
 		7725B3CA19F92B4F002CF74B /* VariableTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VariableTests.swift; sourceTree = "<group>"; };
 		7725B3CC19F92B61002CF74B /* Variable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Variable.swift; sourceTree = "<group>"; };
@@ -80,9 +79,10 @@
 		77FAAE6419F91E480029DC5E /* StencilTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StencilTests.swift; sourceTree = "<group>"; };
 		77FAAE6E19F920750029DC5E /* Context.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Context.swift; sourceTree = "<group>"; };
 		77FAAE7019F9208C0029DC5E /* ContextTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContextTests.swift; sourceTree = "<group>"; };
-		7A574F1600267822AA34CB00 /* Pods_Stencil.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Stencil.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		A4451BEDB5F71116FF3216CC /* Pods-Stencil.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stencil.release.xcconfig"; path = "Pods/Target Support Files/Pods-Stencil/Pods-Stencil.release.xcconfig"; sourceTree = "<group>"; };
-		AB71617F99ED5A669D83419F /* Pods-StencilTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StencilTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-StencilTests/Pods-StencilTests.debug.xcconfig"; sourceTree = "<group>"; };
+		8E90EE157CBB4F8E96884DED /* Pods-Stencil.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stencil.release.xcconfig"; path = "Pods/Target Support Files/Pods-Stencil/Pods-Stencil.release.xcconfig"; sourceTree = "<group>"; };
+		993D1013A77A01814D8E4A04 /* Pods_StencilTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_StencilTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D504530B9669DDF40C6890DF /* Pods-StencilTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StencilTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-StencilTests/Pods-StencilTests.release.xcconfig"; sourceTree = "<group>"; };
+		D7B326C5BB2955F522787D9B /* Pods-StencilTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StencilTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-StencilTests/Pods-StencilTests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,7 +90,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				32C6976B95F3D42995990054 /* Pods_Stencil.framework in Frameworks */,
+				EE07225918EA237F21D8B902 /* Pods_Stencil.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -99,7 +99,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				77FAAE5E19F91E480029DC5E /* Stencil.framework in Frameworks */,
-				1474245D3CE34A8BC76F8D20 /* Pods_StencilTests.framework in Frameworks */,
+				B47F77A0E91D074331ECA4BA /* Pods_StencilTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -130,8 +130,8 @@
 				77FAAE5419F91E480029DC5E /* Stencil */,
 				77FAAE6119F91E480029DC5E /* StencilTests */,
 				77FAAE5319F91E480029DC5E /* Products */,
-				F0837D60120FB15CC00B9EBD /* Pods */,
-				BE2E2DF8F488C4669126E920 /* Frameworks */,
+				C06534353970612CB8F9960D /* Pods */,
+				A82CB85756DE155E072D4047 /* Frameworks */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -201,22 +201,22 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		BE2E2DF8F488C4669126E920 /* Frameworks */ = {
+		A82CB85756DE155E072D4047 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				7A574F1600267822AA34CB00 /* Pods_Stencil.framework */,
-				40E4E61A4F4EA12FE3FA6E39 /* Pods_StencilTests.framework */,
+				19D2CE595625A4F7A865B0BD /* Pods_Stencil.framework */,
+				993D1013A77A01814D8E4A04 /* Pods_StencilTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		F0837D60120FB15CC00B9EBD /* Pods */ = {
+		C06534353970612CB8F9960D /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				216AE96E764D5BD92D11049B /* Pods-Stencil.debug.xcconfig */,
-				A4451BEDB5F71116FF3216CC /* Pods-Stencil.release.xcconfig */,
-				AB71617F99ED5A669D83419F /* Pods-StencilTests.debug.xcconfig */,
-				604897C26D7C87809187940C /* Pods-StencilTests.release.xcconfig */,
+				1F9D5A26B78DADAECC18CA94 /* Pods-Stencil.debug.xcconfig */,
+				8E90EE157CBB4F8E96884DED /* Pods-Stencil.release.xcconfig */,
+				D7B326C5BB2955F522787D9B /* Pods-StencilTests.debug.xcconfig */,
+				D504530B9669DDF40C6890DF /* Pods-StencilTests.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -239,12 +239,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 77FAAE6819F91E480029DC5E /* Build configuration list for PBXNativeTarget "Stencil" */;
 			buildPhases = (
-				2F5F764C3F2D9B507C32F902 /* Check Pods Manifest.lock */,
+				AFE0827734C5388F8E996172 /* Check Pods Manifest.lock */,
 				77FAAE4D19F91E480029DC5E /* Sources */,
 				77FAAE4E19F91E480029DC5E /* Frameworks */,
 				77FAAE4F19F91E480029DC5E /* Headers */,
 				77FAAE5019F91E480029DC5E /* Resources */,
-				99E82E6639BC7C1A0E1E28DC /* Copy Pods Resources */,
+				5374160581EF83B2213B72F1 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -259,12 +259,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 77FAAE6B19F91E480029DC5E /* Build configuration list for PBXNativeTarget "StencilTests" */;
 			buildPhases = (
-				2D3D90E839235D400843A900 /* Check Pods Manifest.lock */,
+				C50FF01A96AD1CEACBF2E02A /* Check Pods Manifest.lock */,
 				77FAAE5919F91E480029DC5E /* Sources */,
 				77FAAE5A19F91E480029DC5E /* Frameworks */,
 				77FAAE5B19F91E480029DC5E /* Resources */,
-				A3AAD60B3C344DD6993AE800 /* Embed Pods Frameworks */,
-				BD3457ACA3F28092E2EBD7C4 /* Copy Pods Resources */,
+				138C1DDF1FB55A83668EE384 /* Embed Pods Frameworks */,
+				36A8E92EBDE6D917075028D4 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -282,7 +282,8 @@
 		77FAAE4919F91E480029DC5E /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0630;
+				LastSwiftUpdateCheck = 0700;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = Cocode;
 				TargetAttributes = {
 					77FAAE5119F91E480029DC5E = {
@@ -332,52 +333,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		2D3D90E839235D400843A900 /* Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		2F5F764C3F2D9B507C32F902 /* Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		99E82E6639BC7C1A0E1E28DC /* Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Stencil/Pods-Stencil-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		A3AAD60B3C344DD6993AE800 /* Embed Pods Frameworks */ = {
+		138C1DDF1FB55A83668EE384 /* Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -392,7 +348,7 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-StencilTests/Pods-StencilTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		BD3457ACA3F28092E2EBD7C4 /* Copy Pods Resources */ = {
+		36A8E92EBDE6D917075028D4 /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -405,6 +361,51 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-StencilTests/Pods-StencilTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		5374160581EF83B2213B72F1 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Stencil/Pods-Stencil-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		AFE0827734C5388F8E996172 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		C50FF01A96AD1CEACBF2E02A /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -476,6 +477,7 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -539,7 +541,7 @@
 		};
 		77FAAE6919F91E480029DC5E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 216AE96E764D5BD92D11049B /* Pods-Stencil.debug.xcconfig */;
+			baseConfigurationReference = 1F9D5A26B78DADAECC18CA94 /* Pods-Stencil.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -551,6 +553,7 @@
 				INFOPLIST_FILE = Stencil/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocode.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -559,7 +562,7 @@
 		};
 		77FAAE6A19F91E480029DC5E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A4451BEDB5F71116FF3216CC /* Pods-Stencil.release.xcconfig */;
+			baseConfigurationReference = 8E90EE157CBB4F8E96884DED /* Pods-Stencil.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -571,6 +574,7 @@
 				INFOPLIST_FILE = Stencil/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocode.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -578,7 +582,7 @@
 		};
 		77FAAE6C19F91E480029DC5E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AB71617F99ED5A669D83419F /* Pods-StencilTests.debug.xcconfig */;
+			baseConfigurationReference = D7B326C5BB2955F522787D9B /* Pods-StencilTests.debug.xcconfig */;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -591,13 +595,14 @@
 				);
 				INFOPLIST_FILE = StencilTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocode.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
 		};
 		77FAAE6D19F91E480029DC5E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 604897C26D7C87809187940C /* Pods-StencilTests.release.xcconfig */;
+			baseConfigurationReference = D504530B9669DDF40C6890DF /* Pods-StencilTests.release.xcconfig */;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -606,6 +611,7 @@
 				);
 				INFOPLIST_FILE = StencilTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocode.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
