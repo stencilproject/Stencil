@@ -6,3 +6,10 @@ test:
   override:
     - set -o pipefail && xcodebuild -workspace Stencil.xcworkspace -scheme Stencil test | tee $CIRCLE_ARTIFACTS/xcode_raw_ios.log | xcpretty -c
     - pod lib lint
+
+deployment:
+  release:
+    tag: /v?\d+\.\d+\.*/
+    commands:
+      - pod trunk push
+
