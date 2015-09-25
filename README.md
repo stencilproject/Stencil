@@ -19,20 +19,18 @@ There are {{ articles.count }} articles.
 
 ```swift
 let context = Context(dictionary: [
-    "articles": [
-        [ "title": "Migrating from OCUnit to XCTest", "author": "Kyle Fuller" ],
-        [ "title": "Memory Management with ARC", "author": "Kyle Fuller" ],
-    ]
+  "articles": [
+    [ "title": "Migrating from OCUnit to XCTest", "author": "Kyle Fuller" ],
+    [ "title": "Memory Management with ARC", "author": "Kyle Fuller" ],
+  ]
 ])
 
-let template = try? Template(named: "template.stencil")
-let result = template!.render(context)
-
-switch result {
-    case .Error(let error):
-        println("There was an error rendering your template (\(error)).")
-    case .Success(let string):
-        println("\(string)")
+do {
+  let template = Template(named: "template.stencil")
+  let rendered = template.render(context)
+  print(rendered)
+} catch {
+  print("Failed to render template \(error)")
 }
 ```
 
@@ -157,13 +155,13 @@ you to write your own custom tags. The following is the simplest form:
 
 ```swift
 template.parser.registerSimpleTag("custom") { context in
-  return .Success("Hello World")
+  return "Hello World"
 }
 ```
 
 When your tag is used via `{% custom %}` it will execute the registered block
 of code allowing you to modify or retrieve a value from the context. Then
-return either a string rendered in your template, or an error.
+return either a string rendered in your template, or throw an error.
 
 If you want to accept arguments or to capture different tokens between two sets
 of template tags. You will need to call the `registerTag` API which accepts a

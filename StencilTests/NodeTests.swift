@@ -2,16 +2,10 @@ import Foundation
 import XCTest
 import Stencil
 
-class ErrorNodeError : Error {
-  var description: String {
-    return "Node Error"
-  }
-}
 
-class ErrorNode : Node {
-  func render(context: Context) -> Result {
-
-    return .Error(ErrorNodeError())
+class ErrorNode : NodeType {
+  func render(context: Context) throws -> String {
+    throw TemplateSyntaxError("Custom Error")
   }
 }
 
@@ -30,73 +24,39 @@ class NodeTests: XCTestCase {
 class TextNodeTests: NodeTests {
   func testTextNodeResolvesText() {
     let node = TextNode(text:"Hello World")
-    let _ = node.render(context)
-
-    switch node.render(context) {
-    case .Success(let string):
-      XCTAssertEqual(string, "Hello World")
-    case .Error:
-      XCTAssert(false, "Unexpected error")
-    }
+    XCTAssertEqual(try? node.render(context), "Hello World")
   }
 }
 
 class VariableNodeTests: NodeTests {
   func testVariableNodeResolvesVariable() {
     let node = VariableNode(variable:Variable("name"))
-
-    switch node.render(context) {
-    case .Success(let string):
-      XCTAssertEqual(string, "Kyle")
-    case .Error:
-      XCTAssert(false, "Unexpected error")
-    }
+    XCTAssertEqual(try? node.render(context), "Kyle")
   }
 
   func testVariableNodeResolvesNonStringVariable() {
     let node = VariableNode(variable:Variable("age"))
-
-    switch node.render(context) {
-    case .Success(let string):
-      XCTAssertEqual(string, "27")
-    case .Error:
-      XCTAssert(false, "Unexpected error")
-    }
+    XCTAssertEqual(try? node.render(context), "27")
   }
 }
 
 class RenderNodeTests: NodeTests {
   func testRenderingNodes() {
-    let nodes = [TextNode(text:"Hello "), VariableNode(variable: "name")] as [Node]
-    switch renderNodes(nodes, context: context) {
-    case .Success(let result):
-      XCTAssertEqual(result, "Hello Kyle")
-    case .Error:
-      XCTAssert(false, "Unexpected error")
-    }
+    let nodes = [TextNode(text:"Hello "), VariableNode(variable: "name")] as [NodeType]
+    XCTAssertEqual(try? renderNodes(nodes, context), "Hello Kyle")
   }
 
   func testRenderingNodesWithFailure() {
-    let nodes = [TextNode(text:"Hello "), VariableNode(variable: "name"), ErrorNode()] as [Node]
+    let nodes = [TextNode(text:"Hello "), VariableNode(variable: "name"), ErrorNode()] as [NodeType]
 
-    switch renderNodes(nodes, context: context) {
-    case .Success:
-      XCTAssert(false, "Unexpected success")
-    case .Error(let error):
-      XCTAssertEqual("\(error)", "Node Error")
-    }
+    assertFailure(try renderNodes(nodes, context), TemplateSyntaxError("Custom Error"))
   }
 }
 
 class ForNodeTests: NodeTests {
   func testForNodeRender() {
     let node = ForNode(variable: "items", loopVariable: "item", nodes: [VariableNode(variable: "item")], emptyNodes:[])
-    switch node.render(context) {
-    case .Success(let string):
-      XCTAssertEqual(string, "123")
-    case .Error:
-      XCTAssert(false, "Unexpected error")
-    }
+    XCTAssertEqual(try? node.render(context), "123")
   }
 }
 
@@ -114,7 +74,7 @@ class IfNodeTests: NodeTests {
     ]
 
     let parser = TokenParser(tokens: tokens)
-    assertSuccess(parser.parse()) { nodes in
+    assertSuccess(try parser.parse()) { nodes in
       let node = nodes.first as! IfNode
       let trueNode = node.trueNodes.first as! TextNode
       let falseNode = node.falseNodes.first as! TextNode
@@ -138,7 +98,7 @@ class IfNodeTests: NodeTests {
     ]
 
     let parser = TokenParser(tokens: tokens)
-    assertSuccess(parser.parse()) { nodes in
+    assertSuccess(try parser.parse()) { nodes in
       let node = nodes.first as! IfNode
       let trueNode = node.trueNodes.first as! TextNode
       let falseNode = node.falseNodes.first as! TextNode
@@ -158,7 +118,7 @@ class IfNodeTests: NodeTests {
     ]
 
     let parser = TokenParser(tokens: tokens)
-    assertFailure(parser.parse(), description: "if: `endif` was not found.")
+    assertFailure(try parser.parse(), TemplateSyntaxError("`endif` was not found."))
   }
 
   func testParseIfNotWithoutEndIfError() {
@@ -167,31 +127,19 @@ class IfNodeTests: NodeTests {
     ]
 
     let parser = TokenParser(tokens: tokens)
-    assertFailure(parser.parse(), description: "ifnot: `endif` was not found.")
+    assertFailure(try parser.parse(), TemplateSyntaxError("`endif` was not found."))
   }
 
   // MARK: Rendering
 
   func testIfNodeRenderTruth() {
     let node = IfNode(variable: "items", trueNodes: [TextNode(text: "true")], falseNodes: [TextNode(text: "false")])
-
-    switch node.render(context) {
-    case .Success(let string):
-      XCTAssertEqual(string, "true")
-    case .Error:
-      XCTAssert(false, "Unexpected error")
-    }
+    XCTAssertEqual(try? node.render(context), "true")
   }
 
   func testIfNodeRenderFalse() {
     let node = IfNode(variable: "unknown", trueNodes: [TextNode(text: "true")], falseNodes: [TextNode(text: "false")])
-
-    switch node.render(context) {
-    case .Success(let string):
-      XCTAssertEqual(string, "false")
-    case .Error:
-      XCTAssert(false, "Unexpected error")
-    }
+    XCTAssertEqual(try? node.render(context), "false")
   }
 
 }
@@ -204,7 +152,7 @@ class NowNodeTests: NodeTests {
     let tokens = [ Token.Block(value: "now") ]
     let parser = TokenParser(tokens: tokens)
 
-    assertSuccess(parser.parse()) { nodes in
+    assertSuccess(try parser.parse()) { nodes in
       let node = nodes.first as! NowNode
       XCTAssertEqual(nodes.count, 1)
       XCTAssertEqual(node.format.variable, "\"yyyy-MM-dd 'at' HH:mm\"")
@@ -215,7 +163,7 @@ class NowNodeTests: NodeTests {
     let tokens = [ Token.Block(value: "now \"HH:mm\"") ]
     let parser = TokenParser(tokens: tokens)
 
-    assertSuccess(parser.parse()) { nodes in
+    assertSuccess(try parser.parse()) { nodes in
       let node = nodes.first as! NowNode
       XCTAssertEqual(nodes.count, 1)
       XCTAssertEqual(node.format.variable, "\"HH:mm\"")
@@ -231,13 +179,6 @@ class NowNodeTests: NodeTests {
     formatter.dateFormat = "yyyy-MM-dd"
     let date = formatter.stringFromDate(NSDate())
 
-    switch node.render(context) {
-    case .Success(let string):
-      XCTAssertEqual(string, date)
-    case .Error:
-      XCTAssert(false, "Unexpected error")
-    }
+    XCTAssertEqual(try? node.render(context), date)
   }
-
 }
-

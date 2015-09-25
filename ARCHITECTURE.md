@@ -106,7 +106,7 @@ Here’s an example. Registering a template tag called `custom` which just rende
 
 ```swift
 parser.registerSimpleTag("custom") { context in
-  return .Success("Hello World")
+  return "Hello World"
 }
 ```
 
@@ -144,7 +144,7 @@ class DebugNode : Node {
     self.nodes = nodes
   }
 
-  func render(context: Context) -> Result {
+  func render(context: Context) throws -> String {
     // Is there a debug variable inside the context?
     if let debug = context["debug"] as? Bool {
       // Is debug set to true?
@@ -155,7 +155,7 @@ class DebugNode : Node {
     }
 
     // Debug is turned off, so let's not render anything
-    return .Success("")
+    return ""
   }
 }
 ```
@@ -163,15 +163,10 @@ class DebugNode : Node {
 We will need to write a parser to parse up until the `enddebug` template block and create a `DebugNode` with the nodes in-between. If there was another error form another Node inside, then we will return that error.
 
 ```swift
-parser.registerTag("debug") { (parser, token) -> TokenParser.Result in
+parser.registerTag("debug") { parser, token in
   // Use the parser to parse every token up until the `enddebug` block.
-  switch parser.parse(until(["enddebug"]))
-    case .Success(let nodes):
-      nodes
-    case .Error(let error):
-      // There was an error, this is most-likely due to another template block returning an error.
-      return .Error(error)
-    }
+  let nodes = try until(["enddebug"]))
+  return DebugNode(nodes)
 }
 ```
 

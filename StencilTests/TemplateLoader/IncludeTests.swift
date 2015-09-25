@@ -20,14 +20,14 @@ class IncludeTests: NodeTests {
     let tokens = [ Token.Block(value: "include") ]
     let parser = TokenParser(tokens: tokens)
 
-    assertFailure(parser.parse(), description: "include: Tag takes one argument, the template file to be included")
+    assertFailure(try parser.parse(), TemplateSyntaxError("'include' tag takes one argument, the template file to be included"))
   }
 
   func testParse() {
     let tokens = [ Token.Block(value: "include \"test.html\"") ]
     let parser = TokenParser(tokens: tokens)
 
-    assertSuccess(parser.parse()) { nodes in
+    assertSuccess(try parser.parse()) { nodes in
       let node = nodes.first as! IncludeNode
       XCTAssertEqual(nodes.count, 1)
       XCTAssertEqual(node.templateName, "test.html")
@@ -38,38 +38,27 @@ class IncludeTests: NodeTests {
 
   func testRenderWithoutLoader() {
     let node = IncludeNode(templateName: "test.html")
-    let result = node.render(Context())
 
-    switch result {
-    case .Success:
-      XCTAssert(false, "Unexpected error")
-    case .Error(let error):
+    do {
+      try node.render(Context())
+    } catch {
       XCTAssertEqual("\(error)", "Template loader not in context")
     }
   }
 
   func testRenderWithoutTemplateNamed() {
     let node = IncludeNode(templateName: "unknown.html")
-    let result = node.render(Context(dictionary:["loader":loader]))
 
-    switch result {
-    case .Success:
-      XCTAssert(false, "Unexpected error")
-    case .Error(let error):
-      XCTAssertTrue("\(error)".hasPrefix("Template 'unknown.html' not found"))
+    do {
+      try node.render(Context(dictionary:["loader":loader]))
+    } catch {
+      XCTAssertTrue("\(error)".hasPrefix("'unknown.html' template not found"))
     }
   }
 
   func testRender() {
     let node = IncludeNode(templateName: "test.html")
-    let result = node.render(Context(dictionary:["loader":loader, "target": "World"]))
-
-    switch result {
-    case .Success(let string):
-      XCTAssertEqual(string, "Hello World!")
-    case .Error(let error):
-      XCTAssert(false, "Unexpected error: \(error)")
-    }
+    let value = try? node.render(Context(dictionary:["loader":loader, "target": "World"]))
+    XCTAssertEqual(value, "Hello World!")
   }
-
 }

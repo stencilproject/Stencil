@@ -8,7 +8,7 @@ class TokenParserTests: XCTestCase {
       Token.Text(value: "Hello World")
       ])
 
-    assertSuccess(parser.parse()) { nodes in
+    assertSuccess(try parser.parse()) { nodes in
       let node = nodes.first as! TextNode
       XCTAssertEqual(nodes.count, 1)
       XCTAssertEqual(node.text, "Hello World")
@@ -20,7 +20,7 @@ class TokenParserTests: XCTestCase {
       Token.Variable(value: "name")
       ])
 
-    assertSuccess(parser.parse()) { nodes in
+    assertSuccess(try parser.parse()) { nodes in
       let node = nodes.first as! VariableNode
       XCTAssertEqual(nodes.count, 1)
       XCTAssertEqual(node.variable, Variable("name"))
@@ -32,7 +32,7 @@ class TokenParserTests: XCTestCase {
       Token.Comment(value: "Secret stuff!")
       ])
 
-    assertSuccess(parser.parse()) { nodes in
+    assertSuccess(try parser.parse()) { nodes in
       XCTAssertEqual(nodes.count, 0)
     }
   }
@@ -42,7 +42,7 @@ class TokenParserTests: XCTestCase {
       Token.Block(value: "now"),
       ])
 
-    assertSuccess(parser.parse()) { nodes in
+    assertSuccess(try parser.parse()) { nodes in
       XCTAssertEqual(nodes.count, 1)
     }
   }

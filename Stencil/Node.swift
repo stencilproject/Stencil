@@ -1,83 +1,52 @@
 import Foundation
 
-struct NodeError : Error {
-  let token:Token
-  let message:String
+public struct TemplateSyntaxError : ErrorType, Equatable, CustomStringConvertible {
+  public let description:String
 
-  init(token:Token, message:String) {
-    self.token = token
-    self.message = message
-  }
-
-  var description:String {
-    return "\(token.components().first!): \(message)"
+  public init(_ description:String) {
+    self.description = description
   }
 }
 
-public protocol Node {
-  /// Return the node rendered as a string, or returns a failure
-  func render(context:Context) -> Result
+public func ==(lhs:TemplateSyntaxError, rhs:TemplateSyntaxError) -> Bool {
+  return lhs.description == rhs.description
 }
 
-extension Array {
-  func map<U>(block:((Element) -> (U?, Error?))) -> ([U]?, Error?) {
-    var results = [U]()
-
-    for item in self {
-      let (result, error) = block(item)
-
-      if let error = error {
-        return (nil, error)
-      } else if (result != nil) {
-        // let result = result exposing a bug in the Swift compier :(
-        results.append(result!)
-      }
-    }
-
-    return (results, nil)
-  }
+public protocol NodeType {
+  /// Render the node in the given context
+  func render(context:Context) throws -> String
 }
 
-public func renderNodes(nodes:[Node], context:Context) -> Result {
-  var result = ""
-
-  for item in nodes {
-    switch item.render(context) {
-    case .Success(let string):
-      result += string
-    case .Error(let error):
-      return .Error(error)
-    }
-  }
-
-  return .Success(result)
+/// Render the collection of nodes in the given context
+public func renderNodes(nodes:[NodeType], _ context:Context) throws -> String {
+  return try nodes.map { try $0.render(context) }.joinWithSeparator("")
 }
 
-public class SimpleNode : Node {
-  let handler:(Context) -> (Result)
+public class SimpleNode : NodeType {
+  let handler:Context throws -> String
 
-  public init(handler:((Context) -> (Result))) {
+  public init(handler:Context throws -> String) {
     self.handler = handler
   }
 
-  public func render(context:Context) -> Result {
-    return handler(context)
+  public func render(context: Context) throws -> String {
+    return try handler(context)
   }
 }
 
-public class TextNode : Node {
+public class TextNode : NodeType {
   public let text:String
 
   public init(text:String) {
     self.text = text
   }
 
-  public func render(context:Context) -> Result {
-    return .Success(self.text)
+  public func render(context:Context) throws -> String {
+    return self.text
   }
 }
 
-public class VariableNode : Node {
+public class VariableNode : NodeType {
   public let variable:Variable
 
   public init(variable:Variable) {
@@ -88,23 +57,23 @@ public class VariableNode : Node {
     self.variable = Variable(variable)
   }
 
-  public func render(context:Context) -> Result {
+  public func render(context:Context) throws -> String {
     let result:AnyObject? = variable.resolve(context)
 
     if let result = result as? String {
-      return .Success(result)
+      return result
     } else if let result = result as? NSObject {
-      return .Success(result.description)
+      return result.description
     }
 
-    return .Success("")
+    return ""
   }
 }
 
-public class NowNode : Node {
+public class NowNode : NodeType {
   public let format:Variable
 
-  public class func parse(parser:TokenParser, token:Token) -> TokenParser.Result {
+  public class func parse(parser:TokenParser, token:Token) -> NodeType {
     var format:Variable?
 
     let components = token.components()
@@ -112,7 +81,7 @@ public class NowNode : Node {
       format = Variable(components[1])
     }
 
-    return .Success(node:NowNode(format:format))
+    return NowNode(format:format)
   }
 
   public init(format:Variable?) {
@@ -123,7 +92,7 @@ public class NowNode : Node {
     }
   }
 
-  public func render(context: Context) -> Result {
+  public func render(context: Context) throws -> String {
     let date = NSDate()
     let format: AnyObject? = self.format.resolve(context)
     var formatter:NSDateFormatter?
@@ -134,156 +103,115 @@ public class NowNode : Node {
       formatter = NSDateFormatter()
       formatter!.dateFormat = format
     } else {
-      return .Success("")
+      return ""
     }
 
-    return .Success(formatter!.stringFromDate(date))
+    return formatter!.stringFromDate(date)
   }
 }
 
-public class ForNode : Node {
+public class ForNode : NodeType {
   let variable:Variable
   let loopVariable:String
-  let nodes:[Node]
+  let nodes:[NodeType]
 
-  public class func parse(parser:TokenParser, token:Token) -> TokenParser.Result {
+  public class func parse(parser:TokenParser, token:Token) throws -> NodeType {
     let components = token.components()
 
     if components.count == 4 && components[2] == "in" {
       let loopVariable = components[1]
       let variable = components[3]
 
-      var forNodes:[Node]!
-      var emptyNodes = [Node]()
+      var emptyNodes = [NodeType]()
 
-      switch parser.parse(until(["endfor", "empty"])) {
-      case .Success(let nodes):
-        forNodes = nodes
-      case .Error(let error):
-        return .Error(error: error)
-      }
+      let forNodes = try parser.parse(until(["endfor", "empty"]))
 
       if let token = parser.nextToken() {
         if token.contents == "empty" {
-          switch parser.parse(until(["endfor"])) {
-          case .Success(let nodes):
-            emptyNodes = nodes
-          case .Error(let error):
-            return .Error(error: error)
-          }
-
+          emptyNodes = try parser.parse(until(["endfor"]))
           parser.nextToken()
         }
       } else {
-        return .Error(error: NodeError(token: token, message: "`endfor` was not found."))
+        throw TemplateSyntaxError("`endfor` was not found.")
       }
 
-      return .Success(node:ForNode(variable: variable, loopVariable: loopVariable, nodes: forNodes, emptyNodes:emptyNodes))
+      return ForNode(variable: variable, loopVariable: loopVariable, nodes: forNodes, emptyNodes:emptyNodes)
     }
 
-    return .Error(error: NodeError(token: token, message: "Invalid syntax. Expected `for x in y`."))
+    throw TemplateSyntaxError("'for' statements should use the following 'for x in y' `\(token.contents)`.")
   }
 
-  public init(variable:String, loopVariable:String, nodes:[Node], emptyNodes:[Node]) {
+  public init(variable:String, loopVariable:String, nodes:[NodeType], emptyNodes:[NodeType]) {
     self.variable = Variable(variable)
     self.loopVariable = loopVariable
     self.nodes = nodes
   }
 
-  public func render(context: Context) -> Result {
-    let values = variable.resolve(context) as? [AnyObject]
-    var output = ""
-
-    if let values = values {
-      for item in values {
+  public func render(context: Context) throws -> String {
+    if let values = variable.resolve(context) as? [AnyObject] {
+      return try values.map { item in
         context.push()
         context[loopVariable] = item
-        let result = renderNodes(nodes, context: context)
+        let result = try renderNodes(nodes, context)
         context.pop()
-
-        switch result {
-        case .Success(let string):
-          output += string
-        case .Error(let error):
-          return .Error(error)
-        }
-      }
+        return result
+      }.joinWithSeparator("")
     }
 
-    return .Success(output)
+    return ""
   }
 }
 
-public class IfNode : Node {
+public class IfNode : NodeType {
   public let variable:Variable
-  public let trueNodes:[Node]
-  public let falseNodes:[Node]
+  public let trueNodes:[NodeType]
+  public let falseNodes:[NodeType]
 
-  public class func parse(parser:TokenParser, token:Token) -> TokenParser.Result {
+  public class func parse(parser:TokenParser, token:Token) throws -> NodeType {
     let variable = token.components()[1]
-    var trueNodes = [Node]()
-    var falseNodes = [Node]()
+    var trueNodes = [NodeType]()
+    var falseNodes = [NodeType]()
 
-    switch parser.parse(until(["endif", "else"])) {
-    case .Success(let nodes):
-      trueNodes = nodes
-    case .Error(let error):
-      return .Error(error: error)
-    }
+    trueNodes = try parser.parse(until(["endif", "else"]))
 
     if let token = parser.nextToken() {
       if token.contents == "else" {
-        switch parser.parse(until(["endif"])) {
-        case .Success(let nodes):
-          falseNodes = nodes
-        case .Error(let error):
-          return .Error(error: error)
-        }
+        falseNodes = try parser.parse(until(["endif"]))
         parser.nextToken()
       }
     } else {
-      return .Error(error:NodeError(token: token, message: "`endif` was not found."))
+      throw TemplateSyntaxError("`endif` was not found.")
     }
 
-    return .Success(node:IfNode(variable: variable, trueNodes: trueNodes, falseNodes: falseNodes))
+    return IfNode(variable: variable, trueNodes: trueNodes, falseNodes: falseNodes)
   }
 
-  public class func parse_ifnot(parser:TokenParser, token:Token) -> TokenParser.Result {
+  public class func parse_ifnot(parser:TokenParser, token:Token) throws -> NodeType {
     let variable = token.components()[1]
-    var trueNodes = [Node]()
-    var falseNodes = [Node]()
+    var trueNodes = [NodeType]()
+    var falseNodes = [NodeType]()
 
-    switch parser.parse(until(["endif", "else"])) {
-    case .Success(let nodes):
-      falseNodes = nodes
-    case .Error(let error):
-      return .Error(error: error)
-    }
+    falseNodes = try parser.parse(until(["endif", "else"]))
 
     if let token = parser.nextToken() {
       if token.contents == "else" {
-        switch parser.parse(until(["endif"])) {
-        case .Success(let nodes):
-          trueNodes = nodes
-        case .Error(let error):
-          return .Error(error: error)
-        }
+        trueNodes = try parser.parse(until(["endif"]))
         parser.nextToken()
       }
     } else {
-      return .Error(error:NodeError(token: token, message: "`endif` was not found."))
+      throw TemplateSyntaxError("`endif` was not found.")
     }
 
-    return .Success(node:IfNode(variable: variable, trueNodes: trueNodes, falseNodes: falseNodes))
+    return IfNode(variable: variable, trueNodes: trueNodes, falseNodes: falseNodes)
   }
 
-  public init(variable:String, trueNodes:[Node], falseNodes:[Node]) {
+  public init(variable:String, trueNodes:[NodeType], falseNodes:[NodeType]) {
     self.variable = Variable(variable)
     self.trueNodes = trueNodes
     self.falseNodes = falseNodes
   }
 
-  public func render(context: Context) -> Result {
+  public func render(context: Context) throws -> String {
     let result: AnyObject? = variable.resolve(context)
     var truthy = false
 
@@ -296,7 +224,12 @@ public class IfNode : Node {
     }
 
     context.push()
-    let output = renderNodes(truthy ? trueNodes : falseNodes, context: context)
+    let output:String
+    if truthy {
+      output = try renderNodes(trueNodes, context)
+    } else {
+      output = try renderNodes(falseNodes, context)
+    }
     context.pop()
 
     return output

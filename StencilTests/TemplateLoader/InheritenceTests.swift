@@ -16,14 +16,7 @@ class InheritenceTests: NodeTests {
   func testInheritence() {
     context = Context(dictionary: ["loader": loader])
     let template = loader.loadTemplate("child.html")!
-    let result = template.render(context)
-
-    switch result {
-    case .Success(let rendered):
-      XCTAssertEqual(rendered, "Header\nChild")
-    case .Error:
-      XCTAssert(false, "Unexpected error")
-    }
+    XCTAssertEqual(try? template.render(context), "Header\nChild")
   }
 }
 

@@ -1,5 +1,3 @@
-import Foundation
-
 public func until(tags:[String])(parser:TokenParser, token:Token) -> Bool {
   if let name = token.components().first {
     for tag in tags {
@@ -14,18 +12,7 @@ public func until(tags:[String])(parser:TokenParser, token:Token) -> Bool {
 
 /// A class for parsing an array of tokens and converts them into a collection of Node's
 public class TokenParser {
-  public typealias TagParser = (TokenParser, Token) -> Result
-  public typealias NodeList = [Node]
-
-  public enum Result {
-    case Success(node: Node)
-    case Error(error: Stencil.Error)
-  }
-
-  public enum Results {
-    case Success(nodes: NodeList)
-    case Error(error: Stencil.Error)
-  }
+  public typealias TagParser = (TokenParser, Token) throws -> NodeType
 
   private var tokens:[Token]
   private var tags = [String:TagParser]()
@@ -47,19 +34,19 @@ public class TokenParser {
   }
 
   /// Registers a simple template tag with a name and a handler
-  public func registerSimpleTag(name:String, handler:((Context) -> (Stencil.Result))) {
-    registerTag(name, parser: { (parser, token) -> TokenParser.Result in
-      return .Success(node:SimpleNode(handler: handler))
+  public func registerSimpleTag(name:String, handler:(Context throws -> String)) {
+    registerTag(name, parser: { parser, token in
+      return SimpleNode(handler: handler)
     })
   }
 
   /// Parse the given tokens into nodes
-  public func parse() -> Results {
-    return parse(nil)
+  public func parse() throws -> [NodeType] {
+    return try parse(nil)
   }
 
-  public func parse(parse_until:((parser:TokenParser, token:Token) -> (Bool))?) -> TokenParser.Results {
-    var nodes = NodeList()
+  public func parse(parse_until:((parser:TokenParser, token:Token) -> (Bool))?) throws -> [NodeType] {
+    var nodes = [NodeType]()
 
     while tokens.count > 0 {
       let token = nextToken()!
@@ -75,26 +62,19 @@ public class TokenParser {
         if let parse_until = parse_until {
           if parse_until(parser: self, token: token) {
             prependToken(token)
-            return .Success(nodes:nodes)
+            return nodes
           }
         }
 
-        if let tag = tag {
-          if let parser = self.tags[tag] {
-            switch parser(self, token) {
-            case .Success(let node):
-              nodes.append(node)
-            case .Error(let error):
-              return .Error(error:error)
-            }
-          }
+        if let tag = tag, let parser = self.tags[tag] {
+          nodes.append(try parser(self, token))
         }
       case .Comment:
         continue
       }
     }
 
-    return .Success(nodes:nodes)
+    return nodes
   }
 
   public func nextToken() -> Token? {

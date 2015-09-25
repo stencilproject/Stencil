@@ -1,11 +1,3 @@
-//
-//  TemplateLoader.swift
-//  Stencil
-//
-//  Created by Kyle Fuller on 28/12/2014.
-//  Copyright (c) 2014 Cocode. All rights reserved.
-//
-
 import Foundation
 import PathKit
 

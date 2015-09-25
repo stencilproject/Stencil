@@ -12,15 +12,15 @@ public class Template {
 
   /// Create a template with the given name inside the given bundle
   public convenience init(named:String, inBundle bundle:NSBundle?) throws {
-    var url:NSURL?
+    let url:NSURL
 
     if let bundle = bundle {
-      url = bundle.URLForResource(named, withExtension: nil)
+      url = bundle.URLForResource(named, withExtension: nil)!
     } else {
-      url = NSBundle.mainBundle().URLForResource(named, withExtension: nil)
+      url = NSBundle.mainBundle().URLForResource(named, withExtension: nil)!
     }
 
-    try self.init(URL:url!)
+    try self.init(URL:url)
   }
 
   /// Create a template with a file found at the given URL
@@ -40,20 +40,9 @@ public class Template {
     parser = TokenParser(tokens: tokens)
   }
 
-  /// Render the given template in a context
-  public func render(context:Context) -> Result {
-    switch parser.parse() {
-    case .Success(let nodes):
-      return renderNodes(nodes, context: context)
-
-    case .Error(let error):
-      return .Error(error)
-    }
-  }
-
-  /// Render the given template without a context
-  public func render() -> Result {
-    let context = Context()
-    return render(context)
+  /// Render the given template
+  public func render(context:Context? = nil) throws -> String {
+    let nodes = try parser.parse()
+    return try renderNodes(nodes, context ?? Context())
   }
 }

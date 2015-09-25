@@ -2,27 +2,27 @@ import Foundation
 import XCTest
 import Stencil
 
-func assertSuccess(result:TokenParser.Results, block:(([Node]) -> ())) {
-  switch result {
-  case .Success(let nodes):
-    block(nodes)
-  case .Error:
-    XCTAssert(false, "Unexpected error")
+func assertSuccess<T>(@autoclosure closure:() throws -> (T), block:(T -> ())) {
+  do {
+    block(try closure())
+  } catch {
+    XCTFail("Unexpected error \(error)")
   }
 }
 
-func assertFailure(result:TokenParser.Results, description:String) {
-  switch result {
-  case .Success:
-    XCTAssert(false, "Unexpected error")
-  case .Error(let error):
-    XCTAssertEqual("\(error)", description)
+func assertFailure<T, U : Equatable>(@autoclosure closure:() throws -> (T), _ error:U) {
+  do {
+    try closure()
+  } catch let e as U {
+    XCTAssertEqual(e, error)
+  } catch {
+    XCTFail()
   }
 }
 
-class CustomNode : Node {
-  func render(context:Context) -> Result {
-    return .Success("Hello World")
+class CustomNode : NodeType {
+  func render(context:Context) throws -> String {
+    return "Hello World"
   }
 }
 
@@ -42,7 +42,7 @@ class StencilTests: XCTestCase {
       ])
 
     let template = Template(templateString:templateString)
-    let result = template.render(context)
+    let result = try? template.render(context)
 
     let fixture = "There are 2 articles.\n" +
       "\n" +
@@ -50,7 +50,7 @@ class StencilTests: XCTestCase {
       "    - Memory Management with ARC by Kyle Fuller.\n" +
     "\n"
 
-    XCTAssertEqual(result, Result.Success(fixture))
+    XCTAssertEqual(result, fixture)
   }
 
   func testCustomTag() {
@@ -58,11 +58,10 @@ class StencilTests: XCTestCase {
     let template = Template(templateString:templateString)
 
     template.parser.registerTag("custom") { parser, token in
-      return .Success(node:CustomNode())
+      return CustomNode()
     }
 
-    let result = template.render()
-    XCTAssertEqual(result, Result.Success("Hello World"))
+    XCTAssertEqual(try? template.render(), "Hello World")
   }
 
   func testSimpleCustomTag() {
@@ -70,10 +69,9 @@ class StencilTests: XCTestCase {
     let template = Template(templateString:templateString)
 
     template.parser.registerSimpleTag("custom") { context in
-      return .Success("Hello World")
+      return "Hello World"
     }
 
-    let result = template.render()
-    XCTAssertEqual(result, Result.Success("Hello World"))
+    XCTAssertEqual(try? template.render(), "Hello World")
   }
 }

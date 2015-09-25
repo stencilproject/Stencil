@@ -1,6 +1,3 @@
-import Foundation
-
-
 public enum Token : Equatable {
   /// A token representing a piece of text.
   case Text(value:String)
