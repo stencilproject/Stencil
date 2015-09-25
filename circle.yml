@@ -9,7 +9,7 @@ test:
 
 deployment:
   release:
-    tag: /v?\d+\.\d+.*/
+    tag: /.*/
     commands:
       - pod trunk push
 
