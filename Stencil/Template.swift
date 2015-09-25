@@ -6,12 +6,12 @@ public class Template {
   public let parser:TokenParser
 
   /// Create a template with the given name inside the main bundle
-  public convenience init?(named:String) throws {
+  public convenience init(named:String) throws {
     try self.init(named:named, inBundle:nil)
   }
 
   /// Create a template with the given name inside the given bundle
-  public convenience init?(named:String, inBundle bundle:NSBundle?) throws {
+  public convenience init(named:String, inBundle bundle:NSBundle?) throws {
     var url:NSURL?
 
     if let bundle = bundle {
@@ -25,13 +25,12 @@ public class Template {
 
   /// Create a template with a file found at the given URL
   public convenience init(URL:NSURL) throws {
-    let templateString = try NSString(contentsOfURL: URL, encoding: NSUTF8StringEncoding)
-    self.init(templateString: templateString as String)
+    try self.init(path: Path(URL.absoluteString))
   }
 
   /// Create a template with a file found at the given path
-  public convenience init?(path:Path) throws {
-    self.init(templateString: path.read() ?? "")
+  public convenience init(path:Path) throws {
+    self.init(templateString: try path.read())
   }
 
   /// Create a template with a template string

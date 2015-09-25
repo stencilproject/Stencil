@@ -1,10 +1,10 @@
 PODS:
-  - PathKit (0.4.0)
+  - PathKit (0.5.0)
 
 DEPENDENCIES:
-  - PathKit (~> 0.4.0)
+  - PathKit (~> 0.5.0)
 
 SPEC CHECKSUMS:
-  PathKit: bfbf544223c1a9fbf5dd7ff301d9ab1c46603b7d
+  PathKit: 64e70cb924d6faed9251049f5f28662855524baf
 
 COCOAPODS: 0.38.2
