@@ -1,13 +1,13 @@
-import Foundation
-
 /// A container for template variables.
 public class Context : Equatable {
-  var dictionaries:[Dictionary<String, AnyObject>]
+  var dictionaries:[[String:AnyObject]]
 
-  public init(dictionary:Dictionary<String, AnyObject>) {
+  /// Initialise a Context with a dictionary
+  public init(dictionary:[String:AnyObject]) {
     dictionaries = [dictionary]
   }
 
+  /// Initialise an empty Context
   public init() {
     dictionaries = []
   }
@@ -16,7 +16,7 @@ public class Context : Equatable {
     /// Retrieves a variable's value, starting at the current context and going upwards
     get {
       for dictionary in Array(dictionaries.reverse()) {
-        if let value:AnyObject = dictionary[key] {
+        if let value = dictionary[key] {
           return value
         }
       }
@@ -26,24 +26,21 @@ public class Context : Equatable {
 
     /// Set a variable in the current context, deleting the variable if it's nil
     set(value) {
-      if dictionaries.count > 0 {
-        var dictionary = dictionaries.removeLast()
+      if var dictionary = dictionaries.popLast() {
         dictionary[key] = value
         dictionaries.append(dictionary)
       }
     }
   }
 
-  public func push() {
-    push(Dictionary<String, AnyObject>())
+  /// Push a new level into the Context
+  public func push(dictionary:[String:AnyObject]? = nil) {
+    dictionaries.append(dictionary ?? [:])
   }
 
-  public func push(dictionary:Dictionary<String, AnyObject>) {
-    dictionaries.append(dictionary)
-  }
-
-  public func pop() {
-    dictionaries.removeLast()
+  /// Pop the last level off of the Context
+  public func pop() -> [String:AnyObject]? {
+    return dictionaries.popLast()
   }
 }
 

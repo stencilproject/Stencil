@@ -25,7 +25,7 @@ public struct Variable : Equatable {
     for bit in lookup() {
       if let context = current as? Context {
         current = context[bit]
-      } else if let dictionary = current as? Dictionary<String, AnyObject> {
+      } else if let dictionary = current as? [String:AnyObject] {
         current = dictionary[bit]
       } else if let array = current as? [AnyObject] {
         if let index = Int(bit) {

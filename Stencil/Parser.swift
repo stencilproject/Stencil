@@ -28,7 +28,7 @@ public class TokenParser {
   }
 
   private var tokens:[Token]
-  private var tags = Dictionary<String, TagParser>()
+  private var tags = [String:TagParser]()
 
   public init(tokens:[Token]) {
     self.tokens = tokens
