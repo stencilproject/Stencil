@@ -25,7 +25,7 @@ public class Template {
 
   /// Create a template with a file found at the given URL
   public convenience init(URL:NSURL) throws {
-    try self.init(path: Path(URL.absoluteString))
+    try self.init(path: Path(URL.path!))
   }
 
   /// Create a template with a file found at the given path
