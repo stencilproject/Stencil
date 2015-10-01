@@ -4,6 +4,7 @@ import PathKit
 /// A class representing a template
 public class Template {
   public let parser:TokenParser
+  private var nodes:[NodeType]? = nil
 
   /// Create a template with the given name inside the main bundle
   public convenience init(named:String) throws {
@@ -42,7 +43,10 @@ public class Template {
 
   /// Render the given template
   public func render(context:Context? = nil) throws -> String {
-    let nodes = try parser.parse()
-    return try renderNodes(nodes, context ?? Context())
+    if nodes == nil {
+        nodes = try parser.parse()
+    }
+    
+    return try renderNodes(nodes!, context ?? Context())
   }
 }
