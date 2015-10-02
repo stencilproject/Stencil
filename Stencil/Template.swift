@@ -6,13 +6,8 @@ public class Template {
   public let parser:TokenParser
   private var nodes:[NodeType]? = nil
 
-  /// Create a template with the given name inside the main bundle
-  public convenience init(named:String) throws {
-    try self.init(named:named, inBundle:nil)
-  }
-
   /// Create a template with the given name inside the given bundle
-  public convenience init(named:String, inBundle bundle:NSBundle?) throws {
+  public convenience init(named:String, inBundle bundle:NSBundle? = nil) throws {
     let url:NSURL
 
     if let bundle = bundle {
