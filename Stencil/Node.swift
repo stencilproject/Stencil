@@ -73,10 +73,13 @@ public class VariableNode : NodeType {
 public class NowNode : NodeType {
   public let format:Variable
 
-  public class func parse(parser:TokenParser, token:Token) -> NodeType {
+  public class func parse(parser:TokenParser, token:Token) throws -> NodeType {
     var format:Variable?
 
     let components = token.components()
+    guard components.count <= 2 else {
+      throw TemplateSyntaxError("'now' tags may only have one argument: the format string `\(token.contents)`.")
+    }
     if components.count == 2 {
       format = Variable(components[1])
     }
@@ -85,11 +88,7 @@ public class NowNode : NodeType {
   }
 
   public init(format:Variable?) {
-    if let format = format {
-      self.format = format
-    } else {
-      self.format = Variable("\"yyyy-MM-dd 'at' HH:mm\"")
-    }
+    self.format = format ?? Variable("\"yyyy-MM-dd 'at' HH:mm\"")
   }
 
   public func render(context: Context) throws -> String {
@@ -145,6 +144,7 @@ public class ForNode : NodeType {
     self.variable = Variable(variable)
     self.loopVariable = loopVariable
     self.nodes = nodes
+    // TODO: Handle emptyNodes
   }
 
   public func render(context: Context) throws -> String {
@@ -168,7 +168,11 @@ public class IfNode : NodeType {
   public let falseNodes:[NodeType]
 
   public class func parse(parser:TokenParser, token:Token) throws -> NodeType {
-    let variable = token.components()[1]
+    let components = token.components()
+    guard components.count == 2 else {
+      throw TemplateSyntaxError("'if' statements should use the following 'if condition' `\(token.contents)`.")
+    }
+    let variable = components[1]
     var trueNodes = [NodeType]()
     var falseNodes = [NodeType]()
 
@@ -187,7 +191,11 @@ public class IfNode : NodeType {
   }
 
   public class func parse_ifnot(parser:TokenParser, token:Token) throws -> NodeType {
-    let variable = token.components()[1]
+    let components = token.components()
+    guard components.count == 2 else {
+      throw TemplateSyntaxError("'ifnot' statements should use the following 'if condition' `\(token.contents)`.")
+    }
+    let variable = components[1]
     var trueNodes = [NodeType]()
     var falseNodes = [NodeType]()
 
