@@ -20,6 +20,11 @@ class TemplateTests: XCTestCase {
     XCTAssertEqual(result, "Hello Kyle!")
   }
 
+  func testTemplateNamedInBundleThrowsForUnknownFile() {
+    let testBundle = NSBundle(forClass: self.dynamicType)
+    let template = try? Template(named: "test2.html", inBundle: testBundle)
+    XCTAssertNil(template)
+  }
 
   func testTemplateWithNSURL() {
     let testBundle = NSBundle(forClass: self.dynamicType)
