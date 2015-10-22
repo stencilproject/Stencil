@@ -17,13 +17,14 @@ class TokenParserTests: XCTestCase {
 
   func testParsingVariableToken() {
     let parser = TokenParser(tokens: [
-      Token.Variable(value: "name")
-      ])
+      Token.Variable(value: "'name'")
+    ])
 
     assertSuccess(try parser.parse()) { nodes in
       let node = nodes.first as! VariableNode
       XCTAssertEqual(nodes.count, 1)
-      XCTAssertEqual(node.variable, Variable("name"))
+      let result = try? node.render(Context())
+      XCTAssertEqual(result, "name")
     }
   }
 

@@ -1,8 +1,40 @@
 import Foundation
 
 
+class FilterExpression : Resolvable {
+  let filters: [Filter]
+  let variable: Variable
+
+  init(token: String, parser: TokenParser) throws {
+    let bits = token.componentsSeparatedByString("|")
+    if bits.isEmpty {
+      filters = []
+      variable = Variable("")
+      throw TemplateSyntaxError("Variable tags must include at least 1 argument")
+    }
+
+    variable = Variable(bits[0])
+    let filterBits = bits[1 ..< bits.endIndex]
+
+    do {
+      filters = try filterBits.map { try parser.findFilter($0) }
+    } catch {
+      filters = []
+      throw error
+    }
+  }
+
+  func resolve(context: Context) -> Any? {
+    let result = variable.resolve(context)
+
+    return filters.reduce(result) { x, y in
+      return y(x)
+    }
+  }
+}
+
 /// A structure used to represent a template variable, and to resolve it in a given context.
-public struct Variable : Equatable {
+public struct Variable : Equatable, Resolvable {
   public let variable:String
 
   /// Create a variable with a string representing the variable
@@ -15,11 +47,12 @@ public struct Variable : Equatable {
   }
 
   /// Resolve the variable in the given context
-  public func resolve(context:Context) -> AnyObject? {
+  public func resolve(context:Context) -> Any? {
     var current:AnyObject? = context
 
     if (variable.hasPrefix("'") && variable.hasSuffix("'")) || (variable.hasPrefix("\"") && variable.hasSuffix("\"")) {
-      return variable.substringWithRange(variable.startIndex.successor() ..< variable.endIndex.predecessor())
+      // String literal
+      return variable[variable.startIndex.successor() ..< variable.endIndex.predecessor()]
     }
 
     for bit in lookup() {

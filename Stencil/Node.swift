@@ -46,22 +46,28 @@ public class TextNode : NodeType {
   }
 }
 
-public class VariableNode : NodeType {
-  public let variable:Variable
+public protocol Resolvable {
+  func resolve(context: Context) -> Any?
+}
 
-  public init(variable:Variable) {
+public class VariableNode : NodeType {
+  public let variable: Resolvable
+
+  public init(variable: Resolvable) {
     self.variable = variable
   }
 
-  public init(variable:String) {
+  public init(variable: String) {
     self.variable = Variable(variable)
   }
 
-  public func render(context:Context) throws -> String {
-    let result:AnyObject? = variable.resolve(context)
+  public func render(context: Context) throws -> String {
+    let result = variable.resolve(context)
 
     if let result = result as? String {
       return result
+    } else if let result = result as? CustomStringConvertible {
+      return result.description
     } else if let result = result as? NSObject {
       return result.description
     }
@@ -94,7 +100,7 @@ public class NowNode : NodeType {
 
   public func render(context: Context) throws -> String {
     let date = NSDate()
-    let format: AnyObject? = self.format.resolve(context)
+    let format = self.format.resolve(context)
     var formatter:NSDateFormatter?
 
     if let format = format as? NSDateFormatter {
@@ -212,7 +218,7 @@ public class IfNode : NodeType {
   }
 
   public func render(context: Context) throws -> String {
-    let result: AnyObject? = variable.resolve(context)
+    let result = variable.resolve(context)
     var truthy = false
 
     if let result = result as? [AnyObject] {
