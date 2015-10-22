@@ -1,24 +1,6 @@
-import Foundation
-import XCTest
+import Spectre
 import Stencil
 
-func assertSuccess<T>(@autoclosure closure:() throws -> (T), block:(T -> ())) {
-  do {
-    block(try closure())
-  } catch {
-    XCTFail("Unexpected error \(error)")
-  }
-}
-
-func assertFailure<T, U : Equatable>(@autoclosure closure:() throws -> (T), _ error:U) {
-  do {
-    try closure()
-  } catch let e as U {
-    XCTAssertEqual(e, error)
-  } catch {
-    XCTFail()
-  }
-}
 
 class CustomNode : NodeType {
   func render(context:Context) throws -> String {
@@ -26,8 +8,9 @@ class CustomNode : NodeType {
   }
 }
 
-class StencilTests: XCTestCase {
-  func testReadmeExample() {
+
+describe("Stencil") {
+  $0.it("can render the README example") {
     let templateString = "There are {{ articles.count }} articles.\n" +
       "\n" +
       "{% for article in articles %}" +
@@ -39,10 +22,10 @@ class StencilTests: XCTestCase {
         [ "title": "Migrating from OCUnit to XCTest", "author": "Kyle Fuller" ],
         [ "title": "Memory Management with ARC", "author": "Kyle Fuller" ],
       ]
-      ])
+    ])
 
     let template = Template(templateString:templateString)
-    let result = try? template.render(context)
+    let result = try template.render(context)
 
     let fixture = "There are 2 articles.\n" +
       "\n" +
@@ -50,10 +33,10 @@ class StencilTests: XCTestCase {
       "    - Memory Management with ARC by Kyle Fuller.\n" +
     "\n"
 
-    XCTAssertEqual(result, fixture)
+    try expect(result) == fixture
   }
 
-  func testCustomTag() {
+  $0.it("can render a custom template tag") {
     let templateString = "{% custom %}"
     let template = Template(templateString:templateString)
 
@@ -61,10 +44,11 @@ class StencilTests: XCTestCase {
       return CustomNode()
     }
 
-    XCTAssertEqual(try? template.render(), "Hello World")
+    let result = try template.render()
+    try expect(result) == "Hello World"
   }
 
-  func testSimpleCustomTag() {
+  $0.it("can render a simple custom tag") {
     let templateString = "{% custom %}"
     let template = Template(templateString:templateString)
 
@@ -72,6 +56,6 @@ class StencilTests: XCTestCase {
       return "Hello World"
     }
 
-    XCTAssertEqual(try? template.render(), "Hello World")
+    try expect(try template.render()) == "Hello World"
   }
 }

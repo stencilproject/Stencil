@@ -1,11 +1,17 @@
 machine:
   xcode:
     version: "7.0"
+  environment:
+    XCODE_SCHEME: NONE
+    XCODE_PROJECT: NONE
+
+dependencies:
+  post:
+    - brew install --HEAD kylef/formulae/conche
 
 test:
   override:
-    - set -o pipefail && xcodebuild -workspace Stencil.xcworkspace -scheme Stencil test | tee $CIRCLE_ARTIFACTS/xcode_raw_ios.log | xcpretty -c
-    - pod lib lint
+    - conche test
 
 deployment:
   release:
