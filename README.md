@@ -114,7 +114,7 @@ For example, `Stencil` to `stencil`.
 
 #### Registering custom filters
 
-```
+```swift
 template.parser.registerFilter("double") { value in
   if let value = value as? Int {
     return value * 2
