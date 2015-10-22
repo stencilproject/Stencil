@@ -154,7 +154,8 @@ public class ForNode : NodeType {
   }
 
   public func render(context: Context) throws -> String {
-    if let values = variable.resolve(context) as? [AnyObject] {
+    let values = variable.resolve(context)
+    if let values = values as? NSArray {
       return try values.map { item in
         context.push()
         context[loopVariable] = item

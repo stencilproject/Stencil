@@ -48,7 +48,7 @@ public struct Variable : Equatable, Resolvable {
 
   /// Resolve the variable in the given context
   public func resolve(context:Context) -> Any? {
-    var current:AnyObject? = context
+    var current: Any? = context
 
     if (variable.hasPrefix("'") && variable.hasSuffix("'")) || (variable.hasPrefix("\"") && variable.hasSuffix("\"")) {
       // String literal
@@ -58,15 +58,27 @@ public struct Variable : Equatable, Resolvable {
     for bit in lookup() {
       if let context = current as? Context {
         current = context[bit]
-      } else if let dictionary = current as? [String:AnyObject] {
+      } else if let dictionary = current as? [String: Any] {
         current = dictionary[bit]
-      } else if let array = current as? [AnyObject] {
+      } else if let dictionary = current as? [String: AnyObject] {
+        current = dictionary[bit]
+      } else if let array = current as? [Any] {
         if let index = Int(bit) {
           current = array[index]
         } else if bit == "first" {
           current = array.first
         } else if bit == "last" {
           current = array.last
+        } else if bit == "count" {
+          current = array.count
+        }
+      } else if let array = current as? NSArray {
+        if let index = Int(bit) {
+          current = array[index]
+        } else if bit == "first" {
+          current = array.firstObject
+        } else if bit == "last" {
+          current = array.lastObject
         } else if bit == "count" {
           current = array.count
         }
