@@ -126,23 +126,23 @@ public class ForNode : NodeType {
     guard components.count == 4 && components[2] == "in" else {
       throw TemplateSyntaxError("'for' statements should use the following 'for x in y' `\(token.contents)`.")
     }
-    
+
     let loopVariable = components[1]
     let variable = components[3]
-    
+
     var emptyNodes = [NodeType]()
-    
+
     let forNodes = try parser.parse(until(["endfor", "empty"]))
-    
+
     guard let token = parser.nextToken() else {
       throw TemplateSyntaxError("`endfor` was not found.")
     }
-    
+
     if token.contents == "empty" {
       emptyNodes = try parser.parse(until(["endfor"]))
       parser.nextToken()
     }
-    
+
     return ForNode(variable: variable, loopVariable: loopVariable, nodes: forNodes, emptyNodes:emptyNodes)
   }
 
@@ -188,7 +188,7 @@ public class IfNode : NodeType {
     guard let token = parser.nextToken() else {
       throw TemplateSyntaxError("`endif` was not found.")
     }
-    
+
     if token.contents == "else" {
       falseNodes = try parser.parse(until(["endif"]))
       parser.nextToken()
@@ -211,7 +211,7 @@ public class IfNode : NodeType {
     guard let token = parser.nextToken() else {
       throw TemplateSyntaxError("`endif` was not found.")
     }
-    
+
     if token.contents == "else" {
       trueNodes = try parser.parse(until(["endif"]))
       parser.nextToken()

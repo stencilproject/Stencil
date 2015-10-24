@@ -70,8 +70,8 @@ public class TokenParser {
         let tag = token.components().first
 
         if let parse_until = parse_until where parse_until(parser: self, token: token) {
-            prependToken(token)
-            return nodes
+          prependToken(token)
+          return nodes
         }
 
         if let tag = tag {
