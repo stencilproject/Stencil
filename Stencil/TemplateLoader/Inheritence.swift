@@ -88,6 +88,7 @@ class BlockNode : NodeType {
 
     let blockName = bits[1]
     let nodes = try parser.parse(until(["endblock"]))
+    parser.nextToken()
     return BlockNode(name:blockName, nodes:nodes)
   }
 
