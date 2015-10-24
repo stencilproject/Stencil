@@ -47,7 +47,7 @@ public class TextNode : NodeType {
 }
 
 public protocol Resolvable {
-  func resolve(context: Context) -> Any?
+  func resolve(context: Context) throws -> Any?
 }
 
 public class VariableNode : NodeType {
@@ -62,7 +62,7 @@ public class VariableNode : NodeType {
   }
 
   public func render(context: Context) throws -> String {
-    let result = variable.resolve(context)
+    let result = try variable.resolve(context)
 
     if let result = result as? String {
       return result
@@ -99,7 +99,7 @@ public class NowNode : NodeType {
 
   public func render(context: Context) throws -> String {
     let date = NSDate()
-    let format = self.format.resolve(context)
+    let format = try self.format.resolve(context)
     var formatter:NSDateFormatter?
 
     if let format = format as? NSDateFormatter {
@@ -154,7 +154,7 @@ public class ForNode : NodeType {
   }
 
   public func render(context: Context) throws -> String {
-    let values = variable.resolve(context)
+    let values = try variable.resolve(context)
     if let values = values as? NSArray {
       return try values.map { item in
         context.push()
@@ -227,7 +227,7 @@ public class IfNode : NodeType {
   }
 
   public func render(context: Context) throws -> String {
-    let result = variable.resolve(context)
+    let result = try variable.resolve(context)
     var truthy = false
 
     if let result = result as? [AnyObject] {
