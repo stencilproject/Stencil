@@ -2,6 +2,25 @@ import Spectre
 import Stencil
 
 
+describe("template filters") {
+  let context = Context(dictionary: ["name": "Kyle"])
+  let template = Template(templateString: "{{ name|repeat }}")
+
+  $0.it("allows you to register a custom filter") {
+    template.parser.registerFilter("repeat") { value in
+      if let value = value as? String {
+        return "\(value) \(value)"
+      }
+
+      return nil
+    }
+
+    let result = try template.render(context)
+    try expect(result) == "Kyle Kyle"
+  }
+}
+
+
 describe("capitalize filter") {
   let template = Template(templateString: "{{ name|capitalize }}")
 
@@ -11,6 +30,7 @@ describe("capitalize filter") {
   }
 }
 
+
 describe("uppercase filter") {
   let template = Template(templateString: "{{ name|uppercase }}")
 
@@ -19,6 +39,7 @@ describe("uppercase filter") {
     try expect(result) == "KYLE"
   }
 }
+
 
 describe("lowercase filter") {
   let template = Template(templateString: "{{ name|lowercase }}")
