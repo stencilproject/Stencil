@@ -69,11 +69,9 @@ public class TokenParser {
       case .Block:
         let tag = token.components().first
 
-        if let parse_until = parse_until {
-          if parse_until(parser: self, token: token) {
+        if let parse_until = parse_until where parse_until(parser: self, token: token) {
             prependToken(token)
             return nodes
-          }
         }
 
         if let tag = tag, let parser = self.tags[tag] {
