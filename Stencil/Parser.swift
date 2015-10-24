@@ -74,8 +74,12 @@ public class TokenParser {
             return nodes
         }
 
-        if let tag = tag, let parser = self.tags[tag] {
-          nodes.append(try parser(self, token))
+        if let tag = tag {
+          if let parser = self.tags[tag] {
+            nodes.append(try parser(self, token))
+          } else {
+            throw TemplateSyntaxError("Unknown template tag '\(tag)'")
+          }
         }
       case .Comment:
         continue

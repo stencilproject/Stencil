@@ -44,4 +44,12 @@ describe("TokenParser") {
     let nodes = try parser.parse()
     try expect(nodes.count) == 1
   }
+
+  $0.it("errors when parsing an unknown tag") {
+    let parser = TokenParser(tokens: [
+      Token.Block(value: "unknown"),
+    ])
+
+    try expect(try parser.parse()).toThrow(TemplateSyntaxError("Unknown template tag 'unknown'"))
+  }
 }
