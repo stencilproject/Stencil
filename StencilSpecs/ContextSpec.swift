@@ -50,4 +50,16 @@ describe("Context") {
     context.push(["name": "Katie"])
     try expect(context["name"] as? String) == "Katie"
   }
+
+  $0.it("allows you to push a dictionary and run a closure then restoring previous state") {
+    var didRun = false
+
+    try context.push(["name": "Katie"]) {
+      didRun = true
+      try expect(context["name"] as? String) == "Katie"
+    }
+
+    try expect(didRun).to.beTrue()
+    try expect(context["name"] as? String) == "Kyle"
+  }
 }
