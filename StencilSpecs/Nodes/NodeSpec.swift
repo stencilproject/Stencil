@@ -55,12 +55,4 @@ describe("Node") {
       try expect(try renderNodes(nodes, context)).toThrow(TemplateSyntaxError("Custom Error"))
     }
   }
-
-  $0.describe("ForNode") {
-    $0.it("renders the given nodes for each item") {
-      let nodes: [NodeType] = [VariableNode(variable: "item")]
-      let node = ForNode(variable: "items", loopVariable: "item", nodes: nodes, emptyNodes: [])
-      try expect(try node.render(context)) == "123"
-    }
-  }
 }
