@@ -230,7 +230,7 @@ public class IfNode : NodeType {
     let result = try variable.resolve(context)
     var truthy = false
 
-    if let result = result as? [AnyObject] {
+    if let result = result as? NSArray {
       if result.count > 0 {
         truthy = true
       }
