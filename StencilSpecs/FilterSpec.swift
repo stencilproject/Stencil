@@ -7,7 +7,9 @@ describe("template filters") {
 
   $0.it("allows you to register a custom filter") {
     let template = Template(templateString: "{{ name|repeat }}")
-    template.parser.registerFilter("repeat") { value in
+
+    let namespace = Namespace()
+    namespace.registerFilter("repeat") { value in
       if let value = value as? String {
         return "\(value) \(value)"
       }
@@ -15,17 +17,18 @@ describe("template filters") {
       return nil
     }
 
-    let result = try template.render(context)
+    let result = try template.render(context, namespace: namespace)
     try expect(result) == "Kyle Kyle"
   }
 
   $0.it("allows you to register a custom filter") {
     let template = Template(templateString: "{{ name|repeat }}")
-    template.parser.registerFilter("repeat") { value in
+    let namespace = Namespace()
+    namespace.registerFilter("repeat") { value in
       throw TemplateSyntaxError("No Repeat")
     }
 
-    try expect(try template.render(context)).toThrow(TemplateSyntaxError("No Repeat"))
+    try expect(try template.render(context, namespace: namespace)).toThrow(TemplateSyntaxError("No Repeat"))
   }
 }
 

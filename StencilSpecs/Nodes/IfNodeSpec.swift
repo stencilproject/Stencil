@@ -12,7 +12,7 @@ describe("IfNode") {
         Token.Block(value: "endif")
       ]
 
-      let parser = TokenParser(tokens: tokens)
+      let parser = TokenParser(tokens: tokens, namespace: Namespace())
       let nodes = try parser.parse()
       let node = nodes.first as? IfNode
       let trueNode = node?.trueNodes.first as? TextNode
@@ -35,7 +35,7 @@ describe("IfNode") {
         Token.Block(value: "endif")
       ]
 
-      let parser = TokenParser(tokens: tokens)
+      let parser = TokenParser(tokens: tokens, namespace: Namespace())
       let nodes = try parser.parse()
       let node = nodes.first as? IfNode
       let trueNode = node?.trueNodes.first as? TextNode
@@ -54,7 +54,7 @@ describe("IfNode") {
         Token.Block(value: "if value"),
       ]
 
-      let parser = TokenParser(tokens: tokens)
+      let parser = TokenParser(tokens: tokens, namespace: Namespace())
       let error = TemplateSyntaxError("`endif` was not found.")
       try expect(try parser.parse()).toThrow(error)
     }
@@ -64,7 +64,7 @@ describe("IfNode") {
         Token.Block(value: "ifnot value"),
       ]
 
-      let parser = TokenParser(tokens: tokens)
+      let parser = TokenParser(tokens: tokens, namespace: Namespace())
       let error = TemplateSyntaxError("`endif` was not found.")
       try expect(try parser.parse()).toThrow(error)
     }

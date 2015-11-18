@@ -96,7 +96,7 @@ When the `ForNode` is rendered in a context, it will look up the variable `artic
 
 There are two ways to register custom template tags. A simple way which allows you to map 1:1 a block token to a Node. You can also register a more advanced template tag which has it’s own block of code for handling parsing if you want to parse up until another token such as if you are trying to provide flow-control.
 
-The tags are registered onto the `TokenParser` which you can access from your `Template`.
+The tags are registered with a `Namespace` passed when rendering your `Template`.
 
 #### Simple Tags
 
@@ -105,7 +105,7 @@ A simple tag is registered with a string for the tag name and a block of code wh
 Here’s an example. Registering a template tag called `custom` which just renders `Hello World` in the rendered template:
 
 ```swift
-parser.registerSimpleTag("custom") { context in
+namespace.registerSimpleTag("custom") { context in
   return "Hello World"
 }
 ```
@@ -120,7 +120,7 @@ You would use it as such in a template:
 
 If you need more control or functionality than the simple tag’s above, you can use the node based API where you can provide a block of code to deal with parsing. There are a few examples of this in use over at `Node.swift` inside Stencil. There is an implementation of `if` and `for` template tags.
 
-You would register a template tag using the `registerTag` API inside a `TokenParser` which accepts a name for the tag and a block of code to handle parsing. The block of code is invoked with the parser and the current token as an argument. This allows you to use the API on `TokenParser` to parse node’s further in the token array.
+You would register a template tag using the `registerTag` API inside a `Namespace` which accepts a name for the tag and a block of code to handle parsing. The block of code is invoked with the parser and the current token as an argument. This allows you to use the API on `TokenParser` to parse node’s further in the token array.
 
 As an example, we’re going to create a template tag called `debug` which will optionally render nodes from `debug` up until `enddebug`. When rendering the `DebugNode`, it will only render the nodes inside if a variable called `debug` is set to `true` inside the template Context.
 
@@ -163,7 +163,7 @@ class DebugNode : Node {
 We will need to write a parser to parse up until the `enddebug` template block and create a `DebugNode` with the nodes in-between. If there was another error form another Node inside, then we will return that error.
 
 ```swift
-parser.registerTag("debug") { parser, token in
+namespace.registerTag("debug") { parser, token in
   // Use the parser to parse every token up until the `enddebug` block.
   let nodes = try until(["enddebug"]))
   return DebugNode(nodes)

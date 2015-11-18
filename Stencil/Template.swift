@@ -3,8 +3,7 @@ import PathKit
 
 /// A class representing a template
 public class Template {
-  public let parser:TokenParser
-  private var nodes:[NodeType]? = nil
+  let tokens: [Token]
 
   /// Create a template with the given name inside the given bundle
   public convenience init(named:String, inBundle bundle:NSBundle? = nil) throws {
@@ -29,16 +28,13 @@ public class Template {
   /// Create a template with a template string
   public init(templateString:String) {
     let lexer = Lexer(templateString: templateString)
-    let tokens = lexer.tokenize()
-    parser = TokenParser(tokens: tokens)
+    tokens = lexer.tokenize()
   }
 
   /// Render the given template
-  public func render(context:Context? = nil) throws -> String {
-    if nodes == nil {
-        nodes = try parser.parse()
-    }
-
-    return try renderNodes(nodes!, context ?? Context())
+  public func render(context: Context? = nil, namespace: Namespace? = nil) throws -> String {
+    let parser = TokenParser(tokens: tokens, namespace: namespace ?? Namespace())
+    let nodes = try parser.parse()
+    return try renderNodes(nodes, context ?? Context())
   }
 }
