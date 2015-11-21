@@ -1,12 +1,11 @@
-import Foundation
 import PathKit
 
 
 public class IncludeNode : NodeType {
-  public let templateName:String
+  public let templateName: String
 
-  public class func parse(parser:TokenParser, token:Token) throws -> NodeType {
-    let bits = token.contents.componentsSeparatedByString("\"")
+  public class func parse(parser: TokenParser, token: Token) throws -> NodeType {
+    let bits = token.contents.characters.split("\"", allowEmptySlices: true).map(String.init)
 
     guard bits.count == 3 else {
       throw TemplateSyntaxError("'include' tag takes one argument, the template file to be included")
@@ -15,7 +14,7 @@ public class IncludeNode : NodeType {
     return IncludeNode(templateName: bits[1])
   }
 
-  public init(templateName:String) {
+  public init(templateName: String) {
     self.templateName = templateName
   }
 

@@ -34,7 +34,7 @@
       "StencilSpecs/Nodes/*.swift"
     ],
     "dependencies": {
-      "Spectre": [ "~> 0.4.1" ],
+      "Spectre": [ "~> 0.5.0" ],
       "PathKit": [ "~> 0.5.0" ]
     }
   }
