@@ -6,7 +6,7 @@ class FilterExpression : Resolvable {
   let variable: Variable
 
   init(token: String, parser: TokenParser) throws {
-    let bits = token.componentsSeparatedByString("|")
+    let bits = token.characters.split("|").map(String.init)
     if bits.isEmpty {
       filters = []
       variable = Variable("")
@@ -35,19 +35,19 @@ class FilterExpression : Resolvable {
 
 /// A structure used to represent a template variable, and to resolve it in a given context.
 public struct Variable : Equatable, Resolvable {
-  public let variable:String
+  public let variable: String
 
   /// Create a variable with a string representing the variable
-  public init(_ variable:String) {
+  public init(_ variable: String) {
     self.variable = variable
   }
 
   private func lookup() -> [String] {
-    return variable.componentsSeparatedByString(".")
+    return variable.characters.split(".").map(String.init)
   }
 
   /// Resolve the variable in the given context
-  public func resolve(context:Context) throws -> Any? {
+  public func resolve(context: Context) throws -> Any? {
     var current: Any? = context
 
     if (variable.hasPrefix("'") && variable.hasSuffix("'")) || (variable.hasPrefix("\"") && variable.hasSuffix("\"")) {
@@ -93,6 +93,6 @@ public struct Variable : Equatable, Resolvable {
   }
 }
 
-public func ==(lhs:Variable, rhs:Variable) -> Bool {
+public func ==(lhs: Variable, rhs: Variable) -> Bool {
   return lhs.variable == rhs.variable
 }
