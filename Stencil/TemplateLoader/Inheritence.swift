@@ -27,13 +27,13 @@ extension CollectionType {
 
 
 class ExtendsNode : NodeType {
-  let templateName: String
+  let templateName: Variable
   let blocks: [String:BlockNode]
 
   class func parse(parser: TokenParser, token: Token) throws -> NodeType {
-    let bits = token.contents.componentsSeparatedByString("\"")
+    let bits = token.components()
 
-    guard bits.count == 3 else {
+    guard bits.count == 2 else {
       throw TemplateSyntaxError("'extends' takes one argument, the template file to be extended")
     }
 
@@ -51,10 +51,10 @@ class ExtendsNode : NodeType {
       return dict
     }
 
-    return ExtendsNode(templateName: bits[1], blocks: nodes)
+    return ExtendsNode(templateName: Variable(bits[1]), blocks: nodes)
   }
 
-  init(templateName: String, blocks: [String:BlockNode]) {
+  init(templateName: Variable, blocks: [String: BlockNode]) {
     self.templateName = templateName
     self.blocks = blocks
   }
@@ -62,6 +62,10 @@ class ExtendsNode : NodeType {
   func render(context: Context) throws -> String {
     guard let loader = context["loader"] as? TemplateLoader else {
       throw TemplateSyntaxError("Template loader not in context")
+    }
+
+    guard let templateName = try self.templateName.resolve(context) as? String else {
+      throw TemplateSyntaxError("'\(self.templateName)' could not be resolved as a string")
     }
 
     guard let template = loader.loadTemplate(templateName) else {

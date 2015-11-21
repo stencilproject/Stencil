@@ -23,13 +23,13 @@ describe("Include") {
       let nodes = try parser.parse()
       let node = nodes.first as? IncludeNode
       try expect(nodes.count) == 1
-      try expect(node?.templateName) == "test.html"
+      try expect(node?.templateName) == Variable("\"test.html\"")
     }
   }
 
   $0.describe("rendering") {
     $0.it("throws an error when rendering without a loader") {
-      let node = IncludeNode(templateName: "test.html")
+      let node = IncludeNode(templateName: Variable("\"test.html\""))
 
       do {
         try node.render(Context())
@@ -39,7 +39,7 @@ describe("Include") {
     }
 
     $0.it("throws an error when it cannot find the included template") {
-      let node = IncludeNode(templateName: "unknown.html")
+      let node = IncludeNode(templateName: Variable("\"unknown.html\""))
 
       do {
         try node.render(Context(dictionary: ["loader": loader]))
@@ -49,7 +49,7 @@ describe("Include") {
     }
 
     $0.it("successfully renders a found included template") {
-      let node = IncludeNode(templateName: "test.html")
+      let node = IncludeNode(templateName: Variable("\"test.html\""))
       let context = Context(dictionary: ["loader":loader, "target": "World"])
       let value = try node.render(context)
       try expect(value) == "Hello World!"
