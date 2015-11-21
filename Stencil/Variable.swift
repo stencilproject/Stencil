@@ -58,11 +58,9 @@ public struct Variable : Equatable, Resolvable {
     for bit in lookup() {
       if let context = current as? Context {
         current = context[bit]
-      } else if let dictionary = current as? [String: Any] {
+      } else if let dictionary = resolveDictionary(current) {
         current = dictionary[bit]
-      } else if let dictionary = current as? [String: AnyObject] {
-        current = dictionary[bit]
-      } else if let array = current as? [Any] {
+      } else if let array = resolveArray(current) {
         if let index = Int(bit) {
           current = array[index]
         } else if bit == "first" {
@@ -72,27 +70,72 @@ public struct Variable : Equatable, Resolvable {
         } else if bit == "count" {
           current = array.count
         }
-      } else if let array = current as? NSArray {
-        if let index = Int(bit) {
-          current = array[index]
-        } else if bit == "first" {
-          current = array.firstObject
-        } else if bit == "last" {
-          current = array.lastObject
-        } else if bit == "count" {
-          current = array.count
-        }
-      } else if let object = current as? NSObject {
+      } else if let object = current as? NSObject {  // NSKeyValueCoding
         current = object.valueForKey(bit)
       } else {
         return nil
       }
     }
 
-    return current
+    return normalize(current)
   }
 }
 
 public func ==(lhs: Variable, rhs: Variable) -> Bool {
   return lhs.variable == rhs.variable
+}
+
+
+func resolveDictionary(current: Any?) -> [String: Any]? {
+  if let dictionary = current as? [String: Any] {
+    return dictionary
+  }
+
+  if let dictionary = current as? [String: AnyObject] {
+    var result: [String: Any] = [:]
+    for (k, v) in dictionary {
+      result[k] = v as Any
+    }
+    return result
+  }
+
+  if let dictionary = current as? NSDictionary {
+    var result: [String: Any] = [:]
+    for (k, v) in dictionary {
+      if let k = k as? String {
+        result[k] = v as Any
+      }
+    }
+    return result
+  }
+
+  return nil
+}
+
+func resolveArray(current: Any?) -> [Any]? {
+  if let current = current as? [Any] {
+    return current
+  }
+
+  if let current = current as? [AnyObject] {
+    return current.map { $0 as Any }
+  }
+
+  if let current = current as? NSArray {
+    return current.map { $0 as Any }
+  }
+
+  return nil
+}
+
+func normalize(current: Any?) -> Any? {
+  if let array = resolveArray(current) {
+    return array
+  }
+
+  if let dictionary = resolveDictionary(current) {
+    return dictionary
+  }
+
+  return current
 }

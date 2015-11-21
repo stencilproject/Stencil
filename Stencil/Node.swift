@@ -157,7 +157,7 @@ public class ForNode : NodeType {
   public func render(context: Context) throws -> String {
     let values = try variable.resolve(context)
 
-    if let values = values as? NSArray where values.count > 0 {
+    if let values = values as? [Any] where values.count > 0 {
       return try values.map { item in
         try context.push([loopVariable: item]) {
           try renderNodes(nodes, context)
@@ -232,10 +232,10 @@ public class IfNode : NodeType {
     let result = try variable.resolve(context)
     var truthy = false
 
-    if let result = result as? NSArray {
-      if result.count > 0 {
-        truthy = true
-      }
+    if let result = result as? [Any] {
+      truthy = !result.isEmpty
+    } else if let result = result as? [String:Any] {
+      truthy = !result.isEmpty
     } else if result != nil {
       truthy = true
     }
