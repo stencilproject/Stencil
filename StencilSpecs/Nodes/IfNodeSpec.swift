@@ -104,7 +104,7 @@ describe("IfNode") {
       try expect(try node.render(arrayContext)) == "false"
     }
 
-    $0.it("renders false when Array<Any> variable is empty") {
+    $0.it("renders the false when Array<Any> variable is empty") {
       let arrayContext = Context(dictionary: ["items": ([] as [Any])])
       let node = IfNode(variable: "items", trueNodes: [TextNode(text: "true")], falseNodes: [TextNode(text: "false")])
       try expect(try node.render(arrayContext)) == "false"
