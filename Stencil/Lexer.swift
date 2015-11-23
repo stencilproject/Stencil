@@ -1,16 +1,13 @@
-import Foundation
-
 public struct Lexer {
-  public let templateString:String
-  let regex = try! NSRegularExpression(pattern: "(\\{\\{.*?\\}\\}|\\{%.*?%\\}|\\{#.*?#\\})", options: [])
+  public let templateString: String
 
-  public init(templateString:String) {
+  public init(templateString: String) {
     self.templateString = templateString
   }
 
   func createToken(string:String) -> Token {
     func strip() -> String {
-      return string[string.startIndex.successor().successor()..<string.endIndex.predecessor().predecessor()].stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
+      return string[string.startIndex.successor().successor()..<string.endIndex.predecessor().predecessor()].trim(" ")
     }
 
     if string.hasPrefix("{{") {
@@ -26,34 +23,125 @@ public struct Lexer {
 
   /// Returns an array of tokens from a given template string.
   public func tokenize() -> [Token] {
-    // Unfortunately NSRegularExpression doesn't have a split.
-    // So here's a really terrible implementation
+    var tokens: [Token] = []
 
-    var tokens = [Token]()
+    let scanner = Scanner(templateString)
 
-    let range = NSMakeRange(0, templateString.characters.count)
-    var lastIndex = 0
-    let nsTemplateString = templateString as NSString
-    let options = NSMatchingOptions(rawValue: 0)
-    regex.enumerateMatchesInString(templateString, options: options, range: range) { (result, flags, b) in
-      if let result = result {
-        if result.range.location != lastIndex {
-          let previousMatch = nsTemplateString.substringWithRange(NSMakeRange(lastIndex, result.range.location - lastIndex))
-          tokens.append(self.createToken(previousMatch))
+    let map = [
+      "{{": "}}",
+      "{%": "%}",
+      "{#": "#}",
+    ]
+
+    while !scanner.isEmpty {
+      if let text = scanner.scan(until: ["{{", "{%", "{#"]) {
+        if !text.1.isEmpty {
+          tokens.append(createToken(text.1))
         }
 
-        let match = nsTemplateString.substringWithRange(result.range)
-        tokens.append(self.createToken(match))
-
-        lastIndex = result.range.location + result.range.length
+        let end = map[text.0]!
+        let result = scanner.scan(until: end, returnUntil: true)
+        tokens.append(createToken(result))
+      } else {
+        tokens.append(createToken(scanner.content))
+        scanner.content = ""
       }
     }
 
-    if lastIndex < templateString.characters.count {
-      let substring = (templateString as NSString).substringFromIndex(lastIndex)
-      tokens.append(Token.Text(value: substring))
+    return tokens
+  }
+}
+
+
+class Scanner {
+  var content: String
+
+  init(_ content: String) {
+    self.content = content
+  }
+
+  var isEmpty: Bool {
+    return content.isEmpty
+  }
+
+  func scan(until until: String, returnUntil: Bool = false) -> String {
+    if until.isEmpty {
+      return ""
     }
 
-    return tokens
+    var index = content.startIndex
+    while index != content.endIndex {
+      let substring = content[index..<content.endIndex]
+      if substring.hasPrefix(until) {
+        let result = content[content.startIndex..<index]
+        content = substring
+
+        if returnUntil {
+          content = content[until.endIndex..<content.endIndex]
+          return result + until
+        }
+
+        return result
+      }
+
+      index = index.successor()
+    }
+
+    return ""
+  }
+
+  func scan(until until: [String]) -> (String, String)? {
+    if until.isEmpty {
+      return nil
+    }
+
+    var index = content.startIndex
+    while index != content.endIndex {
+      let substring = content[index..<content.endIndex]
+      for string in until {
+        if substring.hasPrefix(string) {
+          let result = content[content.startIndex..<index]
+          content = substring
+          return (string, result)
+        }
+      }
+
+      index = index.successor()
+    }
+
+    return nil
+  }
+}
+
+
+extension String {
+  func findFirstNot(character: Character) -> String.Index? {
+    var index = startIndex
+    while index != endIndex {
+      if character != self[index] {
+        return index
+      }
+      index = index.successor()
+    }
+
+    return nil
+  }
+
+  func findLastNot(character: Character) -> String.Index? {
+    var index = endIndex.predecessor()
+    while index != startIndex {
+      if character != self[index] {
+        return index.successor()
+      }
+      index = index.predecessor()
+    }
+
+    return nil
+  }
+
+  func trim(character: Character) -> String {
+    let first = findFirstNot(character) ?? startIndex
+    let last = findLastNot(character) ?? endIndex
+    return self[first..<last]
   }
 }
