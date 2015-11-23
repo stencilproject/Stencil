@@ -87,45 +87,39 @@ public func ==(lhs: Variable, rhs: Variable) -> Bool {
 
 
 func resolveDictionary(current: Any?) -> [String: Any]? {
-  if let dictionary = current as? [String: Any] {
-    return dictionary
-  }
-
-  if let dictionary = current as? [String: AnyObject] {
-    var result: [String: Any] = [:]
-    for (k, v) in dictionary {
-      result[k] = v as Any
-    }
-    return result
-  }
-
-  if let dictionary = current as? NSDictionary {
-    var result: [String: Any] = [:]
-    for (k, v) in dictionary {
-      if let k = k as? String {
-        result[k] = v as Any
+  switch current {
+  case let dictionary as [String: Any]:
+      return dictionary
+  case let dictionary as [String: AnyObject]:
+      var result: [String: Any] = [:]
+      for (k, v) in dictionary {
+          result[k] = v as Any
       }
-    }
-    return result
+      return result
+  case let dictionary as NSDictionary:
+      var result: [String: Any] = [:]
+      for (k, v) in dictionary {
+          if let k = k as? String {
+              result[k] = v as Any
+          }
+      }
+      return result
+  default:
+      return nil
   }
-
-  return nil
 }
 
 func resolveArray(current: Any?) -> [Any]? {
-  if let current = current as? [Any] {
-    return current
+  switch current {
+  case let array as [Any]:
+      return array
+  case let array as [AnyObject]:
+      return array.map { $0 as Any }
+  case let array as NSArray:
+      return array.map { $0 as Any }
+  default:
+      return nil
   }
-
-  if let current = current as? [AnyObject] {
-    return current.map { $0 as Any }
-  }
-
-  if let current = current as? NSArray {
-    return current.map { $0 as Any }
-  }
-
-  return nil
 }
 
 func normalize(current: Any?) -> Any? {
