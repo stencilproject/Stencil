@@ -36,6 +36,22 @@ describe("template filters") {
     let result = try template.render(Context(dictionary: ["name": "kyle"]))
     try expect(result) == "KYLE"
   }
+
+  $0.it("allows you to pass arguments to filter function") {
+    let template = Template(templateString: "{{ name|repeat:3 }}")
+    let namespace = Namespace()
+    namespace.registerFilter("repeat") { value, args in
+      guard let value = value as? String, let firstArg = args?.first, let repeatCount = Int(firstArg) else {
+        return nil
+      }
+      
+      let values: [String] = Array(count: repeatCount, repeatedValue: value)
+      return values.joinWithSeparator(" ")
+    }
+
+    let result = try template.render(context, namespace: namespace)
+    try expect(result) == "Kyle Kyle Kyle"
+  }
 }
 
 

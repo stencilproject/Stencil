@@ -1,14 +1,22 @@
 import Foundation
 
+struct FilterInvocation {
+  let filter: Filter
+  let arguments: [String]?
+  
+  func invoke(value: Any?) throws -> Any? {
+    return try filter(value: value, args: arguments)
+  }
+}
 
 class FilterExpression : Resolvable {
-  let filters: [Filter]
+  let filterInvocations: [FilterInvocation]
   let variable: Variable
 
   init(token: String, parser: TokenParser) throws {
     let bits = token.characters.split("|").map({ String($0).trim(" ") })
     if bits.isEmpty {
-      filters = []
+      filterInvocations = []
       variable = Variable("")
       throw TemplateSyntaxError("Variable tags must include at least 1 argument")
     }
@@ -17,9 +25,13 @@ class FilterExpression : Resolvable {
     let filterBits = bits[1 ..< bits.endIndex]
 
     do {
-      filters = try filterBits.map { try parser.findFilter($0) }
+      filterInvocations = try filterBits.map { filterBit in
+        let (name, arguments) = parseFilterComponents(filterBit)
+        let filter = try parser.findFilter(name)
+        return FilterInvocation(filter: filter, arguments: arguments)
+      }
     } catch {
-      filters = []
+      filterInvocations = []
       throw error
     }
   }
@@ -27,8 +39,8 @@ class FilterExpression : Resolvable {
   func resolve(context: Context) throws -> Any? {
     let result = try variable.resolve(context)
 
-    return try filters.reduce(result) { x, y in
-      return try y(x)
+    return try filterInvocations.reduce(result) { x, y in
+      return try y.invoke(x)
     }
   }
 }
@@ -132,4 +144,60 @@ func normalize(current: Any?) -> Any? {
   }
 
   return current
+}
+
+func parseFilterComponents(token: String) -> (String, [String]?) {
+    let components = token.splitAndTrimWhitespace(":")
+    if components.count == 1 {
+        return (components[0], nil)
+    }
+    else  {
+        let arguments = components[1].splitAndTrimWhitespace(",").map({ return $0.trimQuotationMarks })
+        return (components[0], arguments)
+    }
+}
+
+extension String {
+    var trimQuotationMarks: String {
+        return trim("\"").trim("'")
+    }
+    
+    func splitAndTrimWhitespace(separator: Character) -> [String] {
+        return smartSplit(separator).map({ $0.trim(" ") })
+    }
+    
+    /// Split a string by separator leaving quoted phrases together
+    func smartSplit(separator: Character) -> [String] {
+        var word = ""
+        var components: [String] = []
+        var tempSeparator = separator
+        
+        for character in characters {
+            if character == tempSeparator {
+                if character != separator {
+                    word.append(character)
+                }
+                
+                if !word.isEmpty {
+                    components.append(word)
+                    word = ""
+                }
+                
+                tempSeparator = separator
+            }
+            else {
+                if tempSeparator == separator && (character == "'" || character == "\"") {
+                    tempSeparator = character
+                }
+                
+                word.append(character)
+            }
+        }
+        
+        if !word.isEmpty {
+            components.append(word)
+        }
+        
+        return components
+    }
 }
