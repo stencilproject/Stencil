@@ -14,7 +14,7 @@ class FilterExpression : Resolvable {
   let variable: Variable
 
   init(token: String, parser: TokenParser) throws {
-    let bits = token.splitAndTrimWhitespace("|")
+    let bits = token.splitAndTrimWhitespace("|", respectQuotes: true)
     if bits.isEmpty {
       filterInvocations = []
       variable = Variable("")
@@ -147,57 +147,12 @@ func normalize(current: Any?) -> Any? {
 }
 
 func parseFilterComponents(token: String) -> (String, [String]?) {
-    let components = token.splitAndTrimWhitespace(":")
+    let components = token.splitAndTrimWhitespace(":", respectQuotes: true)
     if components.count == 1 {
         return (components[0], nil)
     }
     else  {
         let arguments = components[1].splitAndTrimWhitespace(",").map({ return $0.trimQuotationMarks })
         return (components[0], arguments)
-    }
-}
-
-extension String {
-    var trimQuotationMarks: String {
-        return trim("\"").trim("'")
-    }
-    
-    func splitAndTrimWhitespace(separator: Character) -> [String] {
-        return smartSplit(separator).map({ $0.trim(" ") })
-    }
-    
-    /// Split a string by separator leaving quoted phrases together
-    func smartSplit(separator: Character) -> [String] {
-        var word = ""
-        var components: [String] = []
-        var tempSeparator = separator
-        
-        for character in characters {
-            if character == tempSeparator {
-                if character != separator {
-                    word.append(character)
-                }
-                
-                if !word.isEmpty {
-                    components.append(word)
-                    word = ""
-                }
-                
-                tempSeparator = separator
-            }
-            else {
-                if tempSeparator == separator && (character == "'" || character == "\"") {
-                    tempSeparator = character
-                }
-                
-                word.append(character)
-            }
-        }
-        
-        if !word.isEmpty {
-            components.append(word)
-        }
-        
-        return components
     }
 }

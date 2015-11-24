@@ -112,36 +112,3 @@ class Scanner {
     return nil
   }
 }
-
-
-extension String {
-  func findFirstNot(character: Character) -> String.Index? {
-    var index = startIndex
-    while index != endIndex {
-      if character != self[index] {
-        return index
-      }
-      index = index.successor()
-    }
-
-    return nil
-  }
-
-  func findLastNot(character: Character) -> String.Index? {
-    var index = endIndex.predecessor()
-    while index != startIndex {
-      if character != self[index] {
-        return index.successor()
-      }
-      index = index.predecessor()
-    }
-
-    return nil
-  }
-
-  func trim(character: Character) -> String {
-    let first = findFirstNot(character) ?? startIndex
-    let last = findLastNot(character) ?? endIndex
-    return self[first..<last]
-  }
-}
