@@ -30,6 +30,12 @@ describe("template filters") {
 
     try expect(try template.render(context, namespace: namespace)).toThrow(TemplateSyntaxError("No Repeat"))
   }
+
+  $0.it("allows whitespace in expression") {
+    let template = Template(templateString: "{{ name | uppercase }}")
+    let result = try template.render(Context(dictionary: ["name": "kyle"]))
+    try expect(result) == "KYLE"
+  }
 }
 
 
