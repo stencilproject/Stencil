@@ -14,7 +14,7 @@ class FilterExpression : Resolvable {
   let variable: Variable
 
   init(token: String, parser: TokenParser) throws {
-    let bits = token.characters.split("|").map({ String($0).trim(" ") })
+    let bits = token.splitAndTrimWhitespace("|")
     if bits.isEmpty {
       filterInvocations = []
       variable = Variable("")
