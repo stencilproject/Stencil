@@ -41,7 +41,7 @@ describe("template filters") {
     let template = Template(templateString: "{{ name|repeat:3 }}")
     let namespace = Namespace()
     namespace.registerFilter("repeat") { value, arguments in
-      guard let value = value as? String, let firstArg = arguments.first as? String, let repeatCount = Int(firstArg) else {
+      guard let value = value as? String, let repeatCount = arguments.first as? Int else {
         return nil
       }
       

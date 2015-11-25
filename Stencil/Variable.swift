@@ -2,16 +2,16 @@ import Foundation
 
 struct FilterInvocation {
   let filter: Filter
-  let variables: [Variable]?
+  let arguments: [FilterArgument]?
   
   func invoke(value: Any?, context: Context) throws -> Any? {
-    var arguments: [Any?] = []
-    if let variables = variables {
-        for variable in variables {
-            arguments.append(try variable.resolve(context))
+    var resolvedArguments: [Any?] = []
+    if let arguments = arguments {
+        for argument in arguments {
+            resolvedArguments.append(try argument.resolve(context))
         }
     }
-    return try filter(value: value, arguments: arguments)
+    return try filter(value: value, arguments: resolvedArguments)
   }
 }
 
@@ -32,9 +32,9 @@ class FilterExpression : Resolvable {
 
     do {
       filterInvocations = try filterBits.map { filterBit in
-        let (name, variables) = parseFilterComponents(filterBit)
+        let (name, arguments) = parseFilterComponents(filterBit)
         let filter = try parser.findFilter(name)
-        return FilterInvocation(filter: filter, variables: variables)
+        return FilterInvocation(filter: filter, arguments: arguments)
       }
     } catch {
       filterInvocations = []
@@ -100,9 +100,32 @@ public struct Variable : Equatable, Resolvable {
 }
 
 public func ==(lhs: Variable, rhs: Variable) -> Bool {
-  return lhs.variable == rhs.variable
+    return lhs.variable == rhs.variable
 }
 
+public struct FilterArgument: Equatable, Resolvable {
+    public let variable: String
+    
+    /// Create a filter argument with a string representing the argument
+    public init(_ variable: String) {
+        self.variable = variable
+    }
+    
+    public func resolve(context: Context) throws -> Any? {
+        if let integer = Int(variable) {
+            // if value is integer literal, return integer value
+            return integer
+        }
+        else {
+            // otherwise fall back to variable resolve
+            return try Variable(variable).resolve(context)
+        }
+    }
+}
+
+public func ==(lhs: FilterArgument, rhs: FilterArgument) -> Bool {
+    return lhs.variable == rhs.variable
+}
 
 func resolveDictionary(current: Any?) -> [String: Any]? {
   switch current {
@@ -152,14 +175,14 @@ func normalize(current: Any?) -> Any? {
   return current
 }
 
-func parseFilterComponents(token: String) -> (String, [Variable]?) {
+func parseFilterComponents(token: String) -> (String, [FilterArgument]?) {
     let components = token.splitAndTrimWhitespace(":", respectQuotes: true)
     if components.count == 1 {
         return (components[0], nil)
     }
     else  {
         let arguments = components[1].splitAndTrimWhitespace(",", respectQuotes: true)
-        let variables = arguments.map({ Variable($0) })
-        return (components[0], variables)
+        let filterArguments = arguments.map({ FilterArgument($0) })
+        return (components[0], filterArguments)
     }
 }
