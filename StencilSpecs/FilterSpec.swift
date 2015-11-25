@@ -40,8 +40,8 @@ describe("template filters") {
   $0.it("allows you to pass arguments to filter function") {
     let template = Template(templateString: "{{ name|repeat:3 }}")
     let namespace = Namespace()
-    namespace.registerFilter("repeat") { value, args in
-      guard let value = value as? String, let firstArg = args?.first, let repeatCount = Int(firstArg) else {
+    namespace.registerFilter("repeat") { value, arguments in
+      guard let value = value as? String, let firstArg = arguments.first as? String, let repeatCount = Int(firstArg) else {
         return nil
       }
       

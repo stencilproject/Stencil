@@ -42,10 +42,6 @@ extension String {
         return self[first..<last]
     }
     
-    var trimQuotationMarks: String {
-        return trim("\"").trim("'")
-    }
-    
     func split(separator: Character, respectQuotes: Bool = false) -> [String] {
         guard respectQuotes == true else {
             return characters.split(separator).map(String.init)

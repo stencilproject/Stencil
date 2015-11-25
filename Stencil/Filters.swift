@@ -8,7 +8,7 @@ func toString(value: Any?) -> String? {
   return nil
 }
 
-func capitalise(value: Any?, args: [String]?) -> Any? {
+func capitalise(value: Any?, args: [Any?]) -> Any? {
   if let value = toString(value) {
     return value.capitalizedString
   }
@@ -16,7 +16,7 @@ func capitalise(value: Any?, args: [String]?) -> Any? {
   return value
 }
 
-func uppercase(value: Any?, args: [String]?) -> Any? {
+func uppercase(value: Any?, args: [Any?]) -> Any? {
   if let value = toString(value) {
     return value.uppercaseString
   }
@@ -24,7 +24,7 @@ func uppercase(value: Any?, args: [String]?) -> Any? {
   return value
 }
 
-func lowercase(value: Any?, args: [String]?) -> Any? {
+func lowercase(value: Any?, args: [Any?]) -> Any? {
   if let value = toString(value) {
     return value.lowercaseString
   }

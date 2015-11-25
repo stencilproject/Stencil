@@ -2,9 +2,15 @@ import Foundation
 
 struct FilterInvocation {
   let filter: Filter
-  let arguments: [String]?
+  let variables: [Variable]?
   
-  func invoke(value: Any?) throws -> Any? {
+  func invoke(value: Any?, context: Context) throws -> Any? {
+    var arguments: [Any?] = []
+    if let variables = variables {
+        for variable in variables {
+            arguments.append(try variable.resolve(context))
+        }
+    }
     return try filter(value: value, args: arguments)
   }
 }
@@ -26,9 +32,9 @@ class FilterExpression : Resolvable {
 
     do {
       filterInvocations = try filterBits.map { filterBit in
-        let (name, arguments) = parseFilterComponents(filterBit)
+        let (name, variables) = parseFilterComponents(filterBit)
         let filter = try parser.findFilter(name)
-        return FilterInvocation(filter: filter, arguments: arguments)
+        return FilterInvocation(filter: filter, variables: variables)
       }
     } catch {
       filterInvocations = []
@@ -40,7 +46,7 @@ class FilterExpression : Resolvable {
     let result = try variable.resolve(context)
 
     return try filterInvocations.reduce(result) { x, y in
-      return try y.invoke(x)
+      return try y.invoke(x, context: context)
     }
   }
 }
@@ -146,13 +152,14 @@ func normalize(current: Any?) -> Any? {
   return current
 }
 
-func parseFilterComponents(token: String) -> (String, [String]?) {
+func parseFilterComponents(token: String) -> (String, [Variable]?) {
     let components = token.splitAndTrimWhitespace(":", respectQuotes: true)
     if components.count == 1 {
         return (components[0], nil)
     }
     else  {
-        let arguments = components[1].splitAndTrimWhitespace(",").map({ return $0.trimQuotationMarks })
-        return (components[0], arguments)
+        let arguments = components[1].splitAndTrimWhitespace(",", respectQuotes: true)
+        let variables = arguments.map({ Variable($0) })
+        return (components[0], variables)
     }
 }
