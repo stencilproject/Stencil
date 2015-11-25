@@ -11,7 +11,7 @@ struct FilterInvocation {
             arguments.append(try variable.resolve(context))
         }
     }
-    return try filter(value: value, args: arguments)
+    return try filter(value: value, arguments: arguments)
   }
 }
 
