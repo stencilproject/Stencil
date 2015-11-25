@@ -7,15 +7,15 @@ describe("template filters") {
 
   $0.it("allows you to register a custom filter") {
     let template = Template(templateString: "{{ name|repeat }}")
-
     let namespace = Namespace()
-    namespace.registerFilter("repeat") { value in
+    let filter = Filter() { value in
       if let value = value as? String {
         return "\(value) \(value)"
       }
 
       return nil
     }
+    namespace.registerFilter("repeat", filter: filter)
 
     let result = try template.render(context, namespace: namespace)
     try expect(result) == "Kyle Kyle"
@@ -24,9 +24,10 @@ describe("template filters") {
   $0.it("allows you to register a custom filter") {
     let template = Template(templateString: "{{ name|repeat }}")
     let namespace = Namespace()
-    namespace.registerFilter("repeat") { value in
+    let filter = Filter() { value in
       throw TemplateSyntaxError("No Repeat")
     }
+    namespace.registerFilter("repeat", filter: filter) 
 
     try expect(try template.render(context, namespace: namespace)).toThrow(TemplateSyntaxError("No Repeat"))
   }
@@ -40,7 +41,7 @@ describe("template filters") {
   $0.it("allows you to pass arguments to filter function") {
     let template = Template(templateString: "{{ name|repeat:3 }}")
     let namespace = Namespace()
-    namespace.registerFilter("repeat") { value, arguments in
+    let filter = Filter() { value, arguments in
       guard let value = value as? String, let repeatCount = arguments.first as? Int else {
         return nil
       }
@@ -48,9 +49,21 @@ describe("template filters") {
       let values: [String] = Array(count: repeatCount, repeatedValue: value)
       return values.joinWithSeparator(" ")
     }
+    namespace.registerFilter("repeat", filter: filter) 
 
     let result = try template.render(context, namespace: namespace)
     try expect(result) == "Kyle Kyle Kyle"
+  }
+
+  $0.it("throws error when passing too many arguments") {
+    let template = Template(templateString: "{{ name|repeat:5 }}")
+    let namespace = Namespace()
+    let filter = Filter() { value in
+      return nil
+    }
+    namespace.registerFilter("repeat", filter: filter)
+
+    try expect(try template.render(context, namespace: namespace)).toThrow(TemplateSyntaxError("Filter 'repeat' expects no arguments. 1 argument(s) received"))
   }
 }
 

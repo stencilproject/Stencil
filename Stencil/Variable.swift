@@ -1,17 +1,24 @@
 import Foundation
 
 struct FilterInvocation {
+  let name: String
   let filter: Filter
-  let arguments: [FilterArgument]?
+  let arguments: [FilterArgument]
   
   func invoke(value: Any?, context: Context) throws -> Any? {
-    var resolvedArguments: [Any?] = []
-    if let arguments = arguments {
+    switch filter {
+    case .SimpleFilter(let function):
+        guard arguments.count == 0 else {
+            throw TemplateSyntaxError("Filter '\(name)' expects no arguments. \(arguments.count) argument(s) received")
+        }
+        return try function(value)
+    case .VariadicFilter(let function):
+        var resolvedArguments: [Any?] = []
         for argument in arguments {
             resolvedArguments.append(try argument.resolve(context))
         }
+        return try function(value, resolvedArguments)
     }
-    return try filter(value: value, arguments: resolvedArguments)
   }
 }
 
@@ -34,7 +41,7 @@ class FilterExpression : Resolvable {
       filterInvocations = try filterBits.map { filterBit in
         let (name, arguments) = parseFilterComponents(filterBit)
         let filter = try parser.findFilter(name)
-        return FilterInvocation(filter: filter, arguments: arguments)
+        return FilterInvocation(name: name, filter: filter, arguments: arguments)
       }
     } catch {
       filterInvocations = []
@@ -175,10 +182,10 @@ func normalize(current: Any?) -> Any? {
   return current
 }
 
-func parseFilterComponents(token: String) -> (String, [FilterArgument]?) {
+func parseFilterComponents(token: String) -> (String, [FilterArgument]) {
     let components = token.splitAndTrimWhitespace(":", respectQuotes: true)
     if components.count == 1 {
-        return (components[0], nil)
+        return (components[0], [])
     }
     else  {
         let arguments = components[1].splitAndTrimWhitespace(",", respectQuotes: true)

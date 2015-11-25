@@ -10,7 +10,18 @@ public func until(tags:[String])(parser:TokenParser, token:Token) -> Bool {
   return false
 }
 
-public typealias Filter = (value: Any?, arguments: [Any?]) throws -> Any?
+public enum Filter {
+    case SimpleFilter((Any?) throws -> Any?)
+    case VariadicFilter((Any?, [Any?]) throws -> Any?)
+    
+    public init(_ function: (Any?) throws -> Any?) {
+        self = .SimpleFilter(function)
+    }
+    
+    public init(_ function: (Any?, [Any?]) throws -> Any?) {
+        self = .VariadicFilter(function)
+    }
+}
 
 /// A class for parsing an array of tokens and converts them into a collection of Node's
 public class TokenParser {

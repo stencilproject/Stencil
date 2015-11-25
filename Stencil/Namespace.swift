@@ -20,9 +20,9 @@ public class Namespace {
   }
 
   private func registerDefaultFilters() {
-    registerFilter("capitalize", filter: capitalise)
-    registerFilter("uppercase", filter: uppercase)
-    registerFilter("lowercase", filter: lowercase)
+    registerFilter("capitalize", filter: Filter(capitalise))
+    registerFilter("uppercase", filter: Filter(uppercase))
+    registerFilter("lowercase", filter: Filter(lowercase))
   }
 
   /// Registers a new template tag
