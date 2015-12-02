@@ -1,14 +1,35 @@
 import Foundation
 
+struct FilterInvocation {
+  let name: String
+  let filter: Filter
+  let arguments: [FilterArgument]
+  
+  func invoke(value: Any?, context: Context) throws -> Any? {
+    switch filter {
+    case .SimpleFilter(let function):
+        guard arguments.count == 0 else {
+            throw TemplateSyntaxError("Filter '\(name)' expects no arguments. \(arguments.count) argument(s) received")
+        }
+        return try function(value)
+    case .VariadicFilter(let function):
+        var resolvedArguments: [Any?] = []
+        for argument in arguments {
+            resolvedArguments.append(try argument.resolve(context))
+        }
+        return try function(value, resolvedArguments)
+    }
+  }
+}
 
 class FilterExpression : Resolvable {
-  let filters: [Filter]
+  let filterInvocations: [FilterInvocation]
   let variable: Variable
 
   init(token: String, parser: TokenParser) throws {
-    let bits = token.characters.split("|").map({ String($0).trim(" ") })
+    let bits = token.splitAndTrimWhitespace("|", respectQuotes: true)
     if bits.isEmpty {
-      filters = []
+      filterInvocations = []
       variable = Variable("")
       throw TemplateSyntaxError("Variable tags must include at least 1 argument")
     }
@@ -17,9 +38,13 @@ class FilterExpression : Resolvable {
     let filterBits = bits[1 ..< bits.endIndex]
 
     do {
-      filters = try filterBits.map { try parser.findFilter($0) }
+      filterInvocations = try filterBits.map { filterBit in
+        let (name, arguments) = parseFilterComponents(filterBit)
+        let filter = try parser.findFilter(name)
+        return FilterInvocation(name: name, filter: filter, arguments: arguments)
+      }
     } catch {
-      filters = []
+      filterInvocations = []
       throw error
     }
   }
@@ -27,8 +52,8 @@ class FilterExpression : Resolvable {
   func resolve(context: Context) throws -> Any? {
     let result = try variable.resolve(context)
 
-    return try filters.reduce(result) { x, y in
-      return try y(x)
+    return try filterInvocations.reduce(result) { x, y in
+      return try y.invoke(x, context: context)
     }
   }
 }
@@ -82,9 +107,32 @@ public struct Variable : Equatable, Resolvable {
 }
 
 public func ==(lhs: Variable, rhs: Variable) -> Bool {
-  return lhs.variable == rhs.variable
+    return lhs.variable == rhs.variable
 }
 
+public struct FilterArgument: Equatable, Resolvable {
+    public let variable: String
+    
+    /// Create a filter argument with a string representing the argument
+    public init(_ variable: String) {
+        self.variable = variable
+    }
+    
+    public func resolve(context: Context) throws -> Any? {
+        if let integer = Int(variable) {
+            // if value is integer literal, return integer value
+            return integer
+        }
+        else {
+            // otherwise fall back to variable resolve
+            return try Variable(variable).resolve(context)
+        }
+    }
+}
+
+public func ==(lhs: FilterArgument, rhs: FilterArgument) -> Bool {
+    return lhs.variable == rhs.variable
+}
 
 func resolveDictionary(current: Any?) -> [String: Any]? {
   switch current {
@@ -132,4 +180,16 @@ func normalize(current: Any?) -> Any? {
   }
 
   return current
+}
+
+func parseFilterComponents(token: String) -> (String, [FilterArgument]) {
+    let components = token.splitAndTrimWhitespace(":", respectQuotes: true)
+    if components.count == 1 {
+        return (components[0], [])
+    }
+    else  {
+        let arguments = components[1].splitAndTrimWhitespace(",", respectQuotes: true)
+        let filterArguments = arguments.map({ FilterArgument($0) })
+        return (components[0], filterArguments)
+    }
 }

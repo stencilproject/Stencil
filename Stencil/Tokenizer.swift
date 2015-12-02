@@ -1,40 +1,5 @@
 import Foundation
 
-
-/// Split a string by spaces leaving quoted phrases together
-func smartSplit(value: String) -> [String] {
-  var word = ""
-  var separator: Character = " "
-  var components: [String] = []
-
-  for character in value.characters {
-    if character == separator {
-      if separator != " " {
-        word.append(separator)
-      }
-
-      if !word.isEmpty {
-        components.append(word)
-        word = ""
-      }
-
-      separator = " "
-    } else {
-      if separator == " " && (character == "'" || character == "\"") {
-        separator = character
-      }
-      word.append(character)
-    }
-  }
-
-  if !word.isEmpty {
-    components.append(word)
-  }
-
-  return components
-}
-
-
 public enum Token : Equatable {
   /// A token representing a piece of text.
   case Text(value: String)
@@ -52,13 +17,13 @@ public enum Token : Equatable {
   public func components() -> [String] {
     switch self {
     case .Block(let value):
-      return smartSplit(value)
+      return value.splitAndTrimWhitespace(" ", respectQuotes: true)
     case .Variable(let value):
-      return smartSplit(value)
+        return value.splitAndTrimWhitespace(" ", respectQuotes: true)
     case .Text(let value):
-      return smartSplit(value)
+        return value.splitAndTrimWhitespace(" ", respectQuotes: true)
     case .Comment(let value):
-      return smartSplit(value)
+        return value.splitAndTrimWhitespace(" ", respectQuotes: true)
     }
   }
 
