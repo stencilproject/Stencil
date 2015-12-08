@@ -71,7 +71,11 @@ public struct Variable : Equatable, Resolvable {
           current = array.count
         }
       } else if let object = current as? NSObject {  // NSKeyValueCoding
+#if os(Linux)
+        return nil
+#else
         current = object.valueForKey(bit)
+#endif
       } else {
         return nil
       }
