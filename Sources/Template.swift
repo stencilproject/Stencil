@@ -1,6 +1,10 @@
 import Foundation
 import PathKit
 
+#if os(Linux)
+let NSFileNoSuchFileError = 4
+#endif
+
 /// A class representing a template
 public class Template {
   let tokens: [Token]
