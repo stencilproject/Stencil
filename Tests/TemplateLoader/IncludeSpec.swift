@@ -4,7 +4,7 @@ import PathKit
 
 
 describe("Include") {
-  let path = Path(__FILE__) + ".." + ".." + "StencilSpecs" + "fixtures"
+  let path = Path(__FILE__) + ".." + ".." + "Tests" + "fixtures"
   let loader = TemplateLoader(paths: [path])
 
   $0.describe("parsing") {
