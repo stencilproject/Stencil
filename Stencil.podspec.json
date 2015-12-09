@@ -24,7 +24,7 @@
   },
   "requires_arc": true,
   "dependencies": {
-    "PathKit": [ "~> 0.5.0" ]
+    "PathKit": [ "~> 0.6.0" ]
   },
   "test_specification": {
     "source_files": [
