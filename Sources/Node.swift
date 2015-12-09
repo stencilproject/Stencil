@@ -158,8 +158,15 @@ public class ForNode : NodeType {
     let values = try variable.resolve(context)
 
     if let values = values as? [Any] where values.count > 0 {
-      return try values.map { item in
-        try context.push([loopVariable: item]) {
+      let count = values.count
+      return try values.enumerate().map { index, item in
+        let forContext = [
+          "first": index == 0,
+          "last": index == (count - 1),
+          "counter": index + 1,
+        ]
+
+        return try context.push([loopVariable: item, "forloop": forContext]) {
           try renderNodes(nodes, context)
         }
       }.joinWithSeparator("")

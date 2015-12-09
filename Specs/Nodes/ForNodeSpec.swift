@@ -20,4 +20,22 @@ describe("ForNode") {
     let node = ForNode(variable: "emptyItems", loopVariable: "item", nodes: nodes, emptyNodes: emptyNodes)
     try expect(try node.render(context)) == "empty"
   }
+
+  $0.it("renders the given nodes while providing if the item is first in the context") {
+    let nodes: [NodeType] = [VariableNode(variable: "item"), VariableNode(variable: "forloop.first")]
+    let node = ForNode(variable: "items", loopVariable: "item", nodes: nodes, emptyNodes: [])
+    try expect(try node.render(context)) == "112030"
+  }
+
+  $0.it("renders the given nodes while providing if the item is last in the context") {
+    let nodes: [NodeType] = [VariableNode(variable: "item"), VariableNode(variable: "forloop.last")]
+    let node = ForNode(variable: "items", loopVariable: "item", nodes: nodes, emptyNodes: [])
+    try expect(try node.render(context)) == "102031"
+  }
+
+  $0.it("renders the given nodes while providing item counter") {
+    let nodes: [NodeType] = [VariableNode(variable: "item"), VariableNode(variable: "forloop.counter")]
+    let node = ForNode(variable: "items", loopVariable: "item", nodes: nodes, emptyNodes: [])
+    try expect(try node.render(context)) == "112233"
+  }
 }
