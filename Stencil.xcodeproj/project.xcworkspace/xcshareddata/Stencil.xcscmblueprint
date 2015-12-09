@@ -1,0 +1,37 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "3DA8097D366B6AFDAEA91946C35253AA1EBC780B",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "BE5BDA2E20B3974D449688AB4E7C7C69AA118665" : 0,
+    "E3472B155FC961329A2EA7BFAD3AFAE6EFBD63E5" : 0,
+    "3DA8097D366B6AFDAEA91946C35253AA1EBC780B" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "C3A207A8-B1A4-4D47-B6CA-7C215C3F6DA3",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "BE5BDA2E20B3974D449688AB4E7C7C69AA118665" : "..",
+    "E3472B155FC961329A2EA7BFAD3AFAE6EFBD63E5" : "PathKit\/",
+    "3DA8097D366B6AFDAEA91946C35253AA1EBC780B" : "Stencil\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Stencil",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Stencil.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:dunkelstern\/Stencil.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "3DA8097D366B6AFDAEA91946C35253AA1EBC780B"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:dunkelstern\/unchained.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "BE5BDA2E20B3974D449688AB4E7C7C69AA118665"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:dunkelstern\/PathKit.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "E3472B155FC961329A2EA7BFAD3AFAE6EFBD63E5"
+    }
+  ]
+}
