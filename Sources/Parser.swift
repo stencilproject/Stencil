@@ -1,13 +1,15 @@
-public func until(tags:[String])(parser:TokenParser, token:Token) -> Bool {
-  if let name = token.components().first {
-    for tag in tags {
-      if name == tag {
-        return true
+public func until(tags: [String]) -> ((TokenParser, Token) -> Bool) {
+  return { parser, token in
+    if let name = token.components().first {
+      for tag in tags {
+        if name == tag {
+          return true
+        }
       }
     }
-  }
 
-  return false
+    return false
+  }
 }
 
 public typealias Filter = Any? throws -> Any?
