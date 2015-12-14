@@ -160,7 +160,7 @@ public class ForNode : NodeType {
     if let values = values as? [Any] where values.count > 0 {
       let count = values.count
       return try values.enumerate().map { index, item in
-        let forContext = [
+        let forContext: [String: Any] = [
           "first": index == 0,
           "last": index == (count - 1),
           "counter": index + 1,
