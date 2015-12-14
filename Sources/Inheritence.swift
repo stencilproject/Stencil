@@ -34,12 +34,12 @@ class ExtendsNode : NodeType {
     let bits = token.components()
 
     guard bits.count == 2 else {
-      throw TemplateSyntaxError("'extends' takes one argument, the template file to be extended")
+      throw StencilError.TemplateSyntaxError("'extends' takes one argument, the template file to be extended")
     }
 
     let parsedNodes = try parser.parse()
     guard (parsedNodes.any { $0 is ExtendsNode }) == nil else {
-      throw TemplateSyntaxError("'extends' cannot appear more than once in the same template")
+      throw StencilError.TemplateSyntaxError("'extends' cannot appear more than once in the same template")
     }
 
     let blockNodes = parsedNodes.filter { node in node is BlockNode }
@@ -61,16 +61,16 @@ class ExtendsNode : NodeType {
 
   func render(context: Context) throws -> String {
     guard let loader = context["loader"] as? TemplateLoader else {
-      throw TemplateSyntaxError("Template loader not in context")
+      throw StencilError.TemplateSyntaxError("Template loader not in context")
     }
 
     guard let templateName = try self.templateName.resolve(context) as? String else {
-      throw TemplateSyntaxError("'\(self.templateName)' could not be resolved as a string")
+      throw StencilError.TemplateSyntaxError("'\(self.templateName)' could not be resolved as a string")
     }
 
     guard let template = loader.loadTemplate(templateName) else {
       let paths:String = loader.paths.map { $0.description }.joinWithSeparator(", ")
-      throw TemplateSyntaxError("'\(templateName)' template not found in \(paths)")
+      throw StencilError.TemplateSyntaxError("'\(templateName)' template not found in \(paths)")
     }
 
     let blockContext = BlockContext(blocks: blocks)
@@ -90,7 +90,7 @@ class BlockNode : NodeType {
     let bits = token.components()
 
     guard bits.count == 2 else {
-      throw TemplateSyntaxError("'block' tag takes one argument, the template file to be included")
+      throw StencilError.TemplateSyntaxError("'block' tag takes one argument, the template file to be included")
     }
 
     let blockName = bits[1]

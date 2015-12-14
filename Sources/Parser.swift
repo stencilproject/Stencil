@@ -54,7 +54,7 @@ public class TokenParser {
           if let parser = namespace.tags[tag] {
             nodes.append(try parser(self, token))
           } else {
-            throw TemplateSyntaxError("Unknown template tag '\(tag)'")
+            throw StencilError.TemplateSyntaxError("Unknown template tag '\(tag)'")
           }
         }
       case .Comment:
@@ -82,7 +82,7 @@ public class TokenParser {
       return filter
     }
 
-    throw TemplateSyntaxError("Invalid filter '\(name)'")
+    throw StencilError.TemplateSyntaxError("Invalid filter '\(name)'")
   }
 
   func compileFilter(token: String) throws -> Resolvable {

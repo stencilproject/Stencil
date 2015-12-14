@@ -1,15 +1,7 @@
 import Foundation
 
-public struct TemplateSyntaxError : ErrorType, Equatable, CustomStringConvertible {
-  public let description:String
-
-  public init(_ description:String) {
-    self.description = description
-  }
-}
-
-public func ==(lhs:TemplateSyntaxError, rhs:TemplateSyntaxError) -> Bool {
-  return lhs.description == rhs.description
+public enum StencilError: ErrorType {
+  case TemplateSyntaxError(String)
 }
 
 public protocol NodeType {
@@ -84,7 +76,7 @@ public class NowNode : NodeType {
 
     let components = token.components()
     guard components.count <= 2 else {
-      throw TemplateSyntaxError("'now' tags may only have one argument: the format string `\(token.contents)`.")
+      throw StencilError.TemplateSyntaxError("'now' tags may only have one argument: the format string `\(token.contents)`.")
     }
     if components.count == 2 {
       format = Variable(components[1])
@@ -125,7 +117,7 @@ public class ForNode : NodeType {
     let components = token.components()
 
     guard components.count == 4 && components[2] == "in" else {
-      throw TemplateSyntaxError("'for' statements should use the following 'for x in y' `\(token.contents)`.")
+      throw StencilError.TemplateSyntaxError("'for' statements should use the following 'for x in y' `\(token.contents)`.")
     }
 
     let loopVariable = components[1]
@@ -136,7 +128,7 @@ public class ForNode : NodeType {
     let forNodes = try parser.parse(until(["endfor", "empty"]))
 
     guard let token = parser.nextToken() else {
-      throw TemplateSyntaxError("`endfor` was not found.")
+      throw StencilError.TemplateSyntaxError("`endfor` was not found.")
     }
 
     if token.contents == "empty" {
@@ -186,7 +178,7 @@ public class IfNode : NodeType {
   public class func parse(parser:TokenParser, token:Token) throws -> NodeType {
     let components = token.components()
     guard components.count == 2 else {
-      throw TemplateSyntaxError("'if' statements should use the following 'if condition' `\(token.contents)`.")
+      throw StencilError.TemplateSyntaxError("'if' statements should use the following 'if condition' `\(token.contents)`.")
     }
     let variable = components[1]
     var trueNodes = [NodeType]()
@@ -195,7 +187,7 @@ public class IfNode : NodeType {
     trueNodes = try parser.parse(until(["endif", "else"]))
 
     guard let token = parser.nextToken() else {
-      throw TemplateSyntaxError("`endif` was not found.")
+      throw StencilError.TemplateSyntaxError("`endif` was not found.")
     }
 
     if token.contents == "else" {
@@ -209,7 +201,7 @@ public class IfNode : NodeType {
   public class func parse_ifnot(parser:TokenParser, token:Token) throws -> NodeType {
     let components = token.components()
     guard components.count == 2 else {
-      throw TemplateSyntaxError("'ifnot' statements should use the following 'if condition' `\(token.contents)`.")
+      throw StencilError.TemplateSyntaxError("'ifnot' statements should use the following 'if condition' `\(token.contents)`.")
     }
     let variable = components[1]
     var trueNodes = [NodeType]()
@@ -218,7 +210,7 @@ public class IfNode : NodeType {
     falseNodes = try parser.parse(until(["endif", "else"]))
 
     guard let token = parser.nextToken() else {
-      throw TemplateSyntaxError("`endif` was not found.")
+      throw StencilError.TemplateSyntaxError("`endif` was not found.")
     }
 
     if token.contents == "else" {
