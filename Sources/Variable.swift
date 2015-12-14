@@ -10,7 +10,7 @@ class FilterExpression : Resolvable {
     if bits.isEmpty {
       filters = []
       variable = Variable("")
-      throw TemplateSyntaxError("Variable tags must include at least 1 argument")
+      throw StencilError.TemplateSyntaxError("Variable tags must include at least 1 argument")
     }
 
     variable = Variable(bits[0])
