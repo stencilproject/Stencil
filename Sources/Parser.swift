@@ -1,5 +1,5 @@
-public func until(tags: [String]) -> ((TokenParser, Token) -> Bool) {
-  return { parser, token in
+public func until(tags:[String]) -> (parser:TokenParser, token:Token) -> Bool {
+  return {(parser:TokenParser, token:Token) -> Bool in
     if let name = token.components().first {
       for tag in tags {
         if name == tag {
