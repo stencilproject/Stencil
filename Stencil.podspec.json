@@ -1,6 +1,6 @@
 {
   "name": "Stencil",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "summary": "Stencil is a simple and powerful template language for Swift.",
   "homepage": "https://github.com/kylef/Stencil",
   "license": {
@@ -8,12 +8,12 @@
     "file": "LICENSE"
   },
   "authors": {
-    "Kyle Fuller": "inbox@kylefuller.co.uk"
+    "Kyle Fuller": "kyle@fuller.li"
   },
   "social_media_url": "http://twitter.com/kylefuller",
   "source": {
     "git": "https://github.com/kylef/Stencil.git",
-    "tag": "0.5.1"
+    "tag": "0.5.2"
   },
   "source_files": [
     "Sources/*.swift"
