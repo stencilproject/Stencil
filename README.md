@@ -1,6 +1,6 @@
 # Stencil
 
-[![Build Status](http://img.shields.io/circleci/project/kylef/Stencil/master.svg)](https://circleci.com/gh/kylef/Stencil)
+[![Build Status](https://travis-ci.org/kylef/Stencil.svg?branch=master)](https://travis-ci.org/kylef/Stencil)
 
 Stencil is a simple and powerful template language for Swift. It provides a
 syntax similar to Django and Mustache. If you're familiar with these, you will
