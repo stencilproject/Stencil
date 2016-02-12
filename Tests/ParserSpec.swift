@@ -38,9 +38,14 @@ func testTokenParser() {
     }
 
     $0.it("can parse a tag token") {
+      let namespace = Namespace()
+      namespace.registerSimpleTag("known") { _ in
+        return ""
+      }
+
       let parser = TokenParser(tokens: [
-        Token.Block(value: "now"),
-      ], namespace: Namespace())
+        Token.Block(value: "known"),
+      ], namespace: namespace)
 
       let nodes = try parser.parse()
       try expect(nodes.count) == 1

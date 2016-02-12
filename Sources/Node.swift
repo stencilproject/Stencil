@@ -76,6 +76,8 @@ public class VariableNode : NodeType {
   }
 }
 
+
+#if !os(Linux)
 public class NowNode : NodeType {
   public let format:Variable
 
@@ -114,6 +116,8 @@ public class NowNode : NodeType {
     return formatter!.stringFromDate(date)
   }
 }
+#endif
+
 
 public class ForNode : NodeType {
   let variable:Variable
