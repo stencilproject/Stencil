@@ -86,21 +86,21 @@ func testIfNode() {
       }
 
       $0.it("renders the truth when array expression is not empty") {
-        let items: Array<[String:AnyObject]> = [["key":"key1","value":42],["key":"key2","value":1337]]
+        let items: [[String: Any]] = [["key":"key1","value":42],["key":"key2","value":1337]]
         let arrayContext = Context(dictionary: ["items": [items]])
         let node = IfNode(variable: "items", trueNodes: [TextNode(text: "true")], falseNodes: [TextNode(text: "false")])
         try expect(try node.render(arrayContext)) == "true"
       }
 
       $0.it("renders the false when array expression is empty") {
-        let emptyItems = Array<[String:AnyObject]>()
+        let emptyItems = [[String: Any]]()
         let arrayContext = Context(dictionary: ["items": emptyItems])
         let node = IfNode(variable: "items", trueNodes: [TextNode(text: "true")], falseNodes: [TextNode(text: "false")])
         try expect(try node.render(arrayContext)) == "false"
       }
 
       $0.it("renders the false when dictionary expression is empty") {
-        let emptyItems = [String:AnyObject]()
+        let emptyItems = [String:Any]()
         let arrayContext = Context(dictionary: ["items": emptyItems])
         let node = IfNode(variable: "items", trueNodes: [TextNode(text: "true")], falseNodes: [TextNode(text: "false")])
         try expect(try node.render(arrayContext)) == "false"

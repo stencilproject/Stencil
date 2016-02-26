@@ -13,7 +13,9 @@ public class Namespace {
     registerTag("for", parser: ForNode.parse)
     registerTag("if", parser: IfNode.parse)
     registerTag("ifnot", parser: IfNode.parse_ifnot)
+#if !os(Linux)
     registerTag("now", parser: NowNode.parse)
+#endif
     registerTag("include", parser: IncludeNode.parse)
     registerTag("extends", parser: ExtendsNode.parse)
     registerTag("block", parser: BlockNode.parse)

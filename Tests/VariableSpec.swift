@@ -3,9 +3,11 @@ import Spectre
 import Stencil
 
 
+#if os(OSX)
 @objc class Object : NSObject {
   let title = "Hello World"
 }
+#endif
 
 
 func testVariable() {
@@ -16,8 +18,11 @@ func testVariable() {
       "profiles": [
         "github": "kylef",
       ],
-      "object": Object(),
     ])
+
+#if os(OSX)
+    context.push(["object": Object()])
+#endif
 
     $0.it("can resolve a string literal with double quotes") {
       let variable = Variable("\"name\"")
@@ -61,10 +66,12 @@ func testVariable() {
       try expect(result) == "Carlton"
     }
 
+#if os(OSX)
     $0.it("can resolve a value via KVO") {
       let variable = Variable("object.title")
       let result = try variable.resolve(context) as? String
       try expect(result) == "Hello World"
     }
+#endif
   }
 }

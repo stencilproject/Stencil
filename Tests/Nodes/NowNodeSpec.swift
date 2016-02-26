@@ -4,6 +4,7 @@ import Stencil
 
 
 func testNowNode() {
+#if !os(Linux)
   describe("NowNode") {
     $0.describe("parsing") {
       $0.it("parses default format without any now arguments") {
@@ -38,4 +39,5 @@ func testNowNode() {
       }
     }
   }
+#endif
 }

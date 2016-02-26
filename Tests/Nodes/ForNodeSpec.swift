@@ -33,6 +33,7 @@ func testForNode() {
       try expect(try node.render(any_context)) == "123" 
     }
 
+#if os(OSX)
     $0.it("renders a context variable of type NSArray") {
       let nsarray_context = Context(dictionary: [
         "items": NSArray(array: [1, 2, 3])
@@ -40,8 +41,9 @@ func testForNode() {
 
       let nodes: [NodeType] = [VariableNode(variable: "item")]
       let node = ForNode(variable: "items", loopVariable: "item", nodes: nodes, emptyNodes: [])
-      try expect(try node.render(nsarray_context)) == "123" 
+      try expect(try node.render(nsarray_context)) == "123"
     }
+#endif
 
     $0.it("renders the given nodes while providing if the item is first in the context") {
       let nodes: [NodeType] = [VariableNode(variable: "item"), VariableNode(variable: "forloop.first")]
