@@ -56,11 +56,13 @@ public struct Variable : Equatable, Resolvable {
     }
 
     for bit in lookup() {
+      current = normalize(current)
+
       if let context = current as? Context {
         current = context[bit]
-      } else if let dictionary = resolveDictionary(current) {
+      } else if let dictionary = current as? [String: Any] {
         current = dictionary[bit]
-      } else if let array = resolveArray(current) {
+      } else if let array = current as? [Any] {
         if let index = Int(bit) {
           current = array[index]
         } else if bit == "first" {
@@ -90,50 +92,42 @@ public func ==(lhs: Variable, rhs: Variable) -> Bool {
 }
 
 
-func resolveDictionary(current: Any?) -> [String: Any]? {
-  switch current {
-  case let dictionary as [String: Any]:
-      return dictionary
-  case let dictionary as [String: AnyObject]:
-      var result: [String: Any] = [:]
-      for (k, v) in dictionary {
-          result[k] = v as Any
-      }
-      return result
-  case let dictionary as NSDictionary:
-      var result: [String: Any] = [:]
-      for (k, v) in dictionary {
-          if let k = k as? String {
-              result[k] = v as Any
-          }
-      }
-      return result
-  default:
-      return nil
-  }
-}
-
-func resolveArray(current: Any?) -> [Any]? {
-  switch current {
-  case let array as [Any]:
-      return array
-  case let array as [AnyObject]:
-      return array.map { $0 as Any }
-  case let array as NSArray:
-      return array.map { $0 as Any }
-  default:
-      return nil
-  }
-}
-
 func normalize(current: Any?) -> Any? {
-  if let array = resolveArray(current) {
-    return array
-  }
-
-  if let dictionary = resolveDictionary(current) {
-    return dictionary
+  if let current = current as? Normalizable {
+    return current.normalize()
   }
 
   return current
+}
+
+protocol Normalizable {
+  func normalize() -> Any?
+}
+
+extension Array : Normalizable {
+  func normalize() -> Any? {
+    return map { $0 as Any }
+  }
+}
+
+extension NSArray : Normalizable {
+  func normalize() -> Any? {
+    return map { $0 as Any }
+  }
+}
+
+extension Dictionary : Normalizable {
+  func normalize() -> Any? {
+    var dictionary: [String: Any] = [:]
+
+    for (key, value) in self {
+      if let key = key as? String {
+        dictionary[key] = Stencil.normalize(value)
+      } else if let key = key as? CustomStringConvertible {
+        dictionary[key.description] = Stencil.normalize(value)
+      }
+    }
+
+    return dictionary
+  }
 }
