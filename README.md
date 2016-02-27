@@ -25,8 +25,8 @@ let context = Context(dictionary: [
 ])
 
 do {
-  let template = Template(named: "template.stencil")
-  let rendered = template.render(context)
+  let template = try Template(named: "template.stencil")
+  let rendered = try template.render(context)
   print(rendered)
 } catch {
   print("Failed to render template \(error)")
