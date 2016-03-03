@@ -67,4 +67,30 @@ func testFilter() {
       try expect(result) == "kyle"
     }
   }
+
+  describe("camelcase filter") {
+    describe("with spaces") {
+      let template = Template(templateString: "{{ name|camelcase }}")
+      $0.it("transforms string to be camelcase") {
+        let result = try.template.render(Context(dictionary: ["name": "John Doe"]))
+        try expect(result) == "JohnDoe"
+      }
+    }
+
+    describe("with underscores") {
+      let template = Template(templateString: "{{ name|camelcase }}")
+      $0.it("transforms string to be camelcase") {
+        let result = try.template.render(Context(dictionary: ["name": "John_Doe"]))
+        try expect(result) == "JohnDoe"
+      }
+    }
+
+    describe("with hyphens") {
+      let template = Template(templateString: "{{ name|camelcase }}")
+      $0.it("transforms string to be camelcase") {
+        let result = try.template.render(Context(dictionary: ["name": "John-Doe"]))
+        try expect(result) == "JohnDoe"
+      }
+    }
+  }
 }
