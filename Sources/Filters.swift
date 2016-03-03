@@ -1,3 +1,13 @@
+private extension String {
+  var camelcaseString: String {
+    var camelcase = ""
+    for str in self.componentsSeparatedByCharactersInSet(NSCharacterSet.alphanumericCharacterSet().invertedSet) {
+      camelcase += str.capitalizedString
+    }
+    return camelcase
+  }
+}
+
 func toString(value: Any?) -> String? {
   if let value = value as? String {
     return value
@@ -27,6 +37,14 @@ func uppercase(value: Any?) -> Any? {
 func lowercase(value: Any?) -> Any? {
   if let value = toString(value) {
     return value.lowercaseString
+  }
+
+  return value
+}
+
+func camelcase(value: Any?) -> Any? {
+  if let value = toString(value) {
+    return value.camelcaseString
   }
 
   return value
