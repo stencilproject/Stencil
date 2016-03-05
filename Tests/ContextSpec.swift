@@ -27,29 +27,24 @@ func testContext() {
     }
 
     $0.it("allows you to retrieve a value from a parent") {
-      context.push()
-
-      try expect(context["name"] as? String) == "Kyle"
+      try context.push {
+        try expect(context["name"] as? String) == "Kyle"
+      }
     }
 
     $0.it("allows you to override a parent's value") {
-      context.push()
-      context["name"] = "Katie"
-
-      try expect(context["name"] as? String) == "Katie"
+      try context.push {
+        context["name"] = "Katie"
+        try expect(context["name"] as? String) == "Katie"
+      }
     }
 
     $0.it("allows you to pop to restore previous state") {
-      context.push()
-      context["name"] = "Katie"
-      context.pop()
+      context.push {
+        context["name"] = "Katie"
+      }
 
       try expect(context["name"] as? String) == "Kyle"
-    }
-
-    $0.it("allows you to push a dictionary onto the stack") {
-      context.push(["name": "Katie"])
-      try expect(context["name"] as? String) == "Katie"
     }
 
     $0.it("allows you to push a dictionary and run a closure then restoring previous state") {

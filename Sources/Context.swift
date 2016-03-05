@@ -1,9 +1,9 @@
 /// A container for template variables.
 public class Context {
-  var dictionaries:[[String: Any]]
+  var dictionaries: [[String: Any]]
 
   /// Initialise a Context with a dictionary
-  public init(dictionary:[String: Any]) {
+  public init(dictionary: [String: Any]) {
     dictionaries = [dictionary]
   }
 
@@ -35,20 +35,19 @@ public class Context {
   }
 
   /// Push a new level into the Context
-  public func push(dictionary: [String: Any]? = nil) {
+  private func push(dictionary: [String: Any]? = nil) {
     dictionaries.append(dictionary ?? [:])
   }
 
   /// Pop the last level off of the Context
-  public func pop() -> [String: Any]? {
+  private func pop() -> [String: Any]? {
     return dictionaries.popLast()
   }
 
   /// Push a new level onto the context for the duration of the execution of the given closure
   public func push<Result>(dictionary: [String: Any]? = nil, @noescape closure: (() throws -> Result)) rethrows -> Result {
     push(dictionary)
-    let result = try closure()
-    pop()
-    return result
+    defer { pop() }
+    return try closure()
   }
 }

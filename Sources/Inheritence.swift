@@ -74,10 +74,9 @@ class ExtendsNode : NodeType {
     }
 
     let blockContext = BlockContext(blocks: blocks)
-    context.push([BlockContext.contextKey: blockContext])
-    let result = try template.render(context)
-    context.pop()
-    return result
+    return try context.push([BlockContext.contextKey: blockContext]) {
+      return try template.render(context)
+    }
   }
 }
 

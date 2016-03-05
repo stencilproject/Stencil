@@ -21,7 +21,7 @@ func testVariable() {
     ])
 
 #if os(OSX)
-    context.push(["object": Object()])
+    context["object"] = Object()
 #endif
 
     $0.it("can resolve a string literal with double quotes") {

@@ -67,15 +67,12 @@ public class IfNode : NodeType {
       truthy = true
     }
 
-    context.push()
-    let output:String
-    if truthy {
-      output = try renderNodes(trueNodes, context)
-    } else {
-      output = try renderNodes(falseNodes, context)
+    return try context.push {
+      if truthy {
+        return try renderNodes(trueNodes, context)
+      } else {
+        return try renderNodes(falseNodes, context)
+      }
     }
-    context.pop()
-
-    return output
   }
 }
