@@ -46,7 +46,7 @@ func testStencil() {
         return CustomNode()
       }
 
-      let result = try template.render(namespace: namespace)
+      let result = try template.render(Context(namespace: namespace))
       try expect(result) == "Hello World"
     }
 
@@ -59,7 +59,7 @@ func testStencil() {
         return "Hello World"
       }
 
-      try expect(try template.render(namespace: namespace)) == "Hello World"
+      try expect(try template.render(Context(namespace: namespace))) == "Hello World"
     }
   }
 }

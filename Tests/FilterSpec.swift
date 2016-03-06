@@ -4,7 +4,7 @@ import Stencil
 
 func testFilter() {
   describe("template filters") {
-    let context = Context(dictionary: ["name": "Kyle"])
+    let context: [String: Any] = ["name": "Kyle"]
 
     $0.it("allows you to register a custom filter") {
       let template = Template(templateString: "{{ name|repeat }}")
@@ -18,7 +18,7 @@ func testFilter() {
         return nil
       }
 
-      let result = try template.render(context, namespace: namespace)
+      let result = try template.render(Context(dictionary: context, namespace: namespace))
       try expect(result) == "Kyle Kyle"
     }
 
@@ -29,7 +29,7 @@ func testFilter() {
         throw TemplateSyntaxError("No Repeat")
       }
 
-      try expect(try template.render(context, namespace: namespace)).toThrow(TemplateSyntaxError("No Repeat"))
+      try expect(try template.render(Context(dictionary: context, namespace: namespace))).toThrow(TemplateSyntaxError("No Repeat"))
     }
 
     $0.it("allows whitespace in expression") {
