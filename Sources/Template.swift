@@ -36,9 +36,10 @@ public class Template {
   }
 
   /// Render the given template
-  public func render(context: Context? = nil, namespace: Namespace? = nil) throws -> String {
-    let parser = TokenParser(tokens: tokens, namespace: namespace ?? Namespace())
+  public func render(context: Context? = nil) throws -> String {
+    let context = context ?? Context()
+    let parser = TokenParser(tokens: tokens, namespace: context.namespace)
     let nodes = try parser.parse()
-    return try renderNodes(nodes, context ?? Context())
+    return try renderNodes(nodes, context)
   }
 }
