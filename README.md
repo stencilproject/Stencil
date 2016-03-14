@@ -73,8 +73,8 @@ following lookup:
 For example, if `people` was an array:
 
 ```html+django
-There are {{ people.count }} people, {{ people.first }} is first person.
-Followed by {{ people.1 }}.
+There are {{ people.count }} people. {{ people.first }} is the first person,
+followed by {{ people.1 }}.
 ```
 
 #### Filters
@@ -142,7 +142,7 @@ A for loop allows you to iterate over an array found by variable lookup.
 {% for item in items %}
   {{ item }}
 {% empty %}
-  There we're no items.
+  There were no items.
 {% endfor %}
 ```
 
