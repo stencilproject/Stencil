@@ -19,7 +19,7 @@ public class TokenParser {
   public typealias TagParser = (TokenParser, Token) throws -> NodeType
 
   private var tokens: [Token]
-  private let namespace: Namespace
+  let namespace: Namespace
 
   public init(tokens: [Token], namespace: Namespace) {
     self.tokens = tokens

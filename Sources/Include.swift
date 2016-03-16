@@ -3,6 +3,7 @@ import PathKit
 
 public class IncludeNode : NodeType {
   public let templateName: Variable
+  private let namespace: Namespace
 
   public class func parse(parser: TokenParser, token: Token) throws -> NodeType {
     let bits = token.components()
@@ -11,11 +12,12 @@ public class IncludeNode : NodeType {
       throw TemplateSyntaxError("'include' tag takes one argument, the template file to be included")
     }
 
-    return IncludeNode(templateName: Variable(bits[1]))
+    return IncludeNode(templateName: Variable(bits[1]), namespace: parser.namespace)
   }
 
-  public init(templateName: Variable) {
+  public init(templateName: Variable, namespace: Namespace) {
     self.templateName = templateName
+    self.namespace = namespace
   }
 
   public func render(context: Context) throws -> String {
@@ -32,7 +34,7 @@ public class IncludeNode : NodeType {
       throw TemplateSyntaxError("'\(templateName)' template not found in \(paths)")
     }
 
-    return try template.render(context)
+    return try template.render(context, namespace: self.namespace)
   }
 }
 
