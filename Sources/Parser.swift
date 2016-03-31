@@ -67,15 +67,24 @@ public class TokenParser {
 
   public func nextToken() -> Token? {
     if tokens.count > 0 {
+        #if !swift(>=3.0)
       return tokens.removeAtIndex(0)
+        #else
+            return tokens.remove(at:0)
+        #endif
     }
 
     return nil
   }
 
   public func prependToken(token:Token) {
+    #if !swift(>=3.0)
     tokens.insert(token, atIndex: 0)
-  }
+    #else
+    tokens.insert(token, at: 0)
+    #endif
+
+    }
 
   public func findFilter(name: String) throws -> Filter {
     if let filter = namespace.filters[name] {

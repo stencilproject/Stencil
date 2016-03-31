@@ -1,3 +1,11 @@
+
+
+#if !swift(>=3.0)
+    typealias Collection = CollectionType
+    
+#endif
+
+
 class BlockContext {
   class var contextKey: String { return "block_context" }
 
@@ -8,12 +16,17 @@ class BlockContext {
   }
 
   func pop(blockName: String) -> BlockNode? {
+    #if !swift(>=3.0)
     return blocks.removeValueForKey(blockName)
+    #else
+    return blocks.removeValue(forKey:blockName)
+    #endif
   }
 }
 
 
-extension CollectionType {
+extension Collection {
+    #if !swift(>=3.0)
   func any(closure: Generator.Element -> Bool) -> Generator.Element? {
     for element in self {
       if closure(element) {
@@ -23,6 +36,17 @@ extension CollectionType {
 
     return nil
   }
+    #else
+    func any(closure: Iterator.Element -> Bool) -> Iterator.Element? {
+        for element in self {
+            if closure(element) {
+                return element
+            }
+        }
+        
+        return nil
+    }
+    #endif
 }
 
 
@@ -69,7 +93,11 @@ class ExtendsNode : NodeType {
     }
 
     guard let template = loader.loadTemplate(templateName) else {
+    #if !swift(>=3.0)
       let paths:String = loader.paths.map { $0.description }.joinWithSeparator(", ")
+    #else
+        let paths:String = loader.paths.map { $0.description }.joined(separator:", ")
+    #endif
       throw TemplateSyntaxError("'\(templateName)' template not found in \(paths)")
     }
 

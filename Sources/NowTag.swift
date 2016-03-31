@@ -37,7 +37,11 @@ public class NowNode : NodeType {
       return ""
     }
 
+    #if !swift(>=3.0)
     return formatter!.stringFromDate(date)
-  }
+    #else
+        return formatter!.string(from:date)
+    #endif
+    }
 }
 #endif

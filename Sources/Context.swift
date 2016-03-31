@@ -17,11 +17,19 @@ public class Context {
   public subscript(key: String) -> Any? {
     /// Retrieves a variable's value, starting at the current context and going upwards
     get {
+        #if !swift(>=3.0)
       for dictionary in Array(dictionaries.reverse()) {
         if let value = dictionary[key] {
           return value
         }
-      }
+            }
+        #else
+            for dictionary in Array(dictionaries.reversed()) {
+            if let value = dictionary[key] {
+            return value
+            }
+            }
+        #endif
 
       return nil
     }

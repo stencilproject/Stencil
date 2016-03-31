@@ -1,7 +1,11 @@
 import Foundation
 
+#if !swift(>=3.0)
+    typealias ErrorProtocol = ErrorType
+#endif
 
-public struct TemplateSyntaxError : ErrorType, Equatable, CustomStringConvertible {
+
+public struct TemplateSyntaxError : ErrorProtocol, Equatable, CustomStringConvertible {
   public let description:String
 
   public init(_ description:String) {
@@ -23,7 +27,11 @@ public protocol NodeType {
 
 /// Render the collection of nodes in the given context
 public func renderNodes(nodes:[NodeType], _ context:Context) throws -> String {
-  return try nodes.map { try $0.render(context) }.joinWithSeparator("")
+    #if !swift(>=3.0)
+    return try nodes.map { try $0.render(context) }.joinWithSeparator("")
+    #else
+        return try nodes.map { try $0.render(context) }.joined(separator:"")
+    #endif
 }
 
 public class SimpleNode : NodeType {

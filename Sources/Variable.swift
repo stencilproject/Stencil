@@ -6,7 +6,11 @@ class FilterExpression : Resolvable {
   let variable: Variable
 
   init(token: String, parser: TokenParser) throws {
+    #if !swift(>=3.0)
     let bits = token.characters.split("|").map({ String($0).trim(" ") })
+    #else
+    let bits = token.characters.split(separator:"|").map({ String($0).trim(" ") })
+    #endif
     if bits.isEmpty {
       filters = []
       variable = Variable("")
@@ -43,8 +47,12 @@ public struct Variable : Equatable, Resolvable {
   }
 
   private func lookup() -> [String] {
+    #if !swift(>=3.0)
     return variable.characters.split(".").map(String.init)
-  }
+    #else
+        return variable.characters.split(separator:".").map(String.init)
+    #endif
+}
 
   /// Resolve the variable in the given context
   public func resolve(context: Context) throws -> Any? {
@@ -76,7 +84,11 @@ public struct Variable : Equatable, Resolvable {
 #if os(Linux)
         return nil
 #else
+    #if !swift(>=3.0)
         current = object.valueForKey(bit)
+        #else
+        current = object.value(forKey:bit)
+        #endif
 #endif
       } else {
         return nil
