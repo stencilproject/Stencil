@@ -1,5 +1,4 @@
 import Foundation
-import PathKit
 
 
 // A class for loading a template from disk
