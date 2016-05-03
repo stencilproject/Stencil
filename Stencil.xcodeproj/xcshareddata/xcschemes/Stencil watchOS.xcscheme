@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "8B6D08A21CD7FA2800E91826"
-               BuildableName = "Stencil watchOS.framework"
+               BuildableName = "Stencil.framework"
                BlueprintName = "Stencil watchOS"
                ReferencedContainer = "container:Stencil.xcodeproj">
             </BuildableReference>
@@ -46,7 +46,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8B6D08A21CD7FA2800E91826"
-            BuildableName = "Stencil watchOS.framework"
+            BuildableName = "Stencil.framework"
             BlueprintName = "Stencil watchOS"
             ReferencedContainer = "container:Stencil.xcodeproj">
          </BuildableReference>
@@ -64,7 +64,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8B6D08A21CD7FA2800E91826"
-            BuildableName = "Stencil watchOS.framework"
+            BuildableName = "Stencil.framework"
             BlueprintName = "Stencil watchOS"
             ReferencedContainer = "container:Stencil.xcodeproj">
          </BuildableReference>

@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "8B6D08751CD7F9F500E91826"
-               BuildableName = "Stencil iOS.framework"
+               BuildableName = "Stencil.framework"
                BlueprintName = "Stencil iOS"
                ReferencedContainer = "container:Stencil.xcodeproj">
             </BuildableReference>
@@ -46,7 +46,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8B6D08751CD7F9F500E91826"
-            BuildableName = "Stencil iOS.framework"
+            BuildableName = "Stencil.framework"
             BlueprintName = "Stencil iOS"
             ReferencedContainer = "container:Stencil.xcodeproj">
          </BuildableReference>
@@ -64,7 +64,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8B6D08751CD7F9F500E91826"
-            BuildableName = "Stencil iOS.framework"
+            BuildableName = "Stencil.framework"
             BlueprintName = "Stencil iOS"
             ReferencedContainer = "container:Stencil.xcodeproj">
          </BuildableReference>

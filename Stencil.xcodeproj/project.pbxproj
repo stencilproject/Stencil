@@ -7,6 +7,36 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8B411F0A1CD8396E00623CAD /* Context.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08801CD7F9FF00E91826 /* Context.swift */; };
+		8B411F0B1CD8396E00623CAD /* Filters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08811CD7F9FF00E91826 /* Filters.swift */; };
+		8B411F0C1CD8396E00623CAD /* ForTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08821CD7F9FF00E91826 /* ForTag.swift */; };
+		8B411F0D1CD8396E00623CAD /* IfTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08831CD7F9FF00E91826 /* IfTag.swift */; };
+		8B411F0E1CD8396E00623CAD /* Include.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08841CD7F9FF00E91826 /* Include.swift */; };
+		8B411F0F1CD8396E00623CAD /* Inheritence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08851CD7F9FF00E91826 /* Inheritence.swift */; };
+		8B411F101CD8396E00623CAD /* Lexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08861CD7F9FF00E91826 /* Lexer.swift */; };
+		8B411F111CD8396E00623CAD /* Namespace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08871CD7F9FF00E91826 /* Namespace.swift */; };
+		8B411F121CD8396E00623CAD /* Node.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08881CD7F9FF00E91826 /* Node.swift */; };
+		8B411F131CD8396E00623CAD /* NowTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08891CD7F9FF00E91826 /* NowTag.swift */; };
+		8B411F141CD8396E00623CAD /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D088A1CD7F9FF00E91826 /* Parser.swift */; };
+		8B411F151CD8396E00623CAD /* Template.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D088B1CD7F9FF00E91826 /* Template.swift */; };
+		8B411F161CD8396E00623CAD /* TemplateLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D088C1CD7F9FF00E91826 /* TemplateLoader.swift */; };
+		8B411F171CD8396E00623CAD /* Tokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D088D1CD7F9FF00E91826 /* Tokenizer.swift */; };
+		8B411F181CD8396E00623CAD /* Variable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D088E1CD7F9FF00E91826 /* Variable.swift */; };
+		8B411F191CD8396F00623CAD /* Context.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08801CD7F9FF00E91826 /* Context.swift */; };
+		8B411F1A1CD8396F00623CAD /* Filters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08811CD7F9FF00E91826 /* Filters.swift */; };
+		8B411F1B1CD8396F00623CAD /* ForTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08821CD7F9FF00E91826 /* ForTag.swift */; };
+		8B411F1C1CD8396F00623CAD /* IfTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08831CD7F9FF00E91826 /* IfTag.swift */; };
+		8B411F1D1CD8396F00623CAD /* Include.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08841CD7F9FF00E91826 /* Include.swift */; };
+		8B411F1E1CD8396F00623CAD /* Inheritence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08851CD7F9FF00E91826 /* Inheritence.swift */; };
+		8B411F1F1CD8396F00623CAD /* Lexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08861CD7F9FF00E91826 /* Lexer.swift */; };
+		8B411F201CD8396F00623CAD /* Namespace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08871CD7F9FF00E91826 /* Namespace.swift */; };
+		8B411F211CD8396F00623CAD /* Node.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08881CD7F9FF00E91826 /* Node.swift */; };
+		8B411F221CD8396F00623CAD /* NowTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08891CD7F9FF00E91826 /* NowTag.swift */; };
+		8B411F231CD8396F00623CAD /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D088A1CD7F9FF00E91826 /* Parser.swift */; };
+		8B411F241CD8396F00623CAD /* Template.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D088B1CD7F9FF00E91826 /* Template.swift */; };
+		8B411F251CD8396F00623CAD /* TemplateLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D088C1CD7F9FF00E91826 /* TemplateLoader.swift */; };
+		8B411F261CD8396F00623CAD /* Tokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D088D1CD7F9FF00E91826 /* Tokenizer.swift */; };
+		8B411F271CD8396F00623CAD /* Variable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D088E1CD7F9FF00E91826 /* Variable.swift */; };
 		8B6D087A1CD7F9F500E91826 /* Stencil.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B6D08791CD7F9F500E91826 /* Stencil.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8B6D088F1CD7F9FF00E91826 /* Context.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08801CD7F9FF00E91826 /* Context.swift */; };
 		8B6D08901CD7F9FF00E91826 /* Filters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08811CD7F9FF00E91826 /* Filters.swift */; };
@@ -328,7 +358,22 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8B411F0B1CD8396E00623CAD /* Filters.swift in Sources */,
+				8B411F171CD8396E00623CAD /* Tokenizer.swift in Sources */,
+				8B411F121CD8396E00623CAD /* Node.swift in Sources */,
+				8B411F151CD8396E00623CAD /* Template.swift in Sources */,
+				8B411F111CD8396E00623CAD /* Namespace.swift in Sources */,
 				8B6D08DD1CD7FDFD00E91826 /* PathKit.swift in Sources */,
+				8B411F0E1CD8396E00623CAD /* Include.swift in Sources */,
+				8B411F131CD8396E00623CAD /* NowTag.swift in Sources */,
+				8B411F0D1CD8396E00623CAD /* IfTag.swift in Sources */,
+				8B411F161CD8396E00623CAD /* TemplateLoader.swift in Sources */,
+				8B411F0C1CD8396E00623CAD /* ForTag.swift in Sources */,
+				8B411F141CD8396E00623CAD /* Parser.swift in Sources */,
+				8B411F0F1CD8396E00623CAD /* Inheritence.swift in Sources */,
+				8B411F101CD8396E00623CAD /* Lexer.swift in Sources */,
+				8B411F0A1CD8396E00623CAD /* Context.swift in Sources */,
+				8B411F181CD8396E00623CAD /* Variable.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -336,7 +381,22 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8B411F1A1CD8396F00623CAD /* Filters.swift in Sources */,
+				8B411F261CD8396F00623CAD /* Tokenizer.swift in Sources */,
+				8B411F211CD8396F00623CAD /* Node.swift in Sources */,
+				8B411F241CD8396F00623CAD /* Template.swift in Sources */,
+				8B411F201CD8396F00623CAD /* Namespace.swift in Sources */,
 				8B6D08DE1CD7FDFD00E91826 /* PathKit.swift in Sources */,
+				8B411F1D1CD8396F00623CAD /* Include.swift in Sources */,
+				8B411F221CD8396F00623CAD /* NowTag.swift in Sources */,
+				8B411F1C1CD8396F00623CAD /* IfTag.swift in Sources */,
+				8B411F251CD8396F00623CAD /* TemplateLoader.swift in Sources */,
+				8B411F1B1CD8396F00623CAD /* ForTag.swift in Sources */,
+				8B411F231CD8396F00623CAD /* Parser.swift in Sources */,
+				8B411F1E1CD8396F00623CAD /* Inheritence.swift in Sources */,
+				8B411F1F1CD8396F00623CAD /* Lexer.swift in Sources */,
+				8B411F191CD8396F00623CAD /* Context.swift in Sources */,
+				8B411F271CD8396F00623CAD /* Variable.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -709,6 +769,7 @@
 				8B6D087D1CD7F9F500E91826 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		8B6D08A81CD7FA2800E91826 /* Build configuration list for PBXNativeTarget "Stencil watchOS" */ = {
 			isa = XCConfigurationList;
@@ -717,6 +778,7 @@
 				8B6D08AA1CD7FA2800E91826 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		8B6D08C21CD7FA4300E91826 /* Build configuration list for PBXNativeTarget "Stencil tvOS" */ = {
 			isa = XCConfigurationList;
@@ -725,6 +787,7 @@
 				8B6D08C41CD7FA4300E91826 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
