@@ -5,7 +5,7 @@ import PathKit
 
 func testTemplateLoader() {
   describe("TemplateLoader") {
-    let path = Path(__FILE__) + ".." + ".." + "Tests" + "fixtures"
+    let path = Path(__FILE__) + ".."  + "fixtures"
     let loader = TemplateLoader(paths: [path])
 
     $0.it("returns nil when a template cannot be found") {
