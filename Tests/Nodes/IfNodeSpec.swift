@@ -73,14 +73,26 @@ func testIfNode() {
     }
 
     $0.describe("rendering") {
-      let context = Context(dictionary: ["items": true])
-
       $0.it("renders the truth when expression evaluates to true") {
+        let context = Context(dictionary: ["items": true])
         let node = IfNode(variable: "items", trueNodes: [TextNode(text: "true")], falseNodes: [TextNode(text: "false")])
         try expect(try node.render(context)) == "true"
       }
 
       $0.it("renders the false when expression evaluates to false") {
+        let context = Context(dictionary: ["items": false])
+        let node = IfNode(variable: "items", trueNodes: [TextNode(text: "true")], falseNodes: [TextNode(text: "false")])
+        try expect(try node.render(context)) == "false"
+      }
+
+      $0.it("renders the truth when expression is not nil") {
+        let context = Context(dictionary: ["known": "known"])
+        let node = IfNode(variable: "known", trueNodes: [TextNode(text: "true")], falseNodes: [TextNode(text: "false")])
+        try expect(try node.render(context)) == "true"
+      }
+
+      $0.it("renders the false when expression is nil") {
+        let context = Context(dictionary: [:])
         let node = IfNode(variable: "unknown", trueNodes: [TextNode(text: "true")], falseNodes: [TextNode(text: "false")])
         try expect(try node.render(context)) == "false"
       }
