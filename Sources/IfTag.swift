@@ -20,7 +20,7 @@ public class IfNode : NodeType {
 
     if token.contents == "else" {
       falseNodes = try parser.parse(until(["endif"]))
-      parser.nextToken()
+      _ = parser.nextToken()
     }
 
     return IfNode(variable: variable, trueNodes: trueNodes, falseNodes: falseNodes)
@@ -43,7 +43,7 @@ public class IfNode : NodeType {
 
     if token.contents == "else" {
       trueNodes = try parser.parse(until(["endif"]))
-      parser.nextToken()
+      _ = parser.nextToken()
     }
 
     return IfNode(variable: variable, trueNodes: trueNodes, falseNodes: falseNodes)
@@ -55,7 +55,7 @@ public class IfNode : NodeType {
     self.falseNodes = falseNodes
   }
 
-  public func render(context: Context) throws -> String {
+  public func render(_ context: Context) throws -> String {
     let result = try variable.resolve(context)
     var truthy = false
 
@@ -71,9 +71,9 @@ public class IfNode : NodeType {
 
     return try context.push {
       if truthy {
-        return try renderNodes(trueNodes, context)
+        return try renderNodes(context, self.trueNodes)
       } else {
-        return try renderNodes(falseNodes, context)
+        return try renderNodes(context, self.falseNodes)
       }
     }
   }
