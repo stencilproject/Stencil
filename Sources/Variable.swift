@@ -4,18 +4,22 @@ import Foundation
 class FilterExpression : Resolvable {
   let filters: [Filter]
   let variable: Variable
-
+  
   init(token: String, parser: TokenParser) throws {
-    let bits = token.characters.split("|").map({ String($0).trim(" ") })
+    #if !swift(>=3.0)
+      let bits = token.characters.split("|").map({ String($0).trim(" ") })
+    #else
+      let bits = token.characters.split(separator:"|").map({ String($0).trim(" ") })
+    #endif
     if bits.isEmpty {
       filters = []
       variable = Variable("")
       throw TemplateSyntaxError("Variable tags must include at least 1 argument")
     }
-
+    
     variable = Variable(bits[0])
     let filterBits = bits[1 ..< bits.endIndex]
-
+    
     do {
       filters = try filterBits.map { try parser.findFilter($0) }
     } catch {
@@ -23,10 +27,10 @@ class FilterExpression : Resolvable {
       throw error
     }
   }
-
+  
   func resolve(context: Context) throws -> Any? {
     let result = try variable.resolve(context)
-
+    
     return try filters.reduce(result) { x, y in
       return try y(x)
     }
@@ -36,28 +40,32 @@ class FilterExpression : Resolvable {
 /// A structure used to represent a template variable, and to resolve it in a given context.
 public struct Variable : Equatable, Resolvable {
   public let variable: String
-
+  
   /// Create a variable with a string representing the variable
   public init(_ variable: String) {
     self.variable = variable
   }
-
+  
   private func lookup() -> [String] {
-    return variable.characters.split(".").map(String.init)
+    #if !swift(>=3.0)
+      return variable.characters.split(".").map(String.init)
+    #else
+      return variable.characters.split(separator:".").map(String.init)
+    #endif
   }
-
+  
   /// Resolve the variable in the given context
   public func resolve(context: Context) throws -> Any? {
     var current: Any? = context
-
+    
     if (variable.hasPrefix("'") && variable.hasSuffix("'")) || (variable.hasPrefix("\"") && variable.hasSuffix("\"")) {
       // String literal
       return variable[variable.startIndex.successor() ..< variable.endIndex.predecessor()]
     }
-
+    
     for bit in lookup() {
       current = normalize(current)
-
+      
       if let context = current as? Context {
         current = context[bit]
       } else if let dictionary = current as? [String: Any] {
@@ -73,16 +81,20 @@ public struct Variable : Equatable, Resolvable {
           current = array.count
         }
       } else if let object = current as? NSObject {  // NSKeyValueCoding
-#if os(Linux)
-        return nil
-#else
-        current = object.valueForKey(bit)
-#endif
+        #if os(Linux)
+          return nil
+        #else
+          #if !swift(>=3.0)
+            current = object.valueForKey(bit)
+          #else
+            current = object.value(forKey:bit)
+          #endif
+        #endif
       } else {
         return nil
       }
     }
-
+    
     return normalize(current)
   }
 }
@@ -96,7 +108,7 @@ func normalize(current: Any?) -> Any? {
   if let current = current as? Normalizable {
     return current.normalize()
   }
-
+  
   return current
 }
 
@@ -119,7 +131,7 @@ extension NSArray : Normalizable {
 extension Dictionary : Normalizable {
   func normalize() -> Any? {
     var dictionary: [String: Any] = [:]
-
+    
     for (key, value) in self {
       if let key = key as? String {
         dictionary[key] = Stencil.normalize(value)
@@ -127,7 +139,7 @@ extension Dictionary : Normalizable {
         dictionary[key.description] = Stencil.normalize(value)
       }
     }
-
+    
     return dictionary
   }
 }
