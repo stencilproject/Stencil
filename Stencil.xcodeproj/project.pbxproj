@@ -1,0 +1,795 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		8B411F0A1CD8396E00623CAD /* Context.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08801CD7F9FF00E91826 /* Context.swift */; };
+		8B411F0B1CD8396E00623CAD /* Filters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08811CD7F9FF00E91826 /* Filters.swift */; };
+		8B411F0C1CD8396E00623CAD /* ForTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08821CD7F9FF00E91826 /* ForTag.swift */; };
+		8B411F0D1CD8396E00623CAD /* IfTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08831CD7F9FF00E91826 /* IfTag.swift */; };
+		8B411F0E1CD8396E00623CAD /* Include.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08841CD7F9FF00E91826 /* Include.swift */; };
+		8B411F0F1CD8396E00623CAD /* Inheritence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08851CD7F9FF00E91826 /* Inheritence.swift */; };
+		8B411F101CD8396E00623CAD /* Lexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08861CD7F9FF00E91826 /* Lexer.swift */; };
+		8B411F111CD8396E00623CAD /* Namespace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08871CD7F9FF00E91826 /* Namespace.swift */; };
+		8B411F121CD8396E00623CAD /* Node.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08881CD7F9FF00E91826 /* Node.swift */; };
+		8B411F131CD8396E00623CAD /* NowTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08891CD7F9FF00E91826 /* NowTag.swift */; };
+		8B411F141CD8396E00623CAD /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D088A1CD7F9FF00E91826 /* Parser.swift */; };
+		8B411F151CD8396E00623CAD /* Template.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D088B1CD7F9FF00E91826 /* Template.swift */; };
+		8B411F161CD8396E00623CAD /* TemplateLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D088C1CD7F9FF00E91826 /* TemplateLoader.swift */; };
+		8B411F171CD8396E00623CAD /* Tokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D088D1CD7F9FF00E91826 /* Tokenizer.swift */; };
+		8B411F181CD8396E00623CAD /* Variable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D088E1CD7F9FF00E91826 /* Variable.swift */; };
+		8B411F191CD8396F00623CAD /* Context.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08801CD7F9FF00E91826 /* Context.swift */; };
+		8B411F1A1CD8396F00623CAD /* Filters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08811CD7F9FF00E91826 /* Filters.swift */; };
+		8B411F1B1CD8396F00623CAD /* ForTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08821CD7F9FF00E91826 /* ForTag.swift */; };
+		8B411F1C1CD8396F00623CAD /* IfTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08831CD7F9FF00E91826 /* IfTag.swift */; };
+		8B411F1D1CD8396F00623CAD /* Include.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08841CD7F9FF00E91826 /* Include.swift */; };
+		8B411F1E1CD8396F00623CAD /* Inheritence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08851CD7F9FF00E91826 /* Inheritence.swift */; };
+		8B411F1F1CD8396F00623CAD /* Lexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08861CD7F9FF00E91826 /* Lexer.swift */; };
+		8B411F201CD8396F00623CAD /* Namespace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08871CD7F9FF00E91826 /* Namespace.swift */; };
+		8B411F211CD8396F00623CAD /* Node.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08881CD7F9FF00E91826 /* Node.swift */; };
+		8B411F221CD8396F00623CAD /* NowTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08891CD7F9FF00E91826 /* NowTag.swift */; };
+		8B411F231CD8396F00623CAD /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D088A1CD7F9FF00E91826 /* Parser.swift */; };
+		8B411F241CD8396F00623CAD /* Template.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D088B1CD7F9FF00E91826 /* Template.swift */; };
+		8B411F251CD8396F00623CAD /* TemplateLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D088C1CD7F9FF00E91826 /* TemplateLoader.swift */; };
+		8B411F261CD8396F00623CAD /* Tokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D088D1CD7F9FF00E91826 /* Tokenizer.swift */; };
+		8B411F271CD8396F00623CAD /* Variable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D088E1CD7F9FF00E91826 /* Variable.swift */; };
+		8B6D087A1CD7F9F500E91826 /* Stencil.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B6D08791CD7F9F500E91826 /* Stencil.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8B6D088F1CD7F9FF00E91826 /* Context.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08801CD7F9FF00E91826 /* Context.swift */; };
+		8B6D08901CD7F9FF00E91826 /* Filters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08811CD7F9FF00E91826 /* Filters.swift */; };
+		8B6D08911CD7F9FF00E91826 /* ForTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08821CD7F9FF00E91826 /* ForTag.swift */; };
+		8B6D08921CD7F9FF00E91826 /* IfTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08831CD7F9FF00E91826 /* IfTag.swift */; };
+		8B6D08931CD7F9FF00E91826 /* Include.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08841CD7F9FF00E91826 /* Include.swift */; };
+		8B6D08941CD7F9FF00E91826 /* Inheritence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08851CD7F9FF00E91826 /* Inheritence.swift */; };
+		8B6D08951CD7F9FF00E91826 /* Lexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08861CD7F9FF00E91826 /* Lexer.swift */; };
+		8B6D08961CD7F9FF00E91826 /* Namespace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08871CD7F9FF00E91826 /* Namespace.swift */; };
+		8B6D08971CD7F9FF00E91826 /* Node.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08881CD7F9FF00E91826 /* Node.swift */; };
+		8B6D08981CD7F9FF00E91826 /* NowTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08891CD7F9FF00E91826 /* NowTag.swift */; };
+		8B6D08991CD7F9FF00E91826 /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D088A1CD7F9FF00E91826 /* Parser.swift */; };
+		8B6D089A1CD7F9FF00E91826 /* Template.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D088B1CD7F9FF00E91826 /* Template.swift */; };
+		8B6D089B1CD7F9FF00E91826 /* TemplateLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D088C1CD7F9FF00E91826 /* TemplateLoader.swift */; };
+		8B6D089C1CD7F9FF00E91826 /* Tokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D088D1CD7F9FF00E91826 /* Tokenizer.swift */; };
+		8B6D089D1CD7F9FF00E91826 /* Variable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D088E1CD7F9FF00E91826 /* Variable.swift */; };
+		8B6D08D91CD7FC9C00E91826 /* Stencil.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B6D08791CD7F9F500E91826 /* Stencil.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8B6D08DA1CD7FC9D00E91826 /* Stencil.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B6D08791CD7F9F500E91826 /* Stencil.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8B6D08DC1CD7FDFD00E91826 /* PathKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08DB1CD7FDFD00E91826 /* PathKit.swift */; };
+		8B6D08DD1CD7FDFD00E91826 /* PathKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08DB1CD7FDFD00E91826 /* PathKit.swift */; };
+		8B6D08DE1CD7FDFD00E91826 /* PathKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6D08DB1CD7FDFD00E91826 /* PathKit.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		8B6D08761CD7F9F500E91826 /* Stencil.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Stencil.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8B6D08791CD7F9F500E91826 /* Stencil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Stencil.h; sourceTree = "<group>"; };
+		8B6D08801CD7F9FF00E91826 /* Context.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Context.swift; sourceTree = "<group>"; };
+		8B6D08811CD7F9FF00E91826 /* Filters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Filters.swift; sourceTree = "<group>"; };
+		8B6D08821CD7F9FF00E91826 /* ForTag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForTag.swift; sourceTree = "<group>"; };
+		8B6D08831CD7F9FF00E91826 /* IfTag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IfTag.swift; sourceTree = "<group>"; };
+		8B6D08841CD7F9FF00E91826 /* Include.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Include.swift; sourceTree = "<group>"; };
+		8B6D08851CD7F9FF00E91826 /* Inheritence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Inheritence.swift; sourceTree = "<group>"; };
+		8B6D08861CD7F9FF00E91826 /* Lexer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Lexer.swift; sourceTree = "<group>"; };
+		8B6D08871CD7F9FF00E91826 /* Namespace.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Namespace.swift; sourceTree = "<group>"; };
+		8B6D08881CD7F9FF00E91826 /* Node.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Node.swift; sourceTree = "<group>"; };
+		8B6D08891CD7F9FF00E91826 /* NowTag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NowTag.swift; sourceTree = "<group>"; };
+		8B6D088A1CD7F9FF00E91826 /* Parser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Parser.swift; sourceTree = "<group>"; };
+		8B6D088B1CD7F9FF00E91826 /* Template.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Template.swift; sourceTree = "<group>"; };
+		8B6D088C1CD7F9FF00E91826 /* TemplateLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TemplateLoader.swift; sourceTree = "<group>"; };
+		8B6D088D1CD7F9FF00E91826 /* Tokenizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tokenizer.swift; sourceTree = "<group>"; };
+		8B6D088E1CD7F9FF00E91826 /* Variable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Variable.swift; sourceTree = "<group>"; };
+		8B6D08A31CD7FA2800E91826 /* Stencil.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Stencil.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8B6D08BD1CD7FA4300E91826 /* Stencil.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Stencil.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8B6D08C61CD7FAEA00E91826 /* ARCHITECTURE.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = ARCHITECTURE.md; sourceTree = "<group>"; };
+		8B6D08C71CD7FAEA00E91826 /* Info-iOS.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-iOS.plist"; sourceTree = "<group>"; };
+		8B6D08C81CD7FAEA00E91826 /* Info-tvOS.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-tvOS.plist"; sourceTree = "<group>"; };
+		8B6D08C91CD7FAEA00E91826 /* Info-watchOS.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-watchOS.plist"; sourceTree = "<group>"; };
+		8B6D08CA1CD7FAEA00E91826 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		8B6D08CB1CD7FAEA00E91826 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		8B6D08CC1CD7FAEA00E91826 /* Package.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
+		8B6D08CD1CD7FAEA00E91826 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		8B6D08CE1CD7FAEA00E91826 /* Stencil.podspec.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Stencil.podspec.json; sourceTree = "<group>"; };
+		8B6D08DB1CD7FDFD00E91826 /* PathKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PathKit.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8B6D08721CD7F9F500E91826 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8B6D089F1CD7FA2800E91826 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8B6D08B91CD7FA4300E91826 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		8B6D086A1CD7F96400E91826 = {
+			isa = PBXGroup;
+			children = (
+				8B6D08C51CD7FA6800E91826 /* Metadata */,
+				8B6D087F1CD7F9FF00E91826 /* Sources */,
+				8B6D08D81CD7FC3D00E91826 /* Supporting Files */,
+				8B6D08771CD7F9F500E91826 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		8B6D08771CD7F9F500E91826 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8B6D08761CD7F9F500E91826 /* Stencil.framework */,
+				8B6D08A31CD7FA2800E91826 /* Stencil.framework */,
+				8B6D08BD1CD7FA4300E91826 /* Stencil.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		8B6D087F1CD7F9FF00E91826 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				8B6D08801CD7F9FF00E91826 /* Context.swift */,
+				8B6D08811CD7F9FF00E91826 /* Filters.swift */,
+				8B6D08821CD7F9FF00E91826 /* ForTag.swift */,
+				8B6D08831CD7F9FF00E91826 /* IfTag.swift */,
+				8B6D08841CD7F9FF00E91826 /* Include.swift */,
+				8B6D08851CD7F9FF00E91826 /* Inheritence.swift */,
+				8B6D08861CD7F9FF00E91826 /* Lexer.swift */,
+				8B6D08871CD7F9FF00E91826 /* Namespace.swift */,
+				8B6D08881CD7F9FF00E91826 /* Node.swift */,
+				8B6D08891CD7F9FF00E91826 /* NowTag.swift */,
+				8B6D088A1CD7F9FF00E91826 /* Parser.swift */,
+				8B6D08DB1CD7FDFD00E91826 /* PathKit.swift */,
+				8B6D088B1CD7F9FF00E91826 /* Template.swift */,
+				8B6D088C1CD7F9FF00E91826 /* TemplateLoader.swift */,
+				8B6D088D1CD7F9FF00E91826 /* Tokenizer.swift */,
+				8B6D088E1CD7F9FF00E91826 /* Variable.swift */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		8B6D08C51CD7FA6800E91826 /* Metadata */ = {
+			isa = PBXGroup;
+			children = (
+				8B6D08C61CD7FAEA00E91826 /* ARCHITECTURE.md */,
+				8B6D08CA1CD7FAEA00E91826 /* LICENSE */,
+				8B6D08CB1CD7FAEA00E91826 /* Makefile */,
+				8B6D08CD1CD7FAEA00E91826 /* README.md */,
+				8B6D08CE1CD7FAEA00E91826 /* Stencil.podspec.json */,
+			);
+			name = Metadata;
+			sourceTree = "<group>";
+		};
+		8B6D08D81CD7FC3D00E91826 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				8B6D08C71CD7FAEA00E91826 /* Info-iOS.plist */,
+				8B6D08C81CD7FAEA00E91826 /* Info-tvOS.plist */,
+				8B6D08C91CD7FAEA00E91826 /* Info-watchOS.plist */,
+				8B6D08CC1CD7FAEA00E91826 /* Package.swift */,
+				8B6D08791CD7F9F500E91826 /* Stencil.h */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		8B6D08731CD7F9F500E91826 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8B6D087A1CD7F9F500E91826 /* Stencil.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8B6D08A01CD7FA2800E91826 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8B6D08D91CD7FC9C00E91826 /* Stencil.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8B6D08BA1CD7FA4300E91826 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8B6D08DA1CD7FC9D00E91826 /* Stencil.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		8B6D08751CD7F9F500E91826 /* Stencil iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8B6D087E1CD7F9F500E91826 /* Build configuration list for PBXNativeTarget "Stencil iOS" */;
+			buildPhases = (
+				8B6D08711CD7F9F500E91826 /* Sources */,
+				8B6D08721CD7F9F500E91826 /* Frameworks */,
+				8B6D08731CD7F9F500E91826 /* Headers */,
+				8B6D08741CD7F9F500E91826 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Stencil iOS";
+			productName = "Stencil iOS";
+			productReference = 8B6D08761CD7F9F500E91826 /* Stencil.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		8B6D08A21CD7FA2800E91826 /* Stencil watchOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8B6D08A81CD7FA2800E91826 /* Build configuration list for PBXNativeTarget "Stencil watchOS" */;
+			buildPhases = (
+				8B6D089E1CD7FA2800E91826 /* Sources */,
+				8B6D089F1CD7FA2800E91826 /* Frameworks */,
+				8B6D08A01CD7FA2800E91826 /* Headers */,
+				8B6D08A11CD7FA2800E91826 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Stencil watchOS";
+			productName = "Stencil watchOS";
+			productReference = 8B6D08A31CD7FA2800E91826 /* Stencil.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		8B6D08BC1CD7FA4300E91826 /* Stencil tvOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8B6D08C21CD7FA4300E91826 /* Build configuration list for PBXNativeTarget "Stencil tvOS" */;
+			buildPhases = (
+				8B6D08B81CD7FA4300E91826 /* Sources */,
+				8B6D08B91CD7FA4300E91826 /* Frameworks */,
+				8B6D08BA1CD7FA4300E91826 /* Headers */,
+				8B6D08BB1CD7FA4300E91826 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Stencil tvOS";
+			productName = "Stencil tvOS";
+			productReference = 8B6D08BD1CD7FA4300E91826 /* Stencil.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		8B6D086B1CD7F96400E91826 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0730;
+				TargetAttributes = {
+					8B6D08751CD7F9F500E91826 = {
+						CreatedOnToolsVersion = 7.3;
+					};
+					8B6D08A21CD7FA2800E91826 = {
+						CreatedOnToolsVersion = 7.3;
+					};
+					8B6D08BC1CD7FA4300E91826 = {
+						CreatedOnToolsVersion = 7.3;
+					};
+				};
+			};
+			buildConfigurationList = 8B6D086E1CD7F96400E91826 /* Build configuration list for PBXProject "Stencil" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 8B6D086A1CD7F96400E91826;
+			productRefGroup = 8B6D08771CD7F9F500E91826 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8B6D08751CD7F9F500E91826 /* Stencil iOS */,
+				8B6D08A21CD7FA2800E91826 /* Stencil watchOS */,
+				8B6D08BC1CD7FA4300E91826 /* Stencil tvOS */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8B6D08741CD7F9F500E91826 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8B6D08A11CD7FA2800E91826 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8B6D08BB1CD7FA4300E91826 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8B6D08711CD7F9F500E91826 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8B6D08941CD7F9FF00E91826 /* Inheritence.swift in Sources */,
+				8B6D08991CD7F9FF00E91826 /* Parser.swift in Sources */,
+				8B6D08981CD7F9FF00E91826 /* NowTag.swift in Sources */,
+				8B6D089C1CD7F9FF00E91826 /* Tokenizer.swift in Sources */,
+				8B6D089D1CD7F9FF00E91826 /* Variable.swift in Sources */,
+				8B6D08951CD7F9FF00E91826 /* Lexer.swift in Sources */,
+				8B6D08931CD7F9FF00E91826 /* Include.swift in Sources */,
+				8B6D08971CD7F9FF00E91826 /* Node.swift in Sources */,
+				8B6D088F1CD7F9FF00E91826 /* Context.swift in Sources */,
+				8B6D08921CD7F9FF00E91826 /* IfTag.swift in Sources */,
+				8B6D08DC1CD7FDFD00E91826 /* PathKit.swift in Sources */,
+				8B6D08911CD7F9FF00E91826 /* ForTag.swift in Sources */,
+				8B6D089B1CD7F9FF00E91826 /* TemplateLoader.swift in Sources */,
+				8B6D089A1CD7F9FF00E91826 /* Template.swift in Sources */,
+				8B6D08901CD7F9FF00E91826 /* Filters.swift in Sources */,
+				8B6D08961CD7F9FF00E91826 /* Namespace.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8B6D089E1CD7FA2800E91826 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8B411F0B1CD8396E00623CAD /* Filters.swift in Sources */,
+				8B411F171CD8396E00623CAD /* Tokenizer.swift in Sources */,
+				8B411F121CD8396E00623CAD /* Node.swift in Sources */,
+				8B411F151CD8396E00623CAD /* Template.swift in Sources */,
+				8B411F111CD8396E00623CAD /* Namespace.swift in Sources */,
+				8B6D08DD1CD7FDFD00E91826 /* PathKit.swift in Sources */,
+				8B411F0E1CD8396E00623CAD /* Include.swift in Sources */,
+				8B411F131CD8396E00623CAD /* NowTag.swift in Sources */,
+				8B411F0D1CD8396E00623CAD /* IfTag.swift in Sources */,
+				8B411F161CD8396E00623CAD /* TemplateLoader.swift in Sources */,
+				8B411F0C1CD8396E00623CAD /* ForTag.swift in Sources */,
+				8B411F141CD8396E00623CAD /* Parser.swift in Sources */,
+				8B411F0F1CD8396E00623CAD /* Inheritence.swift in Sources */,
+				8B411F101CD8396E00623CAD /* Lexer.swift in Sources */,
+				8B411F0A1CD8396E00623CAD /* Context.swift in Sources */,
+				8B411F181CD8396E00623CAD /* Variable.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8B6D08B81CD7FA4300E91826 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8B411F1A1CD8396F00623CAD /* Filters.swift in Sources */,
+				8B411F261CD8396F00623CAD /* Tokenizer.swift in Sources */,
+				8B411F211CD8396F00623CAD /* Node.swift in Sources */,
+				8B411F241CD8396F00623CAD /* Template.swift in Sources */,
+				8B411F201CD8396F00623CAD /* Namespace.swift in Sources */,
+				8B6D08DE1CD7FDFD00E91826 /* PathKit.swift in Sources */,
+				8B411F1D1CD8396F00623CAD /* Include.swift in Sources */,
+				8B411F221CD8396F00623CAD /* NowTag.swift in Sources */,
+				8B411F1C1CD8396F00623CAD /* IfTag.swift in Sources */,
+				8B411F251CD8396F00623CAD /* TemplateLoader.swift in Sources */,
+				8B411F1B1CD8396F00623CAD /* ForTag.swift in Sources */,
+				8B411F231CD8396F00623CAD /* Parser.swift in Sources */,
+				8B411F1E1CD8396F00623CAD /* Inheritence.swift in Sources */,
+				8B411F1F1CD8396F00623CAD /* Lexer.swift in Sources */,
+				8B411F191CD8396F00623CAD /* Context.swift in Sources */,
+				8B411F271CD8396F00623CAD /* Variable.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		8B6D086F1CD7F96400E91826 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Developer ID Application";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+			};
+			name = Debug;
+		};
+		8B6D08701CD7F96400E91826 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Developer ID Application";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+			};
+			name = Release;
+		};
+		8B6D087C1CD7F9F500E91826 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = "Info-iOS.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocode.Stencil-iOS";
+				PRODUCT_NAME = Stencil;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		8B6D087D1CD7F9F500E91826 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = "Info-iOS.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocode.Stencil-iOS";
+				PRODUCT_NAME = Stencil;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		8B6D08A91CD7FA2800E91826 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = "Info-watchOS.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocode.Stencil-watchOS";
+				PRODUCT_NAME = Stencil;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = 4;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+				WATCHOS_DEPLOYMENT_TARGET = 2.0;
+			};
+			name = Debug;
+		};
+		8B6D08AA1CD7FA2800E91826 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = "Info-watchOS.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocode.Stencil-watchOS";
+				PRODUCT_NAME = Stencil;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+				WATCHOS_DEPLOYMENT_TARGET = 2.0;
+			};
+			name = Release;
+		};
+		8B6D08C31CD7FA4300E91826 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = "Info-tvOS.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocode.Stencil-tvOS";
+				PRODUCT_NAME = Stencil;
+				SDKROOT = appletvos;
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 9.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		8B6D08C41CD7FA4300E91826 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = "Info-tvOS.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocode.Stencil-tvOS";
+				PRODUCT_NAME = Stencil;
+				SDKROOT = appletvos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 9.0;
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		8B6D086E1CD7F96400E91826 /* Build configuration list for PBXProject "Stencil" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8B6D086F1CD7F96400E91826 /* Debug */,
+				8B6D08701CD7F96400E91826 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8B6D087E1CD7F9F500E91826 /* Build configuration list for PBXNativeTarget "Stencil iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8B6D087C1CD7F9F500E91826 /* Debug */,
+				8B6D087D1CD7F9F500E91826 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8B6D08A81CD7FA2800E91826 /* Build configuration list for PBXNativeTarget "Stencil watchOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8B6D08A91CD7FA2800E91826 /* Debug */,
+				8B6D08AA1CD7FA2800E91826 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8B6D08C21CD7FA4300E91826 /* Build configuration list for PBXNativeTarget "Stencil tvOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8B6D08C31CD7FA4300E91826 /* Debug */,
+				8B6D08C41CD7FA4300E91826 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 8B6D086B1CD7F96400E91826 /* Project object */;
+}

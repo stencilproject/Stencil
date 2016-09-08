@@ -1,5 +1,4 @@
 import Foundation
-import PathKit
 
 #if os(Linux)
 let NSFileNoSuchFileError = 4
