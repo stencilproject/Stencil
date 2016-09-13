@@ -6,7 +6,7 @@ func testTokenParser() {
   describe("TokenParser") {
     $0.it("can parse a text token") {
       let parser = TokenParser(tokens: [
-        Token.Text(value: "Hello World")
+        .text(value: "Hello World")
       ], namespace: Namespace())
 
       let nodes = try parser.parse()
@@ -18,7 +18,7 @@ func testTokenParser() {
 
     $0.it("can parse a variable token") {
       let parser = TokenParser(tokens: [
-        Token.Variable(value: "'name'")
+        .variable(value: "'name'")
       ], namespace: Namespace())
 
       let nodes = try parser.parse()
@@ -30,7 +30,7 @@ func testTokenParser() {
 
     $0.it("can parse a comment token") {
       let parser = TokenParser(tokens: [
-        Token.Comment(value: "Secret stuff!")
+        .comment(value: "Secret stuff!")
       ], namespace: Namespace())
 
       let nodes = try parser.parse()
@@ -44,7 +44,7 @@ func testTokenParser() {
       }
 
       let parser = TokenParser(tokens: [
-        Token.Block(value: "known"),
+        .block(value: "known"),
       ], namespace: namespace)
 
       let nodes = try parser.parse()
@@ -53,7 +53,7 @@ func testTokenParser() {
 
     $0.it("errors when parsing an unknown tag") {
       let parser = TokenParser(tokens: [
-        Token.Block(value: "unknown"),
+        .block(value: "unknown"),
       ], namespace: Namespace())
 
       try expect(try parser.parse()).toThrow(TemplateSyntaxError("Unknown template tag 'unknown'"))

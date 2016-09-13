@@ -8,7 +8,7 @@ func testNowNode() {
   describe("NowNode") {
     $0.describe("parsing") {
       $0.it("parses default format without any now arguments") {
-        let tokens = [ Token.Block(value: "now") ]
+        let tokens: [Token] = [ .block(value: "now") ]
         let parser = TokenParser(tokens: tokens, namespace: Namespace())
 
         let nodes = try parser.parse()
@@ -18,7 +18,7 @@ func testNowNode() {
       }
 
       $0.it("parses now with a format") {
-        let tokens = [ Token.Block(value: "now \"HH:mm\"") ]
+        let tokens: [Token] = [ .block(value: "now \"HH:mm\"") ]
         let parser = TokenParser(tokens: tokens, namespace: Namespace())
         let nodes = try parser.parse()
         let node = nodes.first as? NowNode
@@ -31,9 +31,9 @@ func testNowNode() {
       $0.it("renders the date") {
         let node = NowNode(format: Variable("\"yyyy-MM-dd\""))
 
-        let formatter = NSDateFormatter()
+        let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
-        let date = formatter.stringFromDate(NSDate())
+        let date = formatter.string(from: NSDate() as Date)
 
         try expect(try node.render(Context())) == date
       }

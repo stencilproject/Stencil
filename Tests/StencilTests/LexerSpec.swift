@@ -9,7 +9,7 @@ func testLexer() {
       let tokens = lexer.tokenize()
 
       try expect(tokens.count) == 1
-      try expect(tokens.first) == Token.Text(value: "Hello World")
+      try expect(tokens.first) == .text(value: "Hello World")
     }
 
     $0.it("can tokenize a comment") {
@@ -17,7 +17,7 @@ func testLexer() {
       let tokens = lexer.tokenize()
 
       try expect(tokens.count) == (1)
-      try expect(tokens.first) == Token.Comment(value: "Comment")
+      try expect(tokens.first) == .comment(value: "Comment")
     }
 
     $0.it("can tokenize a variable") {
@@ -25,7 +25,7 @@ func testLexer() {
       let tokens = lexer.tokenize()
 
       try expect(tokens.count) == 1
-      try expect(tokens.first) == Token.Variable(value: "Variable")
+      try expect(tokens.first) == .variable(value: "Variable")
     }
 
     $0.it("can tokenize a mixture of content") {
@@ -33,9 +33,9 @@ func testLexer() {
       let tokens = lexer.tokenize()
 
       try expect(tokens.count) == 3
-      try expect(tokens[0]) == Token.Text(value: "My name is ")
-      try expect(tokens[1]) == Token.Variable(value: "name")
-      try expect(tokens[2]) == Token.Text(value: ".")
+      try expect(tokens[0]) == Token.text(value: "My name is ")
+      try expect(tokens[1]) == Token.variable(value: "name")
+      try expect(tokens[2]) == Token.text(value: ".")
     }
 
     $0.it("can tokenize two variables without being greedy") {
@@ -43,8 +43,8 @@ func testLexer() {
       let tokens = lexer.tokenize()
 
       try expect(tokens.count) == 2
-      try expect(tokens[0]) == Token.Variable(value: "thing")
-      try expect(tokens[1]) == Token.Variable(value: "name")
+      try expect(tokens[0]) == Token.variable(value: "thing")
+      try expect(tokens[1]) == Token.variable(value: "name")
     }
   }
 }

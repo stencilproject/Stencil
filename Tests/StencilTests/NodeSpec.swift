@@ -3,7 +3,7 @@ import Stencil
 
 
 class ErrorNode : NodeType {
-  func render(context: Context) throws -> String {
+  func render(_ context: Context) throws -> String {
     throw TemplateSyntaxError("Custom Error")
   }
 }

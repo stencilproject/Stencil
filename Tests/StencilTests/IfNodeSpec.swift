@@ -6,12 +6,12 @@ func testIfNode() {
   describe("IfNode") {
     $0.describe("parsing") {
       $0.it("can parse an if block") {
-        let tokens = [
-          Token.Block(value: "if value"),
-          Token.Text(value: "true"),
-          Token.Block(value: "else"),
-          Token.Text(value: "false"),
-          Token.Block(value: "endif")
+        let tokens: [Token] = [
+          .block(value: "if value"),
+          .text(value: "true"),
+          .block(value: "else"),
+          .text(value: "false"),
+          .block(value: "endif")
         ]
 
         let parser = TokenParser(tokens: tokens, namespace: Namespace())
@@ -29,12 +29,12 @@ func testIfNode() {
       }
 
       $0.it("can parse an ifnot block") {
-        let tokens = [
-          Token.Block(value: "ifnot value"),
-          Token.Text(value: "false"),
-          Token.Block(value: "else"),
-          Token.Text(value: "true"),
-          Token.Block(value: "endif")
+        let tokens: [Token] = [
+          .block(value: "ifnot value"),
+          .text(value: "false"),
+          .block(value: "else"),
+          .text(value: "true"),
+          .block(value: "endif")
         ]
 
         let parser = TokenParser(tokens: tokens, namespace: Namespace())
@@ -52,8 +52,8 @@ func testIfNode() {
       }
 
       $0.it("throws an error when parsing an if block without an endif") {
-        let tokens = [
-          Token.Block(value: "if value"),
+        let tokens: [Token] = [
+          .block(value: "if value"),
         ]
 
         let parser = TokenParser(tokens: tokens, namespace: Namespace())
@@ -62,8 +62,8 @@ func testIfNode() {
       }
 
       $0.it("throws an error when parsing an ifnot without an endif") {
-        let tokens = [
-          Token.Block(value: "ifnot value"),
+        let tokens: [Token] = [
+            .block(value: "ifnot value"),
         ]
 
         let parser = TokenParser(tokens: tokens, namespace: Namespace())

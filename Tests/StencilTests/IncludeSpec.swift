@@ -5,12 +5,12 @@ import PathKit
 
 func testInclude() {
   describe("Include") {
-    let path = Path(__FILE__) + ".." + "fixtures"
+    let path = Path(#file) + ".." + "fixtures"
     let loader = TemplateLoader(paths: [path])
 
     $0.describe("parsing") {
       $0.it("throws an error when no template is given") {
-        let tokens = [ Token.Block(value: "include") ]
+        let tokens: [Token] = [ .block(value: "include") ]
         let parser = TokenParser(tokens: tokens, namespace: Namespace())
 
         let error = TemplateSyntaxError("'include' tag takes one argument, the template file to be included")
@@ -18,7 +18,7 @@ func testInclude() {
       }
 
       $0.it("can parse a valid include block") {
-        let tokens = [ Token.Block(value: "include \"test.html\"") ]
+        let tokens: [Token] = [ .block(value: "include \"test.html\"") ]
         let parser = TokenParser(tokens: tokens, namespace: Namespace())
 
         let nodes = try parser.parse()
@@ -33,7 +33,7 @@ func testInclude() {
         let node = IncludeNode(templateName: Variable("\"test.html\""))
 
         do {
-          try node.render(Context())
+          _ = try node.render(Context())
         } catch {
           try expect("\(error)") == "Template loader not in context"
         }
@@ -43,7 +43,7 @@ func testInclude() {
         let node = IncludeNode(templateName: Variable("\"unknown.html\""))
 
         do {
-          try node.render(Context(dictionary: ["loader": loader]))
+          _ = try node.render(Context(dictionary: ["loader": loader]))
         } catch {
           try expect("\(error)".hasPrefix("'unknown.html' template not found")).to.beTrue()
         }
