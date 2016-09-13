@@ -20,7 +20,8 @@
   ],
   "platforms": {
     "ios": "8.0",
-    "osx": "10.9"
+    "osx": "10.9",
+    "tvos": "9.0"
   },
   "requires_arc": true,
   "dependencies": {
