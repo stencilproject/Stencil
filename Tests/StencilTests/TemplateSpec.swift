@@ -10,5 +10,12 @@ func testTemplate() {
       let result = try template.render(context)
       try expect(result) == "Hello World"
     }
+
+    $0.it("can render a template from a string literal") {
+        let context = Context(dictionary: [ "name": "Kyle" ])
+        let template: Template = "Hello World"
+        let result = try template.render(context)
+        try expect(result) == "Hello World"
+    }
   }
 }
