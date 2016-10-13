@@ -52,6 +52,20 @@ func testVariable() {
       let variable = Variable("contacts.0")
       let result = try variable.resolve(context) as? String
       try expect(result) == "Katie"
+
+        let variable1 = Variable("contacts.1")
+        let result1 = try variable1.resolve(context) as? String
+        try expect(result1) == "Carlton"
+    }
+
+    $0.it("can resolve an item from an array via unknown index") {
+      let variable = Variable("contacts.5")
+      let result = try variable.resolve(context) as? String
+      try expect(result).to.beNil()
+
+      let variable1 = Variable("contacts.-5")
+      let result1 = try variable1.resolve(context) as? String
+      try expect(result1).to.beNil()
     }
 
     $0.it("can resolve the first item from an array") {

@@ -64,7 +64,11 @@ public struct Variable : Equatable, Resolvable {
         current = dictionary[bit]
       } else if let array = current as? [Any] {
         if let index = Int(bit) {
-          current = array[index]
+          if index >= 0 && index < array.count {
+            current = array[index]
+          } else {
+            current = nil
+          }
         } else if bit == "first" {
           current = array.first
         } else if bit == "last" {
