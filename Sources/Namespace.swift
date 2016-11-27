@@ -21,7 +21,7 @@ enum Filter: FilterType {
 }
 
 
-open class Namespace {
+public class Namespace {
   public typealias TagParser = (TokenParser, Token) throws -> NodeType
 
   var tags = [String: TagParser]()
@@ -51,24 +51,24 @@ open class Namespace {
   }
 
   /// Registers a new template tag
-  open func registerTag(_ name: String, parser: @escaping TagParser) {
+  public func registerTag(_ name: String, parser: @escaping TagParser) {
     tags[name] = parser
   }
 
   /// Registers a simple template tag with a name and a handler
-  open func registerSimpleTag(_ name: String, handler: @escaping (Context) throws -> String) {
+  public func registerSimpleTag(_ name: String, handler: @escaping (Context) throws -> String) {
     registerTag(name, parser: { parser, token in
       return SimpleNode(handler: handler)
     })
   }
 
   /// Registers a template filter with the given name
-  open func registerFilter(_ name: String, filter: @escaping (Any?) throws -> Any?) {
+  public func registerFilter(_ name: String, filter: @escaping (Any?) throws -> Any?) {
     filters[name] = .simple(filter)
   }
 
   /// Registers a template filter with the given name
-  open func registerFilter(_ name: String, filter: @escaping (Any?, [Any?]) throws -> Any?) {
+  public func registerFilter(_ name: String, filter: @escaping (Any?, [Any?]) throws -> Any?) {
     filters[name] = .arguments(filter)
   }
 }

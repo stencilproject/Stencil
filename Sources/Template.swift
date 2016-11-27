@@ -6,7 +6,7 @@ let NSFileNoSuchFileError = 4
 #endif
 
 /// A class representing a template
-open class Template: ExpressibleByStringLiteral {
+public class Template: ExpressibleByStringLiteral {
   let tokens: [Token]
 
   /// Create a template with the given name inside the given bundle
@@ -51,7 +51,7 @@ open class Template: ExpressibleByStringLiteral {
   }
 
   /// Render the given template
-  open func render(_ context: Context? = nil) throws -> String {
+  public func render(_ context: Context? = nil) throws -> String {
     let context = context ?? Context()
     let parser = TokenParser(tokens: tokens, namespace: context.namespace)
     let nodes = try parser.parse()

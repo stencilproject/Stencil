@@ -1,10 +1,10 @@
-open class ForNode : NodeType {
+class ForNode : NodeType {
   let variable:Variable
   let loopVariable:String
   let nodes:[NodeType]
   let emptyNodes: [NodeType]
 
-  open class func parse(_ parser:TokenParser, token:Token) throws -> NodeType {
+  class func parse(_ parser:TokenParser, token:Token) throws -> NodeType {
     let components = token.components()
 
     guard components.count == 4 && components[2] == "in" else {
@@ -30,14 +30,14 @@ open class ForNode : NodeType {
     return ForNode(variable: variable, loopVariable: loopVariable, nodes: forNodes, emptyNodes:emptyNodes)
   }
 
-  public init(variable:String, loopVariable:String, nodes:[NodeType], emptyNodes:[NodeType]) {
+  init(variable:String, loopVariable:String, nodes:[NodeType], emptyNodes:[NodeType]) {
     self.variable = Variable(variable)
     self.loopVariable = loopVariable
     self.nodes = nodes
     self.emptyNodes = emptyNodes
   }
 
-  open func render(_ context: Context) throws -> String {
+  func render(_ context: Context) throws -> String {
     let values = try variable.resolve(context)
 
     if let values = values as? [Any] , values.count > 0 {

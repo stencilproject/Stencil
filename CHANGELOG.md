@@ -2,6 +2,13 @@
 
 ## Master
 
+### Breaking
+
+- Many internal classes are no longer private. Some APIs were previously
+  accessible due to earlier versions of Swift requiring the types to be public
+  to be able to test. Now we have access to `@testable` these can correctly be
+  private.
+
 ### Enhancements
 
 - You may now register custom template filters which make use of arguments.
