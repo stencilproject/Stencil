@@ -18,6 +18,12 @@
     Hello {{ name|default:"World" }}
     ```
 
+- There is now a `join` filter.
+
+    ```html+django
+    {{ value|join:", " }}
+    ```
+
 ### Bug Fixes
 
 - Variables (`{{ variable.5 }}`) that reference an array index at an unknown

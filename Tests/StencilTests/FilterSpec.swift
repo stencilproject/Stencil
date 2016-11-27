@@ -103,4 +103,13 @@ func testFilter() {
       try expect(result) == "Hello World"
     }
   }
+
+  describe("join filter") {
+    let template = Template(templateString: "{{ value|join:\", \" }}")
+
+    $0.it("transforms a string to be lowercase") {
+      let result = try template.render(Context(dictionary: ["value": ["One", "Two"]]))
+      try expect(result) == "One, Two"
+    }
+  }
 }

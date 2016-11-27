@@ -49,6 +49,7 @@ public class Namespace {
     registerFilter("capitalize", filter: capitalise)
     registerFilter("uppercase", filter: uppercase)
     registerFilter("lowercase", filter: lowercase)
+    registerFilter("join", filter: joinFilter)
   }
 
   /// Registers a new template tag

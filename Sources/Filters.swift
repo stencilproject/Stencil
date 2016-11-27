@@ -35,3 +35,19 @@ func lowercase(_ value: Any?) -> Any? {
 func defaultFilter(value: Any?, arguments: [Any?]) -> Any? {
   return value ?? arguments.first as Any
 }
+
+func joinFilter(value: Any?, arguments: [Any?]) throws -> Any? {
+  guard arguments.count == 1 else {
+    throw TemplateSyntaxError("'join' filter takes a single argument")
+  }
+
+  guard let separator = arguments.first as? String else {
+    throw TemplateSyntaxError("'join' filter takes a separator as string")
+  }
+
+  if let value = value as? [String] {
+    return value.joined(separator: separator)
+  }
+
+  return nil
+}

@@ -130,3 +130,14 @@ value of the variable. For example:
 .. code-block:: html+django
 
     Hello {{ name|default:"World" }}
+
+``join``
+~~~~~~~~
+
+Join an array with a string.
+
+.. code-block:: html+django
+
+    {{ value|join:", " }}
+
+.. note:: The value MUST be an array of Strngs and the separator must be a string.
