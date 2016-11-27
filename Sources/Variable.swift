@@ -142,8 +142,11 @@ extension Dictionary : Normalizable {
 }
 
 func parseFilterComponents(token: String) -> (String, [Variable]) {
-  var components = token.characters.split(separator: ":").map(String.init)
+  var components = token.smartSplit(separator: ":")
   let name = components.removeFirst()
-  let variables = components.joined(separator: ":").characters.split(separator: ",").map { Variable(String($0)) }
+  let variables = components
+    .joined(separator: ":")
+    .smartSplit(separator: ",")
+    .map { Variable($0) }
   return (name, variables)
 }
