@@ -197,7 +197,27 @@ let rendered = try template.render(context, namespace: namespace)
 #### Registering custom filters
 
 ```swift
-namespace.registerFilter("double") { value in
+namespace.registerFilter("double") { (value: Any?) in
+  if let value = value as? Int {
+    return value * 2
+  }
+
+  return value
+}
+```
+
+#### Registering custom filters with arguments
+
+```swift
+namespace.registerFilter("multiply") { (value: Any?, arguments: [Any?]) in
+  let amount: Int
+
+  if let value = arguments.first as? Int {
+    amount = value
+  } else {
+    throw TemplateSyntaxError("multiple tag must be called with an integer argument")
+  }
+
   if let value = value as? Int {
     return value * 2
   }

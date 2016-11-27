@@ -10,7 +10,7 @@ func testFilter() {
       let template = Template(templateString: "{{ name|repeat }}")
 
       let namespace = Namespace()
-      namespace.registerFilter("repeat") { value in
+      namespace.registerFilter("repeat") { (value: Any?) in
         if let value = value as? String {
           return "\(value) \(value)"
         }
@@ -22,10 +22,27 @@ func testFilter() {
       try expect(result) == "Kyle Kyle"
     }
 
+    $0.it("allows you to register a custom filter which accepts arguments") {
+      let template = Template(templateString: "{{ name|repeat:'value' }}")
+
+      let namespace = Namespace()
+      namespace.registerFilter("repeat") { value, arguments in
+        print(arguments)
+        if !arguments.isEmpty {
+          return "\(value!) \(value!) with args \(arguments.first!!)"
+        }
+
+        return nil
+      }
+
+      let result = try template.render(Context(dictionary: context, namespace: namespace))
+      try expect(result) == "Kyle Kyle with args value"
+    }
+
     $0.it("allows you to register a custom which throws") {
       let template = Template(templateString: "{{ name|repeat }}")
       let namespace = Namespace()
-      namespace.registerFilter("repeat") { value in
+      namespace.registerFilter("repeat") { (value: Any?) in
         throw TemplateSyntaxError("No Repeat")
       }
 
@@ -36,6 +53,11 @@ func testFilter() {
       let template = Template(templateString: "{{ name | uppercase }}")
       let result = try template.render(Context(dictionary: ["name": "kyle"]))
       try expect(result) == "KYLE"
+    }
+
+    $0.it("throws when you pass arguments to simple filter") {
+      let template = Template(templateString: "{{ name|uppercase:5 }}")
+      try expect(try template.render(Context(dictionary: ["name": "kyle"]))).toThrow()
     }
   }
 

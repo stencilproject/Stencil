@@ -2,6 +2,10 @@
 
 ## Master
 
+### Enhancements
+
+- You may now register custom template filters which make use of arguments.
+
 ### Bug Fixes
 
 - Variables (`{{ variable.5 }}`) that reference an array index at an unknown

@@ -1,3 +1,26 @@
+public protocol FilterType {
+  func invoke(value: Any?, arguments: [Any?]) throws -> Any?
+}
+
+enum Filter: FilterType {
+  case simple(((Any?) throws -> Any?))
+  case arguments(((Any?, [Any?]) throws -> Any?))
+
+  func invoke(value: Any?, arguments: [Any?]) throws -> Any? {
+    switch self {
+    case let .simple(filter):
+      if !arguments.isEmpty {
+        throw TemplateSyntaxError("cannot invoke filter with an argument")
+      }
+
+      return try filter(value)
+    case let .arguments(filter):
+      return try filter(value, arguments)
+    }
+  }
+}
+
+
 open class Namespace {
   public typealias TagParser = (TokenParser, Token) throws -> NodeType
 
@@ -40,7 +63,12 @@ open class Namespace {
   }
 
   /// Registers a template filter with the given name
-  open func registerFilter(_ name: String, filter: @escaping Filter) {
-    filters[name] = filter
+  open func registerFilter(_ name: String, filter: @escaping (Any?) throws -> Any?) {
+    filters[name] = .simple(filter)
+  }
+
+  /// Registers a template filter with the given name
+  open func registerFilter(_ name: String, filter: @escaping (Any?, [Any?]) throws -> Any?) {
+    filters[name] = .arguments(filter)
   }
 }

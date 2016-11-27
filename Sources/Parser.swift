@@ -12,7 +12,6 @@ public func until(_ tags: [String]) -> ((TokenParser, Token) -> Bool) {
   }
 }
 
-public typealias Filter = (Any?) throws -> Any?
 
 /// A class for parsing an array of tokens and converts them into a collection of Node's
 open class TokenParser {
@@ -77,7 +76,7 @@ open class TokenParser {
     tokens.insert(token, at: 0)
   }
 
-  open func findFilter(_ name: String) throws -> Filter {
+  open func findFilter(_ name: String) throws -> FilterType {
     if let filter = namespace.filters[name] {
       return filter
     }
