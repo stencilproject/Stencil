@@ -33,6 +33,8 @@
 - Templates can now extend templates that extend other templates.
   [#60](https://github.com/kylef/Stencil/issues/60)
 
+- If comparisons will now treat 0 and below numbers as negative.
+
 
 ## 0.6.0
 

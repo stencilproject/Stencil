@@ -123,6 +123,36 @@ func testIfNode() {
         let node = IfNode(variable: "items", trueNodes: [TextNode(text: "true")], falseNodes: [TextNode(text: "false")])
         try expect(try node.render(arrayContext)) == "false"
       }
+
+      $0.it("renders the false when integer is below 1") {
+        let context = Context(dictionary: ["value": 0])
+        let node = IfNode(variable: "value", trueNodes: [TextNode(text: "true")], falseNodes: [TextNode(text: "false")])
+        try expect(try node.render(context)) == "false"
+
+        let negativeContext = Context(dictionary: ["value": -5])
+        let negativeNode = IfNode(variable: "value", trueNodes: [TextNode(text: "true")], falseNodes: [TextNode(text: "false")])
+        try expect(try negativeNode.render(negativeContext)) == "false"
+      }
+
+      $0.it("renders the false when float is below 1") {
+        let context = Context(dictionary: ["value": Float(0)])
+        let node = IfNode(variable: "value", trueNodes: [TextNode(text: "true")], falseNodes: [TextNode(text: "false")])
+        try expect(try node.render(context)) == "false"
+
+        let negativeContext = Context(dictionary: ["value": Float(-5)])
+        let negativeNode = IfNode(variable: "value", trueNodes: [TextNode(text: "true")], falseNodes: [TextNode(text: "false")])
+        try expect(try negativeNode.render(negativeContext)) == "false"
+      }
+
+      $0.it("renders the false when double is below 1") {
+        let context = Context(dictionary: ["value": Double(0)])
+        let node = IfNode(variable: "value", trueNodes: [TextNode(text: "true")], falseNodes: [TextNode(text: "false")])
+        try expect(try node.render(context)) == "false"
+
+        let negativeContext = Context(dictionary: ["value": Double(-5)])
+        let negativeNode = IfNode(variable: "value", trueNodes: [TextNode(text: "true")], falseNodes: [TextNode(text: "false")])
+        try expect(try negativeNode.render(negativeContext)) == "false"
+      }
     }
   }
 }

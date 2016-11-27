@@ -65,6 +65,12 @@ class IfNode : NodeType {
       truthy = !result.isEmpty
     } else if let result = result as? Bool {
       truthy = result
+    } else if let result = result as? Int {
+      truthy = result > 0
+    } else if let result = result as? Float {
+      truthy = result > 0
+    } else if let result = result as? Double {
+      truthy = result > 0
     } else if result != nil {
       truthy = true
     }
