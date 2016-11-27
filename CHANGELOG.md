@@ -19,6 +19,9 @@
   index will now resolve to `nil` instead of causing a crash.
   [#72](https://github.com/kylef/Stencil/issues/72)
 
+- Templates can now extend templates that extend other templates.
+  [#60](https://github.com/kylef/Stencil/issues/60)
+
 
 ## 0.6.0
 

@@ -13,5 +13,11 @@ func testInheritence() {
       let template = loader.loadTemplate("child.html")
       try expect(try template?.render(context)) == "Header\nChild"
     }
+
+    $0.it("can inherit from another template inheriting from another template") {
+      let context = Context(dictionary: ["loader": loader])
+      let template = loader.loadTemplate("child-child.html")
+      try expect(try template?.render(context)) == "Child Child Header\nChild"
+    }
   }
 }
