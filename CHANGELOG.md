@@ -12,6 +12,11 @@
 ### Enhancements
 
 - You may now register custom template filters which make use of arguments.
+- There is now a `default` filter.
+
+    ```html+django
+    Hello {{ name|default:"World" }}
+    ```
 
 ### Bug Fixes
 

@@ -45,6 +45,7 @@ public class Namespace {
   }
 
   fileprivate func registerDefaultFilters() {
+    registerFilter("default", filter: defaultFilter)
     registerFilter("capitalize", filter: capitalise)
     registerFilter("uppercase", filter: uppercase)
     registerFilter("lowercase", filter: lowercase)

@@ -31,3 +31,7 @@ func lowercase(_ value: Any?) -> Any? {
 
   return value
 }
+
+func defaultFilter(value: Any?, arguments: [Any?]) -> Any? {
+  return value ?? arguments.first as Any
+}

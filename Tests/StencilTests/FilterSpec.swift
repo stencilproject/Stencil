@@ -89,4 +89,18 @@ func testFilter() {
       try expect(result) == "kyle"
     }
   }
+
+  describe("default filter") {
+    let template = Template(templateString: "Hello {{ name|default:\"World\" }}")
+
+    $0.it("shows the variable value") {
+      let result = try template.render(Context(dictionary: ["name": "Kyle"]))
+      try expect(result) == "Hello Kyle"
+    }
+
+    $0.it("shows the default value") {
+      let result = try template.render(Context(dictionary: [:]))
+      try expect(result) == "Hello World"
+    }
+  }
 }

@@ -120,3 +120,13 @@ For example, `Stencil` to `stencil`.
 .. code-block:: html+django
 
     {{ "Stencil"|lowercase }}
+
+``default``
+~~~~~~~~~~~
+
+If a variable not present in the context, use given default. Otherwise, use the
+value of the variable. For example:
+
+.. code-block:: html+django
+
+    Hello {{ name|default:"World" }}
