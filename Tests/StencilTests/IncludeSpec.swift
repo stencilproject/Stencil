@@ -6,7 +6,7 @@ import PathKit
 func testInclude() {
   describe("Include") {
     let path = Path(#file) + ".." + "fixtures"
-    let loader = TemplateLoader(paths: [path])
+    let loader = FileSystemLoader(paths: [path])
 
     $0.describe("parsing") {
       $0.it("throws an error when no template is given") {

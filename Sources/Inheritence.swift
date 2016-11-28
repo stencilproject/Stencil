@@ -67,9 +67,8 @@ class ExtendsNode : NodeType {
       throw TemplateSyntaxError("'\(self.templateName)' could not be resolved as a string")
     }
 
-    guard let template = loader.loadTemplate(templateName) else {
-      let paths: String = loader.paths.map { $0.description }.joined(separator: ", ")
-      throw TemplateSyntaxError("'\(templateName)' template not found in \(paths)")
+    guard let template = try loader.loadTemplate(name: templateName) else {
+      throw TemplateSyntaxError("'\(templateName)' template not found")
     }
 
     let blockContext: BlockContext
