@@ -101,6 +101,12 @@ func testFilter() {
       let result = try template.render(Context(dictionary: [:]))
       try expect(result) == "Hello World"
     }
+
+    $0.it("supports multiple defaults") {
+      let template = Template(templateString: "Hello {{ name|default:a,b,c,\"World\" }}")
+      let result = try template.render(Context(dictionary: [:]))
+      try expect(result) == "Hello World"
+    }
   }
 
   describe("join filter") {

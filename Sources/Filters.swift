@@ -33,7 +33,17 @@ func lowercase(_ value: Any?) -> Any? {
 }
 
 func defaultFilter(value: Any?, arguments: [Any?]) -> Any? {
-  return value ?? arguments.first as Any
+  if let value = value {
+    return value
+  }
+
+  for argument in arguments {
+    if let argument = argument {
+      return argument
+    }
+  }
+
+  return nil
 }
 
 func joinFilter(value: Any?, arguments: [Any?]) throws -> Any? {
