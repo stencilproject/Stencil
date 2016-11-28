@@ -154,6 +154,42 @@ func testExpressions() {
         }
       }
 
+      $0.describe("equality expression") {
+        let expression = try! parseExpression(components: ["lhs", "==", "rhs"])
+
+        $0.it("evaluates to true with equal lhs/rhs") {
+          try expect(expression.evaluate(context: Context(dictionary: ["lhs": "a", "rhs": "a"]))).to.beTrue()
+        }
+
+        $0.it("evaluates to false with non equal lhs/rhs") {
+          print(expression)
+        }
+
+        $0.it("evaluates to true with nils") {
+          try expect(expression.evaluate(context: Context(dictionary: [:]))).to.beTrue()
+        }
+
+        $0.it("evaluates to true with numbers") {
+          try expect(expression.evaluate(context: Context(dictionary: ["lhs": 1, "rhs": 1.0]))).to.beTrue()
+        }
+
+        $0.it("evaluates to false with non equal numbers") {
+          try expect(expression.evaluate(context: Context(dictionary: ["lhs": 1, "rhs": 1.1]))).to.beFalse()
+        }
+
+        $0.it("evaluates to true with booleans") {
+          try expect(expression.evaluate(context: Context(dictionary: ["lhs": true, "rhs": true]))).to.beTrue()
+        }
+
+        $0.it("evaluates to false with falsy booleans") {
+          try expect(expression.evaluate(context: Context(dictionary: ["lhs": true, "rhs": false]))).to.beFalse()
+        }
+
+        $0.it("evaluates to false with different types") {
+          try expect(expression.evaluate(context: Context(dictionary: ["lhs": true, "rhs": 1]))).to.beFalse()
+        }
+      }
+
       $0.describe("multiple expression") {
         let expression = try! parseExpression(components: ["one", "or", "two", "and", "not", "three"])
 

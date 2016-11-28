@@ -95,6 +95,17 @@ Will be treated as:
 
     one or (two and three)
 
+``==`` operator
+"""""""""""""""
+
+.. code-block:: html+django
+
+    {% if value == other_value %}
+      value is equal to other_value
+    {% endif %}
+
+.. note:: The equality operator only supports numerical, string and boolean types.
+
 ``ifnot``
 ~~~~~~~~~
 

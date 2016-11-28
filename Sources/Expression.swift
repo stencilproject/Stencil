@@ -134,6 +134,42 @@ final class AndExpression: Expression, InfixOperator, CustomStringConvertible {
 }
 
 
+final class EqualityExpression: Expression, InfixOperator, CustomStringConvertible {
+  let lhs: Expression
+  let rhs: Expression
+
+  init(lhs: Expression, rhs: Expression) {
+    self.lhs = lhs
+    self.rhs = rhs
+  }
+
+  var description: String {
+    return "(\(lhs) == \(rhs))"
+  }
+
+  func evaluate(context: Context) throws -> Bool {
+    if let lhs = lhs as? VariableExpression, let rhs = rhs as? VariableExpression {
+      let lhsValue = try lhs.variable.resolve(context)
+      let rhsValue = try rhs.variable.resolve(context)
+
+      if let lhs = lhsValue, let rhs = rhsValue {
+        if let lhs = toNumber(value: lhs), let rhs = toNumber(value: rhs) {
+          return lhs == rhs
+        } else if let lhs = lhsValue as? String, let rhs = rhsValue as? String {
+          return lhs == rhs
+        } else if let lhs = lhsValue as? Bool, let rhs = rhsValue as? Bool {
+          return lhs == rhs
+        }
+      } else if lhsValue == nil && rhsValue == nil {
+        return true
+      }
+    }
+
+    return false
+  }
+}
+
+
 func toNumber(value: Any) -> Float80? {
     if let value = value as? Float {
         return Float80(value)
