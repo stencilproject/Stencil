@@ -39,3 +39,4 @@ Contents:
 
    templates
    builtins
+   custom-template-tags-and-filters
