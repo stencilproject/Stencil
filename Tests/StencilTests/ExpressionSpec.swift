@@ -72,6 +72,11 @@ func testExpressions() {
         let context = Context(dictionary: ["value": Double(0)])
         try expect(try expression.evaluate(context: context)).to.beFalse()
       }
+
+      $0.it("evaluates to false when uint is 0") {
+        let context = Context(dictionary: ["value": UInt(0)])
+        try expect(try expression.evaluate(context: context)).to.beFalse()
+      }
     }
 
     $0.describe("NotExpression") {

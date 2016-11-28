@@ -52,11 +52,7 @@ final class VariableExpression: Expression, CustomStringConvertible {
       truthy = !result.isEmpty
     } else if let result = result as? Bool {
       truthy = result
-    } else if let result = result as? Int {
-      truthy = result > 0
-    } else if let result = result as? Float {
-      truthy = result > 0
-    } else if let result = result as? Double {
+    } else if let value = result, let result = toNumber(value: value) {
       truthy = result > 0
     } else if result != nil {
       truthy = true
@@ -133,4 +129,41 @@ final class AndExpression: Expression, InfixOperator, CustomStringConvertible {
 
     return try rhs.evaluate(context: context)
   }
+}
+
+
+func toNumber(value: Any) -> Float80? {
+    if let value = value as? Float {
+        return Float80(value)
+    } else if let value = value as? Double {
+        return Float80(value)
+    } else if let value = value as? UInt {
+        return Float80(value)
+    } else if let value = value as? Int {
+        return Float80(value)
+    } else if let value = value as? Int8 {
+        return Float80(value)
+    } else if let value = value as? Int16 {
+        return Float80(value)
+    } else if let value = value as? Int32 {
+        return Float80(value)
+    } else if let value = value as? Int64 {
+        return Float80(value)
+    } else if let value = value as? UInt8 {
+        return Float80(value)
+    } else if let value = value as? UInt16 {
+        return Float80(value)
+    } else if let value = value as? UInt32 {
+        return Float80(value)
+    } else if let value = value as? UInt64 {
+        return Float80(value)
+    } else if let value = value as? Float80 {
+        return value
+    } else if let value = value as? Float64 {
+        return Float80(value)
+    } else if let value = value as? Float32 {
+        return Float80(value)
+    }
+
+    return nil
 }
