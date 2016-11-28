@@ -202,6 +202,54 @@ func testExpressions() {
         }
       }
 
+      $0.describe("more than expression") {
+        let expression = try! parseExpression(components: ["lhs", ">", "rhs"])
+
+        $0.it("evaluates to true with lhs > rhs") {
+          try expect(expression.evaluate(context: Context(dictionary: ["lhs": 5.0, "rhs": 4]))).to.beTrue()
+        }
+
+        $0.it("evaluates to false with lhs == rhs") {
+          try expect(expression.evaluate(context: Context(dictionary: ["lhs": 5.0, "rhs": 5.0]))).to.beFalse()
+        }
+      }
+
+      $0.describe("more than equal expression") {
+        let expression = try! parseExpression(components: ["lhs", ">=", "rhs"])
+
+        $0.it("evaluates to true with lhs == rhs") {
+          try expect(expression.evaluate(context: Context(dictionary: ["lhs": 5.0, "rhs": 5]))).to.beTrue()
+        }
+
+        $0.it("evaluates to false with lhs < rhs") {
+          try expect(expression.evaluate(context: Context(dictionary: ["lhs": 5.0, "rhs": 5.1]))).to.beFalse()
+        }
+      }
+
+      $0.describe("less than expression") {
+        let expression = try! parseExpression(components: ["lhs", "<", "rhs"])
+
+        $0.it("evaluates to true with lhs < rhs") {
+          try expect(expression.evaluate(context: Context(dictionary: ["lhs": 4, "rhs": 4.5]))).to.beTrue()
+        }
+
+        $0.it("evaluates to false with lhs == rhs") {
+          try expect(expression.evaluate(context: Context(dictionary: ["lhs": 5.0, "rhs": 5.0]))).to.beFalse()
+        }
+      }
+
+      $0.describe("less than equal expression") {
+        let expression = try! parseExpression(components: ["lhs", "<=", "rhs"])
+
+        $0.it("evaluates to true with lhs == rhs") {
+          try expect(expression.evaluate(context: Context(dictionary: ["lhs": 5.0, "rhs": 5]))).to.beTrue()
+        }
+
+        $0.it("evaluates to false with lhs > rhs") {
+          try expect(expression.evaluate(context: Context(dictionary: ["lhs": 5.1, "rhs": 5.0]))).to.beFalse()
+        }
+      }
+
       $0.describe("multiple expression") {
         let expression = try! parseExpression(components: ["one", "or", "two", "and", "not", "three"])
 

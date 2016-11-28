@@ -117,6 +117,50 @@ Will be treated as:
 
 .. note:: The inequality operator only supports numerical, string and boolean types.
 
+``<`` operator
+"""""""""""""""
+
+.. code-block:: html+django
+
+    {% if value < other_value %}
+      value is less than other_value
+    {% endif %}
+
+.. note:: The less than operator only supports numerical types.
+
+``<=`` operator
+"""""""""""""""
+
+.. code-block:: html+django
+
+    {% if value <= other_value %}
+      value is less than or equal to other_value
+    {% endif %}
+
+.. note:: The less than equal operator only supports numerical types.
+
+``>`` operator
+"""""""""""""""
+
+.. code-block:: html+django
+
+    {% if value > other_value %}
+      value is more than other_value
+    {% endif %}
+
+.. note:: The more than operator only supports numerical types.
+
+``>=`` operator
+"""""""""""""""
+
+.. code-block:: html+django
+
+    {% if value >= other_value %}
+      value is more than or equal to other_value
+    {% endif %}
+
+.. note:: The more than equal operator only supports numerical types.
+
 ``ifnot``
 ~~~~~~~~~
 

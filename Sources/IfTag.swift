@@ -19,6 +19,10 @@ let operators: [Operator] = [
   .prefix("not", 8, NotExpression.self),
   .infix("==", 10, EqualityExpression.self),
   .infix("!=", 10, InequalityExpression.self),
+  .infix(">", 10, MoreThanExpression.self),
+  .infix(">=", 10, MoreThanEqualExpression.self),
+  .infix("<", 10, LessThanExpression.self),
+  .infix("<=", 10, LessThanEqualExpression.self),
 ]
 
 

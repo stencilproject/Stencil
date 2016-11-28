@@ -21,7 +21,7 @@
   values of Swift structures and classes inside a Context.
 
 - If tags can now use prefix and infix operators such as `not`, `and`, `or`,
-  `==`, and `!=`.
+  `==`, `!=`, `>`, `>=`, `<` and `<=`.
 
     ```html+django
     {% if one or two and not three %}

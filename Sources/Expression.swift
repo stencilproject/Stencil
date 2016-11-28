@@ -170,6 +170,88 @@ class EqualityExpression: Expression, InfixOperator, CustomStringConvertible {
 }
 
 
+class NumericExpression: Expression, InfixOperator, CustomStringConvertible {
+  let lhs: Expression
+  let rhs: Expression
+
+  required init(lhs: Expression, rhs: Expression) {
+    self.lhs = lhs
+    self.rhs = rhs
+  }
+
+  var description: String {
+    return "(\(lhs) \(op) \(rhs))"
+  }
+
+  func evaluate(context: Context) throws -> Bool {
+    if let lhs = lhs as? VariableExpression, let rhs = rhs as? VariableExpression {
+      let lhsValue = try lhs.variable.resolve(context)
+      let rhsValue = try rhs.variable.resolve(context)
+
+      if let lhs = lhsValue, let rhs = rhsValue {
+        if let lhs = toNumber(value: lhs), let rhs = toNumber(value: rhs) {
+          return compare(lhs: lhs, rhs: rhs)
+        }
+      }
+    }
+
+    return false
+  }
+
+  var op: String {
+    return ""
+  }
+
+  func compare(lhs: Float80, rhs: Float80) -> Bool {
+    return false
+  }
+}
+
+
+class MoreThanExpression: NumericExpression {
+  override var op: String {
+    return ">"
+  }
+
+  override func compare(lhs: Float80, rhs: Float80) -> Bool {
+    return lhs > rhs
+  }
+}
+
+
+class MoreThanEqualExpression: NumericExpression {
+  override var op: String {
+    return ">="
+  }
+
+  override func compare(lhs: Float80, rhs: Float80) -> Bool {
+    return lhs >= rhs
+  }
+}
+
+
+class LessThanExpression: NumericExpression {
+  override var op: String {
+    return "<"
+  }
+
+  override func compare(lhs: Float80, rhs: Float80) -> Bool {
+    return lhs < rhs
+  }
+}
+
+
+class LessThanEqualExpression: NumericExpression {
+  override var op: String {
+    return "<="
+  }
+
+  override func compare(lhs: Float80, rhs: Float80) -> Bool {
+    return lhs <= rhs
+  }
+}
+
+
 class InequalityExpression: EqualityExpression {
   override var description: String {
     return "(\(lhs) != \(rhs))"
