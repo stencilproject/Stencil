@@ -1,5 +1,5 @@
 class ForNode : NodeType {
-  let variable:Variable
+  let resolvable: Resolvable
   let loopVariable:String
   let nodes:[NodeType]
   let emptyNodes: [NodeType]
@@ -27,18 +27,19 @@ class ForNode : NodeType {
       _ = parser.nextToken()
     }
 
-    return ForNode(variable: variable, loopVariable: loopVariable, nodes: forNodes, emptyNodes:emptyNodes)
+    let filter = try parser.compileFilter(variable)
+    return ForNode(resolvable: filter, loopVariable: loopVariable, nodes: forNodes, emptyNodes:emptyNodes)
   }
 
-  init(variable:String, loopVariable:String, nodes:[NodeType], emptyNodes:[NodeType]) {
-    self.variable = Variable(variable)
+  init(resolvable: Resolvable, loopVariable:String, nodes:[NodeType], emptyNodes:[NodeType]) {
+    self.resolvable = resolvable
     self.loopVariable = loopVariable
     self.nodes = nodes
     self.emptyNodes = emptyNodes
   }
 
   func render(_ context: Context) throws -> String {
-    let values = try variable.resolve(context)
+    let values = try resolvable.resolve(context)
 
     if let values = values as? [Any] , values.count > 0 {
       let count = values.count

@@ -84,7 +84,7 @@ public class TokenParser {
     throw TemplateSyntaxError("Invalid filter '\(name)'")
   }
 
-  func compileFilter(_ token: String) throws -> Resolvable {
+  public func compileFilter(_ token: String) throws -> Resolvable {
     return try FilterExpression(token: token, parser: self)
   }
 }

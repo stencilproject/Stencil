@@ -40,6 +40,14 @@
     {{ value|join:", " }}
     ```
 
+- `{% for %}` tag now supports filters.
+
+    ```html+django
+    {% for user in non_admins|default:admins %}
+      {{ user }}
+    {% endfor %}
+    ```
+
 ### Bug Fixes
 
 - Variables (`{{ variable.5 }}`) that reference an array index at an unknown
