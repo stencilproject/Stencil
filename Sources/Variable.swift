@@ -87,6 +87,13 @@ public struct Variable : Equatable, Resolvable {
 #else
         current = object.value(forKey: bit)
 #endif
+      } else if let value = current {
+        let mirror = Mirror(reflecting: value)
+        current = mirror.descendant(bit)
+
+        if current == nil {
+          return nil
+        }
       } else {
         return nil
       }

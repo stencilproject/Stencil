@@ -9,6 +9,14 @@ import Stencil
 }
 #endif
 
+fileprivate struct Person {
+  let name: String
+}
+
+fileprivate struct Article {
+  let author: Person
+}
+
 
 func testVariable() {
   describe("Variable") {
@@ -18,6 +26,7 @@ func testVariable() {
       "profiles": [
         "github": "kylef",
       ],
+      "article": Article(author: Person(name: "Kyle"))
     ])
 
 #if os(OSX)
@@ -78,6 +87,12 @@ func testVariable() {
       let variable = Variable("contacts.last")
       let result = try variable.resolve(context) as? String
       try expect(result) == "Carlton"
+    }
+
+    $0.it("can resolve a property with reflection") {
+      let variable = Variable("article.author.name")
+      let result = try variable.resolve(context) as? String
+      try expect(result) == "Kyle"
     }
 
 #if os(OSX)

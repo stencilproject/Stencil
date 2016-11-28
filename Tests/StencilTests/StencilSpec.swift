@@ -2,16 +2,23 @@ import Spectre
 import Stencil
 
 
-class CustomNode : NodeType {
+fileprivate class CustomNode : NodeType {
   func render(_ context:Context) throws -> String {
     return "Hello World"
   }
 }
 
 
+fileprivate struct Article {
+  let title: String
+  let author: String
+}
+
+
 func testStencil() {
   describe("Stencil") {
     $0.it("can render the README example") {
+
       let templateString = "There are {{ articles.count }} articles.\n" +
         "\n" +
         "{% for article in articles %}" +
@@ -20,8 +27,8 @@ func testStencil() {
 
       let context = Context(dictionary: [
         "articles": [
-          [ "title": "Migrating from OCUnit to XCTest", "author": "Kyle Fuller" ],
-          [ "title": "Memory Management with ARC", "author": "Kyle Fuller" ],
+          Article(title: "Migrating from OCUnit to XCTest", author: "Kyle Fuller"),
+          Article(title: "Memory Management with ARC", author: "Kyle Fuller"),
         ]
       ])
 

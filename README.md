@@ -11,21 +11,28 @@ feel right at home with Stencil.
 ```html+django
 There are {{ articles.count }} articles.
 
-{% for article in articles %}
-  - {{ article.title }} by {{ article.author }}.
-{% endfor %}
+<ul>
+  {% for article in articles %}
+    <li>{{ article.title }} by {{ article.author }}</li>
+  {% endfor %}
+</ul>
 ```
 
 ```swift
+struct Article {
+  let title: String
+  let author: String
+}
+
 let context = Context(dictionary: [
   "articles": [
-    [ "title": "Migrating from OCUnit to XCTest", "author": "Kyle Fuller" ],
-    [ "title": "Memory Management with ARC", "author": "Kyle Fuller" ],
+    Article(title: "Migrating from OCUnit to XCTest", author: "Kyle Fuller"),
+    Article(title: "Memory Management with ARC", author: "Kyle Fuller"),
   ]
 ])
 
 do {
-  let template = try Template(named: "template.stencil")
+  let template = try Template(named: "template.html")
   let rendered = try template.render(context)
   print(rendered)
 } catch {

@@ -22,6 +22,7 @@ following lookup:
 - Dictionary lookup
 - Array lookup (first, last, count, index)
 - Key value coding lookup
+- Type introspection
 
 For example, if `people` was an array:
 

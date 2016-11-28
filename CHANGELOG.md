@@ -17,6 +17,9 @@
 
 ### Enhancements
 
+- Variable lookup now supports introspection of Swift types. You can now lookup
+  values of Swift structures and classes inside a Context.
+
 - If tags can now use prefix and infix operators such as `not`, `and` and `or`.
 
     ```html+django
