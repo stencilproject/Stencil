@@ -1,4 +1,4 @@
-public protocol FilterType {
+protocol FilterType {
   func invoke(value: Any?, arguments: [Any?]) throws -> Any?
 }
 

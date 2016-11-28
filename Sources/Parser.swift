@@ -76,7 +76,7 @@ public class TokenParser {
     tokens.insert(token, at: 0)
   }
 
-  public func findFilter(_ name: String) throws -> FilterType {
+  func findFilter(_ name: String) throws -> FilterType {
     if let filter = namespace.filters[name] {
       return filter
     }
