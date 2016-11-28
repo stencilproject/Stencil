@@ -60,9 +60,9 @@ Stencil follows the same philosophy of Django:
 
 ## The User Guide
 
-- [Templates](https://stencil.rigidapp.com/templates.html)
-- [Built-in template tags and filters](https://stencil.rigidapp.com/builtins.html)
-- [Custom Template Tags and Filters](https://stencil.rigidapp.com/custom-template-tags-and-filters.html)
+- [Templates](http://stencil.fuller.li/en/latest/templates.html)
+- [Built-in template tags and filters](http://stencil.fuller.li/en/latest/builtins.html)
+- [Custom Template Tags and Filters](http://stencil.fuller.li/en/latest/custom-template-tags-and-filters.html)
 
 ## License
 
