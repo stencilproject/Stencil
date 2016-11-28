@@ -13,6 +13,8 @@
   to be able to test. Now we have access to `@testable` these can correctly be
   private.
 
+- `{% ifnot %}` tag is now deprecated, please use `{% if not %}` instead.
+
 ### Enhancements
 
 - Variable lookup now supports introspection of Swift types. You can now lookup

@@ -164,6 +164,8 @@ Will be treated as:
 ``ifnot``
 ~~~~~~~~~
 
+.. note:: ``{% ifnot %}`` is deprecated. You should use ``{% if not %}``.
+
 .. code-block:: html+django
 
     {% ifnot variable %}
