@@ -45,6 +45,16 @@ func testExpressions() {
         try expect(try expression.evaluate(context: context)).to.beTrue()
       }
 
+      $0.it("evaluates to true with string") {
+        let context = Context(dictionary: ["value": "test"])
+        try expect(try expression.evaluate(context: context)).to.beTrue()
+      }
+
+      $0.it("evaluates to false when empty string") {
+        let context = Context(dictionary: ["value": ""])
+        try expect(try expression.evaluate(context: context)).to.beFalse()
+      }
+
       $0.it("evaluates to false when integer value is below 0 or below") {
         let context = Context(dictionary: ["value": 0])
         try expect(try expression.evaluate(context: context)).to.beFalse()

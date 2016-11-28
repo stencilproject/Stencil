@@ -52,6 +52,8 @@ final class VariableExpression: Expression, CustomStringConvertible {
       truthy = !result.isEmpty
     } else if let result = result as? Bool {
       truthy = result
+    } else if let result = result as? String {
+      truthy = !result.isEmpty
     } else if let value = result, let result = toNumber(value: value) {
       truthy = result > 0
     } else if result != nil {

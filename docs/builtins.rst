@@ -48,6 +48,7 @@ true the contents of the block are processed. Being true is defined as:
 * Being non-empty (dictionaries or arrays)
 * Not being a false boolean value
 * Not being a numerical value of 0 or below
+* Not being an empty string
 
 .. code-block:: html+django
 
