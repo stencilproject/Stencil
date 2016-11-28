@@ -12,12 +12,12 @@ public func stencilTests() {
   testVariable()
   testNode()
   testForNode()
+  testExpressions()
   testIfNode()
   testNowNode()
   testInclude()
   testInheritence()
   testStencil()
-
 }
 
 
