@@ -59,7 +59,7 @@ class ExtendsNode : NodeType {
   }
 
   func render(_ context: Context) throws -> String {
-    guard let loader = context["loader"] as? TemplateLoader else {
+    guard let loader = context["loader"] as? Loader else {
       throw TemplateSyntaxError("Template loader not in context")
     }
 

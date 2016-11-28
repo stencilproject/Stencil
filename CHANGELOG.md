@@ -4,11 +4,9 @@
 
 ### Breaking
 
-- `TemplateLoader` is now a protocol with the file system based loader now
-  called `FileSystemLoader`. You will need to use `FileSystemLoader` instead.
-
-- `TemplateLoader` `loadTemplate` methods are now throwing and now take labels
-  for the `name` and `names` arguments.
+- `TemplateLoader` has been renamed to `FileSystemLoader`. The
+  `loadTemplate(s)` methods are now throwing and now take labels for the `name`
+  and `names` arguments.
 
 - Many internal classes are no longer private. Some APIs were previously
   accessible due to earlier versions of Swift requiring the types to be public

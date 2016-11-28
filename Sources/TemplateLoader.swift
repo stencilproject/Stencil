@@ -2,13 +2,13 @@ import Foundation
 import PathKit
 
 
-public protocol TemplateLoader {
+public protocol Loader {
   func loadTemplate(name: String) throws -> Template?
   func loadTemplate(names: [String]) throws -> Template?
 }
 
 
-extension TemplateLoader {
+extension Loader {
   func loadTemplate(names: [String]) throws -> Template? {
     for name in names {
       let template = try loadTemplate(name: name)
@@ -24,7 +24,7 @@ extension TemplateLoader {
 
 
 // A class for loading a template from disk
-public class FileSystemLoader: TemplateLoader {
+public class FileSystemLoader: Loader {
   public let paths: [Path]
 
   public init(paths: [Path]) {
