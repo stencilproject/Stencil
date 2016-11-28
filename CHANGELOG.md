@@ -11,6 +11,12 @@
 
 ### Enhancements
 
+- If tags can now use prefix and infix operators such as `not`, `and` and `or`.
+
+    ```html+django
+    {% if one or two and not three %}
+    ```
+
 - You may now register custom template filters which make use of arguments.
 - There is now a `default` filter.
 

@@ -41,6 +41,14 @@ The for block sets a few variables available within the loop:
 ``if``
 ~~~~~~
 
+The ``{% if %}`` tag evaluates a variable, and if that variable evaluates to
+true the contents of the block are processed. Being true is defined as:
+
+* Present in the context
+* Being non-empty (dictionaries or arrays)
+* Not being a false boolean value
+* Not being a numerical value of 0 or below
+
 .. code-block:: html+django
 
     {% if variable %}
@@ -48,6 +56,43 @@ The for block sets a few variables available within the loop:
     {% else %}
       The variable was not found.
     {% endif %}
+
+Operators
+^^^^^^^^^
+
+``if`` tags may combine ``and``, ``or`` and ``not`` to test multiple variables
+or to negate a variable.
+
+.. code-block:: html+django
+
+    {% if one and two %}
+        Both one and two evaluate to true.
+    {% endif %}
+
+    {% if not one %}
+        One evaluates to false
+    {% endif %}
+
+    {% if one or two %}
+        Either one or two evaluates to true.
+    {% endif %}
+
+    {% if not one or two %}
+        One does not evaluate to false or two evaluates to true.
+    {% endif %}
+
+You may use ``and``, ``or`` and ``not`` multiple times together. ``not`` has
+higest prescidence followed by ``and``. For example:
+
+.. code-block:: html+django
+
+    {% if one or two and three %}
+
+Will be treated as:
+
+.. code-block:: text
+
+    one or (two and three)
 
 ``ifnot``
 ~~~~~~~~~
