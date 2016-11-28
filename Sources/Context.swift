@@ -1,6 +1,6 @@
 /// A container for template variables.
 public class Context {
-  var dictionaries: [[String: Any]]
+  var dictionaries: [[String: Any?]]
   let namespace: Namespace
 
   /// Initialise a Context with an optional dictionary and optional namespace
@@ -58,7 +58,9 @@ public class Context {
 
     for dictionary in dictionaries {
       for (key, value) in dictionary {
-        accumulator.updateValue(value, forKey: key)
+        if let value = value {
+          accumulator.updateValue(value, forKey: key)
+        }
       }
     }
 

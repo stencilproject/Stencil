@@ -47,6 +47,15 @@ func testContext() {
       try expect(context["name"] as? String) == "Kyle"
     }
 
+    $0.it("allows you to remove a parent's value in a level") {
+      try context.push {
+        context["name"] = nil
+        try expect(context["name"]).to.beNil()
+      }
+
+      try expect(context["name"] as? String) == "Kyle"
+    }
+
     $0.it("allows you to push a dictionary and run a closure then restoring previous state") {
       var didRun = false
 
