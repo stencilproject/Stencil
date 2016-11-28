@@ -58,5 +58,15 @@ func testContext() {
       try expect(didRun).to.beTrue()
       try expect(context["name"] as? String) == "Kyle"
     }
+
+    $0.it("allows you to flatten the context contents") {
+      try context.push(dictionary: ["test": "abc"]) {
+        let flattened = context.flatten()
+
+        try expect(flattened.count) == 2
+        try expect(flattened["name"] as? String) == "Kyle"
+        try expect(flattened["test"] as? String) == "abc"
+      }
+    }
   }
 }

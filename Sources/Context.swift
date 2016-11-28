@@ -52,4 +52,16 @@ public class Context {
     defer { _ = pop() }
     return try closure()
   }
+
+  public func flatten() -> [String: Any] {
+    var accumulator: [String: Any] = [:]
+
+    for dictionary in dictionaries {
+      for (key, value) in dictionary {
+        accumulator.updateValue(value, forKey: key)
+      }
+    }
+
+    return accumulator
+  }
 }

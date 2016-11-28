@@ -39,4 +39,5 @@ Contents:
 
    templates
    builtins
+   api/context
    custom-template-tags-and-filters
