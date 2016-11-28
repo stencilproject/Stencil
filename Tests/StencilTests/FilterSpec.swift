@@ -27,7 +27,6 @@ func testFilter() {
 
       let namespace = Namespace()
       namespace.registerFilter("repeat") { value, arguments in
-        print(arguments)
         if !arguments.isEmpty {
           return "\(value!) \(value!) with args \(arguments.first!!)"
         }
