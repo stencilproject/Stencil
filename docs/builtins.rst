@@ -106,6 +106,17 @@ Will be treated as:
 
 .. note:: The equality operator only supports numerical, string and boolean types.
 
+``!=`` operator
+"""""""""""""""
+
+.. code-block:: html+django
+
+    {% if value != other_value %}
+      value is not equal to other_value
+    {% endif %}
+
+.. note:: The inequality operator only supports numerical, string and boolean types.
+
 ``ifnot``
 ~~~~~~~~~
 

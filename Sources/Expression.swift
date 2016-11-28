@@ -134,11 +134,11 @@ final class AndExpression: Expression, InfixOperator, CustomStringConvertible {
 }
 
 
-final class EqualityExpression: Expression, InfixOperator, CustomStringConvertible {
+class EqualityExpression: Expression, InfixOperator, CustomStringConvertible {
   let lhs: Expression
   let rhs: Expression
 
-  init(lhs: Expression, rhs: Expression) {
+  required init(lhs: Expression, rhs: Expression) {
     self.lhs = lhs
     self.rhs = rhs
   }
@@ -166,6 +166,17 @@ final class EqualityExpression: Expression, InfixOperator, CustomStringConvertib
     }
 
     return false
+  }
+}
+
+
+class InequalityExpression: EqualityExpression {
+  override var description: String {
+    return "(\(lhs) != \(rhs))"
+  }
+
+  override func evaluate(context: Context) throws -> Bool {
+    return try !super.evaluate(context: context)
   }
 }
 

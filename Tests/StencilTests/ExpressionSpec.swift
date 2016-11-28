@@ -162,7 +162,7 @@ func testExpressions() {
         }
 
         $0.it("evaluates to false with non equal lhs/rhs") {
-          print(expression)
+          try expect(expression.evaluate(context: Context(dictionary: ["lhs": "a", "rhs": "b"]))).to.beFalse()
         }
 
         $0.it("evaluates to true with nils") {
@@ -187,6 +187,18 @@ func testExpressions() {
 
         $0.it("evaluates to false with different types") {
           try expect(expression.evaluate(context: Context(dictionary: ["lhs": true, "rhs": 1]))).to.beFalse()
+        }
+      }
+
+      $0.describe("inequality expression") {
+        let expression = try! parseExpression(components: ["lhs", "!=", "rhs"])
+
+        $0.it("evaluates to true with inequal lhs/rhs") {
+          try expect(expression.evaluate(context: Context(dictionary: ["lhs": "a", "rhs": "b"]))).to.beTrue()
+        }
+
+        $0.it("evaluates to false with equal lhs/rhs") {
+          try expect(expression.evaluate(context: Context(dictionary: ["lhs": "b", "rhs": "b"]))).to.beFalse()
         }
       }
 

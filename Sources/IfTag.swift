@@ -18,6 +18,7 @@ let operators: [Operator] = [
   .infix("and", 7, AndExpression.self),
   .prefix("not", 8, NotExpression.self),
   .infix("==", 10, EqualityExpression.self),
+  .infix("!=", 10, InequalityExpression.self),
 ]
 
 
