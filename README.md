@@ -42,7 +42,9 @@ do {
 
 ## Installation
 
-Installation with CocoaPods is recommended.
+Installation with Swift Package Manager is recommended.
+
+### CocoaPods
 
 ```ruby
 pod 'Stencil'
