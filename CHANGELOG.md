@@ -1,5 +1,14 @@
 # Stencil Changelog
 
+## Master
+
+### Enhancements
+
+- `FileSystemLoader` will now ensure that template paths are within the base
+  path. Any template names that try to escape the base path will raise a
+  `SuspiciousFileOperation` error.
+
+
 ## 0.7.1
 
 ### Bug Fixes
