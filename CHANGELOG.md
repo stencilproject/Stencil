@@ -13,6 +13,15 @@
   path. Any template names that try to escape the base path will raise a
   `SuspiciousFileOperation` error.
 
+- New `{% filter %}` tag allowing you to perform a filter across the contents
+  of a block.
+
+    ```html+django
+    {% filter lowercase %}
+      This Text Will Be Lowercased.
+    {% endfilter %}
+    ```
+
 
 ## 0.7.1
 

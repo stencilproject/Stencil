@@ -17,6 +17,7 @@ public func stencilTests() {
   testNowNode()
   testInclude()
   testInheritence()
+  testFilterTag()
   testStencil()
 }
 

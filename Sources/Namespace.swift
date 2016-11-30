@@ -42,6 +42,7 @@ public class Namespace {
     registerTag("include", parser: IncludeNode.parse)
     registerTag("extends", parser: ExtendsNode.parse)
     registerTag("block", parser: BlockNode.parse)
+    registerTag("filter", parser: FilterNode.parse)
   }
 
   fileprivate func registerDefaultFilters() {

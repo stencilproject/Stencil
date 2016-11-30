@@ -177,6 +177,26 @@ Will be treated as:
 ``now``
 ~~~~~~~
 
+``filter``
+~~~~~~~~~~
+
+Filters the contents of the block.
+
+.. code-block:: html+django
+
+    {% filter lowercase %}
+      This Text Will Be Lowercased.
+    {% endfilter %}
+
+You can chain multiple filters with a pipe (`|`).
+
+.. code-block:: html+django
+
+    {% filter lowercase|capitalize %}
+      This Text Will First Be Lowercased, Then The First Character Will BE
+      Capitalised.
+    {% endfilter %}
+
 ``include``
 ~~~~~~~~~~~
 
