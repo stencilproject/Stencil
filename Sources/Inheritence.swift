@@ -67,9 +67,7 @@ class ExtendsNode : NodeType {
       throw TemplateSyntaxError("'\(self.templateName)' could not be resolved as a string")
     }
 
-    guard let template = try loader.loadTemplate(name: templateName) else {
-      throw TemplateSyntaxError("'\(templateName)' template not found")
-    }
+    let template = try loader.loadTemplate(name: templateName)
 
     let blockContext: BlockContext
     if let context = context[BlockContext.contextKey] as? BlockContext {

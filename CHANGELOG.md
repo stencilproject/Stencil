@@ -2,6 +2,11 @@
 
 ## Master
 
+### Breaking
+
+- `Loader`s will now throw a `TemplateDoesNotExist` error when a template
+  is not found.
+
 ### Enhancements
 
 - `FileSystemLoader` will now ensure that template paths are within the base

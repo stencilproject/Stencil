@@ -45,7 +45,7 @@ func testInclude() {
         do {
           _ = try node.render(Context(dictionary: ["loader": loader]))
         } catch {
-          try expect("\(error)".hasPrefix("'unknown.html' template not found")).to.beTrue()
+          try expect("\(error)".hasPrefix("Template named `unknown.html` does not exist in loader")).to.beTrue()
         }
       }
 

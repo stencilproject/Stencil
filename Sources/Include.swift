@@ -27,10 +27,7 @@ class IncludeNode : NodeType {
       throw TemplateSyntaxError("'\(self.templateName)' could not be resolved as a string")
     }
 
-    guard let template = try loader.loadTemplate(name: templateName) else {
-      throw TemplateSyntaxError("'\(templateName)' template not found")
-    }
-
+    let template = try loader.loadTemplate(name: templateName)
     return try template.render(context)
   }
 }
