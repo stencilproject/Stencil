@@ -167,9 +167,6 @@ class IfNode : NodeType {
 
   class func parse(_ parser: TokenParser, token: Token) throws -> NodeType {
     var components = token.components()
-    guard components.count == 2 else {
-      throw TemplateSyntaxError("'if' statements should use the following 'if condition' `\(token.contents)`.")
-    }
     components.removeFirst()
     var trueNodes = [NodeType]()
     var falseNodes = [NodeType]()

@@ -1,5 +1,13 @@
 # Stencil Changelog
 
+## Master
+
+### Bug Fixes
+
+- Fixes an issue where using `{% if %}` statements which use operators would
+  throw a syntax error.
+
+
 ## 0.7.0
 
 ### Breaking
