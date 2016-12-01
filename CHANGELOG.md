@@ -1,5 +1,11 @@
 # Stencil Changelog
 
+## 0.7.2
+
+### Enhancements
+
+- `Template` is now an `open` class.
+
 ## 0.7.1
 
 ### Bug Fixes
