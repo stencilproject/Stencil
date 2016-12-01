@@ -7,24 +7,23 @@
 - It is no longer possible to create `Context` objects. Instead, you can pass a
   dictionary directly to a `Template`s `render` method.
 
-    ```diff
-    - try template.render(Context(dictionary: ["name": "Kyle"]))
-    + try template.render(["name": "Kyle"])
-    ```
+  ```diff
+  - try template.render(Context(dictionary: ["name": "Kyle"]))
+  + try template.render(["name": "Kyle"])
+  ```
 
 - Template loader are no longer passed into a `Context`, instead you will need
   to pass the `Loader` to an `Environment` and create a template from the
   `Environment`.
 
-    ```diff
-      let loader = FileSystemLoader(paths: ["templates/"])
+  ```diff
+  let loader = FileSystemLoader(paths: ["templates/"])
 
-    - let template = loader.loadTemplate(name: "index.html")
-    - try template.render(Context(dictionary: ["loader": loader]))
-
-    + let environment = Environment(loader: loader)
-    + try environment.renderTemplate(name: "index.html")
-    ```
+  - let template = loader.loadTemplate(name: "index.html")
+  - try template.render(Context(dictionary: ["loader": loader]))
+  + let environment = Environment(loader: loader)
+  + try environment.renderTemplate(name: "index.html")
+  ```
 
 - `Loader`s will now throw a `TemplateDoesNotExist` error when a template
   is not found.
@@ -44,16 +43,23 @@
 - New `{% filter %}` tag allowing you to perform a filter across the contents
   of a block.
 
-    ```html+django
-    {% filter lowercase %}
-      This Text Will Be Lowercased.
-    {% endfilter %}
-    ```
+  ```html+django
+  {% filter lowercase %}
+    This Text Will Be Lowercased.
+  {% endfilter %}
+  ```
 
 ### Deprecations
 
 - `Template` initialisers have been deprecated in favour of using a template
   loader such as `FileSystemLoader` inside an `Environment`.
+
+- The use of whitespace inside variable filter expression is now deprecated.
+
+  ```diff
+  - {{ name | uppercase }}
+  + {{ name|uppercase }}
+  ```
 
 
 ## 0.7.1
