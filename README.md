@@ -39,16 +39,6 @@ let rendered = try environment.renderTemplate(name: context)
 print(rendered)
 ```
 
-## Installation
-
-Installation with Swift Package Manager is recommended.
-
-### CocoaPods
-
-```ruby
-pod 'Stencil'
-```
-
 ## Philosophy
 
 Stencil follows the same philosophy of Django:
@@ -61,8 +51,16 @@ Stencil follows the same philosophy of Django:
 
 ## The User Guide
 
-- [Templates](http://stencil.fuller.li/en/latest/templates.html)
+Resources for Stencil template authors to write Stencil templates:
+
+- [Language overview](http://stencil.fuller.li/en/latest/templates.html)
 - [Built-in template tags and filters](http://stencil.fuller.li/en/latest/builtins.html)
+
+Resources to help you integrate Stencil into a Swift project:
+
+- [Installation](http://stencil.fuller.li/en/latest/installation.html)
+- [Getting Started](http://stencil.fuller.li/en/latest/getting-started.html)
+- [API Reference](http://stencil.fuller.li/en/latest/api.html)
 - [Custom Template Tags and Filters](http://stencil.fuller.li/en/latest/custom-template-tags-and-filters.html)
 
 ## License

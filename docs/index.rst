@@ -31,20 +31,34 @@ feel right at home with Stencil.
       ]
     ]
 
-    do {
-      let template = try Template(named: "template.html")
-      let rendered = try template.render(context)
-      print(rendered)
-    } catch {
-      print("Failed to render template \(error)")
-    }
+    let environment = Environment(loader: FileSystemLoader(paths: ["templates/"])
+    let rendered = try environment.renderTemplate(name: context)
 
-Contents:
+    print(rendered)
+
+The User Guide
+--------------
+
+For Template Writers
+~~~~~~~~~~~~~~~~~~~~
+
+Resources for Stencil template authors to write Stencil templates.
 
 .. toctree::
    :maxdepth: 2
 
    templates
    builtins
-   api/context
+
+For Developers
+~~~~~~~~~~~~~~
+
+Resources to help you integrate Stencil into a Swift project.
+
+.. toctree::
+   :maxdepth: 1
+
+   installation
+   getting-started
+   api
    custom-template-tags-and-filters

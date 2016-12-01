@@ -1,5 +1,5 @@
-Templates
-=========
+Language overview
+==================
 
 - ``{{ ... }}`` for variables to print to the template output
 - ``{% ... %}`` for tags
