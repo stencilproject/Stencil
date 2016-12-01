@@ -75,3 +75,91 @@ To comment out part of your template, you can use the following syntax:
 .. code-block:: html+django
 
     {# My comment is completely hidden #}
+
+.. _template-inheritance:
+
+Template inheritance
+--------------------
+
+Template inheritance allows the common components surrounding individual pages
+to be shared across other templates. You can define blocks which can be
+overidden in any child template.
+
+Let's take a look at an example. Here is our base template (``base.html``):
+
+.. code-block:: html+django
+
+    <html>
+      <head>
+        <title>{% block title %}Example{% endblock %}</title>
+      </head>
+
+      <body>
+        <aside>
+          {% block sidebar %}
+            <ul>
+              <li><a href="/">Home</a></li>
+              <li><a href="/notes/">Notes</a></li>
+            </ul>
+          {% endblock %}
+        </aside>
+
+        <section>
+          {% block content %}{% endblock %}
+        </section>
+      </body>
+    </html>
+
+This example declares three blocks, ``title``, ``sidebar`` and ``content``. We
+can use the ``{% extends %}`` template tag to inherit from out base template
+and then use ``{% block %}`` to override any blocks from our base template.
+
+A child template might look like the following:
+
+.. code-block:: html+django
+
+    {% extends "base.html" %}
+
+    {% block title %}Notes{% endblock %}
+
+    {% block content %}
+      {% for note in notes %}
+        <h2>{{ note }}</h2>
+      {% endfor %}
+    {% endblock %}
+
+Since our child template doesn't declare a sidebar block. The original sidebar
+from our base template will be used. Depending on the content of ``notes`` our
+template might be rendered like the following:
+
+.. code-block:: html
+
+    <html>
+      <head>
+        <title>Notes</title>
+      </head>
+
+      <body>
+        <aside>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/notes/">Notes</a></li>
+          </ul>
+        </aside>
+
+        <section>
+          <h2>Pick up food</h2>
+          <h2>Do laundry</h2>
+        </section>
+      </body>
+    </html>
+
+You can use as many levels of inheritance as needed. One common way of using
+inheritance is the following three-level approach:
+
+* Create a ``base.html`` template that holds the main look-and-feel of your site.
+* Create a ``base_SECTIONNAME.html`` template for each “section” of your site.
+  For example, ``base_news.html``, ``base_news.html``. These templates all
+  extend ``base.html`` and include section-specific styles/design.
+* Create individual templates for each type of page, such as a news article or
+  blog entry. These templates extend the appropriate section template.

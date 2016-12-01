@@ -217,8 +217,19 @@ the template.
 ``extends``
 ~~~~~~~~~~~
 
+Extends the template from a parent template.
+
+.. code-block:: html+django
+
+    {% extends "base.html" %}
+
+See :ref:`template-inheritance` for more information.
+
 ``block``
 ~~~~~~~~~
+
+Defines a block that can be overridden by child templates. See
+:ref:`template-inheritance` for more information.
 
 .. _built-in-filters:
 
