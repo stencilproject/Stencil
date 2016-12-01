@@ -50,6 +50,11 @@
     {% endfilter %}
     ```
 
+### Deprecations
+
+- `Template` initialisers have been deprecated in favour of using a template
+  loader such as `FileSystemLoader` inside an `Environment`.
+
 
 ## 0.7.1
 

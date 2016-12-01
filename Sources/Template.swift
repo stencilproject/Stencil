@@ -23,6 +23,7 @@ public class Template: ExpressibleByStringLiteral {
   }
 
   /// Create a template with the given name inside the given bundle
+  @available(*, deprecated, message: "Use Environment/FileSystemLoader instead")
   public convenience init(named:String, inBundle bundle:Bundle? = nil) throws {
     let useBundle = bundle ??  Bundle.main
     guard let url = useBundle.url(forResource: named, withExtension: nil) else {
@@ -33,11 +34,13 @@ public class Template: ExpressibleByStringLiteral {
   }
 
   /// Create a template with a file found at the given URL
+  @available(*, deprecated, message: "Use Environment/FileSystemLoader instead")
   public convenience init(URL:Foundation.URL) throws {
     try self.init(path: Path(URL.path))
   }
 
   /// Create a template with a file found at the given path
+  @available(*, deprecated, message: "Use Environment/FileSystemLoader instead")
   public convenience init(path: Path, environment: Environment? = nil, name: String? = nil) throws {
     self.init(templateString: try path.read(), environment: environment, name: name)
   }
