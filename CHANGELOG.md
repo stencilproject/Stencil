@@ -4,10 +4,38 @@
 
 ### Breaking
 
+- It is no longer possible to create `Context` objects. Instead, you can pass a
+  dictionary directly to a `Template`s `render` method.
+
+    ```diff
+    - try template.render(Context(dictionary: ["name": "Kyle"]))
+    + try template.render(["name": "Kyle"])
+    ```
+
+- Template loader are no longer passed into a `Context`, instead you will need
+  to pass the `Loader` to an `Environment` and create a template from the
+  `Environment`.
+
+    ```diff
+      let loader = FileSystemLoader(paths: ["templates/"])
+
+    - let template = loader.loadTemplate(name: "index.html")
+    - try template.render(Context(dictionary: ["loader": loader]))
+
+    + let environment = Environment(loader: loader)
+    + try environment.renderTemplate(name: "index.html")
+    ```
+
 - `Loader`s will now throw a `TemplateDoesNotExist` error when a template
   is not found.
 
 ### Enhancements
+
+- `Environment` is a new way to load templates. You can configure an
+  environment with custom template filters, tags and loaders and then create a
+  template from an environment.
+
+  Environment also provides a convenience method to render a template directly.
 
 - `FileSystemLoader` will now ensure that template paths are within the base
   path. Any template names that try to escape the base path will raise a

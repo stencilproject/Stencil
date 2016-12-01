@@ -1,6 +1,6 @@
 import Foundation
 import Spectre
-import Stencil
+@testable import Stencil
 
 
 #if os(OSX)

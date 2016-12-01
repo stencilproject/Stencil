@@ -206,13 +206,13 @@ You can include another template using the `include` tag.
 
     {% include "comment.html" %}
 
-The `include` tag requires a FileSystemLoader to be found inside your context with the paths, or bundles used to lookup the template.
+The `include` tag requires you to provide a loader which will be used to lookup
+the template.
 
 .. code-block:: swift
 
-    let context = Context(dictionary: [
-      "loader": FileSystemLoader(bundle: [NSBundle.mainBundle()])
-    ])
+    let environment = Environment(bundle: [Bundle.main])
+    let template = environment.loadTemplate(name: "index.html")
 
 ``extends``
 ~~~~~~~~~~~

@@ -6,12 +6,6 @@ template. It’s somewhat like a dictionary, however you can push and pop to
 scope variables. So that means that when iterating over a for loop, you can
 push a new scope into the context to store any variables local to the scope.
 
-You can initialise a ``Context`` with a ``Dictionary``.
-
-.. code-block:: swift
-
-    Context(dictionary: [String: Any]? = nil)
-
 API
 ----
 

@@ -9,7 +9,9 @@ namespace which contains all filters and tags available to the template.
 
     let namespace = Namespace()
     // Register your filters and tags with the namespace
-    let rendered = try template.render(context, namespace: namespace)
+
+    let environment = Environment(namespace: namespace)
+    try environment.renderTemplate(name: "example.html")
 
 Custom Filters
 --------------

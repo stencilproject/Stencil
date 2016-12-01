@@ -17,17 +17,19 @@ feel right at home with Stencil.
 
 .. code-block:: swift
 
-   struct Article {
-     let title: String
-     let author: String
-   }
+    import Stencil
 
-    let context = Context(dictionary: [
+    struct Article {
+      let title: String
+      let author: String
+    }
+
+    let context = [
       "articles": [
         Article(title: "Migrating from OCUnit to XCTest", author: "Kyle Fuller"),
         Article(title: "Memory Management with ARC", author: "Kyle Fuller"),
       ]
-    ])
+    ]
 
     do {
       let template = try Template(named: "template.html")

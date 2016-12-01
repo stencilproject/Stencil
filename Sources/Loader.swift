@@ -3,16 +3,16 @@ import PathKit
 
 
 public protocol Loader {
-  func loadTemplate(name: String) throws -> Template
-  func loadTemplate(names: [String]) throws -> Template
+  func loadTemplate(name: String, environment: Environment) throws -> Template
+  func loadTemplate(names: [String], environment: Environment) throws -> Template
 }
 
 
 extension Loader {
-  func loadTemplate(names: [String]) throws -> Template {
+  public func loadTemplate(names: [String], environment: Environment) throws -> Template {
     for name in names {
       do {
-        return try loadTemplate(name: name)
+        return try loadTemplate(name: name, environment: environment)
       } catch is TemplateDoesNotExist {
         continue
       } catch {
@@ -43,7 +43,7 @@ public class FileSystemLoader: Loader, CustomStringConvertible {
     return "FileSystemLoader(\(paths))"
   }
 
-  public func loadTemplate(name: String) throws -> Template {
+  public func loadTemplate(name: String, environment: Environment) throws -> Template {
     for path in paths {
       let templatePath = try path.safeJoin(path: Path(name))
 
@@ -51,19 +51,19 @@ public class FileSystemLoader: Loader, CustomStringConvertible {
         continue
       }
 
-      return try Template(path: templatePath)
+      return try Template(path: templatePath, environment: environment, name: name)
     }
 
     throw TemplateDoesNotExist(templateNames: [name], loader: self)
   }
 
-  public func loadTemplate(names: [String]) throws -> Template {
+  public func loadTemplate(names: [String], environment: Environment) throws -> Template {
     for path in paths {
       for templateName in names {
         let templatePath = try path.safeJoin(path: Path(templateName))
 
         if templatePath.exists {
-          return try Template(path: templatePath)
+          return try Template(path: templatePath, environment: environment, name: templateName)
         }
       }
     }

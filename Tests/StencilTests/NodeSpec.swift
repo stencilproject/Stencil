@@ -1,5 +1,5 @@
 import Spectre
-import Stencil
+@testable import Stencil
 
 
 class ErrorNode : NodeType {

@@ -7,10 +7,17 @@ let NSFileNoSuchFileError = 4
 
 /// A class representing a template
 public class Template: ExpressibleByStringLiteral {
+  let environment: Environment
   let tokens: [Token]
 
+  /// The name of the loaded Template if the Template was loaded from a Loader
+  public let name: String?
+
   /// Create a template with a template string
-  public init(templateString: String) {
+  public init(templateString: String, environment: Environment? = nil, name: String? = nil) {
+    self.environment = environment ?? Environment()
+    self.name = name
+
     let lexer = Lexer(templateString: templateString)
     tokens = lexer.tokenize()
   }
@@ -31,11 +38,13 @@ public class Template: ExpressibleByStringLiteral {
   }
 
   /// Create a template with a file found at the given path
-  public convenience init(path: Path) throws {
-    self.init(templateString: try path.read())
+  public convenience init(path: Path, environment: Environment? = nil, name: String? = nil) throws {
+    self.init(templateString: try path.read(), environment: environment, name: name)
   }
 
-  // Create a template with a template string literal
+  // MARK: ExpressibleByStringLiteral
+
+  // Create a templaVte with a template string literal
   public convenience required init(stringLiteral value: String) {
     self.init(templateString: value)
   }
@@ -50,11 +59,16 @@ public class Template: ExpressibleByStringLiteral {
     self.init(stringLiteral: value)
   }
 
-  /// Render the given template
-  public func render(_ context: Context? = nil) throws -> String {
-    let context = context ?? Context()
+  /// Render the given template with a context
+  func render(_ context: Context) throws -> String {
+    let context = context ?? Context(environment: environment)
     let parser = TokenParser(tokens: tokens, namespace: context.namespace)
     let nodes = try parser.parse()
     return try renderNodes(nodes, context)
+  }
+
+  /// Render the given template
+  public func render(_ dictionary: [String: Any]? = nil) throws -> String {
+    return try render(Context(dictionary: dictionary, environment: environment))
   }
 }

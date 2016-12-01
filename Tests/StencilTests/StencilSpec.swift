@@ -25,12 +25,12 @@ func testStencil() {
         "    - {{ article.title }} by {{ article.author }}.\n" +
         "{% endfor %}\n"
 
-      let context = Context(dictionary: [
+      let context = [
         "articles": [
           Article(title: "Migrating from OCUnit to XCTest", author: "Kyle Fuller"),
           Article(title: "Memory Management with ARC", author: "Kyle Fuller"),
         ]
-      ])
+      ]
 
       let template = Template(templateString: templateString)
       let result = try template.render(context)
@@ -45,28 +45,27 @@ func testStencil() {
     }
 
     $0.it("can render a custom template tag") {
-      let templateString = "{% custom %}"
-      let template = Template(templateString: templateString)
-
       let namespace = Namespace()
       namespace.registerTag("custom") { parser, token in
         return CustomNode()
       }
 
-      let result = try template.render(Context(namespace: namespace))
+      let environment = Environment(namespace: namespace)
+      let result = try environment.renderTemplate(string: "{% custom %}")
+
       try expect(result) == "Hello World"
     }
 
     $0.it("can render a simple custom tag") {
-      let templateString = "{% custom %}"
-      let template = Template(templateString: templateString)
-
       let namespace = Namespace()
       namespace.registerSimpleTag("custom") { context in
         return "Hello World"
       }
 
-      try expect(try template.render(Context(namespace: namespace))) == "Hello World"
+      let environment = Environment(namespace: namespace)
+      let result = try environment.renderTemplate(string: "{% custom %}")
+
+      try expect(result) == "Hello World"
     }
   }
 }

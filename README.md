@@ -19,25 +19,24 @@ There are {{ articles.count }} articles.
 ```
 
 ```swift
+import Stencil
+
 struct Article {
   let title: String
   let author: String
 }
 
-let context = Context(dictionary: [
+let context = [
   "articles": [
     Article(title: "Migrating from OCUnit to XCTest", author: "Kyle Fuller"),
     Article(title: "Memory Management with ARC", author: "Kyle Fuller"),
   ]
-])
+]
 
-do {
-  let template = try Template(named: "template.html")
-  let rendered = try template.render(context)
-  print(rendered)
-} catch {
-  print("Failed to render template \(error)")
-}
+let environment = Environment(loader: FileSystemLoader(paths: ["templates/"])
+let rendered = try environment.renderTemplate(name: context)
+
+print(rendered)
 ```
 
 ## Installation

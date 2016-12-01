@@ -1,17 +1,19 @@
 /// A container for template variables.
 public class Context {
   var dictionaries: [[String: Any?]]
+
+  public let environment: Environment
   let namespace: Namespace
 
-  /// Initialise a Context with an optional dictionary and optional namespace
-  public init(dictionary: [String: Any]? = nil, namespace: Namespace = Namespace()) {
+  init(dictionary: [String: Any]? = nil, namespace: Namespace? = nil, environment: Environment? = nil) {
     if let dictionary = dictionary {
       dictionaries = [dictionary]
     } else {
       dictionaries = []
     }
 
-    self.namespace = namespace
+    self.namespace = namespace ?? environment?.namespace ?? Namespace()
+    self.environment = environment ?? Environment()
   }
 
   public subscript(key: String) -> Any? {

@@ -59,15 +59,11 @@ class ExtendsNode : NodeType {
   }
 
   func render(_ context: Context) throws -> String {
-    guard let loader = context["loader"] as? Loader else {
-      throw TemplateSyntaxError("Template loader not in context")
-    }
-
     guard let templateName = try self.templateName.resolve(context) as? String else {
       throw TemplateSyntaxError("'\(self.templateName)' could not be resolved as a string")
     }
 
-    let template = try loader.loadTemplate(name: templateName)
+    let template = try context.environment.loadTemplate(name: templateName)
 
     let blockContext: BlockContext
     if let context = context[BlockContext.contextKey] as? BlockContext {
