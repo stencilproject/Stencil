@@ -18,5 +18,10 @@ func testInheritence() {
       let template = try environment.loadTemplate(name: "child-child.html")
       try expect(try template.render()) == "Child Child Header\nChild"
     }
+
+    $0.it("can inherit from a template that calls a super block") {
+      let template = try environment.loadTemplate(name: "child-super.html")
+      try expect(try template.render()) == "Header\nChild Body"
+    }
   }
 }

@@ -128,6 +128,8 @@ A child template might look like the following:
       {% endfor %}
     {% endblock %}
 
+.. note:: You can use ``{{ block.super }}` inside a block to render the contents of the parent block inline.
+
 Since our child template doesn't declare a sidebar block. The original sidebar
 from our base template will be used. Depending on the content of ``notes`` our
 template might be rendered like the following:

@@ -49,6 +49,9 @@
   {% endfilter %}
   ```
 
+- You can now use `{{ block.super }}` to render a super block from another `{%
+  block %}`.
+
 ### Deprecations
 
 - `Template` initialisers have been deprecated in favour of using a template

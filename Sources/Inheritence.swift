@@ -109,7 +109,9 @@ class BlockNode : NodeType {
 
   func render(_ context: Context) throws -> String {
     if let blockContext = context[BlockContext.contextKey] as? BlockContext, let node = blockContext.pop(name) {
-      return try node.render(context)
+      return try context.push(dictionary: ["block": ["super": self]]) {
+        return try node.render(context)
+      }
     }
 
     return try renderNodes(nodes, context)
