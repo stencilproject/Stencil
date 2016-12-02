@@ -11,7 +11,7 @@ class FilterNode : NodeType {
 
     let blocks = try parser.parse(until(["endfilter"]))
 
-    guard let token = parser.nextToken() else {
+    guard parser.nextToken() != nil else {
       throw TemplateSyntaxError("`endfilter` was not found.")
     }
 
