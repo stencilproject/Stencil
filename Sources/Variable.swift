@@ -99,6 +99,12 @@ public struct Variable : Equatable, Resolvable {
       }
     }
 
+    if let resolvable = current as? Resolvable {
+      current = try resolvable.resolve(context)
+    } else if let node = current as? NodeType {
+      current = try node.render(context)
+    }
+
     return normalize(current)
   }
 }
