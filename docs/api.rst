@@ -15,11 +15,11 @@ along with template loaders.
 
     let environment = Environment()
 
-You can optionally provide a loader or namespace when creating an environment:
+You can optionally provide a loader or extensions when creating an environment:
 
 .. code-block:: swift
 
-    let environment = Environment(loader: ..., namespace: ...)
+    let environment = Environment(loader: ..., extensions: [...])
 
 Rendering a Template
 ~~~~~~~~~~~~~~~~~~~~

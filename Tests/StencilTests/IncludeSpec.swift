@@ -12,7 +12,7 @@ func testInclude() {
     $0.describe("parsing") {
       $0.it("throws an error when no template is given") {
         let tokens: [Token] = [ .block(value: "include") ]
-        let parser = TokenParser(tokens: tokens, namespace: Namespace())
+        let parser = TokenParser(tokens: tokens, environment: Environment())
 
         let error = TemplateSyntaxError("'include' tag takes one argument, the template file to be included")
         try expect(try parser.parse()).toThrow(error)
@@ -20,7 +20,7 @@ func testInclude() {
 
       $0.it("can parse a valid include block") {
         let tokens: [Token] = [ .block(value: "include \"test.html\"") ]
-        let parser = TokenParser(tokens: tokens, namespace: Namespace())
+        let parser = TokenParser(tokens: tokens, environment: Environment())
 
         let nodes = try parser.parse()
         let node = nodes.first as? IncludeNode

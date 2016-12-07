@@ -14,7 +14,7 @@ func testIfNode() {
           .block(value: "endif")
         ]
 
-        let parser = TokenParser(tokens: tokens, namespace: Namespace())
+        let parser = TokenParser(tokens: tokens, environment: Environment())
         let nodes = try parser.parse()
         let node = nodes.first as? IfNode
         let trueNode = node?.trueNodes.first as? TextNode
@@ -36,7 +36,7 @@ func testIfNode() {
           .block(value: "endif")
         ]
 
-        let parser = TokenParser(tokens: tokens, namespace: Namespace())
+        let parser = TokenParser(tokens: tokens, environment: Environment())
         let nodes = try parser.parse()
         let node = nodes.first as? IfNode
         let trueNode = node?.trueNodes.first as? TextNode
@@ -58,7 +58,7 @@ func testIfNode() {
           .block(value: "endif")
         ]
 
-        let parser = TokenParser(tokens: tokens, namespace: Namespace())
+        let parser = TokenParser(tokens: tokens, environment: Environment())
         let nodes = try parser.parse()
         let node = nodes.first as? IfNode
         let trueNode = node?.trueNodes.first as? TextNode
@@ -76,7 +76,7 @@ func testIfNode() {
           .block(value: "if value"),
         ]
 
-        let parser = TokenParser(tokens: tokens, namespace: Namespace())
+        let parser = TokenParser(tokens: tokens, environment: Environment())
         let error = TemplateSyntaxError("`endif` was not found.")
         try expect(try parser.parse()).toThrow(error)
       }
@@ -86,7 +86,7 @@ func testIfNode() {
             .block(value: "ifnot value"),
         ]
 
-        let parser = TokenParser(tokens: tokens, namespace: Namespace())
+        let parser = TokenParser(tokens: tokens, environment: Environment())
         let error = TemplateSyntaxError("`endif` was not found.")
         try expect(try parser.parse()).toThrow(error)
       }

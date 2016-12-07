@@ -65,7 +65,7 @@ public class Template: ExpressibleByStringLiteral {
   /// Render the given template with a context
   func render(_ context: Context) throws -> String {
     let context = context
-    let parser = TokenParser(tokens: tokens, namespace: context.namespace)
+    let parser = TokenParser(tokens: tokens, environment: context.environment)
     let nodes = try parser.parse()
     return try renderNodes(nodes, context)
   }

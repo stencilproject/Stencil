@@ -17,6 +17,18 @@ fileprivate struct Article {
 
 func testStencil() {
   describe("Stencil") {
+    let exampleExtension = Extension()
+
+    exampleExtension.registerSimpleTag("simpletag") { context in
+      return "Hello World"
+    }
+
+    exampleExtension.registerTag("customtag") { parser, token in
+      return CustomNode()
+    }
+
+    let environment = Environment(extensions: [exampleExtension])
+
     $0.it("can render the README example") {
 
       let templateString = "There are {{ articles.count }} articles.\n" +
@@ -45,26 +57,12 @@ func testStencil() {
     }
 
     $0.it("can render a custom template tag") {
-      let namespace = Namespace()
-      namespace.registerTag("custom") { parser, token in
-        return CustomNode()
-      }
-
-      let environment = Environment(namespace: namespace)
-      let result = try environment.renderTemplate(string: "{% custom %}")
-
+      let result = try environment.renderTemplate(string: "{% customtag %}")
       try expect(result) == "Hello World"
     }
 
     $0.it("can render a simple custom tag") {
-      let namespace = Namespace()
-      namespace.registerSimpleTag("custom") { context in
-        return "Hello World"
-      }
-
-      let environment = Environment(namespace: namespace)
-      let result = try environment.renderTemplate(string: "{% custom %}")
-
+      let result = try environment.renderTemplate(string: "{% simpletag %}")
       try expect(result) == "Hello World"
     }
   }
