@@ -60,6 +60,11 @@ public struct Variable : Equatable, Resolvable {
       return variable[variable.characters.index(after: variable.startIndex) ..< variable.characters.index(before: variable.endIndex)]
     }
 
+    if let number = Float80(variable) {
+      // Number literal
+      return number
+    }
+
     for bit in lookup() {
       current = normalize(current)
 

@@ -45,6 +45,18 @@ func testVariable() {
       try expect(result) == "name"
     }
 
+    $0.it("can resolve an integer literal") {
+      let variable = Variable("5")
+      let result = try variable.resolve(context) as? Float80
+      try expect(result) == 5
+    }
+
+    $0.it("can resolve an float literal") {
+      let variable = Variable("3.14")
+      let result = try variable.resolve(context) as? Float80
+      try expect(result) == 3.14
+    }
+
     $0.it("can resolve a string variable") {
       let variable = Variable("name")
       let result = try variable.resolve(context) as? String
