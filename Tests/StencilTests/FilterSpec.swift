@@ -9,8 +9,8 @@ func testFilter() {
     $0.it("allows you to register a custom filter") {
       let template = Template(templateString: "{{ name|repeat }}")
 
-      let namespace = Namespace()
-      namespace.registerFilter("repeat") { (value: Any?) in
+      let repeatExtension = Extension()
+      repeatExtension.registerFilter("repeat") { (value: Any?) in
         if let value = value as? String {
           return "\(value) \(value)"
         }
@@ -18,15 +18,15 @@ func testFilter() {
         return nil
       }
 
-      let result = try template.render(Context(dictionary: context, namespace: namespace))
+      let result = try template.render(Context(dictionary: context, environment: Environment(extensions: [repeatExtension])))
       try expect(result) == "Kyle Kyle"
     }
 
     $0.it("allows you to register a custom filter which accepts arguments") {
       let template = Template(templateString: "{{ name|repeat:'value' }}")
 
-      let namespace = Namespace()
-      namespace.registerFilter("repeat") { value, arguments in
+      let repeatExtension = Extension()
+      repeatExtension.registerFilter("repeat") { value, arguments in
         if !arguments.isEmpty {
           return "\(value!) \(value!) with args \(arguments.first!!)"
         }
@@ -34,18 +34,19 @@ func testFilter() {
         return nil
       }
 
-      let result = try template.render(Context(dictionary: context, namespace: namespace))
+      let result = try template.render(Context(dictionary: context, environment: Environment(extensions: [repeatExtension])))
       try expect(result) == "Kyle Kyle with args value"
     }
 
     $0.it("allows you to register a custom which throws") {
       let template = Template(templateString: "{{ name|repeat }}")
-      let namespace = Namespace()
-      namespace.registerFilter("repeat") { (value: Any?) in
+      let repeatExtension = Extension()
+      repeatExtension.registerFilter("repeat") { (value: Any?) in
         throw TemplateSyntaxError("No Repeat")
       }
 
-      try expect(try template.render(Context(dictionary: context, namespace: namespace))).toThrow(TemplateSyntaxError("No Repeat"))
+      let context = Context(dictionary: context, environment: Environment(extensions: [repeatExtension]))
+      try expect(try template.render(context)).toThrow(TemplateSyntaxError("No Repeat"))
     }
 
     $0.it("allows whitespace in expression") {

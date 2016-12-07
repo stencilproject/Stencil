@@ -1,11 +1,11 @@
 public struct Environment {
-  var namespace: Namespace
+  public let extensions: [Extension]
 
   public var loader: Loader?
 
-  public init(loader: Loader? = nil, namespace: Namespace? = nil) {
+  public init(loader: Loader? = nil, extensions: [Extension]? = nil) {
     self.loader = loader
-    self.namespace = namespace ?? Namespace()
+    self.extensions = [DefaultExtension()] + (extensions ?? [])
   }
 
   public func loadTemplate(name: String) throws -> Template {

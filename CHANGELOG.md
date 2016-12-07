@@ -28,6 +28,10 @@
 - `Loader`s will now throw a `TemplateDoesNotExist` error when a template
   is not found.
 
+- `Namespace` has been removed and replaced by extensions. You can create an
+  extension including any custom template tags and filters. A collection of
+  extensions can be passed to an `Environment`.
+
 ### Enhancements
 
 - `Environment` is a new way to load templates. You can configure an

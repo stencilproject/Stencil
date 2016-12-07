@@ -9,7 +9,7 @@ func testNowNode() {
     $0.describe("parsing") {
       $0.it("parses default format without any now arguments") {
         let tokens: [Token] = [ .block(value: "now") ]
-        let parser = TokenParser(tokens: tokens, namespace: Namespace())
+        let parser = TokenParser(tokens: tokens, environment: Environment())
 
         let nodes = try parser.parse()
         let node = nodes.first as? NowNode
@@ -19,7 +19,7 @@ func testNowNode() {
 
       $0.it("parses now with a format") {
         let tokens: [Token] = [ .block(value: "now \"HH:mm\"") ]
-        let parser = TokenParser(tokens: tokens, namespace: Namespace())
+        let parser = TokenParser(tokens: tokens, environment: Environment())
         let nodes = try parser.parse()
         let node = nodes.first as? NowNode
         try expect(nodes.count) == 1

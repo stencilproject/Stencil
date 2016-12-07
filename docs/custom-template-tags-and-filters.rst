@@ -3,14 +3,14 @@ Custom Template Tags and Filters
 
 You can build your own custom filters and tags and pass them down while
 rendering your template. Any custom filters or tags must be registered with a
-namespace which contains all filters and tags available to the template.
+extension which contains all filters and tags available to the template.
 
 .. code-block:: swift
 
-    let namespace = Namespace()
-    // Register your filters and tags with the namespace
+    let ext = Extension()
+    // Register your filters and tags with the extension
 
-    let environment = Environment(namespace: namespace)
+    let environment = Environment(extensions: [ext])
     try environment.renderTemplate(name: "example.html")
 
 Custom Filters
@@ -20,7 +20,7 @@ Registering custom filters:
 
 .. code-block:: swift
 
-    namespace.registerFilter("double") { (value: Any?) in
+    ext.registerFilter("double") { (value: Any?) in
       if let value = value as? Int {
         return value * 2
       }
@@ -32,7 +32,7 @@ Registering custom filters with arguments:
 
 .. code-block:: swift
 
-    namespace.registerFilter("multiply") { (value: Any?, arguments: [Any?]) in
+    ext.registerFilter("multiply") { (value: Any?, arguments: [Any?]) in
       let amount: Int
 
       if let value = arguments.first as? Int {
@@ -56,7 +56,7 @@ write your own custom tags. The following is the simplest form:
 
 .. code-block:: swift
 
-    namespace.registerSimpleTag("custom") { context in
+    ext.registerSimpleTag("custom") { context in
       return "Hello World"
     }
 

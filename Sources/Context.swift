@@ -3,16 +3,14 @@ public class Context {
   var dictionaries: [[String: Any?]]
 
   public let environment: Environment
-  let namespace: Namespace
 
-  init(dictionary: [String: Any]? = nil, namespace: Namespace? = nil, environment: Environment? = nil) {
+  init(dictionary: [String: Any]? = nil, environment: Environment? = nil) {
     if let dictionary = dictionary {
       dictionaries = [dictionary]
     } else {
       dictionaries = []
     }
 
-    self.namespace = namespace ?? environment?.namespace ?? Namespace()
     self.environment = environment ?? Environment()
   }
 
