@@ -1,9 +1,11 @@
 public struct Environment {
+  public let templateClass: Template.Type
   public let extensions: [Extension]
 
   public var loader: Loader?
 
-  public init(loader: Loader? = nil, extensions: [Extension]? = nil) {
+  public init(loader: Loader? = nil, extensions: [Extension]? = nil, templateClass: Template.Type = Template.self) {
+    self.templateClass = templateClass
     self.loader = loader
     self.extensions = [DefaultExtension()] + (extensions ?? [])
   }
@@ -30,7 +32,7 @@ public struct Environment {
   }
 
   public func renderTemplate(string: String, context: [String: Any]? = nil) throws -> String {
-    let template = Template(templateString: string, environment: self)
+    let template = templateClass.init(templateString: string, environment: self)
     return try template.render(context)
   }
 }

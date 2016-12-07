@@ -56,6 +56,9 @@
 - You can now use `{{ block.super }}` to render a super block from another `{%
   block %}`.
 
+- `Environment` allows you to provide a custom `Template` subclass, allowing
+  new template to use a specific subclass.
+
 ### Deprecations
 
 - `Template` initialisers have been deprecated in favour of using a template

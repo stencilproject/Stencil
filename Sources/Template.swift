@@ -6,7 +6,7 @@ let NSFileNoSuchFileError = 4
 #endif
 
 /// A class representing a template
-public class Template: ExpressibleByStringLiteral {
+open class Template: ExpressibleByStringLiteral {
   let environment: Environment
   let tokens: [Token]
 
@@ -14,7 +14,7 @@ public class Template: ExpressibleByStringLiteral {
   public let name: String?
 
   /// Create a template with a template string
-  public init(templateString: String, environment: Environment? = nil, name: String? = nil) {
+  public required init(templateString: String, environment: Environment? = nil, name: String? = nil) {
     self.environment = environment ?? Environment()
     self.name = name
 
@@ -71,7 +71,7 @@ public class Template: ExpressibleByStringLiteral {
   }
 
   /// Render the given template
-  public func render(_ dictionary: [String: Any]? = nil) throws -> String {
+  open func render(_ dictionary: [String: Any]? = nil) throws -> String {
     return try render(Context(dictionary: dictionary, environment: environment))
   }
 }
