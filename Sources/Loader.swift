@@ -51,7 +51,8 @@ public class FileSystemLoader: Loader, CustomStringConvertible {
         continue
       }
 
-      return try Template(path: templatePath, environment: environment, name: name)
+      let content: String = try templatePath.read()
+      return try environment.templateClass.init(templateString: content, environment: environment, name: name)
     }
 
     throw TemplateDoesNotExist(templateNames: [name], loader: self)
@@ -63,7 +64,8 @@ public class FileSystemLoader: Loader, CustomStringConvertible {
         let templatePath = try path.safeJoin(path: Path(templateName))
 
         if templatePath.exists {
-          return try Template(path: templatePath, environment: environment, name: templateName)
+          let content: String = try templatePath.read()
+          return try environment.templateClass.init(templateString: content, environment: environment, name: templateName)
         }
       }
     }

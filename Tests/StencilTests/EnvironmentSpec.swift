@@ -25,9 +25,15 @@ func testEnvironment() {
       let result = try environment.renderTemplate(name: "example.html")
       try expect(result) == "Hello World!"
     }
+
+    $0.it("allows you to provide a custom template class") {
+      let environment = Environment(loader: ExampleLoader(), templateClass: CustomTemplate.self)
+      let result = try environment.renderTemplate(string: "Hello World")
+
+      try expect(result) == "here"
+    }
   }
 }
-
 
 
 fileprivate class ExampleLoader: Loader {
@@ -37,5 +43,12 @@ fileprivate class ExampleLoader: Loader {
     }
 
     throw TemplateDoesNotExist(templateNames: [name], loader: self)
+  }
+}
+
+
+class CustomTemplate: Template {
+  override func render(_ dictionary: [String: Any]? = nil) throws -> String {
+    return "here"
   }
 }
