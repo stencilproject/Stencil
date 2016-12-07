@@ -1,7 +1,7 @@
 import Foundation
 
 
-typealias Number = Float80
+typealias Number = Float
 
 
 class FilterExpression : Resolvable {
