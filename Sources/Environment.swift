@@ -7,7 +7,7 @@ public struct Environment {
   public init(loader: Loader? = nil, extensions: [Extension]? = nil, templateClass: Template.Type = Template.self) {
     self.templateClass = templateClass
     self.loader = loader
-    self.extensions = [DefaultExtension()] + (extensions ?? [])
+    self.extensions = (extensions ?? []) + [DefaultExtension()]
   }
 
   public func loadTemplate(name: String) throws -> Template {

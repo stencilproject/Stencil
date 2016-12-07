@@ -49,6 +49,18 @@ func testFilter() {
       try expect(try template.render(context)).toThrow(TemplateSyntaxError("No Repeat"))
     }
 
+    $0.it("allows you to override a default filter") {
+      let template = Template(templateString: "{{ name|join }}")
+
+      let repeatExtension = Extension()
+      repeatExtension.registerFilter("join") { (value: Any?) in
+        return "joined"
+      }
+
+      let result = try template.render(Context(dictionary: context, environment: Environment(extensions: [repeatExtension])))
+      try expect(result) == "joined"
+    }
+
     $0.it("allows whitespace in expression") {
       let template = Template(templateString: "{{ name | uppercase }}")
       let result = try template.render(Context(dictionary: ["name": "kyle"]))
