@@ -1,6 +1,9 @@
 import Foundation
 
 
+typealias Number = Float80
+
+
 class FilterExpression : Resolvable {
   let filters: [(FilterType, [Variable])]
   let variable: Variable
@@ -60,7 +63,7 @@ public struct Variable : Equatable, Resolvable {
       return variable[variable.characters.index(after: variable.startIndex) ..< variable.characters.index(before: variable.endIndex)]
     }
 
-    if let number = Float80(variable) {
+    if let number = Number(variable) {
       // Number literal
       return number
     }
