@@ -147,4 +147,13 @@ func testFilter() {
       try expect(result) == "OneTwo"
     }
   }
+
+  describe("safe filter") {
+    let template = Template(templateString: "{{ \"<'>\"|safe }}")
+
+    $0.it("prevents auto escaping") {
+      let result = try template.render()
+      try expect(result) == "<'>"
+    }
+  }
 }

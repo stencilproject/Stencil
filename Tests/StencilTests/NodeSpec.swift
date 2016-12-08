@@ -12,6 +12,7 @@ class ErrorNode : NodeType {
 func testNode() {
   describe("Node") {
     let context = Context(dictionary: [
+      "title": escaped(html: "'Hello World'"),
       "name": "Kyle",
       "age": 27,
       "items": [1, 2, 3],
@@ -33,6 +34,18 @@ func testNode() {
       $0.it("resolves and renders a non string variable") {
         let node = VariableNode(variable: Variable("age"))
         try expect(try node.render(context)) == "27"
+      }
+
+      $0.describe("escaping") {
+        $0.it("automatically escapes unescaped html") {
+          let node = VariableNode(variable: Variable("\"'Hello World'\""))
+          try expect(try node.render(context)) == "&39;Hello World&39;"
+        }
+
+        $0.it("doesn't double escape already escaped HTML") {
+          let node = VariableNode(variable: Variable("title"))
+          try expect(try node.render(context)) == "'Hello World'"
+        }
       }
     }
 

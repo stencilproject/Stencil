@@ -70,10 +70,14 @@ public class VariableNode : NodeType {
 
   public func render(_ context: Context) throws -> String {
     let result = try variable.resolve(context)
-    return stringify(result)
+
+    if let result = result as? EscapedHTML {
+      return result.html
+    }
+
+    return escapeHTML(stringify(result))
   }
 }
-
 
 func stringify(_ result: Any?) -> String {
   if let result = result as? String {

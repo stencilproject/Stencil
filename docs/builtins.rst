@@ -286,3 +286,20 @@ Join an array of items.
     {{ value|join:", " }}
 
 .. note:: The value MUST be an array.
+
+``safe``
+~~~~~~~~
+
+Marks a value as safe and thus prevents the value from being automatically
+escaped.
+
+.. code-block:: html+django
+
+    {{ name|safe }}
+
+Other filters may remove the safe state, for example filtering through `safe`
+and then `lowercase` will result in an unsafe lowercased string.
+
+.. code-block:: html+django
+
+    {{ name|safe|lowercase }}
