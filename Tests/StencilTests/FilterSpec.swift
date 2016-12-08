@@ -125,9 +125,26 @@ func testFilter() {
   describe("join filter") {
     let template = Template(templateString: "{{ value|join:\", \" }}")
 
-    $0.it("transforms a string to be lowercase") {
+    $0.it("joins a collection of strings") {
       let result = try template.render(Context(dictionary: ["value": ["One", "Two"]]))
       try expect(result) == "One, Two"
+    }
+
+    $0.it("joins a mixed-type collection") {
+      let result = try template.render(Context(dictionary: ["value": ["One", 2, true, 10.5, "Five"]]))
+      try expect(result) == "One, 2, true, 10.5, Five"
+    }
+
+    $0.it("can join by non string") {
+      let template = Template(templateString: "{{ value|join:separator }}")
+      let result = try template.render(Context(dictionary: ["value": ["One", "Two"], "separator": true]))
+      try expect(result) == "OnetrueTwo"
+    }
+
+    $0.it("can join without arguments") {
+      let template = Template(templateString: "{{ value|join }}")
+      let result = try template.render(Context(dictionary: ["value": ["One", "Two"]]))
+      try expect(result) == "OneTwo"
     }
   }
 }

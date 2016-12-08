@@ -279,10 +279,10 @@ value of the variable. For example:
 ``join``
 ~~~~~~~~
 
-Join an array with a string.
+Join an array of items.
 
 .. code-block:: html+django
 
     {{ value|join:", " }}
 
-.. note:: The value MUST be an array of Strngs and the separator must be a string.
+.. note:: The value MUST be an array.
