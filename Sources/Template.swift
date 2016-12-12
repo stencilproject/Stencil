@@ -18,7 +18,7 @@ open class Template: ExpressibleByStringLiteral {
     self.environment = environment ?? Environment()
     self.name = name
 
-    let lexer = Lexer(templateString: templateString)
+    let lexer = Lexer(fileName: name, templateString: templateString)
     tokens = lexer.tokenize()
   }
 

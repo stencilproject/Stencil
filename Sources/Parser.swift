@@ -37,7 +37,7 @@ public class TokenParser {
       let token = nextToken()!
 
       switch token {
-      case .text(let text):
+      case .text(let text, _):
         nodes.append(TextNode(text: text))
       case .variable:
         nodes.append(VariableNode(variable: try compileFilter(token.contents)))

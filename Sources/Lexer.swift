@@ -1,11 +1,13 @@
 struct Lexer {
+  let fileName: String?
   let templateString: String
 
-  init(templateString: String) {
+  init(fileName: String?, templateString: String) {
+    self.fileName = fileName
     self.templateString = templateString
   }
 
-  func createToken(string:String) -> Token {
+  func createToken(string: String, sourceMap: SourceMap) -> Token {
     func strip() -> String {
       let start = string.index(string.startIndex, offsetBy: 2)
       let end = string.index(string.endIndex, offsetBy: -2)
@@ -13,14 +15,14 @@ struct Lexer {
     }
 
     if string.hasPrefix("{{") {
-      return .variable(value: strip())
+      return .variable(value: strip(), sourceMap: sourceMap)
     } else if string.hasPrefix("{%") {
-      return .block(value: strip())
+      return .block(value: strip(), sourceMap: sourceMap)
     } else if string.hasPrefix("{#") {
-      return .comment(value: strip())
+      return .comment(value: strip(), sourceMap: sourceMap)
     }
 
-    return .text(value: string)
+    return .text(value: string, sourceMap: sourceMap)
   }
 
   /// Returns an array of tokens from a given template string.
@@ -35,17 +37,20 @@ struct Lexer {
       "{#": "#}",
     ]
 
+    // TODO compute sm
+    let sm = SourceMap(fileName: fileName, start: templateString.startIndex, end: templateString.endIndex)
+
     while !scanner.isEmpty {
       if let text = scanner.scan(until: ["{{", "{%", "{#"]) {
         if !text.1.isEmpty {
-          tokens.append(createToken(string: text.1))
+          tokens.append(createToken(string: text.1, sourceMap: sm))
         }
 
         let end = map[text.0]!
         let result = scanner.scan(until: end, returnUntil: true)
-        tokens.append(createToken(string: result))
+        tokens.append(createToken(string: result, sourceMap: sm))
       } else {
-        tokens.append(createToken(string: scanner.content))
+        tokens.append(createToken(string: scanner.content, sourceMap: sm))
         scanner.content = ""
       }
     }
