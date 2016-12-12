@@ -71,6 +71,12 @@
   + {{ name|uppercase }}
   ```
 
+### Bug Fixes
+
+- Restores compatibility with ARM based platforms such as iOS. Stencil 0.7
+  introduced compilation errors due to using the `Float80` type which is not
+  available.
+
 
 ## 0.7.1
 
