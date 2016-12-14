@@ -17,6 +17,29 @@ fileprivate struct Article {
   let author: Person
 }
 
+fileprivate struct PostError : Error, Equatable, CustomStringConvertible {
+  let description:String
+
+  init(_ description:String) {
+    self.description = description
+  }
+}
+
+fileprivate func ==(lhs:PostError, rhs:PostError) -> Bool {
+  return lhs.description == rhs.description
+}
+
+fileprivate struct Post: Normalizable {
+  let title: String?
+  
+  func normalize() throws -> Any? {
+    if let title = title {
+      return "Post '\(title)'"
+    } else {
+      throw PostError("Cannot normalize a Post with no title")
+    }
+  }
+}
 
 func testVariable() {
   describe("Variable") {
@@ -26,7 +49,9 @@ func testVariable() {
       "profiles": [
         "github": "kylef",
       ],
-      "article": Article(author: Person(name: "Kyle"))
+      "article": Article(author: Person(name: "Kyle")),
+      "post": Post(title: "How not to throw an error"),
+      "postWithoutTitle": Post(title: nil)
     ])
 
 #if os(OSX)
@@ -114,5 +139,17 @@ func testVariable() {
       try expect(result) == "Hello World"
     }
 #endif
+
+    $0.it("can normalize without issue") {
+      let variable = Variable("post")
+      let result = try variable.resolve(context) as? String
+      try expect(result) == "Post 'How not to throw an error'"
+    }
+    
+    $0.it("can throw during normalize") {
+      let variable = Variable("postWithoutTitle")
+      let error = PostError("Cannot normalize a Post with no title")
+      try expect(try variable.resolve(context)).toThrow(error)
+    }
   }
 }
