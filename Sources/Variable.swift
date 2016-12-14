@@ -69,7 +69,7 @@ public struct Variable : Equatable, Resolvable {
     }
 
     for bit in lookup() {
-      current = normalize(current)
+      current = try normalize(current)
 
       if let context = current as? Context {
         current = context[bit]
@@ -113,7 +113,7 @@ public struct Variable : Equatable, Resolvable {
       current = try node.render(context)
     }
 
-    return normalize(current)
+    return try normalize(current)
   }
 }
 
@@ -122,39 +122,39 @@ public func ==(lhs: Variable, rhs: Variable) -> Bool {
 }
 
 
-func normalize(_ current: Any?) -> Any? {
+func normalize(_ current: Any?) throws -> Any? {
   if let current = current as? Normalizable {
-    return current.normalize()
+    return try current.normalize()
   }
 
   return current
 }
 
-protocol Normalizable {
-  func normalize() -> Any?
+public protocol Normalizable {
+  func normalize() throws -> Any?
 }
 
 extension Array : Normalizable {
-  func normalize() -> Any? {
+  public func normalize() throws -> Any? {
     return map { $0 as Any }
   }
 }
 
 extension NSArray : Normalizable {
-  func normalize() -> Any? {
+  public func normalize() throws -> Any? {
     return map { $0 as Any }
   }
 }
 
 extension Dictionary : Normalizable {
-  func normalize() -> Any? {
+  public func normalize() throws -> Any? {
     var dictionary: [String: Any] = [:]
 
     for (key, value) in self {
       if let key = key as? String {
-        dictionary[key] = Stencil.normalize(value)
+        dictionary[key] = try Stencil.normalize(value)
       } else if let key = key as? CustomStringConvertible {
-        dictionary[key.description] = Stencil.normalize(value)
+        dictionary[key.description] = try Stencil.normalize(value)
       }
     }
 

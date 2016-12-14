@@ -59,6 +59,9 @@
 - `Environment` allows you to provide a custom `Template` subclass, allowing
   new template to use a specific subclass.
 
+- `Normalizable.normalize()` now allows throwing an error should normalization
+  fail. 
+
 ### Deprecations
 
 - `Template` initialisers have been deprecated in favour of using a template
