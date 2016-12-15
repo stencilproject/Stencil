@@ -50,7 +50,29 @@ struct Lexer {
       }
     }
 
-    return tokens
+    var trimmedTokens = tokens
+    for (index, token) in tokens.enumerated() {
+        if case .block = token, tokens.count > 1 {
+            let trimPattern = "^[\t ]*\n"
+            if index < tokens.count - 1,
+                case .text(let nextText) = tokens[index + 1],
+                nextText.range(of: trimPattern, options: .regularExpression, range: nil, locale: nil) != nil {
+                if index == 0 {
+                    let trimmedNextText = trimmedTokens[index + 1].contents.replacingOccurrences(of: trimPattern, with: "", options: .regularExpression, range: nil)
+                    trimmedTokens[index + 1] = .text(value: trimmedNextText)
+                }
+                else if case .text(let previousText) = tokens[index - 1],
+                    previousText.range(of: "\n[\t ]*$", options: .regularExpression, range: nil, locale: nil) != nil,
+                    !(index == tokens.count - 2 && nextText == "\n") {
+                    let trimmedPreviousText = trimmedTokens[index - 1].contents.replacingOccurrences(of: "[\t ]*$", with: "", options: .regularExpression, range: nil)
+                    let trimmedNextText = trimmedTokens[index + 1].contents.replacingOccurrences(of: trimPattern, with: "", options: .regularExpression, range: nil)
+                    trimmedTokens[index - 1] = .text(value: trimmedPreviousText)
+                    trimmedTokens[index + 1] = .text(value: trimmedNextText)
+                }
+            }
+        }
+    }
+    return trimmedTokens
   }
 }
 
