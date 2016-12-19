@@ -50,8 +50,7 @@ func testStencil() {
       let fixture = "There are 2 articles.\n" +
         "\n" +
         "    - Migrating from OCUnit to XCTest by Kyle Fuller.\n" +
-        "    - Memory Management with ARC by Kyle Fuller.\n" +
-        "\n"
+        "    - Memory Management with ARC by Kyle Fuller.\n"
 
       try expect(result) == fixture
     }
