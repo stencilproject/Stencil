@@ -1,0 +1,3 @@
+[submodule "Carthage/Checkouts/PathKit"]
+	path = Carthage/Checkouts/PathKit
+	url = https://github.com/rahulkatariya/PathKit.git
