@@ -59,6 +59,9 @@
 - `Environment` allows you to provide a custom `Template` subclass, allowing
   new template to use a specific subclass.
 
+- If expressions may now contain filters on variables. For example
+  `{% if name|uppercase == "TEST" %}` is now supported.
+
 ### Deprecations
 
 - `Template` initialisers have been deprecated in favour of using a template

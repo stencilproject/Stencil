@@ -103,5 +103,19 @@ func testIfNode() {
         try expect(try node.render(Context())) == "false"
       }
     }
+
+    $0.it("supports variable filters in the if expression") {
+        let tokens: [Token] = [
+          .block(value: "if value|uppercase == \"TEST\""),
+          .text(value: "true"),
+          .block(value: "endif")
+        ]
+
+        let parser = TokenParser(tokens: tokens, environment: Environment())
+        let nodes = try parser.parse()
+
+        let result = try renderNodes(nodes, Context(dictionary: ["value": "test"]))
+        try expect(result) == "true"
+    }
   }
 }
