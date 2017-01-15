@@ -8,7 +8,7 @@ func testNowNode() {
   describe("NowNode") {
     $0.describe("parsing") {
       $0.it("parses default format without any now arguments") {
-        let tokens: [Token] = [ .block(value: "now") ]
+        let tokens: [Token] = [ Token.mkBlock("now") ]
         let parser = TokenParser(tokens: tokens, environment: Environment())
 
         let nodes = try parser.parse()
@@ -18,7 +18,7 @@ func testNowNode() {
       }
 
       $0.it("parses now with a format") {
-        let tokens: [Token] = [ .block(value: "now \"HH:mm\"") ]
+        let tokens: [Token] = [ Token.mkBlock("now \"HH:mm\"") ]
         let parser = TokenParser(tokens: tokens, environment: Environment())
         let nodes = try parser.parse()
         let node = nodes.first as? NowNode

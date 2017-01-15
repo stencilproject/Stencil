@@ -46,5 +46,16 @@ func testLexer() {
       try expect(tokens[0]) == Token.variable(value: "thing")
       try expect(tokens[1]) == Token.variable(value: "name")
     }
+    $0.it("can tokenize whitespace control characters") {
+      let fBlock = "if hello"
+      let sBlock = "ta da"
+      let lexer = Lexer(templateString: "{%+ \(fBlock) -%}{% \(sBlock) -%}")
+      let tokens = lexer.tokenize()
+      let newLineBehaviors = (WhitespaceBehavior(left: .keep, right: .trim), WhitespaceBehavior(left: .unspecified, right: .trim))
+
+      try expect(tokens.count) == 2
+      try expect(tokens[0]) == Token.block(value: fBlock, newline: newLineBehaviors.0)
+      try expect(tokens[1]) == Token.block(value: sBlock, newline: newLineBehaviors.1)
+    }
   }
 }

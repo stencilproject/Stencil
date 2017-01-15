@@ -44,7 +44,7 @@ func testTokenParser() {
       }
 
       let parser = TokenParser(tokens: [
-        .block(value: "known"),
+        Token.mkBlock("known"),
       ], environment: Environment(extensions: [simpleExtension]))
 
       let nodes = try parser.parse()
@@ -53,7 +53,7 @@ func testTokenParser() {
 
     $0.it("errors when parsing an unknown tag") {
       let parser = TokenParser(tokens: [
-        .block(value: "unknown"),
+        Token.mkBlock("unknown"),
       ], environment: Environment())
 
       try expect(try parser.parse()).toThrow(TemplateSyntaxError("Unknown template tag 'unknown'"))

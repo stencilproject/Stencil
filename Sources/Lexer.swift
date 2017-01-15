@@ -5,17 +5,46 @@ struct Lexer {
     self.templateString = templateString
   }
 
+  private func whiteSpaceBehavior(string: String, tagLength: Int) -> WhitespaceBehavior {
+    func behavior(string: String) -> WhitespaceBehavior.Behavior {
+      switch string {
+      case "+": return .keep
+      case "-": return .trim
+      default: return .unspecified
+      }
+    }
+    let leftIndex = string.index(string.startIndex, offsetBy: tagLength, limitedBy: string.endIndex)
+    let rightIndex = string.index(string.endIndex, offsetBy: -(tagLength + 1), limitedBy: string.startIndex)
+    let leftIndicator = leftIndex.map { ind in string[ind...ind] }
+    let rightIndicator = rightIndex.map { ind in string[ind...ind] }
+    return WhitespaceBehavior(
+      left: behavior(string: leftIndicator ?? ""),
+      right: behavior(string: rightIndicator ?? "")
+    )
+
+  }
+  private static let TagLength = 2
   func createToken(string:String) -> Token {
-    func strip() -> String {
-      let start = string.index(string.startIndex, offsetBy: 2)
-      let end = string.index(string.endIndex, offsetBy: -2)
+    func strip(length: (Int, Int) = (Lexer.TagLength, Lexer.TagLength)) -> String {
+      let start = string.index(string.startIndex, offsetBy: length.0)
+      let end = string.index(string.endIndex, offsetBy: -length.1)
       return string[start..<end].trim(character: " ")
+    }
+    func additionalTagLength(b: WhitespaceBehavior.Behavior) -> Int {
+      switch b {
+      case .keep, .trim:
+        return 1
+      case .unspecified:
+        return 0
+      }
     }
 
     if string.hasPrefix("{{") {
       return .variable(value: strip())
     } else if string.hasPrefix("{%") {
-      return .block(value: strip())
+      let behavior = whiteSpaceBehavior(string: string, tagLength: Lexer.TagLength)
+      let stripLengths = (Lexer.TagLength + additionalTagLength(b: behavior.left),Lexer.TagLength +  additionalTagLength(b: behavior.right))
+      return .block(value: strip(length: stripLengths), newline: behavior)
     } else if string.hasPrefix("{#") {
       return .comment(value: strip())
     }

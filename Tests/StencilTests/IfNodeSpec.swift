@@ -7,11 +7,11 @@ func testIfNode() {
     $0.describe("parsing") {
       $0.it("can parse an if block") {
         let tokens: [Token] = [
-          .block(value: "if value"),
+          Token.mkBlock("if value"),
           .text(value: "true"),
-          .block(value: "else"),
+          Token.mkBlock("else"),
           .text(value: "false"),
-          .block(value: "endif")
+          Token.mkBlock("endif")
         ]
 
         let parser = TokenParser(tokens: tokens, environment: Environment())
@@ -29,11 +29,11 @@ func testIfNode() {
 
       $0.it("can parse an if with complex expression") {
         let tokens: [Token] = [
-          .block(value: "if value == \"test\" and not name"),
+          Token.mkBlock("if value == \"test\" and not name"),
           .text(value: "true"),
-          .block(value: "else"),
+          Token.mkBlock("else"),
           .text(value: "false"),
-          .block(value: "endif")
+          Token.mkBlock("endif")
         ]
 
         let parser = TokenParser(tokens: tokens, environment: Environment())
@@ -51,11 +51,11 @@ func testIfNode() {
 
       $0.it("can parse an ifnot block") {
         let tokens: [Token] = [
-          .block(value: "ifnot value"),
+          Token.mkBlock("ifnot value"),
           .text(value: "false"),
-          .block(value: "else"),
+          Token.mkBlock("else"),
           .text(value: "true"),
-          .block(value: "endif")
+          Token.mkBlock("endif")
         ]
 
         let parser = TokenParser(tokens: tokens, environment: Environment())
@@ -73,7 +73,7 @@ func testIfNode() {
 
       $0.it("throws an error when parsing an if block without an endif") {
         let tokens: [Token] = [
-          .block(value: "if value"),
+          Token.mkBlock("if value"),
         ]
 
         let parser = TokenParser(tokens: tokens, environment: Environment())
@@ -83,7 +83,7 @@ func testIfNode() {
 
       $0.it("throws an error when parsing an ifnot without an endif") {
         let tokens: [Token] = [
-            .block(value: "ifnot value"),
+            Token.mkBlock("ifnot value"),
         ]
 
         let parser = TokenParser(tokens: tokens, environment: Environment())
@@ -106,9 +106,9 @@ func testIfNode() {
 
     $0.it("supports variable filters in the if expression") {
         let tokens: [Token] = [
-          .block(value: "if value|uppercase == \"TEST\""),
+          Token.mkBlock("if value|uppercase == \"TEST\""),
           .text(value: "true"),
-          .block(value: "endif")
+          Token.mkBlock("endif")
         ]
 
         let parser = TokenParser(tokens: tokens, environment: Environment())
