@@ -51,7 +51,7 @@ func testLexer() {
       let sBlock = "ta da"
       let lexer = Lexer(templateString: "{%+ \(fBlock) -%}{% \(sBlock) -%}")
       let tokens = lexer.tokenize()
-      let newLineBehaviors = (WhitespaceBehavior(left: .keep, right: .trim), WhitespaceBehavior(left: .unspecified, right: .trim))
+      let newLineBehaviors = (WhitespaceBehavior(leading: .keep, trailing: .trim), WhitespaceBehavior(leading: .unspecified, trailing: .trim))
 
       try expect(tokens.count) == 2
       try expect(tokens[0]) == Token.block(value: fBlock, newline: newLineBehaviors.0)

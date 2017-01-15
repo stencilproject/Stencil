@@ -18,8 +18,8 @@ struct Lexer {
     let leftIndicator = leftIndex.map { ind in string[ind...ind] }
     let rightIndicator = rightIndex.map { ind in string[ind...ind] }
     return WhitespaceBehavior(
-      left: behavior(string: leftIndicator ?? ""),
-      right: behavior(string: rightIndicator ?? "")
+      leading: behavior(string: leftIndicator ?? ""),
+      trailing: behavior(string: rightIndicator ?? "")
     )
 
   }
@@ -43,7 +43,7 @@ struct Lexer {
       return .variable(value: strip())
     } else if string.hasPrefix("{%") {
       let behavior = whiteSpaceBehavior(string: string, tagLength: Lexer.TagLength)
-      let stripLengths = (Lexer.TagLength + additionalTagLength(b: behavior.left),Lexer.TagLength +  additionalTagLength(b: behavior.right))
+      let stripLengths = (Lexer.TagLength + additionalTagLength(b: behavior.leading),Lexer.TagLength +  additionalTagLength(b: behavior.trailing))
       return .block(value: strip(length: stripLengths), newline: behavior)
     } else if string.hasPrefix("{#") {
       return .comment(value: strip())

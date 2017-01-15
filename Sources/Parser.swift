@@ -27,18 +27,26 @@ public class TokenParser {
 
   /// Parse the given tokens into nodes
   public func parse() throws -> [NodeType] {
-    return try parse(nil)
+    return try parse(nil, nil)
   }
 
   public func parse(_ parse_until:((_ parser:TokenParser, _ token:Token) -> (Bool))?) throws -> [NodeType] {
+    return try parse(nil, parse_until)
+  }
+
+  public func parse(_ leadingWhiteSpace: WhitespaceBehavior.Behavior?, _ parse_until:((_ parser:TokenParser, _ token:Token) -> (Bool))?) throws -> [NodeType] {
     var nodes = [NodeType]()
+    var previousWhiteSpace:WhitespaceBehavior.Behavior? = leadingWhiteSpace
 
     while tokens.count > 0 {
       let token = nextToken()!
 
       switch token {
       case .text(let text):
-        nodes.append(TextNode(text: text))
+        let leadingTrim = (previousWhiteSpace ?? .unspecified) == .trim
+        let trailingTrim = (peekWhitespace() ?? .unspecified) == .trim
+        let behavior = TextNode.TrimBehavior(trimLeft: leadingTrim, trimRight: trailingTrim)
+        nodes.append(TextNode(text: text, tBehavior: behavior))
       case .variable:
         nodes.append(VariableNode(variable: try compileFilter(token.contents)))
       case .block:
@@ -54,6 +62,7 @@ public class TokenParser {
       case .comment:
         continue
       }
+      previousWhiteSpace = token.whitespace?.trailing
     }
 
     return nodes
@@ -65,6 +74,10 @@ public class TokenParser {
     }
 
     return nil
+  }
+
+  func peekWhitespace() -> WhitespaceBehavior.Behavior? {
+    return tokens.first?.whitespace?.leading
   }
 
   public func prependToken(_ token:Token) {

@@ -58,5 +58,25 @@ func testTokenParser() {
 
       try expect(try parser.parse()).toThrow(TemplateSyntaxError("Unknown template tag 'unknown'"))
     }
+
+    $0.it("Can trim whitespace") {
+
+      let simpleExtension = Extension()
+      simpleExtension.registerSimpleTag("known") { _ in
+        return ""
+      }
+
+      let parser = TokenParser(tokens: [
+        Token.block(value: "known", newline: WhitespaceBehavior(leading: .unspecified, trailing: .trim)),
+        Token.text(value: "      \nSome text     "),
+        Token.block(value: "known", newline: WhitespaceBehavior(leading: .keep, trailing: .trim))
+      ], environment: Environment(extensions: [simpleExtension]))
+
+      let nodes = try parser.parse()
+      try expect(nodes.count) == 3
+      let textNode = nodes[1] as? TextNode
+      try expect(textNode?.text) == "      \nSome text     "
+      try expect(textNode?.trimBehavior) == TextNode.TrimBehavior(trimLeft: true, trimRight: false)
+    }
   }
 }

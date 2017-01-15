@@ -37,20 +37,20 @@ extension String {
 }
 
 public struct WhitespaceBehavior: Equatable {
-  enum Behavior {
+  public enum Behavior {
     case unspecified
     case trim
     case keep
   }
-  let left: Behavior
-  let right: Behavior
+  let leading: Behavior
+  let trailing: Behavior
   static func defaultBehavior() -> WhitespaceBehavior {
-    return WhitespaceBehavior(left: .unspecified, right: .unspecified)
+    return WhitespaceBehavior(leading: .unspecified, trailing: .unspecified)
   }
 }
 
 public func == (lhs: WhitespaceBehavior, rhs: WhitespaceBehavior) -> Bool {
-    return (lhs.left == rhs.left) && (lhs.right == rhs.right)
+    return (lhs.leading == rhs.leading) && (lhs.trailing == rhs.trailing)
 }
 
 
@@ -86,6 +86,12 @@ public enum Token : Equatable {
       return value
     case .comment(let value):
       return value
+    }
+  }
+  public var whitespace: WhitespaceBehavior? {
+    switch self {
+    case .variable, .comment, .text: return nil
+    case .block(_, let ws): return ws
     }
   }
 }

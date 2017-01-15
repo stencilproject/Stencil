@@ -40,15 +40,37 @@ public class SimpleNode : NodeType {
 
 
 public class TextNode : NodeType {
+  private static let leadingWhiteSpace = try! NSRegularExpression(pattern: "^\\s+", options: [])
+  private static let trailingWhiteSpace = try! NSRegularExpression(pattern: "\\s+$", options: [])
+  public struct TrimBehavior {
+    let trimLeft: Bool
+    let trimRight: Bool
+  }
   public let text:String
+  public let trimBehavior:TrimBehavior
 
-  public init(text:String) {
+  public init(text:String, tBehavior:TrimBehavior = TrimBehavior(trimLeft: false, trimRight: false)) {
     self.text = text
+    self.trimBehavior = tBehavior
   }
 
   public func render(_ context:Context) throws -> String {
-    return self.text
+    var string = self.text
+    if trimBehavior.trimLeft {
+      let range = NSMakeRange(0, string.characters.count)
+      string = TextNode.leadingWhiteSpace.stringByReplacingMatches(in: string, options: [], range: range, withTemplate: "")
+    }
+    if trimBehavior.trimRight {
+      let range = NSMakeRange(0, string.characters.count)
+      string = TextNode.trailingWhiteSpace.stringByReplacingMatches(in: string, options: [], range: range, withTemplate: "")
+    }
+    return string
   }
+}
+
+extension TextNode.TrimBehavior: Equatable {}
+public func == (lhs: TextNode.TrimBehavior, rhs: TextNode.TrimBehavior) -> Bool {
+  return (lhs.trimLeft == rhs.trimLeft) && (lhs.trimRight == rhs.trimRight)
 }
 
 

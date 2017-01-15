@@ -22,6 +22,21 @@ func testNode() {
         let node = TextNode(text: "Hello World")
         try expect(try node.render(context)) == "Hello World"
       }
+      $0.it("Trims leading whitespace") {
+        let text = "      \nSome text     "
+        let node = TextNode(text: text, tBehavior: TextNode.TrimBehavior(trimLeft: true, trimRight: false))
+        try expect(try node.render(context)) == "Some text     "
+      }
+      $0.it("Trims trailing whitespace") {
+        let text = "      \nSome text     "
+        let node = TextNode(text: text, tBehavior: TextNode.TrimBehavior(trimLeft: false, trimRight: true))
+        try expect(try node.render(context)) == "      \nSome text"
+      }
+      $0.it("Trims all whitespace") {
+        let text = "      \nSome text     "
+        let node = TextNode(text: text, tBehavior: TextNode.TrimBehavior(trimLeft: true, trimRight: true))
+        try expect(try node.render(context)) == "Some text"
+      }
     }
 
     $0.describe("VariableNode") {

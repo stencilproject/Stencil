@@ -16,7 +16,7 @@ class ForNode : NodeType {
 
     var emptyNodes = [NodeType]()
 
-    let forNodes = try parser.parse(until(["endfor", "empty"]))
+    let forNodes = try parser.parse(token.whitespace?.trailing, until(["endfor", "empty"]))
 
     guard let token = parser.nextToken() else {
       throw TemplateSyntaxError("`endfor` was not found.")
