@@ -38,6 +38,13 @@ public class SimpleNode : NodeType {
   }
 }
 
+#if os(Linux)
+  #if swift(>=3.1)
+  #else
+    typealias NSRegularExpression = RegularExpression
+  #endif
+#endif
+
 
 public class TextNode : NodeType {
   private static let leadingWhiteSpace = try! NSRegularExpression(pattern: "^\\s+", options: [])
