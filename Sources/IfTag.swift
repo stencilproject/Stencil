@@ -171,14 +171,14 @@ class IfNode : NodeType {
     var trueNodes = [NodeType]()
     var falseNodes = [NodeType]()
 
-    trueNodes = try parser.parse(token.whitespace?.trailing, until(["endif", "else"]))
+    trueNodes = try parser.parse(until(["endif", "else"]))
 
     guard let token = parser.nextToken() else {
       throw TemplateSyntaxError("`endif` was not found.")
     }
 
     if token.contents == "else" {
-      falseNodes = try parser.parse(token.whitespace?.trailing, until(["endif"]))
+      falseNodes = try parser.parse(until(["endif"]))
       _ = parser.nextToken()
     }
 
@@ -195,14 +195,14 @@ class IfNode : NodeType {
     var trueNodes = [NodeType]()
     var falseNodes = [NodeType]()
 
-    falseNodes = try parser.parse(token.whitespace?.trailing, until(["endif", "else"]))
+    falseNodes = try parser.parse(until(["endif", "else"]))
 
     guard let token = parser.nextToken() else {
       throw TemplateSyntaxError("`endif` was not found.")
     }
 
     if token.contents == "else" {
-      trueNodes = try parser.parse(token.whitespace?.trailing, until(["endif"]))
+      trueNodes = try parser.parse(until(["endif"]))
       _ = parser.nextToken()
     }
 

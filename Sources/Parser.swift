@@ -19,6 +19,7 @@ public class TokenParser {
 
   fileprivate var tokens: [Token]
   fileprivate let environment: Environment
+  private var previousWhiteSpace: WhitespaceBehavior.Behavior?
 
   public init(tokens: [Token], environment: Environment) {
     self.tokens = tokens
@@ -27,16 +28,11 @@ public class TokenParser {
 
   /// Parse the given tokens into nodes
   public func parse() throws -> [NodeType] {
-    return try parse(nil, nil)
+    return try parse(nil)
   }
 
   public func parse(_ parse_until:((_ parser:TokenParser, _ token:Token) -> (Bool))?) throws -> [NodeType] {
-    return try parse(nil, parse_until)
-  }
-
-  public func parse(_ leadingWhiteSpace: WhitespaceBehavior.Behavior?, _ parse_until:((_ parser:TokenParser, _ token:Token) -> (Bool))?) throws -> [NodeType] {
     var nodes = [NodeType]()
-    var previousWhiteSpace:WhitespaceBehavior.Behavior? = leadingWhiteSpace
 
     while tokens.count > 0 {
       let token = nextToken()!
@@ -50,6 +46,7 @@ public class TokenParser {
       case .variable:
         nodes.append(VariableNode(variable: try compileFilter(token.contents)))
       case .block:
+        previousWhiteSpace = token.whitespace?.trailing
         if let parse_until = parse_until , parse_until(self, token) {
           prependToken(token)
           return nodes
@@ -62,7 +59,6 @@ public class TokenParser {
       case .comment:
         continue
       }
-      previousWhiteSpace = token.whitespace?.trailing
     }
 
     return nodes
