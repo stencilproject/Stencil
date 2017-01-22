@@ -1,5 +1,9 @@
 # Stencil Changelog
 
+## Master
+
+- For expression now can contain `where` expression to filter array items. For example `{% for item in items where item > 1 %}` is now supported.
+
 ## 0.8.0
 
 ### Breaking

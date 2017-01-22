@@ -63,6 +63,21 @@ func testForNode() {
       try expect(try node.render(context)) == "112233"
     }
 
+    $0.it("renders the given nodes while filtering items using where expression") {
+        let nodes: [NodeType] = [VariableNode(variable: "item"), VariableNode(variable: "forloop.counter")]
+        let `where` = try parseExpression(components: ["item", ">", "1"], tokenParser: TokenParser(tokens: [], environment: Environment()))
+        let node = ForNode(resolvable: Variable("items"), loopVariable: "item", nodes: nodes, emptyNodes: [], where: `where`)
+        try expect(try node.render(context)) == "2132"
+    }
+
+    $0.it("renders the given empty nodes when all items filtered out with where expression") {
+        let nodes: [NodeType] = [VariableNode(variable: "item")]
+        let emptyNodes: [NodeType] = [TextNode(text: "empty")]
+        let `where` = try parseExpression(components: ["item", "==", "0"], tokenParser: TokenParser(tokens: [], environment: Environment()))
+        let node = ForNode(resolvable: Variable("emptyItems"), loopVariable: "item", nodes: nodes, emptyNodes: emptyNodes, where: `where`)
+        try expect(try node.render(context)) == "empty"
+    }
+
     $0.it("can render a filter") {
       let templateString = "{% for article in ars|default:articles %}" +
         "- {{ article.title }} by {{ article.author }}.\n" +
