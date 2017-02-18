@@ -25,6 +25,6 @@
   },
   "requires_arc": true,
   "dependencies": {
-    "PathKit": [ "~> 0.7.0" ]
+    "PathKit": [ "~> 0.8.0" ]
   }
 }
