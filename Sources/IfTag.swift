@@ -186,19 +186,30 @@ class IfNode : NodeType {
     var components = token.components()
     components.removeFirst()
 
-    var conditions: [IfCondition] = []
-
     let expression = try parseExpression(components: components, tokenParser: parser)
-    let nodes = try parser.parse(until(["endif", "else"]))
-    conditions.append(IfCondition(expression: expression, nodes: nodes))
+    let nodes = try parser.parse(until(["endif", "elif", "else"]))
+    var conditions: [IfCondition] = [
+      IfCondition(expression: expression, nodes: nodes)
+    ]
 
-    guard let token = parser.nextToken() else {
-      throw TemplateSyntaxError("`endif` was not found.")
+    var token = parser.nextToken()
+    while let current = token, current.contents.hasPrefix("elif") {
+      var components = current.components()
+      components.removeFirst()
+      let expression = try parseExpression(components: components, tokenParser: parser)
+
+      let nodes = try parser.parse(until(["endif", "elif", "else"]))
+      token = parser.nextToken()
+      conditions.append(IfCondition(expression: expression, nodes: nodes))
     }
 
-    if token.contents == "else" {
+    if let current = token, current.contents == "else" {
       conditions.append(IfCondition(expression: nil, nodes: try parser.parse(until(["endif"]))))
-      _ = parser.nextToken()
+      token = parser.nextToken()
+    }
+
+    guard let current = token, current.contents == "endif" else {
+      throw TemplateSyntaxError("`endif` was not found.")
     }
 
     return IfNode(conditions: conditions)

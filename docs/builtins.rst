@@ -52,10 +52,12 @@ true the contents of the block are processed. Being true is defined as:
 
 .. code-block:: html+django
 
-    {% if variable %}
-      The variable was found in the current context.
+    {% if admin %}
+      The user is an administrator.
+    {% elif user %}
+      A user is logged in.
     {% else %}
-      The variable was not found.
+      No user was found.
     {% endif %}
 
 Operators

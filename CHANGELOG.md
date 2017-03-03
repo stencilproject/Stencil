@@ -1,5 +1,22 @@
 # Stencil Changelog
 
+## Master
+
+### Enhancements
+
+- `if` blocks may now contain else if (`elif`) conditions.
+
+  ```html+django
+  {% if one or two and not three %}
+    one or two but not three
+  {% elif four %}
+    four
+  {% else %}
+    not one, two, or four
+  {% endif %}
+  ```
+
+
 ## 0.8.0
 
 ### Breaking
