@@ -32,7 +32,7 @@ public struct Environment {
   }
 
   public func renderTemplate(string: String, context: [String: Any]? = nil) throws -> String {
-    let template = templateClass.init(templateString: string, environment: self)
+    let template = try templateClass.init(templateString: string, environment: self)
     return try template.render(context)
   }
 }

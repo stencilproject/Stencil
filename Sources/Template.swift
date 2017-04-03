@@ -14,7 +14,7 @@ open class Template: ExpressibleByStringLiteral {
   public let name: String?
 
   /// Create a template with a template string
-  public required init(templateString: String, environment: Environment? = nil, name: String? = nil) {
+  public required init(templateString: String, environment: Environment? = nil, name: String? = nil) throws {
     self.environment = environment ?? Environment()
     self.name = name
 
@@ -42,14 +42,18 @@ open class Template: ExpressibleByStringLiteral {
   /// Create a template with a file found at the given path
   @available(*, deprecated, message: "Use Environment/FileSystemLoader instead")
   public convenience init(path: Path, environment: Environment? = nil, name: String? = nil) throws {
-    self.init(templateString: try path.read(), environment: environment, name: name)
+    try self.init(templateString: try path.read(), environment: environment, name: name)
   }
 
   // MARK: ExpressibleByStringLiteral
 
   // Create a templaVte with a template string literal
   public convenience required init(stringLiteral value: String) {
-    self.init(templateString: value)
+    do{
+        try self.init(templateString: value)
+    } catch (let error) {
+        fatalError("Initialization failed: \(error.localizedDescription)")
+    }
   }
 
   // Create a template with a template string literal
