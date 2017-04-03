@@ -52,7 +52,7 @@ open class Template: ExpressibleByStringLiteral {
     do{
         try self.init(templateString: value)
     } catch (let error) {
-        fatalError("Initialization failed: \(error.localizedDescription)")
+        fatalError("Initialization for stringLiteral value \(value) failed with error: \(error.localizedDescription)")
     }
   }
 
