@@ -4,6 +4,7 @@
 
 ### Enhancements
 
+- `for` block now can contain `where` expression to filter array items. For example `{% for item in items where item > 1 %}` is now supported.
 - `if` blocks may now contain else if (`elif`) conditions.
 
   ```html+django
@@ -15,7 +16,6 @@
     not one, two, or four
   {% endif %}
   ```
-
 
 ## 0.8.0
 
