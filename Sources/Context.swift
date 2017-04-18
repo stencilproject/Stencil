@@ -42,8 +42,9 @@ public class Context {
   }
 
   /// Pop the last level off of the Context
-  fileprivate func pop() -> [String: Any]? {
-    return dictionaries.popLast()
+  fileprivate func pop() -> [String: Any?]? {
+    guard let lastLevel = dictionaries.popLast() else { return nil }
+    return lastLevel
   }
 
   /// Push a new level onto the context for the duration of the execution of the given closure
