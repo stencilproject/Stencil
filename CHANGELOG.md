@@ -17,6 +17,14 @@
   {% endif %}
   ```
 
+- `for` block now allows you to iterate over array of tuples or dictionaries.
+
+  ```html+django
+  {% for key, value in thing %}
+    <li>{{ key }}: {{ value }}</li>
+  {% endfor %}
+  ```
+
 ### Bug Fixes
 
 - You can now use literal filter arguments which contain quotes.

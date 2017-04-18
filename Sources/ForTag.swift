@@ -53,13 +53,41 @@ class ForNode : NodeType {
     self.where = `where`
   }
 
+  func push<Result>(value: Any, context: Context, closure: () throws -> (Result)) rethrows -> Result {
+    if loopVariables.isEmpty {
+      return try context.push() {
+        return try closure()
+      }
+    }
+
+    if let value = value as? (Any, Any) {
+      let first = loopVariables[0]
+
+      if loopVariables.count == 2 {
+        let second = loopVariables[1]
+
+        return try context.push(dictionary: [first: value.0, second: value.1]) {
+          return try closure()
+        }
+      }
+
+      return try context.push(dictionary: [first: value.0]) {
+        return try closure()
+      }
+    }
+
+    return try context.push(dictionary: [loopVariables.first!: value]) {
+      return try closure()
+    }
+  }
+
   func render(_ context: Context) throws -> String {
     let resolved = try resolvable.resolve(context)
 
     var values: [Any]
 
     if let dictionary = resolved as? [String: Any], !dictionary.isEmpty {
-      values = Array(dictionary.keys)
+      values = dictionary.map { ($0.key, $0.value) }
     } else if let array = resolved as? [Any] {
       values = array
     } else {
@@ -68,7 +96,7 @@ class ForNode : NodeType {
 
     if let `where` = self.where {
       values = try values.filter({ item -> Bool in
-        return try context.push(dictionary: [loopVariables.first!: item]) { () -> Bool in
+        return try push(value: item, context: context) {
           try `where`.evaluate(context: context)
         }
       })
@@ -84,8 +112,10 @@ class ForNode : NodeType {
           "counter": index + 1,
         ]
 
-        return try context.push(dictionary: [loopVariables.first!: item, "forloop": forContext]) {
-          try renderNodes(nodes, context)
+        return try context.push(dictionary: ["forloop": forContext]) {
+          return try push(value: item, context: context) {
+            try renderNodes(nodes, context)
+          }
         }
       }.joined(separator: "")
     }

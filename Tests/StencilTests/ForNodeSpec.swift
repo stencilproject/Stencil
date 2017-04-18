@@ -111,6 +111,13 @@ func testForNode() {
       let node = ForNode(resolvable: Variable("dict"), loopVariables: ["key"], nodes: nodes, emptyNodes: emptyNodes, where: nil)
       try expect(try node.render(context)) == "onetwo"
     }
+
+    $0.it("renders supports iterating over dictionary") {
+      let nodes: [NodeType] = [VariableNode(variable: "key"), VariableNode(variable: "value")]
+      let emptyNodes: [NodeType] = [TextNode(text: "empty")]
+      let node = ForNode(resolvable: Variable("dict"), loopVariables: ["key", "value"], nodes: nodes, emptyNodes: emptyNodes, where: nil)
+      try expect(try node.render(context)) == "oneItwoII"
+    }
   }
 }
 
