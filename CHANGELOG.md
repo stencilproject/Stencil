@@ -17,6 +17,12 @@
   {% endif %}
   ```
 
+### Bug Fixes
+
+- You can now use literal filter arguments which contain quotes.
+  [#98](https://github.com/kylef/Stencil/pull/98)
+
+
 ## 0.8.0
 
 ### Breaking
