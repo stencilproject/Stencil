@@ -99,9 +99,15 @@ public struct Variable : Equatable, Resolvable {
         let mirror = Mirror(reflecting: value)
         current = mirror.descendant(bit)
 
-        if current == nil {
-          return nil
-        }
+        // handle the possiblity of double optionals
+        if let obj = current {
+            let r = Mirror(reflecting: obj)
+            if let display = r.displayStyle, display == .optional {
+                current = r.descendant("some")
+            }
+        } else {
+            return nil
+        }        
       } else {
         return nil
       }
