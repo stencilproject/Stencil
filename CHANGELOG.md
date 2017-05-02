@@ -9,6 +9,8 @@
 - Introduces a new `DictionaryLoader` for loading templates from a Swift
   Dictionary.
 - Added `in` expression in if tag for strings and arrays of hashable types
+- You can now access the amount of items in a dictionary using the `count`
+  property.
 
 ### Bug Fixes
 
