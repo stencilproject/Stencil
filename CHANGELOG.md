@@ -40,7 +40,7 @@
 - `for` block now allows you to iterate over array of tuples or dictionaries.
 
   ```html+django
-  {% for key, value in thing %}
+  {% for key,value in thing %}
     <li>{{ key }}: {{ value }}</li>
   {% endfor %}
   ```
