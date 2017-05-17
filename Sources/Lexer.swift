@@ -90,6 +90,7 @@ class Scanner {
       index = content.index(after: index)
     }
 
+    content = ""
     return ""
   }
 
