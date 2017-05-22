@@ -32,7 +32,11 @@ class IncludeNode : NodeType, Indented {
     return try context.push(dictionary: subContext) {
       var content = try template.render(context)
       if !indent.isEmpty {
-        content = content.replacingOccurrences(of: "\n", with: "\n\(indent)")
+        var lines = content.components(separatedBy: "\n")
+        content = lines.removeFirst()
+        if !lines.isEmpty {
+          content += "\n" + lines.map { $0.isEmpty ? "" : "\(indent)\($0)"}.joined(separator: "\n")
+        }
       }
       return content
     }
