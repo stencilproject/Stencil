@@ -58,10 +58,10 @@ func testInclude() {
       }
 
       $0.it("successfully indents included content") {
-          let template = Template(templateString: "Include:\n\t{% include \"include.html\" %}\nnewline")
+          let template = Template(templateString: "Include:\n \n\t{% include \"include.html\" %}\nnewline")
           let context = Context(dictionary: ["items": [["name":"one"], ["name": "two"]]], environment: environment)
           let value = try template.render(context)
-          try expect(value) == "Include:\n\tI have 2 items:\n\t  one\n\t  two\n\nnewline"
+          try expect(value) == "Include:\n \n\tI have 2 items:\n\t  one\n\t  two\n\nnewline"
       }
 
       $0.it("successfully passes context") {

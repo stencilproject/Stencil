@@ -56,7 +56,7 @@ public class TokenParser {
           if nodes.count > 1,
             let indentedNode = nodes[nodes.count - 1] as? Indented,
             let textNode = nodes[nodes.count - 2] as? TextNode {
-            indentedNode.indent = textNode.text.trimmingCharacters(in: CharacterSet.whitespaces.inverted)
+            indentedNode.indent = textNode.text.components(separatedBy: "\n").last!.trimmingCharacters(in: CharacterSet.whitespaces.inverted)
           }
         }
       case .comment:
