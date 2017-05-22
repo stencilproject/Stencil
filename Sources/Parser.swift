@@ -1,3 +1,5 @@
+import Foundation
+
 public func until(_ tags: [String]) -> ((TokenParser, Token) -> Bool) {
   return { parser, token in
     if let name = token.components().first {
@@ -50,6 +52,12 @@ public class TokenParser {
         if let tag = token.components().first {
           let parser = try findTag(name: tag)
           nodes.append(try parser(self, token))
+
+          if nodes.count > 1,
+            let indentedNode = nodes[nodes.count - 1] as? Indented,
+            let textNode = nodes[nodes.count - 2] as? TextNode {
+            indentedNode.indent = textNode.text.trimmingCharacters(in: CharacterSet.whitespaces.inverted)
+          }
         }
       case .comment:
         continue
@@ -94,5 +102,8 @@ public class TokenParser {
   public func compileFilter(_ token: String) throws -> Resolvable {
     return try FilterExpression(token: token, parser: self)
   }
+}
 
+protocol Indented: class {
+  var indent: String { get set }
 }

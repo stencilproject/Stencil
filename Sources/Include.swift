@@ -1,8 +1,9 @@
 import PathKit
 
 
-class IncludeNode : NodeType {
+class IncludeNode : NodeType, Indented {
   let templateName: Variable
+  var indent: String = ""
 
   class func parse(_ parser: TokenParser, token: Token) throws -> NodeType {
     let bits = token.components()
@@ -26,7 +27,11 @@ class IncludeNode : NodeType {
     let template = try context.environment.loadTemplate(name: templateName)
 
     return try context.push {
-      return try template.render(context)
+      var content = try template.render(context)
+      if !indent.isEmpty {
+        content = content.replacingOccurrences(of: "\n", with: "\n\(indent)")
+      }
+      return content
     }
   }
 }
