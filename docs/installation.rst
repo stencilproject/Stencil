@@ -1,7 +1,7 @@
 Installation
 ============
 
-Swift Package Mangaer
+Swift Package Manager
 ---------------------
 
 If you're using the Swift Package Manager, you can add ``Stencil`` to your
