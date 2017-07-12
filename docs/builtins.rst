@@ -59,6 +59,23 @@ The for block sets a few variables available within the loop:
 - ``last`` - True if this is the last time through the loop
 - ``counter`` - The current iteration of the loop
 
+For example: 
+
+.. code-block:: html+django
+
+	{% for user in users %}
+	  {% if forloop.first %}
+	    This is the first user.
+	  {% endif %}
+	{% endfor %}
+
+.. code-block:: html+django
+
+	{% for user in users %}
+	  This is user number {{ forloop.counter }} user.
+	{% endfor %}
+
+
 ``if``
 ~~~~~~
 
