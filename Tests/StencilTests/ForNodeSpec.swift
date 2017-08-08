@@ -37,6 +37,22 @@ func testForNode() {
       try expect(try node.render(any_context)) == "123"
     }
 
+    $0.it("renders a context variable of type CountableClosedRange<Int>") {
+      let context = Context(dictionary: ["range": 1...3])
+      let nodes: [NodeType] = [VariableNode(variable: "item")]
+      let node = ForNode(resolvable: Variable("range"), loopVariables: ["item"], nodes: nodes, emptyNodes: [])
+
+      try expect(try node.render(context)) == "123"
+    }
+
+    $0.it("renders a context variable of type CountableRange<Int>") {
+      let context = Context(dictionary: ["range": 1..<4])
+      let nodes: [NodeType] = [VariableNode(variable: "item")]
+      let node = ForNode(resolvable: Variable("range"), loopVariables: ["item"], nodes: nodes, emptyNodes: [])
+
+      try expect(try node.render(context)) == "123"
+    }
+
 #if os(OSX)
     $0.it("renders a context variable of type NSArray") {
       let nsarray_context = Context(dictionary: [

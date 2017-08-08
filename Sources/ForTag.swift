@@ -90,6 +90,10 @@ class ForNode : NodeType {
       values = dictionary.map { ($0.key, $0.value) }
     } else if let array = resolved as? [Any] {
       values = array
+    } else if let range = resolved as? CountableClosedRange<Int> {
+      values = Array(range)
+    } else if let range = resolved as? CountableRange<Int> {
+      values = Array(range)
     } else {
       values = []
     }
