@@ -42,7 +42,7 @@ Registering custom filters with arguments:
       }
 
       if let value = value as? Int {
-        return value * 2
+        return value * amount
       }
 
       return value
