@@ -43,41 +43,54 @@ extension String {
 
 public enum Token : Equatable {
   /// A token representing a piece of text.
-  case text(value: String)
+  case text(value: String, sourceMap: SourceMap)
 
   /// A token representing a variable.
-  case variable(value: String)
+  case variable(value: String, sourceMap: SourceMap)
 
   /// A token representing a comment.
-  case comment(value: String)
+  case comment(value: String, sourceMap: SourceMap)
 
   /// A token representing a template block.
-  case block(value: String)
+  case block(value: String, sourceMap: SourceMap)
 
   /// Returns the underlying value as an array seperated by spaces
   public func components() -> [String] {
     switch self {
-    case .block(let value):
+    case .block(let value, _):
       return value.smartSplit()
-    case .variable(let value):
+    case .variable(let value, _):
       return value.smartSplit()
-    case .text(let value):
+    case .text(let value, _):
       return value.smartSplit()
-    case .comment(let value):
+    case .comment(let value, _):
       return value.smartSplit()
     }
   }
 
   public var contents: String {
     switch self {
-    case .block(let value):
+    case .block(let value, _):
       return value
-    case .variable(let value):
+    case .variable(let value, _):
       return value
-    case .text(let value):
+    case .text(let value, _):
       return value
-    case .comment(let value):
+    case .comment(let value, _):
       return value
+    }
+  }
+
+  public var sourceMap: SourceMap {
+    switch self {
+    case .block(_, let sourceMap):
+      return sourceMap
+    case .variable(_, let sourceMap):
+      return sourceMap
+    case .text(_, let sourceMap):
+      return sourceMap
+    case .comment(_, let sourceMap):
+      return sourceMap
     }
   }
 }
@@ -85,14 +98,14 @@ public enum Token : Equatable {
 
 public func == (lhs: Token, rhs: Token) -> Bool {
   switch (lhs, rhs) {
-  case (.text(let lhsValue), .text(let rhsValue)):
-    return lhsValue == rhsValue
-  case (.variable(let lhsValue), .variable(let rhsValue)):
-    return lhsValue == rhsValue
-  case (.block(let lhsValue), .block(let rhsValue)):
-    return lhsValue == rhsValue
-  case (.comment(let lhsValue), .comment(let rhsValue)):
-    return lhsValue == rhsValue
+  case (.text(let lhsValue, let lhsSourceMap), .text(let rhsValue, let rhsSourceMap)):
+    return lhsValue == rhsValue && lhsSourceMap == rhsSourceMap
+  case (.variable(let lhsValue, let lhsSourceMap), .variable(let rhsValue, let rhsSourceMap)):
+    return lhsValue == rhsValue && lhsSourceMap == rhsSourceMap
+  case (.block(let lhsValue, let lhsSourceMap), .block(let rhsValue, let rhsSourceMap)):
+    return lhsValue == rhsValue && lhsSourceMap == rhsSourceMap
+  case (.comment(let lhsValue, let lhsSourceMap), .comment(let rhsValue, let rhsSourceMap)):
+    return lhsValue == rhsValue && lhsSourceMap == rhsSourceMap
   default:
     return false
   }

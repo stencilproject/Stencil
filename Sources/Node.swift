@@ -2,16 +2,18 @@ import Foundation
 
 
 public struct TemplateSyntaxError : Error, Equatable, CustomStringConvertible {
-  public let description:String
+  public let description: String
+  public var sourceMaps: [SourceMap]
 
-  public init(_ description:String) {
+  public init(_ description: String, sourceMaps: [SourceMap]? = nil) {
     self.description = description
+    self.sourceMaps = sourceMaps ?? []
   }
 }
 
 
-public func ==(lhs:TemplateSyntaxError, rhs:TemplateSyntaxError) -> Bool {
-  return lhs.description == rhs.description
+public func ==(lhs: TemplateSyntaxError, rhs: TemplateSyntaxError) -> Bool {
+  return lhs.description == rhs.description && lhs.sourceMaps == rhs.sourceMaps
 }
 
 
