@@ -134,6 +134,15 @@ func testForNode() {
       let node = ForNode(resolvable: Variable("dict"), loopVariables: ["key", "value"], nodes: nodes, emptyNodes: emptyNodes, where: nil)
       try expect(try node.render(context)) == "oneItwoII"
     }
+
+    $0.it("handles invalid input") {
+      let tokens: [Token] = [
+          .block(value: "for i"),
+      ]
+      let parser = TokenParser(tokens: tokens, environment: Environment())
+      let error = TemplateSyntaxError("'for' statements should use the following 'for x in y where condition' `for i`.")
+      try expect(try parser.parse()).toThrow(error)
+    }
   }
 }
 
