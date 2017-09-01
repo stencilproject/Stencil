@@ -6,6 +6,8 @@
 
 - Fixes a potential crash when using the `{% for %}` template tag with the
   incorrect amount of arguments.
+- Fixes a potential crash when using incomplete tokens in a template for
+  example, `{%%}` or `{{}}`.
 
 
 ## 0.9.0

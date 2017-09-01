@@ -5,8 +5,9 @@ struct Lexer {
     self.templateString = templateString
   }
 
-  func createToken(string:String) -> Token {
+  func createToken(string: String) -> Token {
     func strip() -> String {
+      guard string.characters.count > 4 else { return "" }
       let start = string.index(string.startIndex, offsetBy: 2)
       let end = string.index(string.endIndex, offsetBy: -2)
       return string[start..<end].trim(character: " ")

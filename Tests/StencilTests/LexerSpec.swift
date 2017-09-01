@@ -54,5 +54,15 @@ func testLexer() {
       try expect(tokens[0]) == Token.variable(value: "thing")
       try expect(tokens[1]) == Token.variable(value: "name")
     }
+
+    $0.it("can tokenize an unclosed block") {
+      let lexer = Lexer(templateString: "{%}")
+      let _ = lexer.tokenize()
+    }
+
+    $0.it("can tokenize an empty variable") {
+      let lexer = Lexer(templateString: "{{}}")
+      let _ = lexer.tokenize()
+    }
   }
 }
