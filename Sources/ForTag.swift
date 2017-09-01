@@ -10,7 +10,7 @@ class ForNode : NodeType {
   class func parse(_ parser:TokenParser, token:Token) throws -> NodeType {
     let components = token.components()
 
-    guard components.count >= 2 && components[2] == "in" &&
+    guard components.count >= 3 && components[2] == "in" &&
         (components.count == 4 || (components.count >= 6 && components[4] == "where")) else {
       throw TemplateSyntaxError("'for' statements should use the following 'for x in y where condition' `\(token.contents)`.")
     }

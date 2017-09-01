@@ -1,5 +1,13 @@
 # Stencil Changelog
 
+## Master
+
+### Bug Fixes
+
+- Fixes a potential crash when using the `{% for %}` template tag with the
+  incorrect amount of arguments.
+
+
 ## 0.9.0
 
 ### Enhancements
