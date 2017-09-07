@@ -6,6 +6,8 @@
 
 - Adds `counter0` to for loop context allowing you to get the current index of
   the for loop 0 indexed.
+- Introduces a new `DictionaryLoader` for loading templates from a Swift
+  Dictionary.
 
 ### Bug Fixes
 
