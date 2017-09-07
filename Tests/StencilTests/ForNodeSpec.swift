@@ -83,6 +83,12 @@ func testForNode() {
       try expect(try node.render(context)) == "112233"
     }
 
+    $0.it("renders the given nodes while providing item counter") {
+      let nodes: [NodeType] = [VariableNode(variable: "item"), VariableNode(variable: "forloop.counter0")]
+      let node = ForNode(resolvable: Variable("items"), loopVariables: ["item"], nodes: nodes, emptyNodes: [])
+      try expect(try node.render(context)) == "102132"
+    }
+
     $0.it("renders the given nodes while filtering items using where expression") {
         let nodes: [NodeType] = [VariableNode(variable: "item"), VariableNode(variable: "forloop.counter")]
         let `where` = try parseExpression(components: ["item", ">", "1"], tokenParser: TokenParser(tokens: [], environment: Environment()))

@@ -2,6 +2,11 @@
 
 ## Master
 
+### Enhancements
+
+- Adds `counter0` to for loop context allowing you to get the current index of
+  the for loop 0 indexed.
+
 ### Bug Fixes
 
 - Fixes a potential crash when using the `{% for %}` template tag with the
