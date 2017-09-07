@@ -26,7 +26,8 @@ func testVariable() {
       "profiles": [
         "github": "kylef",
       ],
-      "article": Article(author: Person(name: "Kyle"))
+      "article": Article(author: Person(name: "Kyle")),
+      "doubleOptional": Optional<Any>(Optional<Int>(1)) as Any
     ])
 
 #if os(OSX)
@@ -105,6 +106,12 @@ func testVariable() {
       let variable = Variable("article.author.name")
       let result = try variable.resolve(context) as? String
       try expect(result) == "Kyle"
+    }
+    
+    $0.it("can resolve double optionals") {
+        let variable = Variable("doubleOptional")
+        let result = try variable.resolve(context) as? Int
+        try expect(result) == 1
     }
 
 #if os(OSX)
