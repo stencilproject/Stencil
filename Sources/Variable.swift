@@ -101,6 +101,10 @@ public struct Variable : Equatable, Resolvable {
 
         if current == nil {
           return nil
+          // mirror returns non-nil value even for nil-containing properties
+          // so we have to check if its value is actually nil or not
+        } else if let current = current, String(describing: current) == "nil" {
+          return nil
         }
       } else {
         return nil
