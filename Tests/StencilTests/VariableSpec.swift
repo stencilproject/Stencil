@@ -26,6 +26,9 @@ func testVariable() {
       "profiles": [
         "github": "kylef",
       ],
+      "counter": [
+        "count": "kylef",
+        ],
       "article": Article(author: Person(name: "Kyle"))
     ])
 
@@ -105,6 +108,18 @@ func testVariable() {
       let variable = Variable("article.author.name")
       let result = try variable.resolve(context) as? String
       try expect(result) == "Kyle"
+    }
+
+    $0.it("can get the count of a dictionary") {
+      let variable = Variable("profiles.count")
+      let result = try variable.resolve(context) as? Int
+      try expect(result) == 1
+    }
+
+    $0.it("can get the value of a count key in a dictionary") {
+      let variable = Variable("counter.count")
+      let result = try variable.resolve(context) as? String
+      try expect(result) == "kylef"
     }
 
 #if os(OSX)

@@ -74,7 +74,11 @@ public struct Variable : Equatable, Resolvable {
       if let context = current as? Context {
         current = context[bit]
       } else if let dictionary = current as? [String: Any] {
-        current = dictionary[bit]
+        if bit == "count" && dictionary[bit] == nil {
+          current = dictionary.count
+        } else {
+          current = dictionary[bit]
+        }
       } else if let array = current as? [Any] {
         if let index = Int(bit) {
           if index >= 0 && index < array.count {
