@@ -254,7 +254,7 @@ func testIfNode() {
         try expect(result) == "true"
     }
     
-    $0.it("supports nil as value") {
+    $0.it("evaluates nil properties as false") {
       let tokens: [Token] = [
         .block(value: "if instance.value"),
         .text(value: "true"),
