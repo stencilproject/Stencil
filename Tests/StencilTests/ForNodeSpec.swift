@@ -127,6 +127,18 @@ func testForNode() {
       try expect(result) == fixture
     }
 
+    $0.it("can iterate over dictionary") {
+      let templateString = "{% for key,value in dict %}" +
+        "{{ key }}: {{ value }}\n" +
+        "{% endfor %}\n"
+
+      let template = Template(templateString: templateString)
+      let result = try template.render(context)
+
+      let fixture = "one: I\ntwo: II\n\n"
+      try expect(result) == fixture
+    }
+
     $0.it("renders supports iterating over dictionary") {
       let nodes: [NodeType] = [VariableNode(variable: "key")]
       let emptyNodes: [NodeType] = [TextNode(text: "empty")]
