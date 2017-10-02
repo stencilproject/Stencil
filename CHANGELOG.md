@@ -18,6 +18,7 @@
   incorrect amount of arguments.
 - Fixes a potential crash when using incomplete tokens in a template for
   example, `{%%}` or `{{}}`.
+- Fixes evaluating nil properties as true
 
 
 ## 0.9.0

@@ -253,5 +253,22 @@ func testIfNode() {
         let result = try renderNodes(nodes, Context(dictionary: ["value": "test"]))
         try expect(result) == "true"
     }
+    
+    $0.it("evaluates nil properties as false") {
+      let tokens: [Token] = [
+        .block(value: "if instance.value"),
+        .text(value: "true"),
+        .block(value: "endif")
+      ]
+      
+      let parser = TokenParser(tokens: tokens, environment: Environment())
+      let nodes = try parser.parse()
+      
+      struct SomeType {
+        let value: String? = nil
+      }
+      let result = try renderNodes(nodes, Context(dictionary: ["instance": SomeType()]))
+      try expect(result) == ""
+    }
   }
 }
