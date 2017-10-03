@@ -5,7 +5,7 @@ struct Lexer {
     self.templateString = templateString
   }
 
-  func createToken(string: String) -> Token {
+  func createToken(string: String, at range: Range<String.Index>) -> Token {
     func strip() -> String {
       guard string.characters.count > 4 else { return "" }
       let start = string.index(string.startIndex, offsetBy: 2)
@@ -14,14 +14,14 @@ struct Lexer {
     }
 
     if string.hasPrefix("{{") {
-      return .variable(value: strip())
+      return .variable(value: strip(), at: range)
     } else if string.hasPrefix("{%") {
-      return .block(value: strip())
+      return .block(value: strip(), at: range)
     } else if string.hasPrefix("{#") {
-      return .comment(value: strip())
+      return .comment(value: strip(), at: range)
     }
 
-    return .text(value: string)
+    return .text(value: string, at: range)
   }
 
   /// Returns an array of tokens from a given template string.
@@ -39,14 +39,14 @@ struct Lexer {
     while !scanner.isEmpty {
       if let text = scanner.scan(until: ["{{", "{%", "{#"]) {
         if !text.1.isEmpty {
-          tokens.append(createToken(string: text.1))
+          tokens.append(createToken(string: text.1, at: scanner.range))
         }
 
         let end = map[text.0]!
         let result = scanner.scan(until: end, returnUntil: true)
-        tokens.append(createToken(string: result))
+        tokens.append(createToken(string: result, at: scanner.range))
       } else {
-        tokens.append(createToken(string: scanner.content))
+        tokens.append(createToken(string: scanner.content, at: scanner.range))
         scanner.content = ""
       }
     }
@@ -57,41 +57,50 @@ struct Lexer {
 
 
 class Scanner {
+  let _content: String //stores original content
   var content: String
-
+  var range: Range<String.Index>
+  
   init(_ content: String) {
+    self._content = content
     self.content = content
+    range = content.startIndex..<content.startIndex
   }
 
   var isEmpty: Bool {
     return content.isEmpty
   }
-
+  
   func scan(until: String, returnUntil: Bool = false) -> String {
+    var index = content.startIndex
+
     if until.isEmpty {
       return ""
     }
 
-    var index = content.startIndex
+    range = range.upperBound..<range.upperBound
     while index != content.endIndex {
       let substring = content.substring(from: index)
-
+      
       if substring.hasPrefix(until) {
         let result = content.substring(to: index)
-        content = substring
 
         if returnUntil {
-          content = content.substring(from: until.endIndex)
+          range = range.lowerBound..<_content.index(range.upperBound, offsetBy: until.count)
+          content = substring.substring(from: until.endIndex)
           return result + until
         }
 
+        content = substring
         return result
       }
 
       index = content.index(after: index)
+      range = range.lowerBound..<_content.index(after: range.upperBound)
     }
 
     content = ""
+    range = "".range
     return ""
   }
 
@@ -101,6 +110,7 @@ class Scanner {
     }
 
     var index = content.startIndex
+    range = range.upperBound..<range.upperBound
     while index != content.endIndex {
       let substring = content.substring(from: index)
       for string in until {
@@ -112,6 +122,7 @@ class Scanner {
       }
 
       index = content.index(after: index)
+      range = range.lowerBound..<_content.index(after: range.upperBound)
     }
 
     return nil
@@ -151,4 +162,21 @@ extension String {
     let last = findLastNot(character: character) ?? endIndex
     return String(self[first..<last])
   }
+  
+  func lineAndPosition(at range: Range<String.Index>) -> (content: String, number: Int, offset: String.IndexDistance) {
+    var lineNumber: Int = 0
+    var offset = 0
+    var lineContent = ""
+    
+    enumerateLines { (line, stop) in
+      lineNumber += 1
+      lineContent = line
+      if let rangeOfLine = self.range(of: line), rangeOfLine.contains(range.lowerBound) {
+        offset = self.distance(from: rangeOfLine.lowerBound, to: range.lowerBound)
+        stop = true
+      }
+    }
+    return (lineContent, lineNumber, offset)
+  }
+  
 }

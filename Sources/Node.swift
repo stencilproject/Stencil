@@ -3,10 +3,22 @@ import Foundation
 
 public struct TemplateSyntaxError : Error, Equatable, CustomStringConvertible {
   public let description:String
+  public var token: Token?
 
   public init(_ description:String) {
     self.description = description
   }
+  
+  public func contextAwareError(templateName: String?, templateContent: String) -> TemplateSyntaxError? {
+    guard let token = token, token.range != .unknown else { return nil }
+    let templateName = templateName.map({ "\($0):" }) ?? ""
+    let (line, lineNumber, offset) = templateContent.lineAndPosition(at: token.range)
+    let tokenContent = templateContent.substring(with: token.range)
+    let highlight = "\(String(Array(repeating: " ", count: offset)))^\(String(Array(repeating: "~", count: max(tokenContent.count - 1, 0))))"
+    let description = "\(templateName)\(lineNumber):\(offset): error: " + self.description + "\n\(line)\n\(highlight)\n"
+    return TemplateSyntaxError(description)
+  }
+  
 }
 
 

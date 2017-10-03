@@ -37,7 +37,7 @@ public class TokenParser {
       let token = nextToken()!
 
       switch token {
-      case .text(let text):
+      case .text(let text, _):
         nodes.append(TextNode(text: text))
       case .variable:
         nodes.append(VariableNode(variable: try compileFilter(token.contents)))
@@ -48,8 +48,18 @@ public class TokenParser {
         }
 
         if let tag = token.components().first {
-          let parser = try findTag(name: tag)
-          nodes.append(try parser(self, token))
+          do {
+            let parser = try findTag(name: tag)
+            let node = try parser(self, token)
+            nodes.append(node)
+          } catch {
+            if var syntaxError = error as? TemplateSyntaxError, syntaxError.token == nil {
+                syntaxError.token = token
+                throw syntaxError
+            } else {
+              throw error
+            }
+          }
         }
       case .comment:
         continue

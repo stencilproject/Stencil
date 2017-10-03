@@ -12,7 +12,7 @@ class ForNode : NodeType {
 
     guard components.count >= 3 && components[2] == "in" &&
         (components.count == 4 || (components.count >= 6 && components[4] == "where")) else {
-      throw TemplateSyntaxError("'for' statements should use the following 'for x in y where condition' `\(token.contents)`.")
+      throw TemplateSyntaxError("'for' statements should use the following syntax 'for x in y where condition'.")
     }
 
     let loopVariables = components[1].characters

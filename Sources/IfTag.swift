@@ -219,7 +219,7 @@ class IfNode : NodeType {
   class func parse_ifnot(_ parser: TokenParser, token: Token) throws -> NodeType {
     var components = token.components()
     guard components.count == 2 else {
-      throw TemplateSyntaxError("'ifnot' statements should use the following 'ifnot condition' `\(token.contents)`.")
+      throw TemplateSyntaxError("'ifnot' statements should use the following syntax 'ifnot condition'.")
     }
     components.removeFirst()
     var trueNodes = [NodeType]()
