@@ -10,7 +10,7 @@ class NowNode : NodeType {
 
     let components = token.components()
     guard components.count <= 2 else {
-      throw TemplateSyntaxError("'now' tags may only have one argument: the format string `\(token.contents)`.")
+      throw TemplateSyntaxError("'now' tags may only have one argument: the format string.")
     }
     if components.count == 2 {
       format = Variable(components[1])

@@ -155,12 +155,13 @@ func testForNode() {
 
     $0.it("handles invalid input") {
       let tokens: [Token] = [
-          .block(value: "for i"),
+          .block(value: "for i", at: .unknown),
       ]
       let parser = TokenParser(tokens: tokens, environment: Environment())
-      let error = TemplateSyntaxError("'for' statements should use the following 'for x in y where condition' `for i`.")
+      let error = TemplateSyntaxError("'for' statements should use the following syntax 'for x in y where condition'.")
       try expect(try parser.parse()).toThrow(error)
     }
+    
   }
 }
 

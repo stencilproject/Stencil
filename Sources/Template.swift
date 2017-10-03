@@ -7,6 +7,7 @@ let NSFileNoSuchFileError = 4
 
 /// A class representing a template
 open class Template: ExpressibleByStringLiteral {
+  let templateString: String
   let environment: Environment
   let tokens: [Token]
 
@@ -17,6 +18,7 @@ open class Template: ExpressibleByStringLiteral {
   public required init(templateString: String, environment: Environment? = nil, name: String? = nil) {
     self.environment = environment ?? Environment()
     self.name = name
+    self.templateString = templateString
 
     let lexer = Lexer(templateString: templateString)
     tokens = lexer.tokenize()
@@ -66,8 +68,17 @@ open class Template: ExpressibleByStringLiteral {
   func render(_ context: Context) throws -> String {
     let context = context
     let parser = TokenParser(tokens: tokens, environment: context.environment)
-    let nodes = try parser.parse()
-    return try renderNodes(nodes, context)
+    do {
+      let nodes = try parser.parse()
+      return try renderNodes(nodes, context)
+    } catch {
+      if let syntaxError = error as? TemplateSyntaxError,
+        let error = syntaxError.contextAwareError(templateName: name, templateContent: templateString) {
+        throw error
+      } else {
+        throw error
+      }
+    }
   }
 
   /// Render the given template
