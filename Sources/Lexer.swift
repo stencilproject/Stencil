@@ -107,7 +107,7 @@ class Scanner {
         let result = content.substring(to: index)
 
         if returnUntil {
-          range = range.lowerBound..<originalContent.index(range.upperBound, offsetBy: until.count)
+          range = range.lowerBound..<originalContent.index(range.upperBound, offsetBy: until.length)
           content = substring.substring(from: until.endIndex)
           return result + until
         }
