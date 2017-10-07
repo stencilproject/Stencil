@@ -1,3 +1,5 @@
+import Foundation
+
 struct Lexer {
   let templateString: String
 
@@ -58,16 +60,17 @@ struct Lexer {
     var lineNumber: Int = 0
     var offset = 0
     var lineContent = ""
-    
-    templateString.enumerateLines { (line, stop) in
+
+    for line in templateString.components(separatedBy: CharacterSet.newlines) {
       lineNumber += 1
       lineContent = line
-      if let rangeOfLine = self.templateString.range(of: line), rangeOfLine.contains(lexeme.range.lowerBound) {
-        offset = self.templateString.distance(from: rangeOfLine.lowerBound, to:
+      if let rangeOfLine = templateString.range(of: line), rangeOfLine.contains(lexeme.range.lowerBound) {
+        offset = templateString.distance(from: rangeOfLine.lowerBound, to:
           lexeme.range.lowerBound)
-        stop = true
+        break
       }
     }
+
     return (lineContent, lineNumber, offset)
   }
   
