@@ -100,7 +100,7 @@ final class IfExpressionParser {
   let tokens: [IfToken]
   var position: Int = 0
 
-  init(components: [String], tokenParser: TokenParser) throws {
+  init(components: [String], tokenParser: TokenParser, token: Token) throws {
     self.tokens = try components.map { component in
       if let op = findOperator(name: component) {
         switch op {
@@ -111,7 +111,7 @@ final class IfExpressionParser {
         }
       }
 
-      return .variable(try tokenParser.compileFilter(component))
+      return .variable(try tokenParser.compileFilter(component, containedIn: token))
     }
   }
 
@@ -155,8 +155,8 @@ final class IfExpressionParser {
 }
 
 
-func parseExpression(components: [String], tokenParser: TokenParser) throws -> Expression {
-  let parser = try IfExpressionParser(components: components, tokenParser: tokenParser)
+func parseExpression(components: [String], tokenParser: TokenParser, token: Token) throws -> Expression {
+  let parser = try IfExpressionParser(components: components, tokenParser: tokenParser, token: token)
   return try parser.parse()
 }
 
@@ -187,7 +187,7 @@ class IfNode : NodeType {
     var components = token.components()
     components.removeFirst()
 
-    let expression = try parseExpression(components: components, tokenParser: parser)
+    let expression = try parseExpression(components: components, tokenParser: parser, token: token)
     let nodes = try parser.parse(until(["endif", "elif", "else"]))
     var conditions: [IfCondition] = [
       IfCondition(expression: expression, nodes: nodes)
@@ -197,7 +197,7 @@ class IfNode : NodeType {
     while let current = token, current.contents.hasPrefix("elif") {
       var components = current.components()
       components.removeFirst()
-      let expression = try parseExpression(components: components, tokenParser: parser)
+      let expression = try parseExpression(components: components, tokenParser: parser, token: current)
 
       let nodes = try parser.parse(until(["endif", "elif", "else"]))
       token = parser.nextToken()
@@ -227,16 +227,16 @@ class IfNode : NodeType {
 
     falseNodes = try parser.parse(until(["endif", "else"]))
 
-    guard let token = parser.nextToken() else {
+    if let token = parser.nextToken() {
+      if token.contents == "else" {
+        trueNodes = try parser.parse(until(["endif"]))
+        _ = parser.nextToken()
+      }
+    } else {
       throw TemplateSyntaxError("`endif` was not found.")
     }
 
-    if token.contents == "else" {
-      trueNodes = try parser.parse(until(["endif"]))
-      _ = parser.nextToken()
-    }
-
-    let expression = try parseExpression(components: components, tokenParser: parser)
+    let expression = try parseExpression(components: components, tokenParser: parser, token: token)
     return IfNode(conditions: [
       IfCondition(expression: expression, nodes: trueNodes),
       IfCondition(expression: nil, nodes: falseNodes),

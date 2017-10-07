@@ -21,24 +21,24 @@ class ForNode : NodeType {
       .map { $0.trimmingCharacters(in: CharacterSet.whitespaces) }
 
     let variable = components[3]
+    let filter = try parser.compileFilter(variable, containedIn: token)
 
     var emptyNodes = [NodeType]()
 
     let forNodes = try parser.parse(until(["endfor", "empty"]))
 
-    guard let token = parser.nextToken() else {
+    if let token = parser.nextToken() {
+      if token.contents == "empty" {
+        emptyNodes = try parser.parse(until(["endfor"]))
+        _ = parser.nextToken()
+      }
+    } else {
       throw TemplateSyntaxError("`endfor` was not found.")
     }
 
-    if token.contents == "empty" {
-      emptyNodes = try parser.parse(until(["endfor"]))
-      _ = parser.nextToken()
-    }
-
-    let filter = try parser.compileFilter(variable)
     let `where`: Expression?
     if components.count >= 6 {
-      `where` = try parseExpression(components: Array(components.suffix(from: 5)), tokenParser: parser)
+      `where` = try parseExpression(components: Array(components.suffix(from: 5)), tokenParser: parser, token: token)
     } else {
       `where` = nil
     }

@@ -15,7 +15,7 @@ class FilterNode : NodeType {
       throw TemplateSyntaxError("`endfilter` was not found.")
     }
 
-    let resolvable = try parser.compileFilter("filter_value|\(bits[1])")
+    let resolvable = try parser.compileFilter("filter_value|\(bits[1])", containedIn: token)
     return FilterNode(nodes: blocks, resolvable: resolvable)
   }
 

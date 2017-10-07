@@ -40,7 +40,7 @@ public class TokenParser {
       case .text(let text, _):
         nodes.append(TextNode(text: text))
       case .variable:
-        nodes.append(VariableNode(variable: try compileFilter(token.contents)))
+        nodes.append(VariableNode(variable: try compileFilter(token.contents, containedIn: token)))
       case .block:
         if let parse_until = parse_until , parse_until(self, token) {
           prependToken(token)
@@ -100,7 +100,23 @@ public class TokenParser {
 
     throw TemplateSyntaxError("Unknown filter '\(name)'")
   }
-
+  
+  public func compileFilter(_ filterToken: String, containedIn containingToken: Token) throws -> Resolvable {
+    do {
+      return try FilterExpression(token: filterToken, parser: self)
+    } catch {
+      if var syntaxError = error as? TemplateSyntaxError, syntaxError.lexeme == nil,
+        let filterTokenRange = environment.template?.templateString.range(of: filterToken, range: containingToken.range) {
+        
+        syntaxError.lexeme = Token.block(value: filterToken, at: filterTokenRange)
+        throw syntaxError
+      } else {
+        throw error
+      }
+    }
+  }
+  
+  @available(*, deprecated, message: "Use compileFilter(_:containedIn:)")
   public func compileFilter(_ token: String) throws -> Resolvable {
     return try FilterExpression(token: token, parser: self)
   }
