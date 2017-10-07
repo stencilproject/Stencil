@@ -53,8 +53,8 @@ public class TokenParser {
             let node = try parser(self, token)
             nodes.append(node)
           } catch {
-            if var syntaxError = error as? TemplateSyntaxError, syntaxError.token == nil {
-                syntaxError.token = token
+            if var syntaxError = error as? TemplateSyntaxError, syntaxError.lexeme == nil {
+                syntaxError.lexeme = token
                 throw syntaxError
             } else {
               throw error
