@@ -1,5 +1,5 @@
 import Spectre
-import Stencil
+@testable import Stencil
 
 
 func testEnvironment() {
@@ -32,6 +32,46 @@ func testEnvironment() {
 
       try expect(result) == "here"
     }
+    
+    func expectedSyntaxError(token: String, template: Template, description: String) -> TemplateSyntaxError {
+      var error = TemplateSyntaxError(description)
+      error.lexeme = Token.block(value: token, at: template.templateString.range(of: token)!)
+      let context = ErrorReporterContext(template: template)
+      error = environment.errorReporter.contextAwareError(error, context: context) as! TemplateSyntaxError
+      print(error)
+      return error
+    }
+    
+    $0.it("throws syntax error on invalid for tag syntax") {
+      let template: Template = "Hello {% for name in %}{{ name }}, {% endfor %}!"
+      let error = expectedSyntaxError(
+        token: "{% for name in %}",
+        template: template,
+        description: "'for' statements should use the following syntax 'for x in y where condition'."
+      )
+      try expect(try environment.renderTemplate(string: template.templateString, context:["names": ["Bob", "Alice"]])).toThrow(error)
+    }
+    
+    $0.it("throws syntax error on missing endfor") {
+      let template: Template = "{% for name in names %}{{ name }}"
+      let error = expectedSyntaxError(
+        token: "{% for name in names %}",
+        template: template,
+        description: "`endfor` was not found."
+      )
+      try expect(try environment.renderTemplate(string: template.templateString, context: ["names": ["Bob", "Alice"]])).toThrow(error)
+    }
+    
+    $0.it("throws syntax error on unknown tag") {
+      let template: Template = "{% for name in names %}{{ name }}{% end %}"
+      let error = expectedSyntaxError(
+        token: "{% end %}",
+        template: template,
+        description: "Unknown template tag 'end'"
+      )
+      try expect(try environment.renderTemplate(string: template.templateString, context: ["names": ["Bob", "Alice"]])).toThrow(error)
+    }
+    
   }
 }
 
