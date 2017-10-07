@@ -11,8 +11,6 @@ class FilterExpression : Resolvable {
   init(token: String, parser: TokenParser) throws {
     let bits = token.characters.split(separator: "|").map({ String($0).trim(character: " ") })
     if bits.isEmpty {
-      filters = []
-      variable = Variable("")
       throw TemplateSyntaxError("Variable tags must include at least 1 argument")
     }
 

@@ -51,4 +51,9 @@ public struct Environment {
       return ""
     }
   }
+  
+  var template: Template? {
+    return errorReporter.context?.template
+  }
+  
 }
