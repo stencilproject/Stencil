@@ -78,12 +78,12 @@ protocol Lexeme {
 }
 
 class Scanner {
-  let _content: String //stores original content
+  let originalContent: String
   var content: String
   var range: Range<String.Index>
   
   init(_ content: String) {
-    self._content = content
+    self.originalContent = content
     self.content = content
     range = content.startIndex..<content.startIndex
   }
@@ -107,7 +107,7 @@ class Scanner {
         let result = content.substring(to: index)
 
         if returnUntil {
-          range = range.lowerBound..<_content.index(range.upperBound, offsetBy: until.count)
+          range = range.lowerBound..<originalContent.index(range.upperBound, offsetBy: until.count)
           content = substring.substring(from: until.endIndex)
           return result + until
         }
@@ -117,7 +117,7 @@ class Scanner {
       }
 
       index = content.index(after: index)
-      range = range.lowerBound..<_content.index(after: range.upperBound)
+      range = range.lowerBound..<originalContent.index(after: range.upperBound)
     }
 
     content = ""
@@ -143,7 +143,7 @@ class Scanner {
       }
 
       index = content.index(after: index)
-      range = range.lowerBound..<_content.index(after: range.upperBound)
+      range = range.lowerBound..<originalContent.index(after: range.upperBound)
     }
 
     return nil
