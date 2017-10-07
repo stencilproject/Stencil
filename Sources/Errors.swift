@@ -32,6 +32,45 @@ public struct TemplateSyntaxError : Error, Equatable, CustomStringConvertible {
   
 }
 
+public class ErrorReporterContext {
+  public let template: Template
+  
+  public init(template: Template) {
+    self.template = template
+  }
+}
+
+public protocol ErrorReporter: class {
+  var context: ErrorReporterContext! { get set }
+  func report(error: Error) throws
+  func contextAwareError(_ error: TemplateSyntaxError, context: ErrorReporterContext) -> Error?
+}
+
+open class SimpleErrorReporter: ErrorReporter {
+  public var context: ErrorReporterContext!
+  
+  open func report(error: Error) throws {
+    guard let syntaxError = error as? TemplateSyntaxError else { throw error }
+    guard let context = context else { throw error }
+    throw contextAwareError(syntaxError, context: context) ?? error
+  }
+  
+  open func contextAwareError(_ error: TemplateSyntaxError, context: ErrorReporterContext) -> Error? {
+    guard let lexeme = error.lexeme, lexeme.range != .unknown else { return nil }
+    let templateName = context.template.name.map({ "\($0):" }) ?? ""
+    let tokenContent = context.template.templateString.substring(with: lexeme.range)
+    let lexer = Lexer(templateString: context.template.templateString)
+    let line = lexer.lexemeLine(lexeme)
+    let highlight = "\(String(Array(repeating: " ", count: line.offset)))^\(String(Array(repeating: "~", count: max(tokenContent.count - 1, 0))))"
+    let description = """
+    \(templateName)\(line.number):\(line.offset): error: \(error.description)
+    \(line.content)
+    \(highlight)
+    """
+    return TemplateSyntaxError(description)
+  }
+}
+
 extension Range where Bound == String.Index {
   internal static var unknown: Range {
     return "".range
