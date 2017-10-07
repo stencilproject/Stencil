@@ -29,6 +29,7 @@ extension Collection {
 class ExtendsNode : NodeType {
   let templateName: Variable
   let blocks: [String:BlockNode]
+  let token: Token
 
   class func parse(_ parser: TokenParser, token: Token) throws -> NodeType {
     let bits = token.components()
@@ -50,12 +51,13 @@ class ExtendsNode : NodeType {
       return dict
     }
 
-    return ExtendsNode(templateName: Variable(bits[1]), blocks: nodes)
+    return ExtendsNode(templateName: Variable(bits[1]), blocks: nodes, token: token)
   }
 
-  init(templateName: Variable, blocks: [String: BlockNode]) {
+  init(templateName: Variable, blocks: [String: BlockNode], token: Token) {
     self.templateName = templateName
     self.blocks = blocks
+    self.token = token
   }
 
   func render(_ context: Context) throws -> String {
@@ -78,8 +80,10 @@ class ExtendsNode : NodeType {
       blockContext = BlockContext(blocks: blocks)
     }
 
-    return try context.push(dictionary: [BlockContext.contextKey: blockContext]) {
-      return try template.render(context)
+    return try context.environment.pushTemplate(template, token: token) {
+      try context.push(dictionary: [BlockContext.contextKey: blockContext]) {
+        return try template.render(context)
+      }
     }
   }
 }

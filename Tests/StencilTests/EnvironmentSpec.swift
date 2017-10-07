@@ -1,4 +1,5 @@
 import Spectre
+import PathKit
 @testable import Stencil
 
 
@@ -121,6 +122,34 @@ func testEnvironment() {
         let template: Template = "{{ name|unknown }}"
         let error = expectedFilterError(token: "name|unknown", template: template)
         try expect(try environment.renderTemplate(string: template.templateString, context: ["name": "Bob"])).toThrow(error)
+      }
+    }
+    
+    $0.context("given related templates") {
+      let path = Path(#file) + ".." + "fixtures"
+      let loader = FileSystemLoader(paths: [path])
+      let environment = Environment(loader: loader)
+      
+      $0.it("reports syntax error in included template") {
+        let template: Template = "{% include \"invalid-include.html\"%}"
+        environment.errorReporter.context = ErrorReporterContext(template: template)
+        
+        let context = Context(dictionary: ["target": "World"], environment: environment)
+        
+        let includedTemplate = try environment.loadTemplate(name: "invalid-include.html")
+        let error = expectedSyntaxError(token: "target|unknown", template: includedTemplate, description: "Unknown filter 'unknown'")
+        
+        try expect(try template.render(context)).toThrow(error)
+      }
+      
+      $0.it("reports syntax error in extended template") {
+        let template = try environment.loadTemplate(name: "invalid-child-super.html")
+        let context = Context(dictionary: ["target": "World"], environment: environment)
+
+        let baseTemplate = try environment.loadTemplate(name: "invalid-base.html")
+        let error = expectedSyntaxError(token: "target|unknown", template: baseTemplate, description: "Unknown filter 'unknown'")
+        
+        try expect(try template.render(context)).toThrow(error)
       }
     }
     

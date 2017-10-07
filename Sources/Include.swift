@@ -3,6 +3,7 @@ import PathKit
 
 class IncludeNode : NodeType {
   let templateName: Variable
+  let token: Token
 
   class func parse(_ parser: TokenParser, token: Token) throws -> NodeType {
     let bits = token.components()
@@ -11,11 +12,12 @@ class IncludeNode : NodeType {
       throw TemplateSyntaxError("'include' tag takes one argument, the template file to be included")
     }
 
-    return IncludeNode(templateName: Variable(bits[1]))
+    return IncludeNode(templateName: Variable(bits[1]), token: token)
   }
 
-  init(templateName: Variable) {
+  init(templateName: Variable, token: Token) {
     self.templateName = templateName
+    self.token = token
   }
 
   func render(_ context: Context) throws -> String {
@@ -25,8 +27,10 @@ class IncludeNode : NodeType {
 
     let template = try context.environment.loadTemplate(name: templateName)
 
-    return try context.push {
-      return try template.render(context)
+    return try context.environment.pushTemplate(template, token: token) {
+      try context.push {
+        return try template.render(context)
+      }
     }
   }
 }
