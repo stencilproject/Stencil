@@ -66,13 +66,10 @@ open class SimpleErrorReporter: ErrorReporter {
     let tokenContent = context.template.templateString.substring(with: lexeme.range)
     let lexer = Lexer(templateString: context.template.templateString)
     let line = lexer.lexemeLine(lexeme)
-    let highlight = "\(String(Array(repeating: " ", count: line.offset)))^\(String(Array(repeating: "~", count: max(tokenContent.count - 1, 0))))"
-    let description = """
-    \(templateName)\(line.number):\(line.offset): error: \(error.description)
-    \(line.content)
-    \(highlight)
-    """
-    return TemplateSyntaxError(description)
+    let highlight = "\(String(Array(repeating: " ", count: line.offset)))^\(String(Array(repeating: "~", count: max(tokenContent.length - 1, 0))))"
+    let description = "\(templateName)\(line.number):\(line.offset): error: \(error.description)\n\(line.content)\n\(highlight)"
+    let error = TemplateSyntaxError(description)
+    return error
   }
 }
 
@@ -86,4 +83,13 @@ extension String {
   var range: Range<String.Index> {
     return startIndex..<endIndex
   }
+  
+  var length: Int {
+    #if swift(>=3.2)
+      return count
+    #else
+      return characters.count
+    #endif
+  }
+  
 }
