@@ -53,8 +53,29 @@ struct Lexer {
 
     return tokens
   }
+  
+  func lexemeLine(_ lexeme: Lexeme) -> (content: String, number: Int, offset: String.IndexDistance) {
+    var lineNumber: Int = 0
+    var offset = 0
+    var lineContent = ""
+    
+    templateString.enumerateLines { (line, stop) in
+      lineNumber += 1
+      lineContent = line
+      if let rangeOfLine = self.templateString.range(of: line), rangeOfLine.contains(lexeme.range.lowerBound) {
+        offset = self.templateString.distance(from: rangeOfLine.lowerBound, to:
+          lexeme.range.lowerBound)
+        stop = true
+      }
+    }
+    return (lineContent, lineNumber, offset)
+  }
+  
 }
 
+protocol Lexeme {
+  var range: Range<String.Index> { get }
+}
 
 class Scanner {
   let _content: String //stores original content
@@ -161,22 +182,6 @@ extension String {
     let first = findFirstNot(character: character) ?? startIndex
     let last = findLastNot(character: character) ?? endIndex
     return self[first..<last]
-  }
-  
-  func lineAndPosition(at range: Range<String.Index>) -> (content: String, number: Int, offset: String.IndexDistance) {
-    var lineNumber: Int = 0
-    var offset = 0
-    var lineContent = ""
-    
-    enumerateLines { (line, stop) in
-      lineNumber += 1
-      lineContent = line
-      if let rangeOfLine = self.range(of: line), rangeOfLine.contains(range.lowerBound) {
-        offset = self.distance(from: rangeOfLine.lowerBound, to: range.lowerBound)
-        stop = true
-      }
-    }
-    return (lineContent, lineNumber, offset)
   }
   
 }

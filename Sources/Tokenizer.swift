@@ -40,19 +40,7 @@ extension String {
   }
 }
 
-extension Range where Bound == String.Index {
-  internal static var unknown: Range {
-    return "".range
-  }
-}
-
-extension String {
-  var range: Range<String.Index> {
-    return startIndex..<endIndex
-  }
-}
-
-public enum Token : Equatable {
+public enum Token : Equatable, Lexeme {
   /// A token representing a piece of text.
   case text(value: String, at: Range<String.Index>)
 
