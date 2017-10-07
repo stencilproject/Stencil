@@ -48,12 +48,26 @@ public struct Environment {
       return try template.render(context)
     } catch {
       try errorReporter.report(error: error)
-      return ""
     }
   }
   
   var template: Template? {
     return errorReporter.context?.template
+  }
+  
+  
+  public func pushTemplate<Result>(_ template: Template, token: Token, closure: (() throws -> Result)) rethrows -> Result {
+    let errorReporterContext = errorReporter.context
+    defer { errorReporter.context = errorReporterContext }
+    errorReporter.context = ErrorReporterContext(
+      template: template,
+      parent: errorReporterContext != nil ? (errorReporterContext!, token) : nil
+    )
+    do {
+      return try closure()
+    } catch {
+      try errorReporter.report(error: error)
+    }
   }
   
 }

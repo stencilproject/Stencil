@@ -31,7 +31,7 @@ func testInclude() {
 
     $0.describe("rendering") {
       $0.it("throws an error when rendering without a loader") {
-        let node = IncludeNode(templateName: Variable("\"test.html\""))
+        let node = IncludeNode(templateName: Variable("\"test.html\""), token: .block(value: "", at: .unknown))
 
         do {
           _ = try node.render(Context())
@@ -41,7 +41,7 @@ func testInclude() {
       }
 
       $0.it("throws an error when it cannot find the included template") {
-        let node = IncludeNode(templateName: Variable("\"unknown.html\""))
+        let node = IncludeNode(templateName: Variable("\"unknown.html\""), token: .block(value: "", at: .unknown))
 
         do {
           _ = try node.render(Context(environment: environment))
@@ -51,7 +51,7 @@ func testInclude() {
       }
 
       $0.it("successfully renders a found included template") {
-        let node = IncludeNode(templateName: Variable("\"test.html\""))
+        let node = IncludeNode(templateName: Variable("\"test.html\""), token: .block(value: "", at: .unknown))
         let context = Context(dictionary: ["target": "World"], environment: environment)
         let value = try node.render(context)
         try expect(value) == "Hello World!"
