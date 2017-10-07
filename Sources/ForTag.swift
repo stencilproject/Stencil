@@ -87,7 +87,7 @@ class ForNode : NodeType {
     var values: [Any]
 
     if let dictionary = resolved as? [String: Any], !dictionary.isEmpty {
-      values = dictionary.map { ($0.key, $0.value) }
+      values = dictionary.map { ($0.key, $0.value) } as [(String, Any)]
     } else if let array = resolved as? [Any] {
       values = array
     } else if let range = resolved as? CountableClosedRange<Int> {

@@ -39,7 +39,6 @@ func testEnvironment() {
       error.lexeme = Token.block(value: token, at: template.templateString.range(of: token)!)
       let context = ErrorReporterContext(template: template)
       error = environment.errorReporter.contextAwareError(error, context: context) as! TemplateSyntaxError
-      print(error)
       return error
     }
     
