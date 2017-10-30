@@ -22,8 +22,8 @@ func testFilter() {
       try expect(result) == "Kyle Kyle"
     }
 
-    $0.it("allows you to register a custom filter which accepts arguments") {
-      let template = Template(templateString: "{{ name|repeat:'value' }}")
+    $0.it("allows you to register a custom filter which accepts single argument") {
+      let template = Template(templateString: "{{ name|repeat:'value1, \"value2\"' }}")
 
       let repeatExtension = Extension()
       repeatExtension.registerFilter("repeat") { value, arguments in
@@ -35,7 +35,23 @@ func testFilter() {
       }
 
       let result = try template.render(Context(dictionary: context, environment: Environment(extensions: [repeatExtension])))
-      try expect(result) == "Kyle Kyle with args value"
+      try expect(result) == "Kyle Kyle with args value1, \"value2\""
+    }
+
+    $0.it("allows you to register a custom filter which accepts several arguments") {
+        let template = Template(templateString: "{{ name|repeat:'value\"1\"',\"value'2'\",'(key, value)' }}")
+
+        let repeatExtension = Extension()
+        repeatExtension.registerFilter("repeat") { value, arguments in
+            if !arguments.isEmpty {
+                return "\(value!) \(value!) with args 0: \(arguments[0]!), 1: \(arguments[1]!), 2: \(arguments[2]!)"
+            }
+
+            return nil
+        }
+
+        let result = try template.render(Context(dictionary: context, environment: Environment(extensions: [repeatExtension])))
+        try expect(result) == "Kyle Kyle with args 0: value\"1\", 1: value'2', 2: (key, value)"
     }
 
     $0.it("allows you to register a custom which throws") {

@@ -19,6 +19,27 @@ A for loop allows you to iterate over an array found by variable lookup.
       {% endfor %}
     </ul>
 
+The ``for`` tag can iterate over dictionaries.
+
+.. code-block:: html+django
+
+    <ul>
+      {% for key, value in dict %}
+        <li>{{ key }}: {{ value }}</li>
+      {% endfor %}
+    </ul>
+
+The ``for`` tag can contain optional ``where`` expression to filter out
+elements on which this expression evaluates to false.
+
+.. code-block:: html+django
+
+    <ul>
+      {% for user in users where user.name != "Kyle" %}
+        <li>{{ user }}</li>
+      {% endfor %}
+    </ul>
+
 The ``for`` tag can take an optional ``{% empty %}`` block that will be
 displayed if the given list is empty or could not be found.
 
@@ -36,7 +57,25 @@ The for block sets a few variables available within the loop:
 
 - ``first`` - True if this is the first time through the loop
 - ``last`` - True if this is the last time through the loop
-- ``counter`` - The current iteration of the loop
+- ``counter`` - The current iteration of the loop (1 indexed)
+- ``counter0`` - The current iteration of the loop (0 indexed)
+
+For example:
+
+.. code-block:: html+django
+
+    {% for user in users %}
+      {% if forloop.first %}
+        This is the first user.
+      {% endif %}
+    {% endfor %}
+
+.. code-block:: html+django
+
+    {% for user in users %}
+      This is user number {{ forloop.counter }} user.
+    {% endfor %}
+
 
 ``if``
 ~~~~~~
@@ -52,10 +91,12 @@ true the contents of the block are processed. Being true is defined as:
 
 .. code-block:: html+django
 
-    {% if variable %}
-      The variable was found in the current context.
+    {% if admin %}
+      The user is an administrator.
+    {% elif user %}
+      A user is logged in.
     {% else %}
-      The variable was not found.
+      No user was found.
     {% endif %}
 
 Operators

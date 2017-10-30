@@ -17,7 +17,7 @@ the ``renderTemplate`` convinience method.
     let environment = Environment()
 
     let context = ["name": "kyle"]
-    try template.renderTemplate(string: "Hello {{ name }}", context: context)
+    try environment.renderTemplate(string: "Hello {{ name }}", context: context)
 
 Template Loaders
 ----------------
@@ -34,4 +34,4 @@ For example, to render a template called ``index.html`` inside the
     let environment = Environment(loader: fsLoader)
 
     let context = ["name": "kyle"]
-    try template.renderTemplate(name: "index.html", context: context)
+    try environment.renderTemplate(name: "index.html", context: context)

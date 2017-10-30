@@ -73,6 +73,16 @@ on the file system.
     FileSystemLoader(bundle: [Bundle.main])
 
 
+DictionaryLoader
+~~~~~~~~~~~~~~~~
+
+Loads templates from a dictionary.
+
+.. code-block:: swift
+
+    DictionaryLoader(templates: ["index.html": "Hello World"])
+
+
 Custom Loaders
 ~~~~~~~~~~~~~~
 

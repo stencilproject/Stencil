@@ -26,6 +26,7 @@ struct Lexer {
   private static let TagLength = 2
   func createToken(string:String) -> Token {
     func strip(length: (Int, Int) = (Lexer.TagLength, Lexer.TagLength)) -> String {
+      guard string.characters.count > 4 else { return "" }
       let start = string.index(string.startIndex, offsetBy: length.0)
       let end = string.index(string.endIndex, offsetBy: -length.1)
       return string[start..<end].trim(character: " ")
@@ -119,6 +120,7 @@ class Scanner {
       index = content.index(after: index)
     }
 
+    content = ""
     return ""
   }
 

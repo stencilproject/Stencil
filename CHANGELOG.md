@@ -1,6 +1,58 @@
 # Stencil Changelog
 
-## Master
+## 0.10.0
+
+### Enhancements
+
+- Adds `counter0` to for loop context allowing you to get the current index of
+  the for loop 0 indexed.
+- Introduces a new `DictionaryLoader` for loading templates from a Swift
+  Dictionary.
+- Added `in` expression in if tag for strings and arrays of hashable types
+- You can now access the amount of items in a dictionary using the `count`
+  property.
+
+### Bug Fixes
+
+- Fixes a potential crash when using the `{% for %}` template tag with the
+  incorrect amount of arguments.
+- Fixes a potential crash when using incomplete tokens in a template for
+  example, `{%%}` or `{{}}`.
+- Fixes evaluating nil properties as true
+
+
+## 0.9.0
+
+### Enhancements
+
+- `for` block now can contain `where` expression to filter array items. For example `{% for item in items where item > 1 %}` is now supported.
+- `if` blocks may now contain else if (`elif`) conditions.
+
+  ```html+django
+  {% if one or two and not three %}
+    one or two but not three
+  {% elif four %}
+    four
+  {% else %}
+    not one, two, or four
+  {% endif %}
+  ```
+
+- `for` block now allows you to iterate over array of tuples or dictionaries.
+
+  ```html+django
+  {% for key,value in thing %}
+    <li>{{ key }}: {{ value }}</li>
+  {% endfor %}
+  ```
+
+### Bug Fixes
+
+- You can now use literal filter arguments which contain quotes.
+  [#98](https://github.com/kylef/Stencil/pull/98)
+
+
+## 0.8.0
 
 ### Breaking
 

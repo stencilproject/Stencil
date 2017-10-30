@@ -16,7 +16,7 @@ func testLexer() {
       let lexer = Lexer(templateString: "{# Comment #}")
       let tokens = lexer.tokenize()
 
-      try expect(tokens.count) == (1)
+      try expect(tokens.count) == 1
       try expect(tokens.first) == .comment(value: "Comment")
     }
 
@@ -26,6 +26,14 @@ func testLexer() {
 
       try expect(tokens.count) == 1
       try expect(tokens.first) == .variable(value: "Variable")
+    }
+
+    $0.it("can tokenize unclosed tag by ignoring it") {
+      let lexer = Lexer(templateString: "{{ thing")
+      let tokens = lexer.tokenize()
+
+      try expect(tokens.count) == 1
+      try expect(tokens.first) == .text(value: "")
     }
 
     $0.it("can tokenize a mixture of content") {
@@ -56,6 +64,15 @@ func testLexer() {
       try expect(tokens.count) == 2
       try expect(tokens[0]) == Token.block(value: fBlock, newline: newLineBehaviors.0)
       try expect(tokens[1]) == Token.block(value: sBlock, newline: newLineBehaviors.1)
+    }
+    $0.it("can tokenize an unclosed block") {
+      let lexer = Lexer(templateString: "{%}")
+      let _ = lexer.tokenize()
+    }
+
+    $0.it("can tokenize an empty variable") {
+      let lexer = Lexer(templateString: "{{}}")
+      let _ = lexer.tokenize()
     }
   }
 }

@@ -279,6 +279,22 @@ func testExpressions() {
           try expect(expression.evaluate(context: Context())).to.beFalse()
         }
       }
+      
+      $0.describe("in expression") {
+        let expression = try! parseExpression(components: ["lhs", "in", "rhs"], tokenParser: parser)
+        
+        $0.it("evaluates to true when rhs contains lhs") {
+          try expect(expression.evaluate(context: Context(dictionary: ["lhs": 1, "rhs": [1, 2, 3]]))).to.beTrue()
+          try expect(expression.evaluate(context: Context(dictionary: ["lhs": "a", "rhs": ["a", "b", "c"]]))).to.beTrue()
+          try expect(expression.evaluate(context: Context(dictionary: ["lhs": "a", "rhs": "abc"]))).to.beTrue()
+        }
+        
+        $0.it("evaluates to false when rhs does not contain lhs") {
+          try expect(expression.evaluate(context: Context(dictionary: ["lhs": 1, "rhs": [2, 3, 4]]))).to.beFalse()
+          try expect(expression.evaluate(context: Context(dictionary: ["lhs": "a", "rhs": ["b", "c", "d"]]))).to.beFalse()
+          try expect(expression.evaluate(context: Context(dictionary: ["lhs": "a", "rhs": "bcd"]))).to.beFalse()
+        }
+      }
     }
   }
 }

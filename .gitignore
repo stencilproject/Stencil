@@ -1,3 +1,5 @@
 .conche/
 .build/
 Packages/
+Package.resolved
+Package.pins

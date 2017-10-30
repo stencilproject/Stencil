@@ -1,11 +1,19 @@
-os:
-- osx
-- linux
+matrix:
+  include:
+    - os: osx
+      osx_image: xcode8.3
+      env: SWIFT_VERSION=3.1.1
+    - os: osx
+      osx_image: xcode9
+      env: SWIFT_VERSION=4.0
+    - os: linux
+      env: SWIFT_VERSION=3.1.1
+    - os: linux
+      env: SWIFT_VERSION=4.0
 language: generic
 sudo: required
 dist: trusty
-osx_image: xcode8
 install:
-- eval "$(curl -sL https://gist.githubusercontent.com/kylef/5c0475ff02b7c7671d2a/raw/9f442512a46d7a2af7b850d65a7e9bd31edfb09b/swiftenv-install.sh)"
+  - eval "$(curl -sL https://swiftenv.fuller.li/install.sh)"
 script:
 - swift test
