@@ -1,5 +1,11 @@
 # Stencil Changelog
 
+## 0.10.1
+
+### Enhancements
+
+- Add support for Xcode 9.1.
+
 ## 0.10.0
 
 ### Enhancements
