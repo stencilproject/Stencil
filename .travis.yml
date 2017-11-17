@@ -6,6 +6,9 @@ matrix:
     - os: osx
       osx_image: xcode9
       env: SWIFT_VERSION=4.0
+    - os: osx
+      osx_image: xcode9.1
+      env: SWIFT_VERSION=4.0
     - os: linux
       env: SWIFT_VERSION=3.1.1
     - os: linux
