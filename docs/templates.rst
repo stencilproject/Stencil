@@ -21,7 +21,8 @@ following lookup:
 - Context lookup
 - Dictionary lookup
 - Array lookup (first, last, count, index)
-- Key value coding lookup
+- RenderKeyed protocol lookup
+- Key value coding lookup (macos only)
 - Type introspection
 
 For example, if `people` was an array:
@@ -30,6 +31,12 @@ For example, if `people` was an array:
 
     There are {{ people.count }} people. {{ people.first }} is the first
     person, followed by {{ people.1 }}.
+
+If a variable implements the RenderKeyed protocol it can provide a
+value for a String key, much like key value coding, but it works on
+all operating systems and allows you to decouple the names used in
+the templates from the Swift implementation. The RenderKeyed protocol
+requires a single function: `: value(forRenderKey:String)->Any?`
 
 Filters
 ~~~~~~~
