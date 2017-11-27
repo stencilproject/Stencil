@@ -56,6 +56,9 @@ public protocol Resolvable {
   func resolve(_ context: Context) throws -> Any?
 }
 
+public protocol RenderKeyed {
+  func value( forRenderKey key: String) -> Any?
+}
 
 public class VariableNode : NodeType {
   public let variable: Resolvable
