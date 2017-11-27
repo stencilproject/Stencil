@@ -93,14 +93,14 @@ public struct Variable : Equatable, Resolvable {
         } else if bit == "count" {
           current = array.count
         }
+      } else if let keyed = current as? RenderKeyed {
+        current = keyed.value(forRenderKey: bit)
       } else if let object = current as? NSObject {  // NSKeyValueCoding
 #if os(Linux)
         return nil
 #else
         current = object.value(forKey: bit)
 #endif
-      } else if let keyed = current as? RenderKeyed {
-        current = keyed.value(forRenderKey: bit)
       } else if let value = current {
         let mirror = Mirror(reflecting: value)
         current = mirror.descendant(bit)
