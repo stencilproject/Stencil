@@ -1,5 +1,11 @@
 # Stencil Changelog
 
+## Master
+
+### Enhancements
+
+- Added support for resolving superclass properties for not-NSObject subclasses
+
 ## 0.10.1
 
 ### Enhancements
