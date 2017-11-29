@@ -46,17 +46,17 @@ public class ErrorReporterContext {
 
 public protocol ErrorReporter: class {
   var context: ErrorReporterContext! { get set }
-  func report(error: Error) throws -> Never
+  func reportError(_ error: Error) -> Error
   func contextAwareError(_ error: TemplateSyntaxError, context: ErrorReporterContext) -> Error?
 }
 
 open class SimpleErrorReporter: ErrorReporter {
   public var context: ErrorReporterContext!
   
-  open func report(error: Error) throws -> Never {
-    guard let syntaxError = error as? TemplateSyntaxError else { throw error }
-    guard let context = context else { throw error }
-    throw contextAwareError(syntaxError, context: context) ?? error
+  open func reportError(_ error: Error) -> Error {
+    guard let syntaxError = error as? TemplateSyntaxError else { return error }
+    guard let context = context else { return error }
+    return contextAwareError(syntaxError, context: context) ?? error
   }
   
   // TODO: add stack trace using parent context

@@ -47,7 +47,7 @@ public struct Environment {
     do {
       return try template.render(context)
     } catch {
-      try errorReporter.report(error: error)
+      throw errorReporter.reportError(error)
     }
   }
   
@@ -66,7 +66,7 @@ public struct Environment {
     do {
       return try closure()
     } catch {
-      try errorReporter.report(error: error)
+      throw errorReporter.reportError(error)
     }
   }
   
