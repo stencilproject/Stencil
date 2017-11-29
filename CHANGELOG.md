@@ -1,5 +1,9 @@
 # Stencil Changelog
 
+## Master
+
+- Fixed rendering `{{ block.super }}` with several levels of inheritance
+
 ## 0.10.1
 
 ### Enhancements
