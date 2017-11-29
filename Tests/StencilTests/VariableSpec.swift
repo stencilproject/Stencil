@@ -5,7 +5,7 @@ import Spectre
 
 #if os(OSX)
 @objc class Object : NSObject {
-  let title = "Hello World"
+  @objc let title = "Hello World"
 }
 #endif
 

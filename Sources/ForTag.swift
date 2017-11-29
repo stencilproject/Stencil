@@ -15,7 +15,7 @@ class ForNode : NodeType {
       throw TemplateSyntaxError("'for' statements should use the following 'for x in y where condition' `\(token.contents)`.")
     }
 
-    let loopVariables = components[1].characters
+    let loopVariables = components[1]
       .split(separator: ",")
       .map(String.init)
       .map { $0.trimmingCharacters(in: CharacterSet.whitespaces) }
