@@ -4,7 +4,10 @@ class BlockContext {
   var blocks: [String: [BlockNode]]
 
   init(blocks: [String: BlockNode]) {
-    self.blocks = blocks.mapValues({ [$0] })
+    self.blocks = [:]
+    blocks.forEach { (key, value) in
+      self.blocks[key] = [value]
+    }
   }
 
   func push(_ block: BlockNode, forKey blockName: String) {
