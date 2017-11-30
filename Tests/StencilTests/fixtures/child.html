@@ -1,2 +1,3 @@
 {% extends "base.html" %}
-{% block body %}Child{% endblock %}
+{% block header %}Super_{{ block.super }} Child_Header{% endblock %}
+{% block body %}Child_Body{% endblock %}
