@@ -2,7 +2,14 @@
 
 ## Master
 
+### Enhancements
+
+- Added support for resolving superclass properties for not-NSObject subclasses
+
+### Bug Fixes
+
 - Fixed rendering `{{ block.super }}` with several levels of inheritance
+
 
 ## 0.10.1
 
