@@ -11,7 +11,8 @@ func lowercase(_ value: Any?) -> Any? {
 }
 
 func defaultFilter(value: Any?, arguments: [Any?]) -> Any? {
-  if let value = value {
+  // value can be optional wrapping nil, so this way we check for underlying value
+  if let value = value, String(describing: value) != "nil" {
     return value
   }
 
