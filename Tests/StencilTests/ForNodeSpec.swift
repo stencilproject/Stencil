@@ -194,35 +194,43 @@ func testForNode() {
         
         let template = Template(templateString: templateString)
         let result = try template.render(context)
-        
-        let fixture = "one: I\ntwo: II\n\n"
-        try expect(result) == fixture
+
+        try expect(result.contains("one: I")).to.beTrue()
+        try expect(result.contains("two: II")).to.beTrue()
       }
       
       $0.it("can iterate over keys and subscript dictioanry") {
         let templateString = "{% for key in dict %}" +
           "{{ key }}: {{ dict.key }}\n" +
         "{% endfor %}\n"
-        
+
         let template = Template(templateString: templateString)
         let result = try template.render(context)
-        
-        let fixture = "one: I\ntwo: II\n\n"
-        try expect(result) == fixture
+
+        try expect(result.contains("one: I")).to.beTrue()
+        try expect(result.contains("two: II")).to.beTrue()
       }
       
       $0.it("renders supports iterating over dictionary") {
         let nodes: [NodeType] = [VariableNode(variable: "key")]
         let emptyNodes: [NodeType] = [TextNode(text: "empty")]
         let node = ForNode(resolvable: Variable("dict"), loopVariables: ["key"], nodes: nodes, emptyNodes: emptyNodes, where: nil)
-        try expect(try node.render(context)) == "onetwo"
+
+        let result = try node.render(context)
+
+        try expect(result.contains("one")).to.beTrue()
+        try expect(result.contains("two")).to.beTrue()
       }
       
       $0.it("renders supports iterating over dictionary") {
         let nodes: [NodeType] = [VariableNode(variable: "key"), VariableNode(variable: "value")]
         let emptyNodes: [NodeType] = [TextNode(text: "empty")]
         let node = ForNode(resolvable: Variable("dict"), loopVariables: ["key", "value"], nodes: nodes, emptyNodes: emptyNodes, where: nil)
-        try expect(try node.render(context)) == "oneItwoII"
+
+        let result = try node.render(context)
+
+        try expect(result.contains("oneI")).to.beTrue()
+        try expect(result.contains("twoII")).to.beTrue()
       }
     }
 
