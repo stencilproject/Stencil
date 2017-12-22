@@ -18,6 +18,15 @@ open class Extension {
       return SimpleNode(handler: handler)
     })
   }
+  
+  /// Registers boolean filter with it's negative counterpart prefixed with `!`
+  public func registerBooleanFilter(_ name: String, filter: @escaping (Any?) throws -> Bool?) {
+    filters[name] = .simple(filter)
+    filters["!\(name)"] = .simple {
+      guard let result = try filter($0) else { return nil }
+      return !result
+    }
+  }
 
   /// Registers a template filter with the given name
   public func registerFilter(_ name: String, filter: @escaping (Any?) throws -> Any?) {

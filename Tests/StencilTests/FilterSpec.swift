@@ -182,5 +182,24 @@ func testFilter() {
       let result = try template.render(Context(dictionary: ["value": ["One", "Two"]]))
       try expect(result) == "OneTwo"
     }
+    
+    $0.it("can register boolean filters") {
+      let repeatExtension = Extension()
+      repeatExtension.registerBooleanFilter("isPositive") { (value: Any?) in
+        if let value = value as? Int {
+          return value > 0
+        }
+        return nil
+      }
+
+      let result = try Template(templateString: "{{ value|isPositive }}")
+        .render(Context(dictionary: ["value": 1], environment: Environment(extensions: [repeatExtension])))
+      try expect(result) == "true"
+      
+      let negativeResult = try Template(templateString: "{{ value|!isPositive }}")
+        .render(Context(dictionary: ["value": -1], environment: Environment(extensions: [repeatExtension])))
+      try expect(negativeResult) == "true"
+    }
+    
   }
 }
