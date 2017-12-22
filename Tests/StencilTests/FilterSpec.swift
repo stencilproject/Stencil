@@ -139,7 +139,9 @@ func testFilter() {
     
     $0.it("checks for underlying nil value correctly") {
       let template = Template(templateString: "Hello {{ user.name|default:\"anonymous\" }}")
-      let result = try template.render(Context(dictionary: ["user": ["name": nil]]))
+      let nilName: String? = nil
+      let user: [String: Any?] = ["name": nilName]
+      let result = try template.render(Context(dictionary: ["user": user]))
       try expect(result) == "Hello anonymous"
     }
   }
