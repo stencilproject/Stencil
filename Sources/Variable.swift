@@ -105,7 +105,13 @@ public struct Variable : Equatable, Resolvable {
         current = object.value(forKey: bit)
 #endif
       } else if let value = current {
-        current = Mirror(reflecting: value).getValue(for: bit)
+        let mirror = Mirror(reflecting: value)
+        current = mirror.getValue(for: bit)
+        if current == nil, let contextDict = context.dictionaries.last {
+          if let label = (try? Variable(bit).resolve(Context(dictionary: contextDict))) as? String {
+            current = mirror.getValue(for: label)
+          }
+        }
         if current == nil {
           return nil
         }
@@ -181,7 +187,7 @@ func parseFilterComponents(token: String) -> (String, [Variable]) {
 
 extension Mirror {
   func getValue(for key: String) -> Any? {
-    let result = descendant(key)
+    let result = descendant(key) ?? Int(key).flatMap({ descendant($0) })
     if result == nil {
       // go through inheritance chain to reach superclass properties
       return superclassMirror?.getValue(for: key)

@@ -11,7 +11,8 @@ func testForNode() {
       "dict": [
         "one": "I",
         "two": "II",
-      ]
+      ],
+      "tuple": (one: 1, two: 2)
     ])
 
     $0.it("renders the given nodes for each item") {
@@ -139,6 +140,51 @@ func testForNode() {
       try expect(result) == fixture
     }
 
+    $0.context("given tuple") {
+      $0.it("can iterate over labels and values") {
+        let templateString = "{% for label, value in tuple %}" +
+          "{{ label }}: {{ value }}\n" +
+        "{% endfor %}\n"
+        
+        let template = Template(templateString: templateString)
+        let result = try template.render(context)
+        
+        let fixture = "one: 1\ntwo: 2\n\n"
+        try expect(result) == fixture
+      }
+      
+      $0.it("can iterate over labels") {
+        let templateString = "{% for label in tuple %}" +
+          "{{ label }}: {{ tuple.label }}\n" +
+        "{% endfor %}\n"
+        
+        let template = Template(templateString: templateString)
+        let result = try template.render(context)
+        
+        let fixture = "one: 1\ntwo: 2\n\n"
+        try expect(result) == fixture
+      }
+      
+      $0.it("can subscript tuple by index") {
+        let templateString = "{{ tuple.0 }}{{ tuple.1 }}\n"
+        
+        let template = Template(templateString: templateString)
+        let result = try template.render(context)
+        
+        let fixture = "12\n"
+        try expect(result) == fixture
+      }
+      
+      $0.it("can subscript tuple by label") {
+        let templateString = "{{ tuple.one }}{{ tuple.two }}\n"
+        
+        let template = Template(templateString: templateString)
+        let result = try template.render(context)
+        
+        let fixture = "12\n"
+        try expect(result) == fixture
+      }
+    }
 
     $0.context("given dictionary") {
       $0.it("can iterate over keys and values") {

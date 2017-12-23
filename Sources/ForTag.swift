@@ -106,7 +106,13 @@ class ForNode : NodeType {
     } else if let range = resolved as? CountableRange<Int> {
       values = Array(range)
     } else {
-      values = []
+      let mirror = Mirror(reflecting: resolved)
+      switch mirror.displayStyle {
+      case .tuple?:
+        values = Array(mirror.children)
+      default:
+        values = []
+      }
     }
 
     if let `where` = self.where {
