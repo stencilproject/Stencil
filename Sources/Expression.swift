@@ -1,7 +1,14 @@
-protocol Expression: CustomStringConvertible {
+protocol Expression: CustomStringConvertible, Resolvable {
   func evaluate(context: Context) throws -> Bool
 }
 
+extension Expression {
+
+  func resolve(_ context: Context) throws -> Any? {
+    return try "\(evaluate(context: context))"
+  }
+
+}
 
 protocol InfixOperator: Expression {
   init(lhs: Expression, rhs: Expression)
@@ -40,9 +47,13 @@ final class VariableExpression: Expression, CustomStringConvertible {
   var description: String {
     return "(variable: \(variable))"
   }
-
+  
+  func resolve(_ context: Context) throws -> Any? {
+    return try variable.resolve(context)
+  }
+  
   /// Resolves a variable in the given context as boolean
-  func resolve(context: Context, variable: Resolvable) throws -> Bool {
+  func evaluate(context: Context) throws -> Bool {
     let result = try variable.resolve(context)
     var truthy = false
 
@@ -63,9 +74,6 @@ final class VariableExpression: Expression, CustomStringConvertible {
     return truthy
   }
 
-  func evaluate(context: Context) throws -> Bool {
-    return try resolve(context: context, variable: variable)
-  }
 }
 
 

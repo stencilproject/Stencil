@@ -202,8 +202,8 @@ func testIfNode() {
     $0.describe("rendering") {
       $0.it("renders a true expression") {
         let node = IfNode(conditions: [
-          IfCondition(expression: StaticExpression(value: true), nodes: [TextNode(text: "1")]),
-          IfCondition(expression: StaticExpression(value: true), nodes: [TextNode(text: "2")]),
+          IfCondition(expression: VariableExpression(variable: Variable("true")), nodes: [TextNode(text: "1")]),
+          IfCondition(expression: VariableExpression(variable: Variable("true")), nodes: [TextNode(text: "2")]),
           IfCondition(expression: nil, nodes: [TextNode(text: "3")]),
         ])
 
@@ -212,8 +212,8 @@ func testIfNode() {
 
       $0.it("renders the first true expression") {
         let node = IfNode(conditions: [
-          IfCondition(expression: StaticExpression(value: false), nodes: [TextNode(text: "1")]),
-          IfCondition(expression: StaticExpression(value: true), nodes: [TextNode(text: "2")]),
+          IfCondition(expression: VariableExpression(variable: Variable("false")), nodes: [TextNode(text: "1")]),
+          IfCondition(expression: VariableExpression(variable: Variable("true")), nodes: [TextNode(text: "2")]),
           IfCondition(expression: nil, nodes: [TextNode(text: "3")]),
         ])
 
@@ -222,8 +222,8 @@ func testIfNode() {
 
       $0.it("renders the empty expression when other conditions are falsy") {
         let node = IfNode(conditions: [
-          IfCondition(expression: StaticExpression(value: false), nodes: [TextNode(text: "1")]),
-          IfCondition(expression: StaticExpression(value: false), nodes: [TextNode(text: "2")]),
+          IfCondition(expression: VariableExpression(variable: Variable("false")), nodes: [TextNode(text: "1")]),
+          IfCondition(expression: VariableExpression(variable: Variable("false")), nodes: [TextNode(text: "2")]),
           IfCondition(expression: nil, nodes: [TextNode(text: "3")]),
         ])
 
@@ -232,8 +232,8 @@ func testIfNode() {
 
       $0.it("renders empty when no truthy conditions") {
         let node = IfNode(conditions: [
-          IfCondition(expression: StaticExpression(value: false), nodes: [TextNode(text: "1")]),
-          IfCondition(expression: StaticExpression(value: false), nodes: [TextNode(text: "2")]),
+          IfCondition(expression: VariableExpression(variable: Variable("false")), nodes: [TextNode(text: "1")]),
+          IfCondition(expression: VariableExpression(variable: Variable("false")), nodes: [TextNode(text: "2")]),
         ])
 
         try expect(try node.render(Context())) == ""

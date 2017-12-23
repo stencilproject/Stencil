@@ -40,7 +40,12 @@ public class TokenParser {
       case .text(let text):
         nodes.append(TextNode(text: text))
       case .variable:
-        nodes.append(VariableNode(variable: try compileResolvable(token.contents)))
+        do {
+          let expression = try parseExpression(components: token.components(), tokenParser: self)
+          nodes.append(VariableNode(variable: expression))
+        } catch {
+          nodes.append(VariableNode(variable: try compileFilter(token.contents)))
+        }
       case .block:
         if let parse_until = parse_until , parse_until(self, token) {
           prependToken(token)
