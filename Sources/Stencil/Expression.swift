@@ -1,5 +1,11 @@
-public protocol Expression: CustomStringConvertible {
+public protocol Expression: CustomStringConvertible, Resolvable {
   func evaluate(context: Context) throws -> Bool
+}
+
+extension Expression {
+  func resolve(_ context: Context) throws -> Any? {
+    try "\(evaluate(context: context))"
+  }
 }
 
 protocol InfixOperator: Expression {
@@ -37,8 +43,12 @@ final class VariableExpression: Expression, CustomStringConvertible {
     "(variable: \(variable))"
   }
 
+  func resolve(_ context: Context) throws -> Any? {
+    try variable.resolve(context)
+  }
+
   /// Resolves a variable in the given context as boolean
-  func resolve(context: Context, variable: Resolvable) throws -> Bool {
+  func evaluate(context: Context) throws -> Bool {
     let result = try variable.resolve(context)
     var truthy = false
 
@@ -57,10 +67,6 @@ final class VariableExpression: Expression, CustomStringConvertible {
     }
 
     return truthy
-  }
-
-  func evaluate(context: Context) throws -> Bool {
-    try resolve(context: context, variable: variable)
   }
 }
 
