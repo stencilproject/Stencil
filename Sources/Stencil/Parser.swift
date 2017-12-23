@@ -18,6 +18,7 @@ public class TokenParser {
   public typealias TagParser = (TokenParser, Token) throws -> NodeType
 
   fileprivate var tokens: [Token]
+  fileprivate(set) var parsedTokens: [Token] = []
   fileprivate let environment: Environment
   fileprivate var previousWhiteSpace: WhitespaceBehaviour.Behaviour?
 
@@ -74,7 +75,9 @@ public class TokenParser {
   /// Pop the next token (returning it)
   public func nextToken() -> Token? {
     if !tokens.isEmpty {
-      return tokens.remove(at: 0)
+      let nextToken = tokens.remove(at: 0)
+      parsedTokens.append(nextToken)
+      return nextToken
     }
 
     return nil
@@ -87,6 +90,9 @@ public class TokenParser {
   /// Insert a token 
   public func prependToken(_ token: Token) {
     tokens.insert(token, at: 0)
+    if parsedTokens.last == token {
+      parsedTokens.removeLast()
+    }
   }
 
   /// Create filter expression from a string contained in provided token

@@ -85,28 +85,35 @@ class ForNode: NodeType {
 
     if !values.isEmpty {
       let count = values.count
+      var result = ""
 
-      return try zip(0..., values)
-        .map { index, item in
-          let forContext: [String: Any] = [
-            "first": index == 0,
-            "last": index == (count - 1),
-            "counter": index + 1,
-            "counter0": index,
-            "length": count
-          ]
+      for (index, item) in zip(0..., values) {
+        let forContext: [String: Any] = [
+          "first": index == 0,
+          "last": index == (count - 1),
+          "counter": index + 1,
+          "counter0": index,
+          "length": count
+        ]
 
-          return try context.push(dictionary: ["forloop": forContext]) {
-            try push(value: item, context: context) {
-              try renderNodes(nodes, context)
-            }
+        var shouldBreak = false
+        result += try context.push(dictionary: ["forloop": forContext]) {
+          defer { shouldBreak = context[LoopTerminationNode.breakContextKey] != nil }
+          return try push(value: item, context: context) {
+            try renderNodes(nodes, context)
           }
         }
-        .joined()
-    }
 
-    return try context.push {
-      try renderNodes(emptyNodes, context)
+        if shouldBreak {
+          break
+        }
+      }
+
+      return result
+    } else {
+      return try context.push {
+        try renderNodes(emptyNodes, context)
+      }
     }
   }
 
@@ -172,5 +179,55 @@ class ForNode: NodeType {
     }
 
     return values
+  }
+}
+
+struct LoopTerminationNode: NodeType {
+  static let breakContextKey = "_internal_forloop_break"
+  static let continueContextKey = "_internal_forloop_continue"
+
+  let name: String
+  let token: Token?
+
+  var contextKey: String {
+    "_internal_forloop_\(name)"
+  }
+
+  private init(name: String, token: Token? = nil) {
+    self.name = name
+    self.token = token
+  }
+
+  static func parse(_ parser: TokenParser, token: Token) throws -> LoopTerminationNode {
+    guard token.components.count == 1 else {
+      throw TemplateSyntaxError("'\(token.contents)' does not accept parameters")
+    }
+    guard parser.hasOpenedForTag() else {
+      throw TemplateSyntaxError("'\(token.contents)' can be used only inside loop body")
+    }
+    return LoopTerminationNode(name: token.contents)
+  }
+
+  func render(_ context: Context) throws -> String {
+    let offset = zip(0..., context.dictionaries).reversed().first { _, dictionary in
+      dictionary["forloop"] != nil
+    }?.0
+
+    if let offset = offset {
+      context.dictionaries[offset][contextKey] = true
+    }
+
+    return ""
+  }
+}
+
+private extension TokenParser {
+  func hasOpenedForTag() -> Bool {
+    var openForCount = 0
+    for parsedToken in parsedTokens.reversed() where parsedToken.kind == .block {
+      if parsedToken.components.first == "endfor" { openForCount -= 1 }
+      if parsedToken.components.first == "for" { openForCount += 1 }
+    }
+    return openForCount > 0
   }
 }

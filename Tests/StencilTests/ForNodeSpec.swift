@@ -312,6 +312,152 @@ final class ForNodeTests: XCTestCase {
     )
     try expect(try parser.parse()).toThrow(error)
   }
+
+  func testBreak() {
+    it("can break from loop") {
+      let template = Template(templateString: """
+        {% for item in items %}\
+        {{ item }}{% break %}\
+        {% endfor %}
+        """)
+      try expect(template.render(self.context)) == """
+        1
+        """
+    }
+
+    it("can break from inner node") {
+      let template = Template(templateString: """
+        {% for item in items %}\
+        {{ item }}\
+        {% if forloop.first %}<{% break %}>{% endif %}!\
+        {% endfor %}
+        """)
+      try expect(template.render(self.context)) == """
+        1<
+        """
+    }
+
+    it("does not allow break outside loop") {
+      let template = Template(templateString: "{% for item in items %}{% endfor %}{% break %}")
+      let error = self.expectedSyntaxError(
+        token: "break",
+        template: template,
+        description: "'break' can be used only inside loop body"
+      )
+      try expect(template.render(self.context)).toThrow(error)
+    }
+  }
+
+  func testBreakNested() {
+    it("breaks outer loop") {
+      let template = Template(templateString: """
+        {% for item in items %}\
+        outer: {{ item }}
+        {% for item in items %}\
+        inner: {{ item }}
+        {% endfor %}\
+        {% break %}\
+        {% endfor %}
+        """)
+      try expect(template.render(self.context)) == """
+        outer: 1
+        inner: 1
+        inner: 2
+        inner: 3
+
+        """
+    }
+
+    it("breaks inner loop") {
+      let template = Template(templateString: """
+        {% for item in items %}\
+        outer: {{ item }}
+        {% for item in items %}\
+        inner: {{ item }}
+        {% break %}\
+        {% endfor %}\
+        {% endfor %}
+        """)
+      try expect(template.render(self.context)) == """
+        outer: 1
+        inner: 1
+        outer: 2
+        inner: 1
+        outer: 3
+        inner: 1
+
+        """
+    }
+  }
+
+  func testContinue() {
+    it("can continue loop") {
+      let template = Template(templateString: """
+        {% for item in items %}\
+        {{ item }}{% continue %}!\
+        {% endfor %}
+        """)
+      try expect(template.render(self.context)) == "123"
+    }
+
+    it("can continue from inner node") {
+      let template = Template(templateString: """
+        {% for item in items %}\
+        {% if forloop.last %}<{% continue %}>{% endif %}!\
+        {{ item }}\
+        {% endfor %}
+        """)
+      try expect(template.render(self.context)) == "!1!2<"
+    }
+
+    it("does not allow continue outside loop") {
+      let template = Template(templateString: "{% for item in items %}{% endfor %}{% continue %}")
+      let error = self.expectedSyntaxError(
+        token: "continue",
+        template: template,
+        description: "'continue' can be used only inside loop body"
+      )
+      try expect(template.render(self.context)).toThrow(error)
+    }
+  }
+
+  func testContinueNested() {
+    it("breaks outer loop") {
+      let template = Template(templateString: """
+        {% for item in items %}\
+        {% for item in items %}\
+        inner: {{ item }}\
+        {% endfor %}
+        {% continue %}
+        outer: {{ item }}
+        {% endfor %}
+        """)
+      try expect(template.render(self.context)) == """
+        inner: 1inner: 2inner: 3
+        inner: 1inner: 2inner: 3
+        inner: 1inner: 2inner: 3
+
+        """
+    }
+
+    it("breaks inner loop") {
+      let template = Template(templateString: """
+        {% for item in items %}\
+        {% for item in items %}\
+        {% continue %}\
+        inner: {{ item }}
+        {% endfor %}\
+        outer: {{ item }}
+        {% endfor %}
+        """)
+      try expect(template.render(self.context)) == """
+        outer: 1
+        outer: 2
+        outer: 3
+
+        """
+    }
+  }
 }
 
 // MARK: - Helpers
