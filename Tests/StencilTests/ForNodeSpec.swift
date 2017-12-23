@@ -128,7 +128,7 @@ func testForNode() {
     }
 
     $0.it("can iterate over dictionary") {
-      let templateString = "{% for key,value in dict %}" +
+      let templateString = "{% for key, value in dict %}" +
         "{{ key }}: {{ value }}\n" +
         "{% endfor %}\n"
 
