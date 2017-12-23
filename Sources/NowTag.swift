@@ -4,6 +4,7 @@ import Foundation
 
 class NowNode : NodeType {
   let format:Variable
+  let token: Token?
 
   class func parse(_ parser:TokenParser, token:Token) throws -> NodeType {
     var format:Variable?
@@ -16,11 +17,12 @@ class NowNode : NodeType {
       format = Variable(components[1])
     }
 
-    return NowNode(format:format)
+    return NowNode(format:format, token: token)
   }
 
-  init(format:Variable?) {
+  init(format:Variable?, token: Token? = nil) {
     self.format = format ?? Variable("\"yyyy-MM-dd 'at' HH:mm\"")
+    self.token = token
   }
 
   func render(_ context: Context) throws -> String {

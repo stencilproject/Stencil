@@ -35,7 +35,7 @@ public struct TemplateSyntaxError : Error, Equatable, CustomStringConvertible {
 public class ErrorReporterContext {
   public let template: Template
   
-  public typealias ParentContext = (context: ErrorReporterContext, token: Token)
+  public typealias ParentContext = (context: ErrorReporterContext, token: Token?)
   public let parent: ParentContext?
   
   public init(template: Template, parent: ParentContext? = nil) {
@@ -47,30 +47,29 @@ public class ErrorReporterContext {
 public protocol ErrorReporter: class {
   var context: ErrorReporterContext! { get set }
   func reportError(_ error: Error) -> Error
-  func contextAwareError(_ error: TemplateSyntaxError, context: ErrorReporterContext) -> Error?
+  func contextAwareError(_ error: Error, at range: Range<String.Index>?, context: ErrorReporterContext) -> Error?
 }
 
 open class SimpleErrorReporter: ErrorReporter {
   public var context: ErrorReporterContext!
   
   open func reportError(_ error: Error) -> Error {
-    guard let syntaxError = error as? TemplateSyntaxError else { return error }
     guard let context = context else { return error }
-    return contextAwareError(syntaxError, context: context) ?? error
+    return contextAwareError(error, at: (error as? TemplateSyntaxError)?.lexeme?.range, context: context) ?? error
   }
   
   // TODO: add stack trace using parent context
-  open func contextAwareError(_ error: TemplateSyntaxError, context: ErrorReporterContext) -> Error? {
-    guard let lexeme = error.lexeme, lexeme.range != .unknown else { return nil }
+  open func contextAwareError(_ error: Error, at range: Range<String.Index>?, context: ErrorReporterContext) -> Error? {
+    guard let range = range, range != .unknown else { return nil }
     let templateName = context.template.name.map({ "\($0):" }) ?? ""
-    let tokenContent = context.template.templateString.substring(with: lexeme.range)
-    let lexer = Lexer(templateString: context.template.templateString)
-    let line = lexer.lexemeLine(lexeme)
+    let tokenContent = context.template.templateString.substring(with: range)
+    let line = context.template.templateString.rangeLine(range)
     let highlight = "\(String(Array(repeating: " ", count: line.offset)))^\(String(Array(repeating: "~", count: max(tokenContent.length - 1, 0))))"
-    let description = "\(templateName)\(line.number):\(line.offset): error: \(error.description)\n\(line.content)\n\(highlight)"
+    let description = "\(templateName)\(line.number):\(line.offset): error: \(error)\n\(line.content)\n\(highlight)"
     let error = TemplateSyntaxError(description)
     return error
   }
+
 }
 
 extension Range where Bound == String.Index {

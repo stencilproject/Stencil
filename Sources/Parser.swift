@@ -40,7 +40,8 @@ public class TokenParser {
       case .text(let text, _):
         nodes.append(TextNode(text: text))
       case .variable:
-        nodes.append(VariableNode(variable: try compileFilter(token.contents, containedIn: token)))
+        let filter = try compileFilter(token.contents, containedIn: token)
+        nodes.append(VariableNode(variable: filter, token: token))
       case .block:
         if let parse_until = parse_until , parse_until(self, token) {
           prependToken(token)
@@ -54,8 +55,8 @@ public class TokenParser {
             nodes.append(node)
           } catch {
             if var syntaxError = error as? TemplateSyntaxError, syntaxError.lexeme == nil {
-                syntaxError.lexeme = token
-                throw syntaxError
+              syntaxError.lexeme = token
+              throw syntaxError
             } else {
               throw error
             }
@@ -105,10 +106,12 @@ public class TokenParser {
     do {
       return try FilterExpression(token: filterToken, parser: self)
     } catch {
-      if var syntaxError = error as? TemplateSyntaxError, syntaxError.lexeme == nil,
-        let filterTokenRange = environment.template?.templateString.range(of: filterToken, range: containingToken.range) {
-        
-        syntaxError.lexeme = Token.block(value: filterToken, at: filterTokenRange)
+      if var syntaxError = error as? TemplateSyntaxError, syntaxError.lexeme == nil {
+        if let filterTokenRange = environment.template?.templateString.range(of: filterToken, range: containingToken.range) {
+          syntaxError.lexeme = Token.block(value: filterToken, at: filterTokenRange)
+        } else {
+          syntaxError.lexeme = containingToken
+        }
         throw syntaxError
       } else {
         throw error

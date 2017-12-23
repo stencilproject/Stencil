@@ -6,6 +6,7 @@ class ForNode : NodeType {
   let nodes:[NodeType]
   let emptyNodes: [NodeType]
   let `where`: Expression?
+  let token: Token?
 
   class func parse(_ parser:TokenParser, token:Token) throws -> NodeType {
     let components = token.components()
@@ -42,15 +43,16 @@ class ForNode : NodeType {
     } else {
       `where` = nil
     }
-    return ForNode(resolvable: filter, loopVariables: loopVariables, nodes: forNodes, emptyNodes:emptyNodes, where: `where`)
+    return ForNode(resolvable: filter, loopVariables: loopVariables, nodes: forNodes, emptyNodes:emptyNodes, where: `where`, token: token)
   }
 
-  init(resolvable: Resolvable, loopVariables: [String], nodes:[NodeType], emptyNodes:[NodeType], where: Expression? = nil) {
+  init(resolvable: Resolvable, loopVariables: [String], nodes:[NodeType], emptyNodes:[NodeType], where: Expression? = nil, token: Token? = nil) {
     self.resolvable = resolvable
     self.loopVariables = loopVariables
     self.nodes = nodes
     self.emptyNodes = emptyNodes
     self.where = `where`
+    self.token = token
   }
 
   func push<Result>(value: Any, context: Context, closure: () throws -> (Result)) rethrows -> Result {

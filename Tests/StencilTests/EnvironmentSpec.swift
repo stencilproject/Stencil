@@ -38,7 +38,7 @@ func testEnvironment() {
       var error = TemplateSyntaxError(description)
       error.lexeme = Token.block(value: token, at: template.templateString.range(of: token)!)
       let context = ErrorReporterContext(template: template)
-      error = environment.errorReporter.contextAwareError(error, context: context) as! TemplateSyntaxError
+      error = environment.errorReporter.contextAwareError(error, at: error.lexeme?.range, context: context) as! TemplateSyntaxError
       return error
     }
     
@@ -121,6 +121,86 @@ func testEnvironment() {
         let template: Template = "{{ name|unknown }}"
         let error = expectedFilterError(token: "name|unknown", template: template)
         try expect(try environment.renderTemplate(string: template.templateString, context: ["name": "Bob"])).toThrow(error)
+      }
+      
+    }
+    
+    $0.context("given rendering error") {
+      $0.it("reports rendering error in variable filter") {
+        let template: Template = "{{ name|throw }}"
+
+        var environment = environment
+        let filterExtension = Extension()
+        filterExtension.registerFilter("throw") { (value: Any?) in
+          throw TemplateSyntaxError("Filter rendering error")
+        }
+        environment.extensions += [filterExtension]
+        
+        let error = expectedSyntaxError(token: "name|throw", template: template, description: "Filter rendering error")
+        try expect(try environment.renderTemplate(string: template.templateString, context: ["name": "Bob"])).toThrow(error)
+      }
+      
+      $0.it("reports rendering error in filter tag") {
+        let template: Template = "{% filter throw %}Test{% endfilter %}"
+        
+        var environment = environment
+        let filterExtension = Extension()
+        filterExtension.registerFilter("throw") { (value: Any?) in
+          throw TemplateSyntaxError("Filter rendering error")
+        }
+        environment.extensions += [filterExtension]
+        
+        let error = expectedSyntaxError(token: "filter throw", template: template, description: "Filter rendering error")
+        try expect(try environment.renderTemplate(string: template.templateString, context: [:])).toThrow(error)
+      }
+      
+      $0.it("reports rendering error in simple tag") {
+        let template: Template = "{% simpletag %}"
+
+        var environment = environment
+        let tagExtension = Extension()
+        tagExtension.registerSimpleTag("simpletag") { context in
+          throw TemplateSyntaxError("simpletag error")
+        }
+        environment.extensions += [tagExtension]
+        
+        let error = expectedSyntaxError(token: "simpletag", template: template, description: "simpletag error")
+        try expect(try environment.renderTemplate(string: template.templateString, context: [:])).toThrow(error)
+      }
+      
+      $0.it("reporsts passing argument to simple filter") {
+        let template: Template = "{{ name|uppercase:5 }}"
+        
+        let error = expectedSyntaxError(token: "name|uppercase:5", template: template, description: "cannot invoke filter with an argument")
+        try expect(try environment.renderTemplate(string: template.templateString, context: ["name": "kyle"])).toThrow(error)
+      }
+      
+      $0.it("reports rendering error in custom tag") {
+        let template: Template = "{% customtag %}"
+
+        var environment = environment
+        let tagExtension = Extension()
+        tagExtension.registerTag("customtag") { parser, token in
+          return ErrorNode(token: token)
+        }
+        environment.extensions += [tagExtension]
+        
+        let error = expectedSyntaxError(token: "customtag", template: template, description: "Custom Error")
+        try expect(try environment.renderTemplate(string: template.templateString, context: [:])).toThrow(error)
+      }
+      
+      $0.it("reports rendering error in for body") {
+        let template: Template = "{% for item in array %}{% customtag %}{% endfor %}"
+
+        var environment = environment
+        let tagExtension = Extension()
+        tagExtension.registerTag("customtag") { parser, token in
+          return ErrorNode(token: token)
+        }
+        environment.extensions += [tagExtension]
+        
+        let error = expectedSyntaxError(token: "customtag", template: template, description: "Custom Error")
+        try expect(try environment.renderTemplate(string: template.templateString, context: ["array": ["a"]])).toThrow(error)
       }
     }
     

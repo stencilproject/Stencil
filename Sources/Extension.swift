@@ -15,7 +15,7 @@ open class Extension {
   /// Registers a simple template tag with a name and a handler
   public func registerSimpleTag(_ name: String, handler: @escaping (Context) throws -> String) {
     registerTag(name, parser: { parser, token in
-      return SimpleNode(handler: handler)
+      return SimpleNode(token: token, handler: handler)
     })
   }
 

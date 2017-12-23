@@ -182,6 +182,7 @@ final class IfCondition {
 
 class IfNode : NodeType {
   let conditions: [IfCondition]
+  let token: Token?
 
   class func parse(_ parser: TokenParser, token: Token) throws -> NodeType {
     var components = token.components()
@@ -193,27 +194,27 @@ class IfNode : NodeType {
       IfCondition(expression: expression, nodes: nodes)
     ]
 
-    var token = parser.nextToken()
-    while let current = token, current.contents.hasPrefix("elif") {
+    var nextToken = parser.nextToken()
+    while let current = nextToken, current.contents.hasPrefix("elif") {
       var components = current.components()
       components.removeFirst()
       let expression = try parseExpression(components: components, tokenParser: parser, token: current)
 
       let nodes = try parser.parse(until(["endif", "elif", "else"]))
-      token = parser.nextToken()
+      nextToken = parser.nextToken()
       conditions.append(IfCondition(expression: expression, nodes: nodes))
     }
 
-    if let current = token, current.contents == "else" {
+    if let current = nextToken, current.contents == "else" {
       conditions.append(IfCondition(expression: nil, nodes: try parser.parse(until(["endif"]))))
-      token = parser.nextToken()
+      nextToken = parser.nextToken()
     }
 
-    guard let current = token, current.contents == "endif" else {
+    guard let current = nextToken, current.contents == "endif" else {
       throw TemplateSyntaxError("`endif` was not found.")
     }
 
-    return IfNode(conditions: conditions)
+    return IfNode(conditions: conditions, token: token)
   }
 
   class func parse_ifnot(_ parser: TokenParser, token: Token) throws -> NodeType {
@@ -240,11 +241,12 @@ class IfNode : NodeType {
     return IfNode(conditions: [
       IfCondition(expression: expression, nodes: trueNodes),
       IfCondition(expression: nil, nodes: falseNodes),
-    ])
+      ], token: token)
   }
 
-  init(conditions: [IfCondition]) {
+  init(conditions: [IfCondition], token: Token? = nil) {
     self.conditions = conditions
+    self.token = token
   }
 
   func render(_ context: Context) throws -> String {

@@ -3,7 +3,7 @@ import PathKit
 
 class IncludeNode : NodeType {
   let templateName: Variable
-  let token: Token
+  let token: Token?
 
   class func parse(_ parser: TokenParser, token: Token) throws -> NodeType {
     let bits = token.components()

@@ -51,7 +51,7 @@ extension Collection {
 class ExtendsNode : NodeType {
   let templateName: Variable
   let blocks: [String:BlockNode]
-  let token: Token
+  let token: Token?
 
   class func parse(_ parser: TokenParser, token: Token) throws -> NodeType {
     let bits = token.components()
@@ -112,6 +112,7 @@ class ExtendsNode : NodeType {
 class BlockNode : NodeType {
   let name: String
   let nodes: [NodeType]
+  let token: Token?
 
   class func parse(_ parser: TokenParser, token: Token) throws -> NodeType {
     let bits = token.components()
@@ -123,12 +124,13 @@ class BlockNode : NodeType {
     let blockName = bits[1]
     let nodes = try parser.parse(until(["endblock"]))
     _ = parser.nextToken()
-    return BlockNode(name:blockName, nodes:nodes)
+    return BlockNode(name:blockName, nodes:nodes, token: token)
   }
 
-  init(name: String, nodes: [NodeType]) {
+  init(name: String, nodes: [NodeType], token: Token) {
     self.name = name
     self.nodes = nodes
+    self.token = token
   }
 
   func render(_ context: Context) throws -> String {

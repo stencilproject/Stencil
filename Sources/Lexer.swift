@@ -187,4 +187,21 @@ extension String {
     return String(self[first..<last])
   }
   
+  public func rangeLine(_ range: Range<String.Index>) -> (content: String, number: Int, offset: String.IndexDistance) {
+    var lineNumber: Int = 0
+    var offset = 0
+    var lineContent = ""
+    
+    for line in components(separatedBy: CharacterSet.newlines) {
+      lineNumber += 1
+      lineContent = line
+      if let rangeOfLine = self.range(of: line), rangeOfLine.contains(range.lowerBound) {
+        offset = distance(from: rangeOfLine.lowerBound, to:
+          range.lowerBound)
+        break
+      }
+    }
+    
+    return (lineContent, lineNumber, offset)
+  }
 }

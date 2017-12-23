@@ -55,8 +55,7 @@ public struct Environment {
     return errorReporter.context?.template
   }
   
-  
-  public func pushTemplate<Result>(_ template: Template, token: Token, closure: (() throws -> Result)) rethrows -> Result {
+  public func pushTemplate<Result>(_ template: Template, token: Token?, closure: (() throws -> Result)) rethrows -> Result {
     let errorReporterContext = errorReporter.context
     defer { errorReporter.context = errorReporterContext }
     errorReporter.context = ErrorReporterContext(
