@@ -78,6 +78,11 @@ public struct Variable : Equatable, Resolvable {
           current = dictionary.count
         } else {
           current = dictionary[bit]
+          if current == nil, let contextDict = context.dictionaries.last {
+            if let key = (try? Variable(bit).resolve(Context(dictionary: contextDict))) as? String {
+              current = dictionary[key]
+            }
+          }
         }
       } else if let array = current as? [Any] {
         if let index = Int(bit) {
