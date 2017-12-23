@@ -90,7 +90,11 @@ class ForNode : NodeType {
     if let dictionary = resolved as? [String: Any], !dictionary.isEmpty {
       values = dictionary.map { ($0.key, $0.value) }
     } else if let array = resolved as? [Any] {
-      values = array
+      if loopVariables.count == 2 {
+        values = array.enumerated().map({ ($0.offset, $0.element) })
+      } else {
+        values = array
+      }
     } else if let range = resolved as? CountableClosedRange<Int> {
       values = Array(range)
     } else if let range = resolved as? CountableRange<Int> {

@@ -15,6 +15,7 @@
 - Added support for iterating arrays of tuples
 - Added support for ranges in if-in expression
 - Added property `forloop.length` to get number of items in the loop
+- Now you can iterate arrays using their indexes and values, not just values
 
 ### Bug Fixes
 
