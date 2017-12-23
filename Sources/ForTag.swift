@@ -125,25 +125,84 @@ class ForNode : NodeType {
 
     if !values.isEmpty {
       let count = values.count
-
-      return try values.enumerated().map { index, item in
+      var result = ""
+      
+      for (index, item) in values.enumerated() {
         let forContext: [String: Any] = [
           "first": index == 0,
           "last": index == (count - 1),
           "counter": index + 1,
           "counter0": index,
-        ]
-
-        return try context.push(dictionary: ["forloop": forContext]) {
+          ]
+        
+        result += try context.push(dictionary: ["forloop": forContext]) {
           return try push(value: item, context: context) {
             try renderNodes(nodes, context)
           }
         }
-      }.joined(separator: "")
+        
+        if context[LoopTerminationNode.break.terminator] as? Bool ?? false {
+          context[LoopTerminationNode.break.terminator] = nil
+          break
+        }
+        if context[LoopTerminationNode.continue.terminator] as? Bool ?? false {
+          context[LoopTerminationNode.continue.terminator] = nil
+        }
+      }
+      return result
     }
 
     return try context.push {
       try renderNodes(emptyNodes, context)
     }
   }
+}
+
+struct LoopTerminationNode: NodeType {
+  static let `break` = LoopTerminationNode(name: "break")
+  static let `continue` = LoopTerminationNode(name: "continue")
+  
+  let name: String
+  var terminator: String {
+    return "forloop_\(name)"
+  }
+
+  private init(name: String) {
+    self.name = name
+  }
+  
+  static func parse(_ parser:TokenParser, token:Token) throws -> LoopTerminationNode {
+    guard token.components().count == 1 else {
+      throw TemplateSyntaxError("'\(token.contents)' does not accept parameters")
+    }
+    guard parser.hasOpenedForTag() else {
+      throw TemplateSyntaxError("'\(token.contents)' can be used only inside loop body")
+    }
+    return LoopTerminationNode(name: token.contents)
+  }
+  
+  func render(_ context: Context) throws -> String {
+    guard let forLoopIndex = context.dictionaries.enumerated().flatMap({ i, c in
+      c["forloop"] != nil ? i : nil
+    }).max() else { return "" }
+    context.dictionaries[forLoopIndex - 1][terminator] = true
+    
+    return ""
+  }
+
+}
+
+extension TokenParser {
+  
+  func hasOpenedForTag() -> Bool {
+    var hasOpenedFor = 0
+    for parsedToken in parsedTokens.reversed() {
+      if case .block = parsedToken {
+        if parsedToken.components().first == "endfor" { hasOpenedFor -= 1  }
+        if parsedToken.components().first == "for" { hasOpenedFor += 1 }
+      }
+    }
+    return hasOpenedFor > 0
+  }
+  
 }

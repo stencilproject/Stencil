@@ -18,6 +18,7 @@ public class TokenParser {
   public typealias TagParser = (TokenParser, Token) throws -> NodeType
 
   fileprivate var tokens: [Token]
+  fileprivate(set) var parsedTokens: [Token] = []
   fileprivate let environment: Environment
 
   public init(tokens: [Token], environment: Environment) {
@@ -61,7 +62,9 @@ public class TokenParser {
 
   public func nextToken() -> Token? {
     if tokens.count > 0 {
-      return tokens.remove(at: 0)
+      let nextToken = tokens.remove(at: 0)
+      parsedTokens.append(nextToken)
+      return nextToken
     }
 
     return nil
@@ -69,8 +72,11 @@ public class TokenParser {
 
   public func prependToken(_ token:Token) {
     tokens.insert(token, at: 0)
+    if parsedTokens.last == token {
+      parsedTokens.removeLast()
+    }
   }
-
+  
   func findTag(name: String) throws -> Extension.TagParser {
     for ext in environment.extensions {
       if let filter = ext.tags[name] {

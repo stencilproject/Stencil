@@ -10,6 +10,7 @@
   - added support for iterating array with index and value
   - fixed using spaces between loop variables
   - added support for subscripting dictionary using loop variable for key
+  - added `break` and `continue` tags to break or continue current loop
 
 
 ### Bug Fixes
