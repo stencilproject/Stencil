@@ -228,18 +228,8 @@ func testEnvironment() {
         var error = expectedSyntaxError(token: "include \"invalid-include.html\"", template: template, description: "Unknown filter 'unknown'")
         error.parentError = parentError
         
-        try expect(environment.renderTemplate(string: template.templateString, context: ["target": "World"])).toThrow(error)
-      }
-      
-      $0.it("reports syntax error in extended template") {
-        let template = try environment.loadTemplate(name: "invalid-child-super.html")
-        let baseTemplate = try environment.loadTemplate(name: "invalid-base.html")
-        
-        let parentError = expectedSyntaxError(token: "target|unknown", template: baseTemplate, description: "Unknown filter 'unknown'")
-        var error = expectedSyntaxError(token: "extends \"invalid-base.html\"", template: template, description: "Unknown filter 'unknown'")
-        error.parentError = parentError
 
-        try expect(environment.render(template: template, context: ["target": "World"])).toThrow(error)
+        try expect(environment.renderTemplate(string: template.templateString, context: ["target": "World"])).toThrow(error)
       }
       
       $0.it("reports runtime error in included template") {
@@ -259,24 +249,59 @@ func testEnvironment() {
         
         try expect(environment.renderTemplate(string: template.templateString, context: ["target": "World"])).toThrow(error)
       }
-      
-      $0.it("reports runtime error in extended template") {
+
+      $0.it("reports syntax error in base template") {
+        let template = try environment.loadTemplate(name: "invalid-child-super.html")
+        let baseTemplate = try environment.loadTemplate(name: "invalid-base.html")
+
+        let parentError = expectedSyntaxError(token: "target|unknown", template: baseTemplate, description: "Unknown filter 'unknown'")
+        var error = expectedSyntaxError(token: "extends \"invalid-base.html\"", template: template, description: "Unknown filter 'unknown'")
+        error.parentError = parentError
+
+        try expect(environment.render(template: template, context: ["target": "World"])).toThrow(error)
+      }
+
+      $0.it("reports runtime error in base template") {
         var environment = environment
         let filterExtension = Extension()
-        filterExtension.registerFilter("throw", filter: {  (_: Any?) in
+        filterExtension.registerFilter("unknown", filter: {  (_: Any?) in
+          throw TemplateSyntaxError("filter error")
+        })
+        environment.extensions += [filterExtension]
+
+        let template = try environment.loadTemplate(name: "invalid-child-super.html")
+        let baseTemplate = try environment.loadTemplate(name: "invalid-base.html")
+
+        let parentError = expectedSyntaxError(token: "target|unknown", template: baseTemplate, description: "filter error")
+        var error = expectedSyntaxError(token: "extends \"invalid-base.html\"", template: template, description: "filter error")
+        error.parentError = parentError
+
+        try expect(environment.render(template: template, context: ["target": "World"])).toThrow(error)
+      }
+      
+      $0.it("reports syntax error in child template") {
+        let template = Template.init(templateString: "{% extends \"base.html\" %}\n" +
+          "{% block body %}Child {{ target|unknown }}{% endblock %}", environment: environment, name: nil)
+        let error = expectedSyntaxError(token: "target|unknown", template: template, description: "Unknown filter 'unknown'")
+        
+        try expect(environment.render(template: template, context: ["target": "World"])).toThrow(error)
+      }
+      
+      $0.it("reports runtime error in child template") {
+        var environment = environment
+        let filterExtension = Extension()
+        filterExtension.registerFilter("unknown", filter: {  (_: Any?) in
           throw TemplateSyntaxError("filter error")
         })
         environment.extensions += [filterExtension]
         
-        let template = try environment.loadTemplate(name: "invalid-runtime-child-super.html")
-        let baseTemplate = try environment.loadTemplate(name: "invalid-runtime-base.html")
-        
-        let parentError = expectedSyntaxError(token: "target|throw", template: baseTemplate, description: "filter error")
-        var error = expectedSyntaxError(token: "extends \"invalid-runtime-base.html\"", template: template, description: "filter error")
-        error.parentError = parentError
+        let template = Template.init(templateString: "{% extends \"base.html\" %}\n" +
+          "{% block body %}Child {{ target|unknown }}{% endblock %}", environment: environment, name: nil)
+        let error = expectedSyntaxError(token: "{{ target|unknown }}", template: template, description: "filter error")
         
         try expect(environment.render(template: template, context: ["target": "World"])).toThrow(error)
       }
+      
     }
     
   }

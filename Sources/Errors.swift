@@ -99,7 +99,7 @@ open class SimpleErrorReporter: ErrorReporter {
 
     return TemplateSyntaxError(reason: (error as? TemplateSyntaxError)?.reason ?? "\(error)",
                                lexeme: (error as? TemplateSyntaxError)?.lexeme,
-                               template: context.template,
+                               template: (error as? TemplateSyntaxError)?.template ?? context.template,
                                parentError: (error as? TemplateSyntaxError)?.parentError
     )
   }
