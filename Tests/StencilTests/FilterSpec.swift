@@ -136,6 +136,14 @@ func testFilter() {
       let result = try template.render(Context(dictionary: [:]))
       try expect(result) == "Hello World"
     }
+    
+    $0.it("checks for underlying nil value correctly") {
+      let template = Template(templateString: "Hello {{ user.name|default:\"anonymous\" }}")
+      let nilName: String? = nil
+      let user: [String: Any?] = ["name": nilName]
+      let result = try template.render(Context(dictionary: ["user": user]))
+      try expect(result) == "Hello anonymous"
+    }
   }
 
   describe("join filter") {
