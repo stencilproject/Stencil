@@ -27,9 +27,17 @@ class IncludeNode : NodeType {
 
     let template = try context.environment.loadTemplate(name: templateName)
 
-    return try context.environment.pushTemplate(template, token: token) {
-      try context.push {
-        return try template.render(context)
+    do {
+      return try context.environment.pushTemplate(template, token: token) {
+        try context.push {
+          return try template.render(context)
+        }
+      }
+    } catch {
+      if let parentError = error as? TemplateSyntaxError {
+        throw TemplateSyntaxError(reason: parentError.reason, parentError: parentError)
+      } else {
+        throw error
       }
     }
   }

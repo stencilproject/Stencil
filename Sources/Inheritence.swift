@@ -100,9 +100,17 @@ class ExtendsNode : NodeType {
       blockContext = BlockContext(blocks: blocks)
     }
 
-    return try context.environment.pushTemplate(template, token: token) {
-      try context.push(dictionary: [BlockContext.contextKey: blockContext]) {
-        return try template.render(context)
+    do {
+      return try context.environment.pushTemplate(template, token: token) {
+        try context.push(dictionary: [BlockContext.contextKey: blockContext]) {
+          return try template.render(context)
+        }
+      }
+    } catch {
+      if let parentError = error as? TemplateSyntaxError {
+        throw TemplateSyntaxError(reason: parentError.reason, parentError: parentError)
+      } else {
+        throw error
       }
     }
   }
@@ -135,10 +143,12 @@ class BlockNode : NodeType {
 
   func render(_ context: Context) throws -> String {
     if let blockContext = context[BlockContext.contextKey] as? BlockContext, let node = blockContext.pop(name) {
-      let newContext: [String: Any] = [
+      let newContext: [String: Any]
+      newContext = [
         BlockContext.contextKey: blockContext,
         "block": ["super": try self.render(context)]
       ]
+      
       return try context.push(dictionary: newContext) {
         return try node.render(context)
       }

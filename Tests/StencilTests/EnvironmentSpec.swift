@@ -35,11 +35,8 @@ func testEnvironment() {
     }
     
     func expectedSyntaxError(token: String, template: Template, description: String) -> TemplateSyntaxError {
-      var error = TemplateSyntaxError(description)
-      error.lexeme = Token.block(value: token, at: template.templateString.range(of: token)!)
-      let context = ErrorReporterContext(template: template)
-      error = environment.errorReporter.contextAwareError(error, at: error.lexeme?.range, context: context) as! TemplateSyntaxError
-      return error
+      let lexeme = Token.block(value: token, at: template.templateString.range(of: token)!)
+      return TemplateSyntaxError(reason: description, lexeme: lexeme, template: template, parentError: nil)
     }
     
     $0.it("reports syntax error on invalid for tag syntax") {
@@ -202,6 +199,20 @@ func testEnvironment() {
         let error = expectedSyntaxError(token: "customtag", template: template, description: "Custom Error")
         try expect(try environment.renderTemplate(string: template.templateString, context: ["array": ["a"]])).toThrow(error)
       }
+      
+      $0.it("reports rendering error in block") {
+        let template: Template = "{% block some %}{% customtag %}{% endblock %}"
+        
+        var environment = environment
+        let tagExtension = Extension()
+        tagExtension.registerTag("customtag") { parser, token in
+          return ErrorNode(token: token)
+        }
+        environment.extensions += [tagExtension]
+        
+        let error = expectedSyntaxError(token: "customtag", template: template, description: "Custom Error")
+        try expect(try environment.renderTemplate(string: template.templateString, context: ["array": ["a"]])).toThrow(error)
+      }
     }
     
     $0.context("given related templates") {
@@ -210,25 +221,61 @@ func testEnvironment() {
       let environment = Environment(loader: loader)
       
       $0.it("reports syntax error in included template") {
-        let template: Template = "{% include \"invalid-include.html\"%}"
-        environment.errorReporter.context = ErrorReporterContext(template: template)
-        
-        let context = Context(dictionary: ["target": "World"], environment: environment)
-        
+        let template: Template = "{% include \"invalid-include.html\" %}"
         let includedTemplate = try environment.loadTemplate(name: "invalid-include.html")
-        let error = expectedSyntaxError(token: "target|unknown", template: includedTemplate, description: "Unknown filter 'unknown'")
         
-        try expect(try template.render(context)).toThrow(error)
+        let parentError = expectedSyntaxError(token: "target|unknown", template: includedTemplate, description: "Unknown filter 'unknown'")
+        var error = expectedSyntaxError(token: "include \"invalid-include.html\"", template: template, description: "Unknown filter 'unknown'")
+        error.parentError = parentError
+        
+        try expect(environment.renderTemplate(string: template.templateString, context: ["target": "World"])).toThrow(error)
       }
       
       $0.it("reports syntax error in extended template") {
         let template = try environment.loadTemplate(name: "invalid-child-super.html")
-        let context = Context(dictionary: ["target": "World"], environment: environment)
-
         let baseTemplate = try environment.loadTemplate(name: "invalid-base.html")
-        let error = expectedSyntaxError(token: "target|unknown", template: baseTemplate, description: "Unknown filter 'unknown'")
         
-        try expect(try template.render(context)).toThrow(error)
+        let parentError = expectedSyntaxError(token: "target|unknown", template: baseTemplate, description: "Unknown filter 'unknown'")
+        var error = expectedSyntaxError(token: "extends \"invalid-base.html\"", template: template, description: "Unknown filter 'unknown'")
+        error.parentError = parentError
+
+        try expect(environment.render(template: template, context: ["target": "World"])).toThrow(error)
+      }
+      
+      $0.it("reports runtime error in included template") {
+        var environment = environment
+        let filterExtension = Extension()
+        filterExtension.registerFilter("unknown", filter: {  (_: Any?) in
+          throw TemplateSyntaxError("filter error")
+        })
+        environment.extensions += [filterExtension]
+        
+        let template: Template = "{% include \"invalid-include.html\" %}"
+        let includedTemplate = try environment.loadTemplate(name: "invalid-include.html")
+        
+        let parentError = expectedSyntaxError(token: "target|unknown", template: includedTemplate, description: "filter error")
+        var error = expectedSyntaxError(token: "include \"invalid-include.html\"", template: template, description: "filter error")
+        error.parentError = parentError
+        
+        try expect(environment.renderTemplate(string: template.templateString, context: ["target": "World"])).toThrow(error)
+      }
+      
+      $0.it("reports runtime error in extended template") {
+        var environment = environment
+        let filterExtension = Extension()
+        filterExtension.registerFilter("throw", filter: {  (_: Any?) in
+          throw TemplateSyntaxError("filter error")
+        })
+        environment.extensions += [filterExtension]
+        
+        let template = try environment.loadTemplate(name: "invalid-runtime-child-super.html")
+        let baseTemplate = try environment.loadTemplate(name: "invalid-runtime-base.html")
+        
+        let parentError = expectedSyntaxError(token: "target|throw", template: baseTemplate, description: "filter error")
+        var error = expectedSyntaxError(token: "extends \"invalid-runtime-base.html\"", template: template, description: "filter error")
+        error.parentError = parentError
+        
+        try expect(environment.render(template: template, context: ["target": "World"])).toThrow(error)
       }
     }
     

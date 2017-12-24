@@ -187,9 +187,9 @@ extension String {
     return String(self[first..<last])
   }
   
-  public func rangeLine(_ range: Range<String.Index>) -> (content: String, number: Int, offset: String.IndexDistance) {
-    var lineNumber: Int = 0
-    var offset = 0
+  public func rangeLine(_ range: Range<String.Index>) -> (content: String, number: UInt, offset: String.IndexDistance) {
+    var lineNumber: UInt = 0
+    var offset: Int = 0
     var lineContent = ""
     
     for line in components(separatedBy: CharacterSet.newlines) {
