@@ -9,7 +9,7 @@
   - added support for iterating over tuple elements and subscripting it with label or index
   - added support for iterating array with index and value
   - fixed using spaces between loop variables
-  - added support for subscripting dictionary using loop variable for key
+  - added support for subscripting arrays and dictionaries using loop variables for index or key
   - added `break` and `continue` tags to break or continue current loop
 
 

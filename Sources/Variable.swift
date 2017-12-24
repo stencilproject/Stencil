@@ -78,10 +78,8 @@ public struct Variable : Equatable, Resolvable {
           current = dictionary.count
         } else {
           current = dictionary[bit]
-          if current == nil, let contextDict = context.dictionaries.last {
-            if let key = (try? Variable(bit).resolve(Context(dictionary: contextDict))) as? String {
-              current = dictionary[key]
-            }
+          if current == nil, let key = (try? Variable(bit).resolve(context)) as? String {
+            current = dictionary[key]
           }
         }
       } else if let array = current as? [Any] {
@@ -97,6 +95,12 @@ public struct Variable : Equatable, Resolvable {
           current = array.last
         } else if bit == "count" {
           current = array.count
+        } else if let index = (try? Variable(bit).resolve(context)) as? Int {
+          if index >= 0 && index < array.count {
+            current = array[index]
+          } else {
+            current = nil
+          }
         }
       } else if let object = current as? NSObject {  // NSKeyValueCoding
 #if os(Linux)
@@ -107,10 +111,8 @@ public struct Variable : Equatable, Resolvable {
       } else if let value = current {
         let mirror = Mirror(reflecting: value)
         current = mirror.getValue(for: bit)
-        if current == nil, let contextDict = context.dictionaries.last {
-          if let label = (try? Variable(bit).resolve(Context(dictionary: contextDict))) as? String {
-            current = mirror.getValue(for: label)
-          }
+        if current == nil, let label = (try? Variable(bit).resolve(context)) as? String {
+          current = mirror.getValue(for: label)
         }
         if current == nil {
           return nil

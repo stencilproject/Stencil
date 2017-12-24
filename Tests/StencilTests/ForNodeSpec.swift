@@ -139,6 +139,18 @@ func testForNode() {
       let fixture = "0: 1\n1: 2\n2: 3\n\n"
       try expect(result) == fixture
     }
+    
+    $0.it("can subscript array with index variable") {
+      let templateString = "{% for index, value in items %}" +
+        "{{ index }}: {{ items.index }}\n" +
+      "{% endfor %}\n"
+      
+      let template = Template(templateString: templateString)
+      let result = try template.render(context)
+      
+      let fixture = "0: 1\n1: 2\n2: 3\n\n"
+      try expect(result) == fixture
+    }
 
     $0.context("given tuple") {
       $0.it("can iterate over labels and values") {
