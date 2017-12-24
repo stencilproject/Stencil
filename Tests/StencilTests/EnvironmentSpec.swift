@@ -1,5 +1,6 @@
 import Spectre
-import Stencil
+import PathKit
+@testable import Stencil
 
 
 func testEnvironment() {
@@ -32,6 +33,125 @@ func testEnvironment() {
 
       try expect(result) == "here"
     }
+    
+    func expectedSyntaxError(token: String, template: Template, description: String) -> TemplateSyntaxError {
+      var error = TemplateSyntaxError(description)
+      error.lexeme = Token.block(value: token, at: template.templateString.range(of: token)!)
+      let context = ErrorReporterContext(template: template)
+      error = environment.errorReporter.contextAwareError(error, context: context) as! TemplateSyntaxError
+      return error
+    }
+    
+    $0.it("reports syntax error on invalid for tag syntax") {
+      let template: Template = "Hello {% for name in %}{{ name }}, {% endfor %}!"
+      let error = expectedSyntaxError(
+        token: "{% for name in %}",
+        template: template,
+        description: "'for' statements should use the following syntax 'for x in y where condition'."
+      )
+      try expect(try environment.renderTemplate(string: template.templateString, context:["names": ["Bob", "Alice"]])).toThrow(error)
+    }
+    
+    $0.it("reports syntax error on missing endfor") {
+      let template: Template = "{% for name in names %}{{ name }}"
+      let error = expectedSyntaxError(
+        token: "{% for name in names %}",
+        template: template,
+        description: "`endfor` was not found."
+      )
+      try expect(try environment.renderTemplate(string: template.templateString, context: ["names": ["Bob", "Alice"]])).toThrow(error)
+    }
+    
+    $0.it("reports syntax error on unknown tag") {
+      let template: Template = "{% for name in names %}{{ name }}{% end %}"
+      let error = expectedSyntaxError(
+        token: "{% end %}",
+        template: template,
+        description: "Unknown template tag 'end'"
+      )
+      try expect(try environment.renderTemplate(string: template.templateString, context: ["names": ["Bob", "Alice"]])).toThrow(error)
+    }
+    
+    $0.context("given unknown filter") {
+      func expectedFilterError(token: String, template: Template) -> TemplateSyntaxError {
+        return expectedSyntaxError(
+          token: token,
+          template: template,
+          description: "Unknown filter 'unknown'"
+        )
+      }
+      
+      $0.it("reports syntax error in for tag") {
+        let template: Template = "{% for name in names|unknown %}{{ name }}{% endfor %}"
+        let error = expectedFilterError(token: "names|unknown", template: template)
+        try expect(try environment.renderTemplate(string: template.templateString, context: ["names": ["Bob", "Alice"]])).toThrow(error)
+      }
+      
+      $0.it("reports syntax error in for-where tag") {
+        let template: Template = "{% for name in names where name|unknown %}{{ name }}{% endfor %}"
+        let error = expectedFilterError(token: "name|unknown", template: template)
+        try expect(try environment.renderTemplate(string: template.templateString, context: ["names": ["Bob", "Alice"]])).toThrow(error)
+      }
+      
+      $0.it("reports syntax error in if tag") {
+        let template: Template = "{% if name|unknown %}{{ name }}{% endif %}"
+        let error = expectedFilterError(token: "name|unknown", template: template)
+        try expect(try environment.renderTemplate(string: template.templateString, context: ["name": "Bob"])).toThrow(error)
+      }
+      
+      $0.it("reports syntax error in elif tag") {
+        let template: Template = "{% if name %}{{ name }}{% elif name|unknown %}{% endif %}"
+        let error = expectedFilterError(token: "name|unknown", template: template)
+        try expect(try environment.renderTemplate(string: template.templateString, context: ["name": "Bob"])).toThrow(error)
+      }
+      
+      $0.it("reports syntax error in ifnot tag") {
+        let template: Template = "{% ifnot name|unknown %}{{ name }}{% endif %}"
+        let error = expectedFilterError(token: "name|unknown", template: template)
+        try expect(try environment.renderTemplate(string: template.templateString, context: ["name": "Bob"])).toThrow(error)
+      }
+      
+      $0.it("reports syntax error in filter tag") {
+        let template: Template = "{% filter unknown %}Text{% endfilter %}"
+        let error = expectedFilterError(token: "{% filter unknown %}", template: template)
+        try expect(try environment.renderTemplate(string: template.templateString, context: [:])).toThrow(error)
+      }
+      
+      $0.it("reports syntax error in variable tag") {
+        let template: Template = "{{ name|unknown }}"
+        let error = expectedFilterError(token: "name|unknown", template: template)
+        try expect(try environment.renderTemplate(string: template.templateString, context: ["name": "Bob"])).toThrow(error)
+      }
+    }
+    
+    $0.context("given related templates") {
+      let path = Path(#file) + ".." + "fixtures"
+      let loader = FileSystemLoader(paths: [path])
+      let environment = Environment(loader: loader)
+      
+      $0.it("reports syntax error in included template") {
+        let template: Template = "{% include \"invalid-include.html\"%}"
+        environment.errorReporter.context = ErrorReporterContext(template: template)
+        
+        let context = Context(dictionary: ["target": "World"], environment: environment)
+        
+        let includedTemplate = try environment.loadTemplate(name: "invalid-include.html")
+        let error = expectedSyntaxError(token: "target|unknown", template: includedTemplate, description: "Unknown filter 'unknown'")
+        
+        try expect(try template.render(context)).toThrow(error)
+      }
+      
+      $0.it("reports syntax error in extended template") {
+        let template = try environment.loadTemplate(name: "invalid-child-super.html")
+        let context = Context(dictionary: ["target": "World"], environment: environment)
+
+        let baseTemplate = try environment.loadTemplate(name: "invalid-base.html")
+        let error = expectedSyntaxError(token: "target|unknown", template: baseTemplate, description: "Unknown filter 'unknown'")
+        
+        try expect(try template.render(context)).toThrow(error)
+      }
+    }
+    
   }
 }
 

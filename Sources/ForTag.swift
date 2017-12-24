@@ -12,7 +12,7 @@ class ForNode : NodeType {
 
     guard components.count >= 3 && components[2] == "in" &&
         (components.count == 4 || (components.count >= 6 && components[4] == "where")) else {
-      throw TemplateSyntaxError("'for' statements should use the following 'for x in y where condition' `\(token.contents)`.")
+      throw TemplateSyntaxError("'for' statements should use the following syntax 'for x in y where condition'.")
     }
 
     let loopVariables = components[1].characters
@@ -21,24 +21,24 @@ class ForNode : NodeType {
       .map { $0.trimmingCharacters(in: CharacterSet.whitespaces) }
 
     let variable = components[3]
+    let filter = try parser.compileFilter(variable, containedIn: token)
 
     var emptyNodes = [NodeType]()
 
     let forNodes = try parser.parse(until(["endfor", "empty"]))
 
-    guard let token = parser.nextToken() else {
+    if let token = parser.nextToken() {
+      if token.contents == "empty" {
+        emptyNodes = try parser.parse(until(["endfor"]))
+        _ = parser.nextToken()
+      }
+    } else {
       throw TemplateSyntaxError("`endfor` was not found.")
     }
 
-    if token.contents == "empty" {
-      emptyNodes = try parser.parse(until(["endfor"]))
-      _ = parser.nextToken()
-    }
-
-    let filter = try parser.compileFilter(variable)
     let `where`: Expression?
     if components.count >= 6 {
-      `where` = try parseExpression(components: Array(components.suffix(from: 5)), tokenParser: parser)
+      `where` = try parseExpression(components: Array(components.suffix(from: 5)), tokenParser: parser, token: token)
     } else {
       `where` = nil
     }
@@ -87,7 +87,7 @@ class ForNode : NodeType {
     var values: [Any]
 
     if let dictionary = resolved as? [String: Any], !dictionary.isEmpty {
-      values = dictionary.map { ($0.key, $0.value) }
+      values = dictionary.map { ($0.key, $0.value) } as [(String, Any)]
     } else if let array = resolved as? [Any] {
       values = array
     } else if let range = resolved as? CountableClosedRange<Int> {

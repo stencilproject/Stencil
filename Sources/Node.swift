@@ -1,20 +1,5 @@
 import Foundation
 
-
-public struct TemplateSyntaxError : Error, Equatable, CustomStringConvertible {
-  public let description:String
-
-  public init(_ description:String) {
-    self.description = description
-  }
-}
-
-
-public func ==(lhs:TemplateSyntaxError, rhs:TemplateSyntaxError) -> Bool {
-  return lhs.description == rhs.description
-}
-
-
 public protocol NodeType {
   /// Render the node in the given context
   func render(_ context:Context) throws -> String

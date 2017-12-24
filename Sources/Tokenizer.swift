@@ -40,46 +40,50 @@ extension String {
   }
 }
 
-
-public enum Token : Equatable {
+public enum Token : Equatable, Lexeme {
   /// A token representing a piece of text.
-  case text(value: String)
+  case text(value: String, at: Range<String.Index>)
 
   /// A token representing a variable.
-  case variable(value: String)
+  case variable(value: String, at: Range<String.Index>)
 
   /// A token representing a comment.
-  case comment(value: String)
+  case comment(value: String, at: Range<String.Index>)
 
   /// A token representing a template block.
-  case block(value: String)
+  case block(value: String, at: Range<String.Index>)
 
   /// Returns the underlying value as an array seperated by spaces
   public func components() -> [String] {
     switch self {
-    case .block(let value):
-      return value.smartSplit()
-    case .variable(let value):
-      return value.smartSplit()
-    case .text(let value):
-      return value.smartSplit()
-    case .comment(let value):
+    case .block(let value, _),
+         .variable(let value, _),
+         .text(let value, _),
+         .comment(let value, _):
       return value.smartSplit()
     }
   }
 
   public var contents: String {
     switch self {
-    case .block(let value):
-      return value
-    case .variable(let value):
-      return value
-    case .text(let value):
-      return value
-    case .comment(let value):
+    case .block(let value, _),
+         .variable(let value, _),
+         .text(let value, _),
+         .comment(let value, _):
       return value
     }
   }
+  
+  public var range: Range<String.Index> {
+    switch self {
+    case .block(_, let range),
+         .variable(_, let range),
+         .text(_, let range),
+         .comment(_, let range):
+      return range
+    }
+  }
+  
 }
 
 

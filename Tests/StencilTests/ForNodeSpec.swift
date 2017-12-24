@@ -91,7 +91,7 @@ func testForNode() {
 
     $0.it("renders the given nodes while filtering items using where expression") {
         let nodes: [NodeType] = [VariableNode(variable: "item"), VariableNode(variable: "forloop.counter")]
-        let `where` = try parseExpression(components: ["item", ">", "1"], tokenParser: TokenParser(tokens: [], environment: Environment()))
+      let `where` = try parseExpression(components: ["item", ">", "1"], tokenParser: TokenParser(tokens: [], environment: Environment()), token: .text(value: "", at: .unknown))
         let node = ForNode(resolvable: Variable("items"), loopVariables: ["item"], nodes: nodes, emptyNodes: [], where: `where`)
         try expect(try node.render(context)) == "2132"
     }
@@ -99,7 +99,7 @@ func testForNode() {
     $0.it("renders the given empty nodes when all items filtered out with where expression") {
         let nodes: [NodeType] = [VariableNode(variable: "item")]
         let emptyNodes: [NodeType] = [TextNode(text: "empty")]
-        let `where` = try parseExpression(components: ["item", "==", "0"], tokenParser: TokenParser(tokens: [], environment: Environment()))
+      let `where` = try parseExpression(components: ["item", "==", "0"], tokenParser: TokenParser(tokens: [], environment: Environment()), token: .text(value: "", at: .unknown))
         let node = ForNode(resolvable: Variable("emptyItems"), loopVariables: ["item"], nodes: nodes, emptyNodes: emptyNodes, where: `where`)
         try expect(try node.render(context)) == "empty"
     }
@@ -155,12 +155,13 @@ func testForNode() {
 
     $0.it("handles invalid input") {
       let tokens: [Token] = [
-          .block(value: "for i"),
+          .block(value: "for i", at: .unknown),
       ]
       let parser = TokenParser(tokens: tokens, environment: Environment())
-      let error = TemplateSyntaxError("'for' statements should use the following 'for x in y where condition' `for i`.")
+      let error = TemplateSyntaxError("'for' statements should use the following syntax 'for x in y where condition'.")
       try expect(try parser.parse()).toThrow(error)
     }
+    
   }
 }
 

@@ -17,7 +17,7 @@ func testFilterTag() {
     }
 
     $0.it("errors without a filter") {
-      let template = Template(templateString: "{% filter %}Test{% endfilter %}")
+      let template = Template(templateString: "Some {% filter %}Test{% endfilter %}")
       try expect(try template.render()).toThrow()
     }
 
