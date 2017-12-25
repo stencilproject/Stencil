@@ -16,6 +16,7 @@
 ### Bug Fixes
 
 - Fixed rendering `{{ block.super }}` with several levels of inheritance
+- Fixed checking dictionary values for nil in `default` filter
 
 
 ## 0.10.1
