@@ -295,6 +295,35 @@ func testExpressions() {
           try expect(expression.evaluate(context: Context(dictionary: ["lhs": "a", "rhs": "bcd"]))).to.beFalse()
         }
       }
+
+      $0.describe("sub expression") {
+        $0.it("evaluates correctly") {
+          let context = Context(dictionary: ["one": false, "two": false, "three": true])
+
+          let expression = try! parseExpression(components: ["one", "and", "two", "or", "three"], tokenParser: parser)
+          let expressionWithBrackets = try! parseExpression(components: ["one", "and", "(", "two", "or", "three", ")"], tokenParser: parser)
+
+          try expect(expression.evaluate(context: context)).to.beTrue()
+          try expect(expressionWithBrackets.evaluate(context: context)).to.beFalse()
+
+          let notExpression = try! parseExpression(components: ["not", "one", "or", "three"], tokenParser: parser)
+          let notExpressionWithBrackets = try! parseExpression(components: ["not", "(", "one", "or", "three", ")"], tokenParser: parser)
+
+          try expect(notExpression.evaluate(context: context)).to.beTrue()
+          try expect(notExpressionWithBrackets.evaluate(context: context)).to.beFalse()
+        }
+
+        $0.it("fails when brackets are not balanced") {
+          try expect(parseExpression(components: ["(", "lhs", "and", "rhs"], tokenParser: parser)).toThrow()
+          try expect(parseExpression(components: [")", "lhs", "and", "rhs"], tokenParser: parser)).toThrow()
+          try expect(parseExpression(components: ["(", "lhs", "and", "rhs", ")", "("], tokenParser: parser)).toThrow()
+          try expect(parseExpression(components: ["(", "lhs", "and", "rhs", ")", ")"], tokenParser: parser)).toThrow()
+          try expect(parseExpression(components: ["(", "lhs", "and", "rhs", ")", ")"], tokenParser: parser)).toThrow()
+          try expect(parseExpression(components: ["(", "lhs", "and", ")"], tokenParser: parser)).toThrow()
+          try expect(parseExpression(components: ["(", "and", "rhs", ")"], tokenParser: parser)).toThrow()
+        }
+      }
+
     }
   }
 }

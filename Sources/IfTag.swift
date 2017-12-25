@@ -38,10 +38,11 @@ func findOperator(name: String) -> Operator? {
 }
 
 
-enum IfToken {
+indirect enum IfToken {
   case infix(name: String, bindingPower: Int, op: InfixOperator.Type)
   case prefix(name: String, bindingPower: Int, op: PrefixOperator.Type)
   case variable(Resolvable)
+  case subExpression(Expression)
   case end
 
   var bindingPower: Int {
@@ -51,6 +52,8 @@ enum IfToken {
     case .prefix(_, let bindingPower, _):
       return bindingPower
     case .variable(_):
+      return 0
+    case .subExpression(_):
       return 0
     case .end:
         return 0
@@ -66,6 +69,8 @@ enum IfToken {
       return op.init(expression: expression)
     case .variable(let variable):
       return VariableExpression(variable: variable)
+    case .subExpression(let expression):
+      return expression
     case .end:
       throw TemplateSyntaxError("'if' expression error: end")
     }
@@ -80,6 +85,8 @@ enum IfToken {
       throw TemplateSyntaxError("'if' expression error: prefix operator '\(name)' was called with a left hand side")
     case .variable(let variable):
       throw TemplateSyntaxError("'if' expression error: variable '\(variable)' was called with a left hand side")
+    case .subExpression(_):
+      throw TemplateSyntaxError("'if' expression error: sub expression was called with a left hand side")
     case .end:
       throw TemplateSyntaxError("'if' expression error: end")
     }
@@ -100,21 +107,74 @@ final class IfExpressionParser {
   let tokens: [IfToken]
   var position: Int = 0
 
-  init(components: [String], tokenParser: TokenParser) throws {
-    self.tokens = try components.map { component in
-      if let op = findOperator(name: component) {
-        switch op {
-        case .infix(let name, let bindingPower, let cls):
-          return .infix(name: name, bindingPower: bindingPower, op: cls)
-        case .prefix(let name, let bindingPower, let cls):
-          return .prefix(name: name, bindingPower: bindingPower, op: cls)
-        }
-      }
+  private init(tokens: [IfToken]) {
+    self.tokens = tokens
+  }
+  
+  static func parser(components: [String], tokenParser: TokenParser) throws -> IfExpressionParser {
+    try IfExpressionParser.validateBracketsBalance(components: components)
+    return try IfExpressionParser(components: components, tokenParser: tokenParser)
+  }
 
-      return .variable(try tokenParser.compileFilter(component))
+  static func validateBracketsBalance(components: [String]) throws {
+    guard try components.reduce(0, {
+      var bracketsBalance = $0
+      if $1 == "(" { bracketsBalance += 1 }
+      else if $1 == ")" { bracketsBalance -= 1 }
+      if bracketsBalance < 0 { throw TemplateSyntaxError("unbalanced brackets") }
+      return bracketsBalance
+    }) == 0 else {
+      throw TemplateSyntaxError("unbalanced brackets")
+    }
+  }
+  
+  private init(components: [String], tokenParser: TokenParser) throws {
+    var parsedComponents = [String]()
+    self.tokens = try components.enumerated().flatMap { index, component in
+      if component == "(" {
+        let (expression, parsed) = try IfExpressionParser.subExpression(
+          from: index + 1,
+          components: components,
+          tokenParser: tokenParser
+        )
+        parsedComponents.append(contentsOf: parsed)
+        return .subExpression(expression)
+      }
+      else if component == ")" {
+        parsedComponents.append(component)
+        return nil
+      } else if index >= parsedComponents.count {
+        parsedComponents.append(component)
+        if let op = findOperator(name: component) {
+          switch op {
+          case .infix(let name, let bindingPower, let cls):
+            return .infix(name: name, bindingPower: bindingPower, op: cls)
+          case .prefix(let name, let bindingPower, let cls):
+            return .prefix(name: name, bindingPower: bindingPower, op: cls)
+          }
+        }
+        return .variable(try tokenParser.compileFilter(component))
+      } else {
+        return nil
+      }
     }
   }
 
+  static func subExpression(from index: Int, components: [String], tokenParser: TokenParser) throws -> (Expression, [String]) {
+    var bracketsBalance = 1
+    let subComponents = Array(components
+      .suffix(from: index)
+      .prefix(while: {
+        if $0 == "(" { bracketsBalance += 1 }
+        else if $0 == ")" { bracketsBalance -= 1 }
+        return bracketsBalance != 0
+      }))
+    
+    let expressionParser = try IfExpressionParser(components: subComponents, tokenParser: tokenParser)
+    let expression = try expressionParser.parse()
+    return (expression, ["("] + subComponents + [")"])
+  }
+  
   var currentToken: IfToken {
     if tokens.count > position {
       return tokens[position]
@@ -154,12 +214,10 @@ final class IfExpressionParser {
   }
 }
 
-
 func parseExpression(components: [String], tokenParser: TokenParser) throws -> Expression {
-  let parser = try IfExpressionParser(components: components, tokenParser: tokenParser)
+  let parser = try IfExpressionParser.parser(components: components, tokenParser: tokenParser)
   return try parser.parse()
 }
-
 
 /// Represents an if condition and the associated nodes when the condition
 /// evaluates
