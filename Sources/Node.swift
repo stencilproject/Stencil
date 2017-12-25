@@ -15,13 +15,9 @@ public func renderNodes(_ nodes:[NodeType], _ context:Context) throws -> String 
     do {
       return try $0.render(context)
     } catch {
-      if var syntaxError = error as? TemplateSyntaxError, syntaxError.lexeme == nil, let token = $0.token {
-        if let contentsRange = context.environment.template?.templateString.range(of: token.contents, range: token.range) {
-          syntaxError.lexeme = Token.block(value: token.contents, at: contentsRange)
-        } else {
-          syntaxError.lexeme = token
-        }
-        throw syntaxError
+      if var error = error as? TemplateSyntaxError {
+        error.lexeme = error.lexeme ?? $0.token
+        throw error
       } else {
         throw error
       }

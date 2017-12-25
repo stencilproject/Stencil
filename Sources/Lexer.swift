@@ -77,6 +77,7 @@ struct Lexer {
 }
 
 protocol Lexeme {
+  var contents: String { get }
   var range: Range<String.Index> { get }
 }
 

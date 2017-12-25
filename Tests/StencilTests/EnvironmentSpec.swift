@@ -41,41 +41,25 @@ func testEnvironment() {
     
     $0.it("reports syntax error on invalid for tag syntax") {
       let template: Template = "Hello {% for name in %}{{ name }}, {% endfor %}!"
-      let error = expectedSyntaxError(
-        token: "{% for name in %}",
-        template: template,
-        description: "'for' statements should use the following syntax 'for x in y where condition'."
-      )
+      let error = expectedSyntaxError(token: "for name in", template: template, description: "'for' statements should use the following syntax 'for x in y where condition'.")
       try expect(try environment.renderTemplate(string: template.templateString, context:["names": ["Bob", "Alice"]])).toThrow(error)
     }
     
     $0.it("reports syntax error on missing endfor") {
       let template: Template = "{% for name in names %}{{ name }}"
-      let error = expectedSyntaxError(
-        token: "{% for name in names %}",
-        template: template,
-        description: "`endfor` was not found."
-      )
+      let error = expectedSyntaxError(token: "for name in names", template: template, description: "`endfor` was not found.")
       try expect(try environment.renderTemplate(string: template.templateString, context: ["names": ["Bob", "Alice"]])).toThrow(error)
     }
     
     $0.it("reports syntax error on unknown tag") {
       let template: Template = "{% for name in names %}{{ name }}{% end %}"
-      let error = expectedSyntaxError(
-        token: "{% end %}",
-        template: template,
-        description: "Unknown template tag 'end'"
-      )
+      let error = expectedSyntaxError(token: "end", template: template, description: "Unknown template tag 'end'")
       try expect(try environment.renderTemplate(string: template.templateString, context: ["names": ["Bob", "Alice"]])).toThrow(error)
     }
     
     $0.context("given unknown filter") {
       func expectedFilterError(token: String, template: Template) -> TemplateSyntaxError {
-        return expectedSyntaxError(
-          token: token,
-          template: template,
-          description: "Unknown filter 'unknown'"
-        )
+        return expectedSyntaxError(token: token, template: template, description: "Unknown filter 'unknown'")
       }
       
       $0.it("reports syntax error in for tag") {
@@ -110,7 +94,7 @@ func testEnvironment() {
       
       $0.it("reports syntax error in filter tag") {
         let template: Template = "{% filter unknown %}Text{% endfilter %}"
-        let error = expectedFilterError(token: "{% filter unknown %}", template: template)
+        let error = expectedFilterError(token: "filter unknown", template: template)
         try expect(try environment.renderTemplate(string: template.templateString, context: [:])).toThrow(error)
       }
       
@@ -228,7 +212,6 @@ func testEnvironment() {
         var error = expectedSyntaxError(token: "include \"invalid-include.html\"", template: template, description: "Unknown filter 'unknown'")
         error.parentError = parentError
         
-
         try expect(environment.renderTemplate(string: template.templateString, context: ["target": "World"])).toThrow(error)
       }
       
@@ -297,7 +280,7 @@ func testEnvironment() {
         
         let template = Template.init(templateString: "{% extends \"base.html\" %}\n" +
           "{% block body %}Child {{ target|unknown }}{% endblock %}", environment: environment, name: nil)
-        let error = expectedSyntaxError(token: "{{ target|unknown }}", template: template, description: "filter error")
+        let error = expectedSyntaxError(token: "target|unknown", template: template, description: "filter error")
         
         try expect(environment.render(template: template, context: ["target": "World"])).toThrow(error)
       }

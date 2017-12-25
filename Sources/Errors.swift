@@ -32,18 +32,15 @@ public struct TemplateSyntaxError : Error, Equatable, CustomStringConvertible {
   }
   
   static func description(reason: String, lexeme: Lexeme?, template: Template?) -> String {
-    if let template = template, let range = lexeme?.range {
-      let templateName = template.name.map({ "\($0):" }) ?? ""
-      let tokenContent = template.templateString.substring(with: range)
-      let line = template.templateString.rangeLine(range)
-      let highlight = "\(String(Array(repeating: " ", count: line.offset)))^\(String(Array(repeating: "~", count: max(tokenContent.length - 1, 0))))"
-      
-      return "\(templateName)\(line.number):\(line.offset): error: \(reason)\n"
-        + "\(line.content)\n"
-        + "\(highlight)\n"
-    } else {
-      return reason
-    }
+    guard let template = template, let lexeme = lexeme else { return reason }
+    let templateName = template.name.map({ "\($0):" }) ?? ""
+    let range = template.templateString.range(of: lexeme.contents, range: lexeme.range) ?? lexeme.range
+    let line = template.templateString.rangeLine(range)
+    let highlight = "\(String(Array(repeating: " ", count: line.offset)))^\(String(Array(repeating: "~", count: max(lexeme.contents.length - 1, 0))))"
+
+    return "\(templateName)\(line.number):\(line.offset): error: \(reason)\n"
+      + "\(line.content)\n"
+      + "\(highlight)\n"
   }
 
   init(reason: String, lexeme: Lexeme? = nil, template: Template? = nil, parentError: Error? = nil) {
