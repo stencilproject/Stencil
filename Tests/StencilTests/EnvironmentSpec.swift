@@ -256,7 +256,7 @@ func testEnvironment() {
         let baseTemplate = try environment.loadTemplate(name: "invalid-base.html")
 
         let parentError = expectedSyntaxError(token: "target|unknown", template: baseTemplate, description: "filter error")
-        var error = expectedSyntaxError(token: "extends \"invalid-base.html\"", template: template, description: "filter error")
+        var error = expectedSyntaxError(token: "block.super", template: template, description: "filter error")
         error.parentError = parentError
 
         try expect(environment.render(template: template, context: ["target": "World"])).toThrow(error)

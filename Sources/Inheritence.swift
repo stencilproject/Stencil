@@ -146,13 +146,27 @@ class BlockNode : NodeType {
 
   func render(_ context: Context) throws -> String {
     if let blockContext = context[BlockContext.contextKey] as? BlockContext, let child = blockContext.popBlock(named: name) {
-      // node is a block node from child template that extends this node (has the same name)
-      let newContext: [String: Any]
-        newContext = [
-          BlockContext.contextKey: blockContext,
-          // render current node so that it's content can be used as part of node that extends it
-          "block": ["super": try self.render(context)]
-        ]
+      // child node is a block node from child template that extends this node (has the same name)
+
+      var newContext: [String: Any] = [BlockContext.contextKey: blockContext]
+      
+      if let blockSuperNode = child.node.nodes.first(where: {
+        if case .variable(let variable, _)? = $0.token, variable == "block.super" { return true }
+        else { return false}
+      }) {
+        do {
+          // render current (base) node so that its content can be used as part of node that extends it
+          newContext["block"] = ["super": try self.render(context)]
+        } catch {
+          let baseError = context.errorReporter.reportError(error)
+          throw TemplateSyntaxError(
+            reason: (baseError as? TemplateSyntaxError)?.reason ?? "\(baseError)",
+            lexeme: blockSuperNode.token,
+            template: child.template,
+            parentError: baseError)
+        }
+      }
+      
       // render extension node
       do {
         return try context.push(dictionary: newContext) {
@@ -165,7 +179,6 @@ class BlockNode : NodeType {
         if var error = error as? TemplateSyntaxError {
           error.template = error.template ?? child.template
           error.lexeme = error.lexeme ?? child.node.token
-
           throw error
         } else {
           throw error
