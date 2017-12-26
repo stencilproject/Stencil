@@ -8,7 +8,7 @@ let NSFileNoSuchFileError = 4
 /// A class representing a template
 open class Template: ExpressibleByStringLiteral {
   let templateString: String
-  let environment: Environment
+  internal(set) var environment: Environment
   let tokens: [Token]
 
   /// The name of the loaded Template if the Template was loaded from a Loader
