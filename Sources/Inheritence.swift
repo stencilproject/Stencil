@@ -161,7 +161,7 @@ class BlockNode : NodeType {
           let baseError = context.errorReporter.reportError(error)
           throw TemplateSyntaxError(
             reason: (baseError as? TemplateSyntaxError)?.reason ?? "\(baseError)",
-            lexeme: blockSuperNode.token,
+            token: blockSuperNode.token,
             template: child.template,
             parentError: baseError)
         }
@@ -178,7 +178,7 @@ class BlockNode : NodeType {
         // unless it's already set
         if var error = error as? TemplateSyntaxError {
           error.template = error.template ?? child.template
-          error.lexeme = error.lexeme ?? child.node.token
+          error.token = error.token ?? child.node.token
           throw error
         } else {
           throw error

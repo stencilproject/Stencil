@@ -35,8 +35,8 @@ func testEnvironment() {
     }
     
     func expectedSyntaxError(token: String, template: Template, description: String) -> TemplateSyntaxError {
-      let lexeme = Token.block(value: token, at: template.templateString.range(of: token)!)
-      return TemplateSyntaxError(reason: description, lexeme: lexeme, template: template, parentError: nil)
+      let token = Token.block(value: token, at: template.templateString.range(of: token)!)
+      return TemplateSyntaxError(reason: description, token: token, template: template, parentError: nil)
     }
     
     $0.it("reports syntax error on invalid for tag syntax") {

@@ -16,7 +16,7 @@ public func renderNodes(_ nodes:[NodeType], _ context:Context) throws -> String 
       return try $0.render(context)
     } catch {
       if var error = error as? TemplateSyntaxError {
-        error.lexeme = error.lexeme ?? $0.token
+        error.token = error.token ?? $0.token
         throw error
       } else {
         throw error

@@ -20,35 +20,16 @@ public class TemplateDoesNotExist: Error, CustomStringConvertible {
 
 public struct TemplateSyntaxError : Error, Equatable, CustomStringConvertible {
   public let reason: String
-  public private(set) var description: String
-
+  public var description: String { return reason }
+  public internal(set) var token: Token?
   public internal(set) var template: Template?
   public internal(set) var parentError: Error?
-
-  var lexeme: Lexeme? {
-    didSet {
-      description = TemplateSyntaxError.description(reason: reason, lexeme: lexeme, template: template)
-    }
-  }
   
-  static func description(reason: String, lexeme: Lexeme?, template: Template?) -> String {
-    guard let template = template, let lexeme = lexeme else { return reason }
-    let templateName = template.name.map({ "\($0):" }) ?? ""
-    let range = template.templateString.range(of: lexeme.contents, range: lexeme.range) ?? lexeme.range
-    let line = template.templateString.rangeLine(range)
-    let highlight = "\(String(Array(repeating: " ", count: line.offset)))^\(String(Array(repeating: "~", count: max(lexeme.contents.length - 1, 0))))"
-
-    return "\(templateName)\(line.number):\(line.offset): error: \(reason)\n"
-      + "\(line.content)\n"
-      + "\(highlight)\n"
-  }
-
-  init(reason: String, lexeme: Lexeme? = nil, template: Template? = nil, parentError: Error? = nil) {
+  public init(reason: String, token: Token? = nil, template: Template? = nil, parentError: Error? = nil) {
     self.reason = reason
     self.parentError = parentError
     self.template = template
-    self.lexeme = lexeme
-    self.description = TemplateSyntaxError.description(reason: reason, lexeme: lexeme, template: template)
+    self.token = token
   }
   
   public init(_ description: String) {
@@ -95,7 +76,7 @@ open class SimpleErrorReporter: ErrorReporter {
     guard let context = context else { return error }
 
     return TemplateSyntaxError(reason: (error as? TemplateSyntaxError)?.reason ?? "\(error)",
-                               lexeme: (error as? TemplateSyntaxError)?.lexeme,
+                               token: (error as? TemplateSyntaxError)?.token,
                                template: (error as? TemplateSyntaxError)?.template ?? context.template,
                                parentError: (error as? TemplateSyntaxError)?.parentError
     )
@@ -104,7 +85,21 @@ open class SimpleErrorReporter: ErrorReporter {
   open func renderError(_ error: Error) -> String {
     guard let templateError = error as? TemplateSyntaxError else { return error.localizedDescription }
     
-    var descriptions = [templateError.description]
+    let description: String
+    if let template = templateError.template, let token = templateError.token {
+      let templateName = template.name.map({ "\($0):" }) ?? ""
+      let range = template.templateString.range(of: token.contents, range: token.range) ?? token.range
+      let line = template.templateString.rangeLine(range)
+      let highlight = "\(String(Array(repeating: " ", count: line.offset)))^\(String(Array(repeating: "~", count: max(token.contents.characters.count - 1, 0))))"
+      
+      description = "\(templateName)\(line.number):\(line.offset): error: \(templateError.reason)\n"
+        + "\(line.content)\n"
+        + "\(highlight)\n"
+    } else {
+      description = templateError.reason
+    }
+    
+    var descriptions = [description]
     
     var currentError: TemplateSyntaxError? = templateError
     while let parentError = currentError?.parentError {
@@ -127,13 +122,4 @@ extension String {
   var range: Range<String.Index> {
     return startIndex..<endIndex
   }
-  
-  var length: Int {
-    #if swift(>=3.2)
-      return count
-    #else
-      return characters.count
-    #endif
-  }
-  
 }

@@ -56,7 +56,7 @@ struct Lexer {
     return tokens
   }
   
-  func lexemeLine(_ lexeme: Lexeme) -> (content: String, number: Int, offset: String.IndexDistance) {
+  func tokenLine(_ token: Token) -> (content: String, number: Int, offset: String.IndexDistance) {
     var lineNumber: Int = 0
     var offset = 0
     var lineContent = ""
@@ -64,9 +64,9 @@ struct Lexer {
     for line in templateString.components(separatedBy: CharacterSet.newlines) {
       lineNumber += 1
       lineContent = line
-      if let rangeOfLine = templateString.range(of: line), rangeOfLine.contains(lexeme.range.lowerBound) {
+      if let rangeOfLine = templateString.range(of: line), rangeOfLine.contains(token.range.lowerBound) {
         offset = templateString.distance(from: rangeOfLine.lowerBound, to:
-          lexeme.range.lowerBound)
+          token.range.lowerBound)
         break
       }
     }
@@ -74,11 +74,6 @@ struct Lexer {
     return (lineContent, lineNumber, offset)
   }
   
-}
-
-protocol Lexeme {
-  var contents: String { get }
-  var range: Range<String.Index> { get }
 }
 
 class Scanner {
@@ -111,7 +106,7 @@ class Scanner {
         let result = content.substring(to: index)
 
         if returnUntil {
-          range = range.lowerBound..<originalContent.index(range.upperBound, offsetBy: until.length)
+          range = range.lowerBound..<originalContent.index(range.upperBound, offsetBy: until.characters.count)
           content = substring.substring(from: until.endIndex)
           return result + until
         }

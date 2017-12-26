@@ -40,7 +40,7 @@ extension String {
   }
 }
 
-public enum Token : Equatable, Lexeme {
+public enum Token : Equatable {
   /// A token representing a piece of text.
   case text(value: String, at: Range<String.Index>)
 

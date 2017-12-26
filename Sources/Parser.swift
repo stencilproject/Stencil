@@ -54,8 +54,8 @@ public class TokenParser {
             let node = try parser(self, token)
             nodes.append(node)
           } catch {
-            if var syntaxError = error as? TemplateSyntaxError, syntaxError.lexeme == nil {
-              syntaxError.lexeme = token
+            if var syntaxError = error as? TemplateSyntaxError, syntaxError.token == nil {
+              syntaxError.token = token
               throw syntaxError
             } else {
               throw error
@@ -106,11 +106,11 @@ public class TokenParser {
     do {
       return try FilterExpression(token: filterToken, parser: self)
     } catch {
-      if var syntaxError = error as? TemplateSyntaxError, syntaxError.lexeme == nil {
+      if var syntaxError = error as? TemplateSyntaxError, syntaxError.token == nil {
         if let filterTokenRange = environment.template?.templateString.range(of: filterToken, range: containingToken.range) {
-          syntaxError.lexeme = Token.block(value: filterToken, at: filterTokenRange)
+          syntaxError.token = Token.block(value: filterToken, at: filterTokenRange)
         } else {
-          syntaxError.lexeme = containingToken
+          syntaxError.token = containingToken
         }
         throw syntaxError
       } else {
