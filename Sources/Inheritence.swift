@@ -4,8 +4,8 @@ class BlockContext {
   // contains mapping of block names to their nodes and templates where they are defined
   var blocks: [String: [(BlockNode, Template?)]]
 
-  init(blocks: [String: (BlockNode, Template?)]) {
-    self.blocks = blocks.mapValues({ [$0] })
+  init(blocks: [String: [(BlockNode, Template?)]]) {
+    self.blocks = blocks
   }
 
   func pushBlock(_ block: BlockNode, named blockName: String, definedIn template: Template?) {
@@ -95,7 +95,9 @@ class ExtendsNode : NodeType {
         blockContext.pushBlock(block, named: name, definedIn: template)
       }
     } else {
-      blockContext = BlockContext(blocks: blocks.mapValues({ ($0, template) }))
+      var blocks = [String: [(BlockNode, Template?)]]()
+      self.blocks.forEach { blocks[$0.key] = [($0.value, template)] }
+      blockContext = BlockContext(blocks: blocks)
     }
 
     do {
