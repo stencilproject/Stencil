@@ -60,7 +60,7 @@ public struct Variable : Equatable, Resolvable {
 
     if (variable.hasPrefix("'") && variable.hasSuffix("'")) || (variable.hasPrefix("\"") && variable.hasSuffix("\"")) {
       // String literal
-      return variable[variable.characters.index(after: variable.startIndex) ..< variable.characters.index(before: variable.endIndex)]
+      return String(variable[variable.characters.index(after: variable.startIndex) ..< variable.characters.index(before: variable.endIndex)])
     }
 
     if let number = Number(variable) {
