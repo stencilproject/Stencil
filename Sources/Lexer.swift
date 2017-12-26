@@ -56,24 +56,6 @@ struct Lexer {
     return tokens
   }
   
-  func tokenLine(_ token: Token) -> (content: String, number: Int, offset: String.IndexDistance) {
-    var lineNumber: Int = 0
-    var offset = 0
-    var lineContent = ""
-
-    for line in templateString.components(separatedBy: CharacterSet.newlines) {
-      lineNumber += 1
-      lineContent = line
-      if let rangeOfLine = templateString.range(of: line), rangeOfLine.contains(token.range.lowerBound) {
-        offset = templateString.distance(from: rangeOfLine.lowerBound, to:
-          token.range.lowerBound)
-        break
-      }
-    }
-
-    return (lineContent, lineNumber, offset)
-  }
-  
 }
 
 class Scanner {

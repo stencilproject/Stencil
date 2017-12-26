@@ -28,21 +28,22 @@ class ForNode : NodeType {
 
     let forNodes = try parser.parse(until(["endfor", "empty"]))
 
-    if let token = parser.nextToken() {
-      if token.contents == "empty" {
-        emptyNodes = try parser.parse(until(["endfor"]))
-        _ = parser.nextToken()
-      }
-    } else {
-      throw TemplateSyntaxError("`endfor` was not found.")
-    }
-
     let `where`: Expression?
     if components.count >= 6 {
       `where` = try parseExpression(components: Array(components.suffix(from: 5)), tokenParser: parser, token: token)
     } else {
       `where` = nil
     }
+
+    guard let token = parser.nextToken() else {
+      throw TemplateSyntaxError("`endfor` was not found.")
+    }
+    
+    if token.contents == "empty" {
+      emptyNodes = try parser.parse(until(["endfor"]))
+      _ = parser.nextToken()
+    }
+
     return ForNode(resolvable: filter, loopVariables: loopVariables, nodes: forNodes, emptyNodes:emptyNodes, where: `where`, token: token)
   }
 

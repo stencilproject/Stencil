@@ -54,9 +54,9 @@ public class TokenParser {
             let node = try parser(self, token)
             nodes.append(node)
           } catch {
-            if var syntaxError = error as? TemplateSyntaxError, syntaxError.token == nil {
-              syntaxError.token = token
-              throw syntaxError
+            if var error = error as? TemplateSyntaxError {
+              error.token = error.token ?? token
+              throw error
             } else {
               throw error
             }
@@ -106,13 +106,14 @@ public class TokenParser {
     do {
       return try FilterExpression(token: filterToken, parser: self)
     } catch {
-      if var syntaxError = error as? TemplateSyntaxError, syntaxError.token == nil {
+      if var error = error as? TemplateSyntaxError, error.token == nil {
+        // find range of filter in the containing token so that only filter is highligted, not the whole token
         if let filterTokenRange = environment.template?.templateString.range(of: filterToken, range: containingToken.range) {
-          syntaxError.token = Token.block(value: filterToken, at: filterTokenRange)
+          error.token = Token.variable(value: filterToken, at: filterTokenRange)
         } else {
-          syntaxError.token = containingToken
+          error.token = containingToken
         }
-        throw syntaxError
+        throw error
       } else {
         throw error
       }

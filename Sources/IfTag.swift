@@ -226,18 +226,18 @@ class IfNode : NodeType {
     var trueNodes = [NodeType]()
     var falseNodes = [NodeType]()
 
+    let expression = try parseExpression(components: components, tokenParser: parser, token: token)
     falseNodes = try parser.parse(until(["endif", "else"]))
 
-    if let token = parser.nextToken() {
-      if token.contents == "else" {
-        trueNodes = try parser.parse(until(["endif"]))
-        _ = parser.nextToken()
-      }
-    } else {
+    guard let token = parser.nextToken() else {
       throw TemplateSyntaxError("`endif` was not found.")
     }
 
-    let expression = try parseExpression(components: components, tokenParser: parser, token: token)
+    if token.contents == "else" {
+      trueNodes = try parser.parse(until(["endif"]))
+      _ = parser.nextToken()
+    }
+
     return IfNode(conditions: [
       IfCondition(expression: expression, nodes: trueNodes),
       IfCondition(expression: nil, nodes: falseNodes),
