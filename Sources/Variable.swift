@@ -100,14 +100,8 @@ public struct Variable : Equatable, Resolvable {
         current = object.value(forKey: bit)
 #endif
       } else if let value = current {
-        let mirror = Mirror(reflecting: value)
-        current = mirror.descendant(bit)
-
+        current = Mirror(reflecting: value).getValue(for: bit)
         if current == nil {
-          return nil
-          // mirror returns non-nil value even for nil-containing properties
-          // so we have to check if its value is actually nil or not
-        } else if let current = current, String(describing: current) == "nil" {
           return nil
         }
       } else {
@@ -178,4 +172,19 @@ func parseFilterComponents(token: String) -> (String, [Variable]) {
     .smartSplit(separator: ",")
     .map { Variable($0) }
   return (name, variables)
+}
+
+extension Mirror {
+  func getValue(for key: String) -> Any? {
+    let result = descendant(key)
+    if result == nil {
+      // go through inheritance chain to reach superclass properties
+      return superclassMirror?.getValue(for: key)
+    } else if let result = result, String(describing: result) == "nil" {
+      // mirror returns non-nil value even for nil-containing properties
+      // so we have to check if its value is actually nil or not
+      return nil
+    }
+    return result
+  }
 }

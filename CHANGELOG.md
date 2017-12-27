@@ -1,5 +1,23 @@
 # Stencil Changelog
 
+## Master
+
+### Enhancements
+
+- Added support for resolving superclass properties for not-NSObject subclasses
+
+### Bug Fixes
+
+- Fixed rendering `{{ block.super }}` with several levels of inheritance
+- Fixed checking dictionary values for nil in `default` filter
+
+
+## 0.10.1
+
+### Enhancements
+
+- Add support for Xcode 9.1.
+
 ## 0.10.0
 
 ### Enhancements

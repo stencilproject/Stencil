@@ -29,7 +29,7 @@ struct Lexer {
       guard string.characters.count > 4 else { return "" }
       let start = string.index(string.startIndex, offsetBy: length.0)
       let end = string.index(string.endIndex, offsetBy: -length.1)
-      return string[start..<end].trim(character: " ")
+      return String(string[start..<end]).trim(character: " ")
     }
     func additionalTagLength(b: WhitespaceBehavior.Behavior) -> Int {
       switch b {
@@ -178,6 +178,6 @@ extension String {
   func trim(character: Character) -> String {
     let first = findFirstNot(character: character) ?? startIndex
     let last = findLastNot(character: character) ?? endIndex
-    return self[first..<last]
+    return String(self[first..<last])
   }
 }

@@ -4,7 +4,10 @@ import Spectre
 
 
 #if os(OSX)
-@objc class Object : NSObject {
+@objc class Superclass: NSObject {
+  let name = "Foo"
+}
+@objc class Object : Superclass {
   let title = "Hello World"
 }
 #endif
@@ -17,6 +20,13 @@ fileprivate struct Article {
   let author: Person
 }
 
+fileprivate class WebSite {
+  let url: String = "blog.com"
+}
+
+fileprivate class Blog: WebSite {
+  let articles: [Article] = [Article(author: Person(name: "Kyle"))]
+}
 
 func testVariable() {
   describe("Variable") {
@@ -35,6 +45,7 @@ func testVariable() {
 #if os(OSX)
     context["object"] = Object()
 #endif
+    context["blog"] = Blog()
 
     $0.it("can resolve a string literal with double quotes") {
       let variable = Variable("\"name\"")
@@ -122,6 +133,25 @@ func testVariable() {
       let result = try variable.resolve(context) as? String
       try expect(result) == "Hello World"
     }
+
+    $0.it("can resolve a superclass value via KVO") {
+      let variable = Variable("object.name")
+      let result = try variable.resolve(context) as? String
+      try expect(result) == "Foo"
+    }
 #endif
+    
+    $0.it("can resolve a value via reflection") {
+      let variable = Variable("blog.articles.0.author.name")
+      let result = try variable.resolve(context) as? String
+      try expect(result) == "Kyle"
+    }
+
+    $0.it("can resolve a superclass value via reflection") {
+      let variable = Variable("blog.url")
+      let result = try variable.resolve(context) as? String
+      try expect(result) == "blog.com"
+    }
+
   }
 }
