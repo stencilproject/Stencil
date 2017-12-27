@@ -44,6 +44,17 @@ public struct TemplateSyntaxError : Error, Equatable, CustomStringConvertible {
 
 }
 
+extension Error {
+  func withToken(_ token: Token?) -> Error {
+    if var error = self as? TemplateSyntaxError {
+      error.token = error.token ?? token
+      return error
+    } else {
+      return TemplateSyntaxError(reason: "\(self)", token: token)
+    }
+  }
+}
+
 public protocol ErrorReporter: class {
   func renderError(_ error: Error) -> String
 }

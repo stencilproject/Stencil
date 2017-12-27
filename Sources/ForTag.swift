@@ -24,10 +24,6 @@ class ForNode : NodeType {
     let variable = components[3]
     let filter = try parser.compileFilter(variable, containedIn: token)
 
-    var emptyNodes = [NodeType]()
-
-    let forNodes = try parser.parse(until(["endfor", "empty"]))
-
     let `where`: Expression?
     if components.count >= 6 {
       `where` = try parseExpression(components: Array(components.suffix(from: 5)), tokenParser: parser, token: token)
@@ -35,10 +31,13 @@ class ForNode : NodeType {
       `where` = nil
     }
 
+    let forNodes = try parser.parse(until(["endfor", "empty"]))
+
     guard let token = parser.nextToken() else {
       throw TemplateSyntaxError("`endfor` was not found.")
     }
 
+    var emptyNodes = [NodeType]()
     if token.contents == "empty" {
       emptyNodes = try parser.parse(until(["endfor"]))
       _ = parser.nextToken()
@@ -90,7 +89,7 @@ class ForNode : NodeType {
     var values: [Any]
 
     if let dictionary = resolved as? [String: Any], !dictionary.isEmpty {
-      values = dictionary.map { ($0.key, $0.value) } as [(String, Any)]
+      values = dictionary.map { ($0.key, $0.value) }
     } else if let array = resolved as? [Any] {
       values = array
     } else if let range = resolved as? CountableClosedRange<Int> {

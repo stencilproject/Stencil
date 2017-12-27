@@ -54,12 +54,7 @@ public class TokenParser {
             let node = try parser(self, token)
             nodes.append(node)
           } catch {
-            if var error = error as? TemplateSyntaxError {
-              error.token = error.token ?? token
-              throw error
-            } else {
-              throw error
-            }
+            throw error.withToken(token)
           }
         }
       case .comment:
