@@ -5,6 +5,7 @@
 ### Enhancements
 
 - Added support for resolving superclass properties for not-NSObject subclasses
+- You can now iterate objects and values of structs and tuples over their stored properties by their names and values  
 
 ### Bug Fixes
 

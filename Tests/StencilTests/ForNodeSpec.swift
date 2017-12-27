@@ -167,7 +167,61 @@ func testForNode() {
       let error = TemplateSyntaxError("'for' statements should use the following 'for x in y where condition' `for i`.")
       try expect(try parser.parse()).toThrow(error)
     }
+
+    $0.it("iterates struct properties") {
+      struct MyStruct {
+        let string: String
+        let number: Int
+      }
+
+      let context = Context(dictionary: [
+        "struct": MyStruct(string: "abc", number: 123)
+        ])
+
+      let nodes: [NodeType] = [VariableNode(variable: "property"), VariableNode(variable: "\":\""), VariableNode(variable: "value"),VariableNode(variable: "\";\"")]
+      let node = ForNode(resolvable: Variable("struct"), loopVariables: ["property", "value"], nodes: nodes, emptyNodes: [])
+      try expect(try node.render(context)) == "string:abc;number:123;"
+    }
+
+    $0.it("iterates tuple items") {
+      let context = Context(dictionary: [
+        "tuple": (one: 1, two: "dva"),
+        ])
+
+      let nodes: [NodeType] = [VariableNode(variable: "label"), VariableNode(variable: "\":\""), VariableNode(variable: "value"),VariableNode(variable: "\";\"")]
+      let node = ForNode(resolvable: Variable("tuple"), loopVariables: ["label", "value"], nodes: nodes, emptyNodes: [])
+      try expect(try node.render(context)) == "one:1;two:dva;"
+    }
+
+    $0.it("iterates class properties") {
+      class MyClass {
+        var baseString: String
+        var baseInt: Int
+        init(_ string: String, _ int: Int) {
+          baseString = string
+          baseInt = int
+        }
+      }
+
+      class MySubclass: MyClass {
+        var childString: String
+        init(_ childString: String, _ string: String, _ int: Int) {
+          self.childString = childString
+          super.init(string, int)
+        }
+      }
+
+      let context = Context(dictionary: [
+        "class": MySubclass("child", "base", 1)
+        ])
+
+      let nodes: [NodeType] = [VariableNode(variable: "label"), VariableNode(variable: "\":\""), VariableNode(variable: "value"),VariableNode(variable: "\";\"")]
+      let node = ForNode(resolvable: Variable("class"), loopVariables: ["label", "value"], nodes: nodes, emptyNodes: [])
+      try expect(try node.render(context)) == "childString:child;baseString:base;baseInt:1;"
+    }
+
   }
+
 }
 
 
