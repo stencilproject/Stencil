@@ -176,7 +176,84 @@ func testForNode() {
       let error = TemplateSyntaxError("'for' statements should use the following 'for x in y where condition' `for i`.")
       try expect(try parser.parse()).toThrow(error)
     }
+
+    $0.it("can iterate over struct properties") {
+      struct MyStruct {
+        let string: String
+        let number: Int
+      }
+
+      let context = Context(dictionary: [
+        "struct": MyStruct(string: "abc", number: 123)
+      ])
+
+      let nodes: [NodeType] = [
+        VariableNode(variable: "property"),
+        TextNode(text: "="),
+        VariableNode(variable: "value"),
+        TextNode(text: "\n"),
+      ]
+      let node = ForNode(resolvable: Variable("struct"), loopVariables: ["property", "value"], nodes: nodes, emptyNodes: [])
+      let result = try node.render(context)
+
+      try expect(result) == "string=abc\nnumber=123\n"
+    }
+
+    $0.it("can iterate tuple items") {
+      let context = Context(dictionary: [
+        "tuple": (one: 1, two: "dva"),
+      ])
+
+      let nodes: [NodeType] = [
+        VariableNode(variable: "label"),
+        TextNode(text: "="),
+        VariableNode(variable: "value"),
+        TextNode(text: "\n"),
+      ]
+
+      let node = ForNode(resolvable: Variable("tuple"), loopVariables: ["label", "value"], nodes: nodes, emptyNodes: [])
+      let result = try node.render(context)
+
+      try expect(result) == "one=1\ntwo=dva\n"
+    }
+
+    $0.it("can iterate over class properties") {
+      class MyClass {
+        var baseString: String
+        var baseInt: Int
+        init(_ string: String, _ int: Int) {
+          baseString = string
+          baseInt = int
+        }
+      }
+
+      class MySubclass: MyClass {
+        var childString: String
+        init(_ childString: String, _ string: String, _ int: Int) {
+          self.childString = childString
+          super.init(string, int)
+        }
+      }
+
+      let context = Context(dictionary: [
+        "class": MySubclass("child", "base", 1)
+      ])
+
+      let nodes: [NodeType] = [
+        VariableNode(variable: "label"),
+        TextNode(text: "="),
+        VariableNode(variable: "value"),
+        TextNode(text: "\n"),
+      ]
+
+      let node = ForNode(resolvable: Variable("class"), loopVariables: ["label", "value"], nodes: nodes, emptyNodes: [])
+      let result = try node.render(context)
+
+      try expect(result) == "childString=child\nbaseString=base\nbaseInt=1\n"
+    }
+
   }
+
 }
 
 
