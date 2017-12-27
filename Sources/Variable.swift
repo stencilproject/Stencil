@@ -81,6 +81,9 @@ public struct Variable : Equatable, Resolvable {
           current = dictionary.count
         } else {
           current = dictionary[bit]
+          if current == nil, let key = context[bit] as? String {
+            current = dictionary[key]
+          }
         }
       } else if let array = current as? [Any] {
         if let index = Int(bit) {
@@ -95,17 +98,27 @@ public struct Variable : Equatable, Resolvable {
           current = array.last
         } else if bit == "count" {
           current = array.count
+        } else if let index = context[bit] as? Int {
+          if index >= 0 && index < array.count {
+            current = array[index]
+          } else {
+            current = nil
+          }
         }
       } else if let object = current as? NSObject {  // NSKeyValueCoding
 #if os(Linux)
         return nil
 #else
         current = object.value(forKey: bit)
+        if current == nil, let key = context[bit] as? String {
+          current = object.value(forKey: key)
+        }
 #endif
       } else if let value = current {
-        current = Mirror(reflecting: value).getValue(for: bit)
-        if current == nil {
-          return nil
+        let mirror = Mirror(reflecting: value)
+        current = mirror.getValue(for: bit)
+        if current == nil, let label = context[bit] as? String {
+          current = mirror.getValue(for: label)
         }
       } else {
         return nil
