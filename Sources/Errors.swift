@@ -70,15 +70,3 @@ open class SimpleErrorReporter: ErrorReporter {
   }
   
 }
-
-extension Range where Bound == String.Index {
-  internal static var unknown: Range {
-    return "".range
-  }
-}
-
-extension String {
-  var range: Range<String.Index> {
-    return startIndex..<endIndex
-  }
-}
