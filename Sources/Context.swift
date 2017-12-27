@@ -4,7 +4,7 @@ public class Context {
 
   public let environment: Environment
 
-  init(dictionary: [String: Any]? = nil, environment: Environment? = nil) {
+  init(dictionary: [String: Any?]? = nil, environment: Environment? = nil) {
     if let dictionary = dictionary {
       dictionaries = [dictionary]
     } else {
@@ -37,7 +37,7 @@ public class Context {
   }
 
   /// Push a new level into the Context
-  fileprivate func push(_ dictionary: [String: Any]? = nil) {
+  fileprivate func push(_ dictionary: [String: Any?]? = nil) {
     dictionaries.append(dictionary ?? [:])
   }
 
@@ -47,14 +47,14 @@ public class Context {
   }
 
   /// Push a new level onto the context for the duration of the execution of the given closure
-  public func push<Result>(dictionary: [String: Any]? = nil, closure: (() throws -> Result)) rethrows -> Result {
+  public func push<Result>(dictionary: [String: Any?]? = nil, closure: (() throws -> Result)) rethrows -> Result {
     push(dictionary)
     defer { _ = pop() }
     return try closure()
   }
 
-  public func flatten() -> [String: Any] {
-    var accumulator: [String: Any] = [:]
+  public func flatten() -> [String: Any?] {
+    var accumulator: [String: Any?] = [:]
 
     for dictionary in dictionaries {
       for (key, value) in dictionary {

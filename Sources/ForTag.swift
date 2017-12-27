@@ -8,11 +8,18 @@ class ForNode : NodeType {
   let `where`: Expression?
 
   class func parse(_ parser:TokenParser, token:Token) throws -> NodeType {
-    let components = token.components()
+    var components = token.components()
+    
+    let error = TemplateSyntaxError("'for' statements should use the following 'for x in y where condition' `\(token.contents)`.")
+    guard components.count >= 3 else { throw error }
 
-    guard components.count >= 3 && components[2] == "in" &&
-        (components.count == 4 || (components.count >= 6 && components[4] == "where")) else {
-      throw TemplateSyntaxError("'for' statements should use the following 'for x in y where condition' `\(token.contents)`.")
+    // this will allow using comma with spaces between loop variables
+    if components[1].hasSuffix(",") {
+      components[1] = "\(components[1])\(components.remove(at: 2))"
+    }
+    
+    guard components[2] == "in" && (components.count == 4 || (components.count >= 6 && components[4] == "where")) else {
+      throw error
     }
 
     let loopVariables = components[1].characters
