@@ -95,11 +95,11 @@ public struct Variable : Equatable, Resolvable {
           current = array.count
         }
       } else if let object = current as? NSObject {  // NSKeyValueCoding
-#if os(Linux)
-        return nil
-#else
-        current = object.value(forKey: bit)
-#endif
+        #if os(Linux)
+          return nil
+        #else
+          current = object.value(forKey: bit)
+        #endif
       } else if let value = current {
         current = Mirror(reflecting: value).getValue(for: bit)
         if current == nil {

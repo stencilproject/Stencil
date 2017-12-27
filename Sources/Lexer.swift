@@ -47,7 +47,7 @@ struct Lexer {
       "{{": "}}",
       "{%": "%}",
       "{#": "#}",
-    ]
+      ]
 
     while !scanner.isEmpty {
       if let text = scanner.scan(until: ["{{", "{%", "{#"]) {
@@ -66,14 +66,14 @@ struct Lexer {
 
     return tokens
   }
-  
+
 }
 
 class Scanner {
   let originalContent: String
   var content: String
   var range: Range<String.Index>
-  
+
   init(_ content: String) {
     self.originalContent = content
     self.content = content
@@ -83,7 +83,7 @@ class Scanner {
   var isEmpty: Bool {
     return content.isEmpty
   }
-  
+
   func scan(until: String, returnUntil: Bool = false) -> String {
     var index = content.startIndex
 
@@ -94,7 +94,7 @@ class Scanner {
     range = range.upperBound..<range.upperBound
     while index != content.endIndex {
       let substring = content.substring(from: index)
-      
+
       if substring.hasPrefix(until) {
         let result = content.substring(to: index)
 
@@ -174,12 +174,12 @@ extension String {
     let last = findLastNot(character: character) ?? endIndex
     return String(self[first..<last])
   }
-  
+
   public func rangeLine(_ range: Range<String.Index>) -> RangeLine {
     var lineNumber: UInt = 0
     var offset: Int = 0
     var lineContent = ""
-    
+
     for line in components(separatedBy: CharacterSet.newlines) {
       lineNumber += 1
       lineContent = line
@@ -189,7 +189,7 @@ extension String {
         break
       }
     }
-    
+
     return (lineContent, lineNumber, offset)
   }
 }

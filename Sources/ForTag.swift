@@ -12,8 +12,8 @@ class ForNode : NodeType {
     let components = token.components()
 
     guard components.count >= 3 && components[2] == "in" &&
-        (components.count == 4 || (components.count >= 6 && components[4] == "where")) else {
-      throw TemplateSyntaxError("'for' statements should use the following syntax 'for x in y where condition'.")
+      (components.count == 4 || (components.count >= 6 && components[4] == "where")) else {
+        throw TemplateSyntaxError("'for' statements should use the following syntax 'for x in y where condition'.")
     }
 
     let loopVariables = components[1].characters
@@ -38,7 +38,7 @@ class ForNode : NodeType {
     guard let token = parser.nextToken() else {
       throw TemplateSyntaxError("`endfor` was not found.")
     }
-    
+
     if token.contents == "empty" {
       emptyNodes = try parser.parse(until(["endfor"]))
       _ = parser.nextToken()
@@ -134,14 +134,14 @@ class ForNode : NodeType {
           "last": index == (count - 1),
           "counter": index + 1,
           "counter0": index,
-        ]
+          ]
 
         return try context.push(dictionary: ["forloop": forContext]) {
           return try push(value: item, context: context) {
             try renderNodes(nodes, context)
           }
         }
-      }.joined(separator: "")
+        }.joined(separator: "")
     }
 
     return try context.push {

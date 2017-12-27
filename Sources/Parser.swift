@@ -101,7 +101,7 @@ public class TokenParser {
 
     throw TemplateSyntaxError("Unknown filter '\(name)'")
   }
-  
+
   public func compileFilter(_ filterToken: String, containedIn containingToken: Token) throws -> Resolvable {
     do {
       return try FilterExpression(token: filterToken, parser: self)
@@ -121,7 +121,7 @@ public class TokenParser {
       }
     }
   }
-  
+
   @available(*, deprecated, message: "Use compileFilter(_:containedIn:)")
   public func compileFilter(_ token: String) throws -> Resolvable {
     return try FilterExpression(token: token, parser: self)

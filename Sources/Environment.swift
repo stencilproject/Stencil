@@ -9,7 +9,7 @@ public struct Environment {
               extensions: [Extension]? = nil,
               templateClass: Template.Type = Template.self,
               errorReporter: ErrorReporter = SimpleErrorReporter()) {
-    
+
     self.templateClass = templateClass
     self.errorReporter = errorReporter
     self.loader = loader
@@ -41,11 +41,11 @@ public struct Environment {
     let template = templateClass.init(templateString: string, environment: self)
     return try render(template: template, context: context)
   }
-  
+
   func render(template: Template, context: [String: Any]?) throws -> String {
     // update template environment as it can be created from string literal with default environment
     template.environment = self
     return try template.render(context)
   }
-  
+
 }

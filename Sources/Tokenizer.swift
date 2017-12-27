@@ -43,14 +43,14 @@ extension String {
 public struct SourceMap: Equatable {
   public let filename: String?
   public let line: RangeLine
-  
+
   init(filename: String? = nil, line: RangeLine = ("", 0, 0)) {
     self.filename = filename
     self.line = line
   }
-  
+
   static let unknown = SourceMap()
-  
+
   public static func ==(lhs: SourceMap, rhs: SourceMap) -> Bool {
     return lhs.filename == rhs.filename && lhs.line == rhs.line
   }
@@ -89,7 +89,7 @@ public enum Token : Equatable {
       return value
     }
   }
-  
+
   public var sourceMap: SourceMap {
     switch self {
     case .block(_, let sourceMap),

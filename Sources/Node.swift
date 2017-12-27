@@ -3,7 +3,7 @@ import Foundation
 public protocol NodeType {
   /// Render the node in the given context
   func render(_ context:Context) throws -> String
-  
+
   /// Reference to this node's token
   var token: Token? { get }
 }

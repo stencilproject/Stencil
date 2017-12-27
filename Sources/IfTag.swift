@@ -53,7 +53,7 @@ enum IfToken {
     case .variable(_):
       return 0
     case .end:
-        return 0
+      return 0
     }
   }
 

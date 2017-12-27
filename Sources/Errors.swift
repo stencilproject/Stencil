@@ -27,21 +27,21 @@ public struct TemplateSyntaxError : Error, Equatable, CustomStringConvertible {
   var allTokens: [Token] {
     return stackTrace + (token.map({ [$0] }) ?? [])
   }
-  
+
   public init(reason: String, token: Token? = nil, stackTrace: [Token] = []) {
     self.reason = reason
     self.stackTrace = stackTrace
     self.token = token
   }
-  
+
   public init(_ description: String) {
     self.init(reason: description)
   }
-  
+
   public static func ==(lhs:TemplateSyntaxError, rhs:TemplateSyntaxError) -> Bool {
     return lhs.description == rhs.description && lhs.token == rhs.token && lhs.stackTrace == rhs.stackTrace
   }
-  
+
 }
 
 public protocol ErrorReporter: class {
@@ -49,24 +49,24 @@ public protocol ErrorReporter: class {
 }
 
 open class SimpleErrorReporter: ErrorReporter {
-  
+
   open func renderError(_ error: Error) -> String {
     guard let templateError = error as? TemplateSyntaxError else { return error.localizedDescription }
-    
+
     func describe(token: Token) -> String {
       let templateName = token.sourceMap.filename ?? ""
       let line = token.sourceMap.line
       let highlight = "\(String(Array(repeating: " ", count: line.offset)))^\(String(Array(repeating: "~", count: max(token.contents.characters.count - 1, 0))))"
-      
+
       return "\(templateName)\(line.number):\(line.offset): error: \(templateError.reason)\n"
         + "\(line.content)\n"
         + "\(highlight)\n"
     }
-    
+
     var descriptions = templateError.stackTrace.reduce([]) { $0 + [describe(token: $1)] }
     let description = templateError.token.map(describe(token:)) ?? templateError.reason
     descriptions.append(description)
     return descriptions.joined(separator: "\n")
   }
-  
+
 }
