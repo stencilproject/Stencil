@@ -9,7 +9,7 @@ func testLexer() {
       let tokens = lexer.tokenize()
 
       try expect(tokens.count) == 1
-      try expect(tokens.first) == .text(value: "Hello World", at: "Hello World".range)
+      try expect(tokens.first) == .text(value: "Hello World", at: SourceMap(line: ("Hello World", 1, 0)))
     }
 
     $0.it("can tokenize a comment") {
@@ -17,7 +17,7 @@ func testLexer() {
       let tokens = lexer.tokenize()
 
       try expect(tokens.count) == 1
-      try expect(tokens.first) == .comment(value: "Comment", at: "{# Comment #}".range)
+      try expect(tokens.first) == .comment(value: "Comment", at: SourceMap(line: ("{# Comment #}", 1, 3)))
     }
 
     $0.it("can tokenize a variable") {
@@ -25,7 +25,7 @@ func testLexer() {
       let tokens = lexer.tokenize()
 
       try expect(tokens.count) == 1
-      try expect(tokens.first) == .variable(value: "Variable", at: "{{ Variable }}".range)
+      try expect(tokens.first) == .variable(value: "Variable", at: SourceMap(line: ("{{ Variable }}", 1, 3)))
     }
 
     $0.it("can tokenize unclosed tag by ignoring it") {
@@ -34,18 +34,18 @@ func testLexer() {
       let tokens = lexer.tokenize()
 
       try expect(tokens.count) == 1
-      try expect(tokens.first) == .text(value: "", at: "".range)
+      try expect(tokens.first) == .text(value: "", at: SourceMap(line: ("{{ thing", 1, 0)))
     }
 
     $0.it("can tokenize a mixture of content") {
-      let templateString = "My name is {{ name }}."
+      let templateString = "My name is {{ myname }}."
       let lexer = Lexer(templateString: templateString)
       let tokens = lexer.tokenize()
 
       try expect(tokens.count) == 3
-      try expect(tokens[0]) == Token.text(value: "My name is ", at: templateString.range(of: "My name is ")!)
-      try expect(tokens[1]) == Token.variable(value: "name", at: templateString.range(of: "{{ name }}")!)
-      try expect(tokens[2]) == Token.text(value: ".", at: templateString.range(of: ".")!)
+      try expect(tokens[0]) == Token.text(value: "My name is ", at: SourceMap(line: templateString.rangeLine(templateString.range(of: "My name is ")!)))
+      try expect(tokens[1]) == Token.variable(value: "myname", at: SourceMap(line: templateString.rangeLine(templateString.range(of: "myname")!)))
+      try expect(tokens[2]) == Token.text(value: ".", at: SourceMap(line: templateString.rangeLine(templateString.range(of: ".")!)))
     }
 
     $0.it("can tokenize two variables without being greedy") {
@@ -54,8 +54,8 @@ func testLexer() {
       let tokens = lexer.tokenize()
 
       try expect(tokens.count) == 2
-      try expect(tokens[0]) == Token.variable(value: "thing", at: templateString.range(of: "{{ thing }}")!)
-      try expect(tokens[1]) == Token.variable(value: "name", at: templateString.range(of: "{{ name }}")!)
+      try expect(tokens[0]) == Token.variable(value: "thing", at: SourceMap(line: templateString.rangeLine(templateString.range(of: "thing")!)))
+      try expect(tokens[1]) == Token.variable(value: "name", at: SourceMap(line: templateString.rangeLine(templateString.range(of: "name")!)))
     }
 
     $0.it("can tokenize an unclosed block") {

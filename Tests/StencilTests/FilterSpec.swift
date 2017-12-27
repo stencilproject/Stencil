@@ -62,7 +62,7 @@ func testFilter() {
       }
 
       let context = Context(dictionary: context, environment: Environment(extensions: [repeatExtension]))
-      try expect(try template.render(context)).toThrow(TemplateSyntaxError("No Repeat"))
+      try expect(try template.render(context)).toThrow(TemplateSyntaxError(reason: "No Repeat", token: template.tokens.first))
     }
 
     $0.it("allows you to override a default filter") {
@@ -91,7 +91,7 @@ func testFilter() {
 
 
   describe("capitalize filter") {
-    let template = Template(templateString: "{{ name|capitalize }}")
+    let template = Template(templateString: "{{    name|capitalize }}")
 
     $0.it("capitalizes a string") {
       let result = try template.render(Context(dictionary: ["name": "kyle"]))

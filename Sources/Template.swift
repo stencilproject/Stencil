@@ -20,7 +20,7 @@ open class Template: ExpressibleByStringLiteral {
     self.name = name
     self.templateString = templateString
 
-    let lexer = Lexer(templateString: templateString)
+    let lexer = Lexer(templateName: name, templateString: templateString)
     tokens = lexer.tokenize()
   }
 

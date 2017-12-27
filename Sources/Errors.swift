@@ -22,13 +22,15 @@ public struct TemplateSyntaxError : Error, Equatable, CustomStringConvertible {
   public let reason: String
   public var description: String { return reason }
   public internal(set) var token: Token?
-  public internal(set) var template: Template?
-  public internal(set) var parentError: Error?
+  public internal(set) var stackTrace: [Token]
+  public var templateName: String? { return token?.sourceMap.filename }
+  var allTokens: [Token] {
+    return stackTrace + (token.map({ [$0] }) ?? [])
+  }
   
-  public init(reason: String, token: Token? = nil, template: Template? = nil, parentError: Error? = nil) {
+  public init(reason: String, token: Token? = nil, stackTrace: [Token] = []) {
     self.reason = reason
-    self.parentError = parentError
-    self.template = template
+    self.stackTrace = stackTrace
     self.token = token
   }
   
@@ -37,77 +39,34 @@ public struct TemplateSyntaxError : Error, Equatable, CustomStringConvertible {
   }
   
   public static func ==(lhs:TemplateSyntaxError, rhs:TemplateSyntaxError) -> Bool {
-    guard lhs.description == rhs.description else { return false }
-
-    switch (lhs.parentError, rhs.parentError) {
-    case let (lhsParent? as TemplateSyntaxError?, rhsParent? as TemplateSyntaxError?):
-      return lhsParent == rhsParent
-    case let (lhsParent?, rhsParent?):
-      return String(describing: lhsParent) == String(describing: rhsParent)
-    default:
-      return lhs.parentError == nil && rhs.parentError == nil
-    }
+    return lhs.description == rhs.description && lhs.token == rhs.token && lhs.stackTrace == rhs.stackTrace
   }
   
-}
-
-public class ErrorReporterContext {
-  public let template: Template
-  
-  public typealias ParentContext = (context: ErrorReporterContext, token: Token?)
-  public let parent: ParentContext?
-  
-  public init(template: Template, parent: ParentContext? = nil) {
-    self.template = template
-    self.parent = parent
-  }
 }
 
 public protocol ErrorReporter: class {
-  var context: ErrorReporterContext! { get set }
-  func reportError(_ error: Error) -> Error
   func renderError(_ error: Error) -> String
 }
 
 open class SimpleErrorReporter: ErrorReporter {
-  public var context: ErrorReporterContext!
-  
-  open func reportError(_ error: Error) -> Error {
-    guard let context = context else { return error }
-
-    return TemplateSyntaxError(reason: (error as? TemplateSyntaxError)?.reason ?? "\(error)",
-                               token: (error as? TemplateSyntaxError)?.token,
-                               template: (error as? TemplateSyntaxError)?.template ?? context.template,
-                               parentError: (error as? TemplateSyntaxError)?.parentError
-    )
-  }
   
   open func renderError(_ error: Error) -> String {
     guard let templateError = error as? TemplateSyntaxError else { return error.localizedDescription }
     
-    let description: String
-    if let template = templateError.template, let token = templateError.token {
-      let templateName = template.name.map({ "\($0):" }) ?? ""
-      let range = template.templateString.range(of: token.contents, range: token.range) ?? token.range
-      let line = template.templateString.rangeLine(range)
+    func describe(token: Token) -> String {
+      let templateName = token.sourceMap.filename ?? ""
+      let line = token.sourceMap.line
       let highlight = "\(String(Array(repeating: " ", count: line.offset)))^\(String(Array(repeating: "~", count: max(token.contents.characters.count - 1, 0))))"
       
-      description = "\(templateName)\(line.number):\(line.offset): error: \(templateError.reason)\n"
+      return "\(templateName)\(line.number):\(line.offset): error: \(templateError.reason)\n"
         + "\(line.content)\n"
         + "\(highlight)\n"
-    } else {
-      description = templateError.reason
     }
     
-    var descriptions = [description]
-    
-    var currentError: TemplateSyntaxError? = templateError
-    while let parentError = currentError?.parentError {
-      descriptions.append(renderError(parentError))
-      currentError = parentError as? TemplateSyntaxError
-    }
-    
-    return descriptions.reversed().joined(separator: "\n")
+    var descriptions = templateError.stackTrace.reduce([]) { $0 + [describe(token: $1)] }
+    let description = templateError.token.map(describe(token:)) ?? templateError.reason
+    descriptions.append(description)
+    return descriptions.joined(separator: "\n")
   }
   
 }

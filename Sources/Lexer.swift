@@ -1,9 +1,11 @@
 import Foundation
 
 struct Lexer {
+  let templateName: String?
   let templateString: String
 
-  init(templateString: String) {
+  init(templateName: String? = nil, templateString: String) {
+    self.templateName = templateName
     self.templateString = templateString
   }
 
@@ -16,14 +18,28 @@ struct Lexer {
     }
 
     if string.hasPrefix("{{") {
-      return .variable(value: strip(), at: range)
+      let value = strip()
+      let range = templateString.range(of: value, range: range) ?? range
+      let line = templateString.rangeLine(range)
+      let sourceMap = SourceMap(filename: templateName, line: line)
+      return .variable(value: value, at: sourceMap)
     } else if string.hasPrefix("{%") {
-      return .block(value: strip(), at: range)
+      let value = strip()
+      let range = templateString.range(of: value, range: range) ?? range
+      let line = templateString.rangeLine(range)
+      let sourceMap = SourceMap(filename: templateName, line: line)
+      return .block(value: value, at: sourceMap)
     } else if string.hasPrefix("{#") {
-      return .comment(value: strip(), at: range)
+      let value = strip()
+      let range = templateString.range(of: value, range: range) ?? range
+      let line = templateString.rangeLine(range)
+      let sourceMap = SourceMap(filename: templateName, line: line)
+      return .comment(value: value, at: sourceMap)
     }
 
-    return .text(value: string, at: range)
+    let line = templateString.rangeLine(range)
+    let sourceMap = SourceMap(filename: templateName, line: line)
+    return .text(value: string, at: sourceMap)
   }
 
   /// Returns an array of tokens from a given template string.
@@ -41,6 +57,7 @@ struct Lexer {
     while !scanner.isEmpty {
       if let text = scanner.scan(until: ["{{", "{%", "{#"]) {
         if !text.1.isEmpty {
+          let line = templateString.rangeLine(scanner.range)
           tokens.append(createToken(string: text.1, at: scanner.range))
         }
 
@@ -48,6 +65,7 @@ struct Lexer {
         let result = scanner.scan(until: end, returnUntil: true)
         tokens.append(createToken(string: result, at: scanner.range))
       } else {
+        let line = templateString.rangeLine(scanner.range)
         tokens.append(createToken(string: scanner.content, at: scanner.range))
         scanner.content = ""
       }
@@ -165,7 +183,7 @@ extension String {
     return String(self[first..<last])
   }
   
-  public func rangeLine(_ range: Range<String.Index>) -> (content: String, number: UInt, offset: String.IndexDistance) {
+  public func rangeLine(_ range: Range<String.Index>) -> RangeLine {
     var lineNumber: UInt = 0
     var offset: Int = 0
     var lineContent = ""
@@ -183,3 +201,5 @@ extension String {
     return (lineContent, lineNumber, offset)
   }
 }
+
+public typealias RangeLine = (content: String, number: UInt, offset: String.IndexDistance)

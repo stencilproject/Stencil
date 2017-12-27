@@ -52,11 +52,10 @@ func testTokenParser() {
     }
 
     $0.it("errors when parsing an unknown tag") {
-      let parser = TokenParser(tokens: [
-        .block(value: "unknown", at: .unknown),
-      ], environment: Environment())
+      let tokens: [Token] = [.block(value: "unknown", at: .unknown)]
+      let parser = TokenParser(tokens: tokens, environment: Environment())
 
-      try expect(try parser.parse()).toThrow(TemplateSyntaxError("Unknown template tag 'unknown'"))
+      try expect(try parser.parse()).toThrow(TemplateSyntaxError(reason: "Unknown template tag 'unknown'", token: tokens.first))
     }
   }
 }

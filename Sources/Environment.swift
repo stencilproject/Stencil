@@ -45,30 +45,7 @@ public struct Environment {
   func render(template: Template, context: [String: Any]?) throws -> String {
     // update temaplte environment as it cen be created from string literal with default environment
     template.environment = self
-    errorReporter.context = ErrorReporterContext(template: template)
-    do {
-      return try template.render(context)
-    } catch {
-      throw errorReporter.reportError(error)
-    }
-  }
-  
-  var template: Template? {
-    return errorReporter.context?.template
-  }
-  
-  public func pushTemplate<Result>(_ template: Template, token: Token?, closure: (() throws -> Result)) rethrows -> Result {
-    let errorReporterContext = errorReporter.context
-    defer { errorReporter.context = errorReporterContext }
-    errorReporter.context = ErrorReporterContext(
-      template: template,
-      parent: errorReporterContext != nil ? (errorReporterContext!, token) : nil
-    )
-    do {
-      return try closure()
-    } catch {
-      throw errorReporter.reportError(error)
-    }
+    return try template.render(context)
   }
   
 }

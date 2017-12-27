@@ -41,15 +41,17 @@ func testEnvironment() {
     }
 
     func expectedSyntaxError(token: String, template: Template, description: String) -> TemplateSyntaxError {
-      let token = Token.block(value: token, at: template.templateString.range(of: token)!)
-      return TemplateSyntaxError(reason: description, token: token, template: template, parentError: nil)
+      let range = template.templateString.range(of: token)!
+      let rangeLine = template.templateString.rangeLine(range)
+      let sourceMap = SourceMap(filename: template.name, line: rangeLine)
+      let token = Token.block(value: token, at: sourceMap)
+      return TemplateSyntaxError(reason: description, token: token, stackTrace: [])
     }
 
     func expectError(reason: String, token: String) throws {
       let expectedError = expectedSyntaxError(token: token, template: template, description: reason)
       
-      let error = try expect(environment.render(template: template, context: ["names": ["Bob", "Alice"], "name": "Bob"]))
-        .toThrow(expectedError)
+      let error = try expect(environment.render(template: template, context: ["names": ["Bob", "Alice"], "name": "Bob"])).toThrow() as TemplateSyntaxError
       try expect(environment.errorReporter.renderError(error)) == environment.errorReporter.renderError(expectedError)
     }
 
@@ -200,10 +202,10 @@ func testEnvironment() {
       
       func expectError(reason: String, token: String, includedToken: String) throws {
         var expectedError = expectedSyntaxError(token: token, template: template, description: reason)
-        expectedError.parentError = expectedSyntaxError(token: includedToken, template: includedTemplate, description: reason)
+        expectedError.stackTrace = [expectedSyntaxError(token: includedToken, template: includedTemplate, description: reason).token!]
         
         let error = try expect(environment.render(template: template, context: ["target": "World"]))
-          .toThrow(expectedError)
+          .toThrow() as TemplateSyntaxError
         try expect(environment.errorReporter.renderError(error)) == environment.errorReporter.renderError(expectedError)
       }
       
@@ -249,11 +251,10 @@ func testEnvironment() {
       func expectError(reason: String, childToken: String, baseToken: String?) throws {
         var expectedError = expectedSyntaxError(token: childToken, template: childTemplate, description: reason)
         if let baseToken = baseToken {
-          expectedError.parentError = expectedSyntaxError(token: baseToken, template: baseTemplate, description: reason)
+          expectedError.stackTrace = [expectedSyntaxError(token: baseToken, template: baseTemplate, description: reason).token!]
         }
-        
         let error = try expect(environment.render(template: childTemplate, context: ["target": "World"]))
-          .toThrow(expectedError)
+          .toThrow() as TemplateSyntaxError
         try expect(environment.errorReporter.renderError(error)) == environment.errorReporter.renderError(expectedError)
       }
 
@@ -312,7 +313,7 @@ func testEnvironment() {
 
 private extension Expectation {
   @discardableResult
-  func toThrow<T: Error & Equatable>(_ error: T) throws -> T {
+  func toThrow<T: Error>() throws -> T {
     var thrownError: Error? = nil
     
     do {
@@ -323,12 +324,9 @@ private extension Expectation {
     
     if let thrownError = thrownError {
       if let thrownError = thrownError as? T {
-        if error != thrownError {
-          throw failure("\(thrownError) is not \(error)")
-        }
         return thrownError
       } else {
-        throw failure("\(thrownError) is not \(error)")
+        throw failure("\(thrownError) is not \(T.self)")
       }
     } else {
       throw failure("expression did not throw an error")

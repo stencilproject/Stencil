@@ -2,22 +2,22 @@ class BlockContext {
   class var contextKey: String { return "block_context" }
 
   // contains mapping of block names to their nodes and templates where they are defined
-  var blocks: [String: [(BlockNode, Template?)]]
+  var blocks: [String: [BlockNode]]
 
-  init(blocks: [String: [(BlockNode, Template?)]]) {
+  init(blocks: [String: [BlockNode]]) {
     self.blocks = blocks
   }
 
-  func pushBlock(_ block: BlockNode, named blockName: String, definedIn template: Template?) {
+  func pushBlock(_ block: BlockNode, named blockName: String) {
     if var blocks = blocks[blockName] {
-      blocks.append((block, template))
+      blocks.append(block)
       self.blocks[blockName] = blocks
     } else {
-      self.blocks[blockName] = [(block, template)]
+      self.blocks[blockName] = [block]
     }
   }
   
-  func popBlock(named blockName: String) -> (node: BlockNode, template: Template?)? {
+  func popBlock(named blockName: String) -> BlockNode? {
     if var blocks = blocks[blockName] {
       let block = blocks.removeFirst()
       if blocks.isEmpty {
@@ -86,34 +86,31 @@ class ExtendsNode : NodeType {
     }
 
     let baseTemplate = try context.environment.loadTemplate(name: templateName)
-    let template = context.environment.template
     
     let blockContext: BlockContext
     if let _blockContext = context[BlockContext.contextKey] as? BlockContext {
       blockContext = _blockContext
       for (name, block) in blocks {
-        blockContext.pushBlock(block, named: name, definedIn: template)
+        blockContext.pushBlock(block, named: name)
       }
     } else {
-      var blocks = [String: [(BlockNode, Template?)]]()
-      self.blocks.forEach { blocks[$0.key] = [($0.value, template)] }
+      var blocks = [String: [BlockNode]]()
+      self.blocks.forEach { blocks[$0.key] = [$0.value] }
       blockContext = BlockContext(blocks: blocks)
     }
 
     do {
       // pushes base template and renders it's content
       // block_context contains all blocks from child templates
-      return try context.environment.pushTemplate(baseTemplate, token: token) {
-        try context.push(dictionary: [BlockContext.contextKey: blockContext]) {
-          return try baseTemplate.render(context)
-        }
+      return try context.push(dictionary: [BlockContext.contextKey: blockContext]) {
+        return try baseTemplate.render(context)
       }
     } catch {
       // if error template is already set (see catch in BlockNode)
       // and it happend in the same template as current template
       // there is no need to wrap it in another error
-      if let error = error as? TemplateSyntaxError, error.template !== context.environment.template {
-        throw TemplateSyntaxError(reason: error.reason, parentError: error)
+      if let error = error as? TemplateSyntaxError, error.templateName != token?.sourceMap.filename {
+        throw TemplateSyntaxError(reason: error.reason, stackTrace: error.allTokens)
       } else {
         throw error
       }
@@ -152,7 +149,7 @@ class BlockNode : NodeType {
 
       var newContext: [String: Any] = [BlockContext.contextKey: blockContext]
       
-      if let blockSuperNode = child.node.nodes.first(where: {
+      if let blockSuperNode = child.nodes.first(where: {
         if case .variable(let variable, _)? = $0.token, variable == "block.super" { return true }
         else { return false}
       }) {
@@ -160,27 +157,28 @@ class BlockNode : NodeType {
           // render current (base) node so that its content can be used as part of node that extends it
           newContext["block"] = ["super": try self.render(context)]
         } catch {
-          let baseError = context.errorReporter.reportError(error)
-          throw TemplateSyntaxError(
-            reason: (baseError as? TemplateSyntaxError)?.reason ?? "\(baseError)",
-            token: blockSuperNode.token,
-            template: child.template,
-            parentError: baseError)
+          if let error = error as? TemplateSyntaxError {
+            throw TemplateSyntaxError(
+              reason: error.reason,
+              token: blockSuperNode.token,
+              stackTrace: error.allTokens)
+          } else {
+            throw TemplateSyntaxError(
+              reason: "\(error)",
+              token: blockSuperNode.token,
+              stackTrace: [])
+          }
         }
       }
       
       // render extension node
       do {
         return try context.push(dictionary: newContext) {
-          return try child.node.render(context)
+          return try child.render(context)
         }
       } catch {
-        // child node belongs to child template, which is currently not on top of stack
-        // so we need to use node's template to report errors, not current template
-        // unless it's already set
         if var error = error as? TemplateSyntaxError {
-          error.template = error.template ?? child.template
-          error.token = error.token ?? child.node.token
+          error.token = error.token ?? child.token
           throw error
         } else {
           throw error

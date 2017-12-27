@@ -14,7 +14,7 @@ func testInclude() {
         let tokens: [Token] = [ .block(value: "include", at: .unknown) ]
         let parser = TokenParser(tokens: tokens, environment: Environment())
 
-        let error = TemplateSyntaxError("'include' tag takes one argument, the template file to be included")
+        let error = TemplateSyntaxError(reason: "'include' tag takes one argument, the template file to be included", token: tokens.first)
         try expect(try parser.parse()).toThrow(error)
       }
 

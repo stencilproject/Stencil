@@ -179,22 +179,18 @@ func testIfNode() {
       }
 
       $0.it("throws an error when parsing an if block without an endif") {
-        let tokens: [Token] = [
-          .block(value: "if value", at: .unknown),
-        ]
+        let tokens: [Token] = [.block(value: "if value", at: .unknown)]
 
         let parser = TokenParser(tokens: tokens, environment: Environment())
-        let error = TemplateSyntaxError("`endif` was not found.")
+        let error = TemplateSyntaxError(reason: "`endif` was not found.", token: tokens.first)
         try expect(try parser.parse()).toThrow(error)
       }
 
       $0.it("throws an error when parsing an ifnot without an endif") {
-        let tokens: [Token] = [
-            .block(value: "ifnot value", at: .unknown),
-        ]
+        let tokens: [Token] = [.block(value: "ifnot value", at: .unknown)]
 
         let parser = TokenParser(tokens: tokens, environment: Environment())
-        let error = TemplateSyntaxError("`endif` was not found.")
+        let error = TemplateSyntaxError(reason: "`endif` was not found.", token: tokens.first)
         try expect(try parser.parse()).toThrow(error)
       }
     }

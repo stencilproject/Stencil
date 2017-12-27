@@ -107,9 +107,11 @@ public class TokenParser {
       return try FilterExpression(token: filterToken, parser: self)
     } catch {
       if var error = error as? TemplateSyntaxError, error.token == nil {
-        // find range of filter in the containing token so that only filter is highligted, not the whole token
-        if let filterTokenRange = environment.template?.templateString.range(of: filterToken, range: containingToken.range) {
-          error.token = Token.variable(value: filterToken, at: filterTokenRange)
+        // find offset of filter in the containing token so that only filter is highligted, not the whole token
+        if let filterTokenRange = containingToken.contents.range(of: filterToken) {
+          var rangeLine = containingToken.sourceMap.line
+          rangeLine.offset += containingToken.contents.distance(from: containingToken.contents.startIndex, to: filterTokenRange.lowerBound)
+          error.token = .variable(value: filterToken, at: SourceMap(filename: containingToken.sourceMap.filename, line: rangeLine))
         } else {
           error.token = containingToken
         }
