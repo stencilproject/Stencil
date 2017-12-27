@@ -8,11 +8,18 @@ class ForNode : NodeType {
   let `where`: Expression?
 
   class func parse(_ parser:TokenParser, token:Token) throws -> NodeType {
-    let components = token.components()
+    var components = token.components()
+    
+    let error = TemplateSyntaxError("'for' statements should use the following 'for x in y where condition' `\(token.contents)`.")
+    guard components.count >= 3 else { throw error }
 
-    guard components.count >= 3 && components[2] == "in" &&
-        (components.count == 4 || (components.count >= 6 && components[4] == "where")) else {
-      throw TemplateSyntaxError("'for' statements should use the following 'for x in y where condition' `\(token.contents)`.")
+    // this will allow using comma with spaces between loop variables
+    if components[1].hasSuffix(",") {
+      components[1] = "\(components[1])\(components.remove(at: 2))"
+    }
+    
+    guard components[2] == "in" && (components.count == 4 || (components.count >= 6 && components[4] == "where")) else {
+      throw error
     }
 
     let loopVariables = components[1].characters
@@ -82,20 +89,30 @@ class ForNode : NodeType {
   }
 
   func render(_ context: Context) throws -> String {
-    let resolved = try resolvable.resolve(context)
+    guard let resolved = try resolvable.resolve(context) else { return "" }
 
     var values: [Any]
 
     if let dictionary = resolved as? [String: Any], !dictionary.isEmpty {
       values = dictionary.map { ($0.key, $0.value) }
     } else if let array = resolved as? [Any] {
-      values = array
+      if loopVariables.count == 2 {
+        values = array.enumerated().map({ ($0.offset, $0.element) })
+      } else {
+        values = array
+      }
     } else if let range = resolved as? CountableClosedRange<Int> {
       values = Array(range)
     } else if let range = resolved as? CountableRange<Int> {
       values = Array(range)
     } else {
-      values = []
+      let mirror = Mirror(reflecting: resolved)
+      switch mirror.displayStyle {
+      case .tuple?:
+        values = Array(mirror.children)
+      default:
+        values = []
+      }
     }
 
     if let `where` = self.where {
@@ -108,25 +125,84 @@ class ForNode : NodeType {
 
     if !values.isEmpty {
       let count = values.count
-
-      return try values.enumerated().map { index, item in
+      var result = ""
+      
+      for (index, item) in values.enumerated() {
         let forContext: [String: Any] = [
           "first": index == 0,
           "last": index == (count - 1),
           "counter": index + 1,
           "counter0": index,
-        ]
-
-        return try context.push(dictionary: ["forloop": forContext]) {
+          ]
+        
+        result += try context.push(dictionary: ["forloop": forContext]) {
           return try push(value: item, context: context) {
             try renderNodes(nodes, context)
           }
         }
-      }.joined(separator: "")
+        
+        if context[LoopTerminationNode.break.terminator] as? Bool ?? false {
+          context[LoopTerminationNode.break.terminator] = nil
+          break
+        }
+        if context[LoopTerminationNode.continue.terminator] as? Bool ?? false {
+          context[LoopTerminationNode.continue.terminator] = nil
+        }
+      }
+      return result
     }
 
     return try context.push {
       try renderNodes(emptyNodes, context)
     }
   }
+}
+
+struct LoopTerminationNode: NodeType {
+  static let `break` = LoopTerminationNode(name: "break")
+  static let `continue` = LoopTerminationNode(name: "continue")
+  
+  let name: String
+  var terminator: String {
+    return "forloop_\(name)"
+  }
+
+  private init(name: String) {
+    self.name = name
+  }
+  
+  static func parse(_ parser:TokenParser, token:Token) throws -> LoopTerminationNode {
+    guard token.components().count == 1 else {
+      throw TemplateSyntaxError("'\(token.contents)' does not accept parameters")
+    }
+    guard parser.hasOpenedForTag() else {
+      throw TemplateSyntaxError("'\(token.contents)' can be used only inside loop body")
+    }
+    return LoopTerminationNode(name: token.contents)
+  }
+  
+  func render(_ context: Context) throws -> String {
+    guard let forLoopIndex = context.dictionaries.enumerated().flatMap({ i, c in
+      c["forloop"] != nil ? i : nil
+    }).max() else { return "" }
+    context.dictionaries[forLoopIndex - 1][terminator] = true
+    
+    return ""
+  }
+
+}
+
+extension TokenParser {
+  
+  func hasOpenedForTag() -> Bool {
+    var hasOpenedFor = 0
+    for parsedToken in parsedTokens.reversed() {
+      if case .block = parsedToken {
+        if parsedToken.components().first == "endfor" { hasOpenedFor -= 1  }
+        if parsedToken.components().first == "for" { hasOpenedFor += 1 }
+      }
+    }
+    return hasOpenedFor > 0
+  }
+  
 }

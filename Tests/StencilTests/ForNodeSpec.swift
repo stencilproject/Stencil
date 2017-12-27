@@ -11,7 +11,8 @@ func testForNode() {
       "dict": [
         "one": "I",
         "two": "II",
-      ]
+      ],
+      "tuple": (one: 1, two: 2)
     ])
 
     $0.it("renders the given nodes for each item") {
@@ -127,30 +128,122 @@ func testForNode() {
       try expect(result) == fixture
     }
 
-    $0.it("can iterate over dictionary") {
-      let templateString = "{% for key,value in dict %}" +
-        "{{ key }}: {{ value }}\n" +
-        "{% endfor %}\n"
-
+    $0.it("can iterate over array with index") {
+      let templateString = "{% for index, value in items %}" +
+        "{{ index }}: {{ value }}\n" +
+      "{% endfor %}\n"
+      
       let template = Template(templateString: templateString)
       let result = try template.render(context)
-
-      let fixture = "one: I\ntwo: II\n\n"
+      
+      let fixture = "0: 1\n1: 2\n2: 3\n\n"
+      try expect(result) == fixture
+    }
+    
+    $0.it("can subscript array with index variable") {
+      let templateString = "{% for index, value in items %}" +
+        "{{ index }}: {{ items.index }}\n" +
+      "{% endfor %}\n"
+      
+      let template = Template(templateString: templateString)
+      let result = try template.render(context)
+      
+      let fixture = "0: 1\n1: 2\n2: 3\n\n"
       try expect(result) == fixture
     }
 
-    $0.it("renders supports iterating over dictionary") {
-      let nodes: [NodeType] = [VariableNode(variable: "key")]
-      let emptyNodes: [NodeType] = [TextNode(text: "empty")]
-      let node = ForNode(resolvable: Variable("dict"), loopVariables: ["key"], nodes: nodes, emptyNodes: emptyNodes, where: nil)
-      try expect(try node.render(context)) == "onetwo"
+    $0.context("given tuple") {
+      $0.it("can iterate over labels and values") {
+        let templateString = "{% for label, value in tuple %}" +
+          "{{ label }}: {{ value }}\n" +
+        "{% endfor %}\n"
+        
+        let template = Template(templateString: templateString)
+        let result = try template.render(context)
+        
+        let fixture = "one: 1\ntwo: 2\n\n"
+        try expect(result) == fixture
+      }
+      
+      $0.it("can iterate over labels") {
+        let templateString = "{% for label in tuple %}" +
+          "{{ label }}: {{ tuple.label }}\n" +
+        "{% endfor %}\n"
+        
+        let template = Template(templateString: templateString)
+        let result = try template.render(context)
+        
+        let fixture = "one: 1\ntwo: 2\n\n"
+        try expect(result) == fixture
+      }
+      
+      $0.it("can subscript tuple by index") {
+        let templateString = "{{ tuple.0 }}{{ tuple.1 }}\n"
+        
+        let template = Template(templateString: templateString)
+        let result = try template.render(context)
+        
+        let fixture = "12\n"
+        try expect(result) == fixture
+      }
+      
+      $0.it("can subscript tuple by label") {
+        let templateString = "{{ tuple.one }}{{ tuple.two }}\n"
+        
+        let template = Template(templateString: templateString)
+        let result = try template.render(context)
+        
+        let fixture = "12\n"
+        try expect(result) == fixture
+      }
     }
 
-    $0.it("renders supports iterating over dictionary") {
-      let nodes: [NodeType] = [VariableNode(variable: "key"), VariableNode(variable: "value")]
-      let emptyNodes: [NodeType] = [TextNode(text: "empty")]
-      let node = ForNode(resolvable: Variable("dict"), loopVariables: ["key", "value"], nodes: nodes, emptyNodes: emptyNodes, where: nil)
-      try expect(try node.render(context)) == "oneItwoII"
+    $0.context("given dictionary") {
+      $0.it("can iterate over keys and values") {
+        let templateString = "{% for key, value in dict %}" +
+          "{{ key }}: {{ value }}\n" +
+        "{% endfor %}\n"
+        
+        let template = Template(templateString: templateString)
+        let result = try template.render(context)
+
+        try expect(result.contains("one: I")).to.beTrue()
+        try expect(result.contains("two: II")).to.beTrue()
+      }
+      
+      $0.it("can iterate over keys and subscript dictioanry") {
+        let templateString = "{% for key in dict %}" +
+          "{{ key }}: {{ dict.key }}\n" +
+        "{% endfor %}\n"
+
+        let template = Template(templateString: templateString)
+        let result = try template.render(context)
+
+        try expect(result.contains("one: I")).to.beTrue()
+        try expect(result.contains("two: II")).to.beTrue()
+      }
+      
+      $0.it("renders supports iterating over dictionary") {
+        let nodes: [NodeType] = [VariableNode(variable: "key")]
+        let emptyNodes: [NodeType] = [TextNode(text: "empty")]
+        let node = ForNode(resolvable: Variable("dict"), loopVariables: ["key"], nodes: nodes, emptyNodes: emptyNodes, where: nil)
+
+        let result = try node.render(context)
+
+        try expect(result.contains("one")).to.beTrue()
+        try expect(result.contains("two")).to.beTrue()
+      }
+      
+      $0.it("renders supports iterating over dictionary") {
+        let nodes: [NodeType] = [VariableNode(variable: "key"), VariableNode(variable: "value")]
+        let emptyNodes: [NodeType] = [TextNode(text: "empty")]
+        let node = ForNode(resolvable: Variable("dict"), loopVariables: ["key", "value"], nodes: nodes, emptyNodes: emptyNodes, where: nil)
+
+        let result = try node.render(context)
+
+        try expect(result.contains("oneI")).to.beTrue()
+        try expect(result.contains("twoII")).to.beTrue()
+      }
     }
 
     $0.it("handles invalid input") {
@@ -161,6 +254,118 @@ func testForNode() {
       let error = TemplateSyntaxError("'for' statements should use the following 'for x in y where condition' `for i`.")
       try expect(try parser.parse()).toThrow(error)
     }
+    
+    $0.it("can break from loop") {
+      let templateString = "{% for item in items %}" +
+        "{{ item }}{% break %}\n" +
+      "{% endfor %}\n"
+      
+      let template = Template(templateString: templateString)
+      let result = try template.render(context)
+      
+      try expect(result) == "1\n"
+    }
+    
+    $0.it("can break from inner node") {
+      let templateString = "{% for item in items %}" +
+        "{{ item }}" +
+        "{% if forloop.first %}<{% break %}>{% endif %}!" +
+      "{% endfor %}\n"
+      
+      let template = Template(templateString: templateString)
+      let result = try template.render(context)
+      
+      try expect(result) == "1<\n"
+    }
+    
+    $0.it("does not allow break outside loop") {
+      let template = Template(templateString: "{% for item in items %}{% endfor %}{% break %}")
+      try expect(template.render(context)).toThrow(TemplateSyntaxError("'break' can be used only inside loop body"))
+    }
+    
+    $0.it("can continue loop") {
+      let templateString = "{% for item in items %}" +
+        "{{ item }}\n{% continue %}!" +
+      "{% endfor %}\n"
+      
+      let template = Template(templateString: templateString)
+      let result = try template.render(context)
+      
+      try expect(result) == "1\n2\n3\n\n"
+    }
+    
+    $0.it("can continue from inner node") {
+      let templateString = "{% for item in items %}" +
+        "{% if forloop.last %}<{% continue %}>{% endif %}!" +
+        "{{ item }}" +
+      "{% endfor %}\n"
+      
+      let template = Template(templateString: templateString)
+      let result = try template.render(context)
+      
+      try expect(result) == "!1!2<\n"
+    }
+
+    $0.it("does not allow continue outside loop") {
+      let templateString = "{% for item in items %}" +
+        "{{ item }}\n" +
+        "{% endfor %}\n" + "{% continue %}"
+      let template = Template(templateString: templateString)
+      
+      try expect(template.render(context)).toThrow(TemplateSyntaxError("'continue' can be used only inside loop body"))
+    }
+
+    $0.context("given nested loops") {
+      
+      $0.it("breaks outer loop") {
+        let template = Template(templateString: "{% for item in items %}" +
+          "outer: {{ item }}\n" +
+          "{% for item in items %}" +
+          "inner: {{ item }}\n" +
+          "{% endfor %}" +
+          "{% break %}" +
+          "{% endfor %}\n")
+        
+        try expect(template.render(context)) == "outer: 1\ninner: 1\ninner: 2\ninner: 3\n\n"
+      }
+      
+      $0.it("breaks inner loop") {
+        let template = Template(templateString: "{% for item in items %}" +
+          "outer: {{ item }}\n" +
+          "{% for item in items %}" +
+          "inner: {{ item }}\n" +
+          "{% break %}" +
+          "{% endfor %}" +
+          "{% endfor %}\n")
+        
+        try expect(template.render(context)) == "outer: 1\ninner: 1\nouter: 2\ninner: 1\nouter: 3\ninner: 1\n\n"
+      }
+      
+      $0.it("continues outer loop") {
+        let template = Template(templateString: "{% for item in items %}" +
+          "{% for item in items %}" +
+          "inner: {{ item }}\n" +
+          "{% endfor %}" +
+          "{% continue %}" +
+          "outer: {{ item }}\n" +
+          "{% endfor %}\n")
+        
+        try expect(template.render(context)) == "inner: 1\ninner: 2\ninner: 3\ninner: 1\ninner: 2\ninner: 3\ninner: 1\ninner: 2\ninner: 3\n\n"
+      }
+      
+      $0.it("continues inner loop") {
+        let template = Template(templateString: "{% for item in items %}" +
+          "{% for item in items %}" +
+          "{% continue %}" +
+          "inner: {{ item }}\n" +
+          "{% endfor %}" +
+          "outer: {{ item }}\n" +
+          "{% endfor %}\n")
+        
+        try expect(template.render(context)) == "outer: 1\nouter: 2\nouter: 3\n\n"
+      }
+    }
+    
   }
 }
 
