@@ -43,7 +43,7 @@ public struct Environment {
   }
   
   func render(template: Template, context: [String: Any]?) throws -> String {
-    // update temaplte environment as it cen be created from string literal with default environment
+    // update template environment as it can be created from string literal with default environment
     template.environment = self
     return try template.render(context)
   }
