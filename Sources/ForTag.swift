@@ -53,25 +53,26 @@ class ForNode : NodeType {
     self.where = `where`
   }
 
-  func push<Result>(value: Any, context: Context, closure: () throws -> (Result)) rethrows -> Result {
+  func push<Result>(value: Any, context: Context, closure: () throws -> (Result)) throws -> Result {
     if loopVariables.isEmpty {
       return try context.push() {
         return try closure()
       }
     }
 
-    if let value = value as? (Any, Any) {
-      let first = loopVariables[0]
-
-      if loopVariables.count == 2 {
-        let second = loopVariables[1]
-
-        return try context.push(dictionary: [first: value.0, second: value.1]) {
-          return try closure()
-        }
+    let valueMirror = Mirror(reflecting: value)
+    if case .tuple? = valueMirror.displayStyle {
+      if loopVariables.count > Int(valueMirror.children.count) {
+        throw TemplateSyntaxError("Tuple '\(value)' has less values than loop variables")
       }
+      var variablesContext = [String: Any]()
+      valueMirror.children.prefix(loopVariables.count).enumerated().forEach({ (offset, element) in
+        if loopVariables[offset] != "_" {
+          variablesContext[loopVariables[offset]] = element.value
+        }
+      })
 
-      return try context.push(dictionary: [first: value.0]) {
+      return try context.push(dictionary: variablesContext) {
         return try closure()
       }
     }
