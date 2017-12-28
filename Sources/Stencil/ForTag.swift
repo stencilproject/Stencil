@@ -6,10 +6,16 @@ class ForNode: NodeType {
   let nodes: [NodeType]
   let emptyNodes: [NodeType]
   let `where`: Expression?
+  let label: String?
   let token: Token?
 
   class func parse(_ parser: TokenParser, token: Token) throws -> NodeType {
-    let components = token.components
+    var components = token.components
+
+    var label: String?
+    if components.first?.hasSuffix(":") == true {
+      label = String(components.removeFirst().dropLast())
+    }
 
     func hasToken(_ token: String, at index: Int) -> Bool {
       components.count > (index + 1) && components[index] == token
@@ -52,6 +58,7 @@ class ForNode: NodeType {
       nodes: forNodes,
       emptyNodes: emptyNodes,
       where: `where`,
+      label: label,
       token: token
     )
   }
@@ -62,6 +69,7 @@ class ForNode: NodeType {
     nodes: [NodeType],
     emptyNodes: [NodeType],
     where: Expression? = nil,
+    label: String? = nil,
     token: Token? = nil
   ) {
     self.resolvable = resolvable
@@ -69,6 +77,7 @@ class ForNode: NodeType {
     self.nodes = nodes
     self.emptyNodes = emptyNodes
     self.where = `where`
+    self.label = label
     self.token = token
   }
 
@@ -88,17 +97,27 @@ class ForNode: NodeType {
       var result = ""
 
       for (index, item) in zip(0..., values) {
-        let forContext: [String: Any] = [
+        var forContext: [String: Any] = [
           "first": index == 0,
           "last": index == (count - 1),
           "counter": index + 1,
           "counter0": index,
           "length": count
         ]
+        if let label = label {
+          forContext["label"] = label
+        }
 
         var shouldBreak = false
         result += try context.push(dictionary: ["forloop": forContext]) {
-          defer { shouldBreak = context[LoopTerminationNode.breakContextKey] != nil }
+          defer {
+            // if outer loop should be continued we should break from current loop
+            if let shouldContinueLabel = context[LoopTerminationNode.continueContextKey] as? String {
+              shouldBreak = shouldContinueLabel != label || label == nil
+            } else {
+              shouldBreak = context[LoopTerminationNode.breakContextKey] != nil
+            }
+          }
           return try push(value: item, context: context) {
             try renderNodes(nodes, context)
           }
@@ -187,34 +206,50 @@ struct LoopTerminationNode: NodeType {
   static let continueContextKey = "_internal_forloop_continue"
 
   let name: String
+  let label: String?
   let token: Token?
 
   var contextKey: String {
     "_internal_forloop_\(name)"
   }
 
-  private init(name: String, token: Token? = nil) {
+  private init(name: String, label: String? = nil, token: Token? = nil) {
     self.name = name
+    self.label = label
     self.token = token
   }
 
   static func parse(_ parser: TokenParser, token: Token) throws -> LoopTerminationNode {
-    guard token.components.count == 1 else {
-      throw TemplateSyntaxError("'\(token.contents)' does not accept parameters")
+    let components = token.components
+
+    guard components.count <= 2 else {
+      throw TemplateSyntaxError("'\(token.contents)' can accept only one parameter")
     }
     guard parser.hasOpenedForTag() else {
       throw TemplateSyntaxError("'\(token.contents)' can be used only inside loop body")
     }
-    return LoopTerminationNode(name: token.contents)
+
+    return LoopTerminationNode(name: components[0], label: components.count == 2 ? components[1] : nil, token: token)
   }
 
   func render(_ context: Context) throws -> String {
     let offset = zip(0..., context.dictionaries).reversed().first { _, dictionary in
-      dictionary["forloop"] != nil
+      guard let forContext = dictionary["forloop"] as? [String: Any],
+        dictionary["forloop"] != nil else { return false }
+
+      if let label = label {
+        return label == forContext["label"] as? String
+      } else {
+        return true
+      }
     }?.0
 
     if let offset = offset {
-      context.dictionaries[offset][contextKey] = true
+      context.dictionaries[offset][contextKey] = label ?? true
+    } else if let label = label {
+      throw TemplateSyntaxError("No loop labeled '\(label)' is currently running")
+    } else {
+      throw TemplateSyntaxError("No loop is currently running")
     }
 
     return ""

@@ -390,6 +390,33 @@ final class ForNodeTests: XCTestCase {
     }
   }
 
+  func testBreakLabeled() {
+    it("breaks labeled loop") {
+      let template = Template(templateString: """
+        {% outer: for item in items %}\
+        outer: {{ item }}
+        {% for item in items %}\
+        {% break outer %}\
+        inner: {{ item }}
+        {% endfor %}\
+        {% endfor %}
+        """)
+      try expect(template.render(self.context)) == """
+        outer: 1
+
+        """
+    }
+
+    it("throws when breaking with unknown label") {
+      let template = Template(templateString: """
+        {% outer: for item in items %}
+        {% break inner %}
+        {% endfor %}
+        """)
+      try expect(template.render(self.context)).toThrow()
+    }
+  }
+
   func testContinue() {
     it("can continue loop") {
       let template = Template(templateString: """
@@ -456,6 +483,35 @@ final class ForNodeTests: XCTestCase {
         outer: 3
 
         """
+    }
+  }
+
+  func testContinueLabeled() {
+    it("continues labeled loop") {
+      let template = Template(templateString: """
+        {% outer: for item in items %}\
+        {% for item in items %}\
+        inner: {{ item }}
+        {% continue outer %}\
+        {% endfor %}\
+        outer: {{ item }}
+        {% endfor %}
+        """)
+      try expect(template.render(self.context)) == """
+        inner: 1
+        inner: 1
+        inner: 1
+
+        """
+    }
+
+    it("throws when continuing with unknown label") {
+      let template = Template(templateString: """
+        {% outer: for item in items %}
+        {% continue inner %}
+        {% endfor %}
+        """)
+      try expect(template.render(self.context)).toThrow()
     }
   }
 }
