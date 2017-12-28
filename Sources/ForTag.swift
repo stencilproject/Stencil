@@ -18,7 +18,7 @@ class ForNode : NodeType {
     let loopVariables = components[1].characters
       .split(separator: ",")
       .map(String.init)
-      .map { $0.trimmingCharacters(in: CharacterSet.whitespaces) }
+      .map { $0.trim(character: " ") }
 
     let variable = components[3]
 

@@ -24,6 +24,7 @@
 - Integer literals now resolve into Int values, not Float
 - Fixed accessing properties of optional properties via reflection
 - No longer render optional values in arrays as `Optional(..)`
+- Adds support for using spaces in filter expression
 
 
 ## 0.10.1
