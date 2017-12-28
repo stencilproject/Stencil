@@ -96,6 +96,10 @@ class ForNode: NodeType {
       let count = values.count
       var result = ""
 
+      // collect parent loop contexts
+      let parentLoopContexts = (context["forloop"] as? [String: Any])?
+        .filter { ($1 as? [String: Any])?["label"] != nil } ?? [:]
+
       for (index, item) in zip(0..., values) {
         var forContext: [String: Any] = [
           "first": index == 0,
@@ -106,7 +110,9 @@ class ForNode: NodeType {
         ]
         if let label = label {
           forContext["label"] = label
+          forContext[label] = forContext
         }
+        forContext.merge(parentLoopContexts) { lhs, _ in lhs }
 
         var shouldBreak = false
         result += try context.push(dictionary: ["forloop": forContext]) {

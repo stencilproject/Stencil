@@ -514,6 +514,51 @@ final class ForNodeTests: XCTestCase {
       try expect(template.render(self.context)).toThrow()
     }
   }
+
+  func testAccessLabeled() {
+    it("can access labeled outer loop context from inner loop") {
+      let template = Template(templateString: """
+        {% outer: for item in 1...2 %}\
+        {% for item in items %}\
+        {{ forloop.counter }}-{{ forloop.outer.counter }},\
+        {% endfor %}---\
+        {% endfor %}
+        """)
+      try expect(template.render(self.context)) == """
+        1-1,2-1,3-1,---1-2,2-2,3-2,---
+        """
+    }
+
+    it("can access labeled outer loop from double inner loop") {
+      let template = Template(templateString: """
+        {% outer: for item in 1...2 %}{% for item in 1...2 %}\
+        {% for item in items %}\
+        {{ forloop.counter }}-{{ forloop.outer.counter }},\
+        {% endfor %}---{% endfor %}
+        {% endfor %}
+        """)
+      try expect(template.render(self.context)) == """
+        1-1,2-1,3-1,---1-1,2-1,3-1,---
+        1-2,2-2,3-2,---1-2,2-2,3-2,---
+
+        """
+    }
+
+    it("can access two labeled outer loop contexts from inner loop") {
+      let template = Template(templateString: """
+        {% outer1: for item in 1...2 %}{% outer2: for item in 1...2 %}\
+        {% for item in items %}\
+        {{ forloop.counter }}-{{ forloop.outer2.counter }}-{{ forloop.outer1.counter }},\
+        {% endfor %}---{% endfor %}
+        {% endfor %}
+        """)
+      try expect(template.render(self.context)) == """
+        1-1-1,2-1-1,3-1-1,---1-2-1,2-2-1,3-2-1,---
+        1-1-2,2-1-2,3-1-2,---1-2-2,2-2-2,3-2-2,---
+
+        """
+    }
+  }
 }
 
 // MARK: - Helpers
