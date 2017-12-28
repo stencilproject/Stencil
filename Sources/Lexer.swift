@@ -194,4 +194,4 @@ extension String {
   }
 }
 
-public typealias RangeLine = (content: String, number: UInt, offset: String.IndexDistance)
+public typealias RangeLine = (content: String, number: UInt, offset: Int)
