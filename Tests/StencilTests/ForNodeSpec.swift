@@ -90,9 +90,9 @@ func testForNode() {
         try expect(try template.render(Context(dictionary: ["j": "3", "k": 1]))).toThrow()
       }
 
-      $0.it("throws if right value is not more than left value") {
+      $0.it("can use decreasing range") {
         let template: Template = "{% for i in k to j %}{{ i }}{% endfor %}"
-        try expect(try template.render(Context(dictionary: ["k": 3, "j": 1]))).toThrow()
+        try expect(try template.render(Context(dictionary: ["k": 3, "j": 1]))) == "321"
       }
 
       $0.it("throws is left range value is missing") {

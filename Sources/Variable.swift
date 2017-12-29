@@ -144,12 +144,12 @@ public struct RangeVariable: Resolvable {
     guard let to = toResolved.flatMap(toNumber(value:)).flatMap(Int.init) else {
       throw TemplateSyntaxError("to value \(toResolved ?? "nil") is not an int")
     }
-
-    guard from < to else {
-      throw TemplateSyntaxError("from value (\(from)) is not less than to value (\(to))")
+    let range = min(from, to)...max(from, to)
+    if from > to {
+      return Array(range.reversed())
+    } else {
+      return Array(range)
     }
-
-    return CountableClosedRange<Int>(uncheckedBounds: (lower: from, upper: to))
   }
 
 }
