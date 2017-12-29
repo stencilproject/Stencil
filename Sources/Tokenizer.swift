@@ -36,8 +36,35 @@ extension String {
       components.append(word)
     }
 
-    return components
+    return smartJoin(components)
   }
+}
+
+// joins back components around characters used in variables lists and filters
+private func smartJoin(_ components: [String]) -> [String] {
+  var joinedComponents = components
+  // convert ["a", "|", "b"] and ["a|", "b"] to ["a|b"]
+  // do not allow ["a", "|b"]
+  for char in [",", "|", ":"] {
+    while let index = joinedComponents.index(of: char) {
+      if index > 0 {
+        joinedComponents[index-1] += char
+
+        if joinedComponents.count > index + 1 {
+          joinedComponents[index-1] += joinedComponents[index+1]
+          joinedComponents.remove(at: index+1)
+        }
+      }
+      joinedComponents.remove(at: index)
+    }
+    while let index = joinedComponents.index(where: { $0.hasSuffix(char) }) {
+      if joinedComponents.count > index {
+        joinedComponents[index] += joinedComponents[index+1]
+        joinedComponents.remove(at: index+1)
+      }
+    }
+  }
+  return joinedComponents
 }
 
 

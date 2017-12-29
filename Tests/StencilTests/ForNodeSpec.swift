@@ -111,8 +111,8 @@ func testForNode() {
         try expect(try node.render(context)) == "empty"
     }
 
-    $0.it("can render a filter") {
-      let templateString = "{% for article in ars|default:articles %}" +
+    $0.it("can render a filter with spaces") {
+      let templateString = "{% for article in ars | default: a, b , articles %}" +
         "- {{ article.title }} by {{ article.author }}.\n" +
         "{% endfor %}\n"
 
@@ -182,7 +182,7 @@ func testForNode() {
     }
 
     $0.it("can iterate over dictionary") {
-      let templateString = "{% for key,value in dict %}" +
+      let templateString = "{% for key, value in dict %}" +
         "{{ key }}: {{ value }}," +
         "{% endfor %}"
 
