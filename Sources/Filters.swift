@@ -10,6 +10,23 @@ func lowercase(_ value: Any?) -> Any? {
   return stringify(value).lowercased()
 }
 
+func titlecase(_ value: Any?) -> Any? {
+  return stringify(value).titlecased
+}
+
+extension String {
+  var titlecased: String {
+    guard !isEmpty else { return "" }
+    return components(separatedBy: " ")
+      .map({
+        let first = String($0.characters.prefix(1)).capitalized
+        let other = String($0.characters.dropFirst())
+        return first + other
+      })
+    .joined(separator: " ")
+  }
+}
+
 func defaultFilter(value: Any?, arguments: [Any?]) -> Any? {
   // value can be optional wrapping nil, so this way we check for underlying value
   if let value = value, String(describing: value) != "nil" {

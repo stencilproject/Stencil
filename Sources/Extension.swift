@@ -56,6 +56,7 @@ class DefaultExtension: Extension {
     registerFilter("capitalize", filter: capitalise)
     registerFilter("uppercase", filter: uppercase)
     registerFilter("lowercase", filter: lowercase)
+    registerFilter("titlecase", filter: titlecase)
     registerFilter("join", filter: joinFilter)
   }
 }
