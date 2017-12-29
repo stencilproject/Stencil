@@ -11,6 +11,7 @@
 - Fixed rendering `{{ block.super }}` with several levels of inheritance
 - Fixed checking dictionary values for nil in `default` filter
 - Fixed comparing string variables with string literals, in Swift 4 string literals became `Substring` and thus couldn't be directly compared to strings.
+- Integer literals now resolve into Int values, not Float
 
 
 ## 0.10.1

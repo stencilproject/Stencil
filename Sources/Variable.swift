@@ -63,8 +63,11 @@ public struct Variable : Equatable, Resolvable {
       return String(variable[variable.characters.index(after: variable.startIndex) ..< variable.characters.index(before: variable.endIndex)])
     }
 
+    // Number literal
+    if let int = Int(variable) {
+      return int
+    }
     if let number = Number(variable) {
-      // Number literal
       return number
     }
 
