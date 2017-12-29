@@ -53,6 +53,60 @@ func testForNode() {
       try expect(try node.render(context)) == "123"
     }
 
+    $0.context("given range variable") {
+      $0.it("can iterate in range of numbers") {
+        let template: Template = "{% for i in 1 to 3 %}{{ i }}{% endfor %}"
+        try expect(try template.render(context)) == "123"
+      }
+
+      $0.it("can iterate in range of variables") {
+        let template: Template = "{% for i in 1 to j %}{{ i }}{% endfor %}"
+        try expect(try template.render(Context(dictionary: ["j": 3]))) == "123"
+      }
+
+      $0.it("can use filter on range variables") {
+        let template = "{% for i in 1|incr to j|incr %}{{ i }}{% endfor %}"
+        let ext = Extension()
+        ext.registerFilter("incr", filter: { (arg: Any?) in toNumber(value: arg!)! + 1 })
+        let environment = Environment(extensions: [ext])
+        try (expect(environment.renderTemplate(string: template, context: ["j": 3]))) == "234"
+      }
+
+      $0.it("can use where with range variables") {
+        let template = "{% for i in 1 to j where i|odd %}{{ i }}{% endfor %}"
+        let ext = Extension()
+        ext.registerFilter("odd", filter: { (arg: Any?) in toNumber(value: arg!)!.truncatingRemainder(dividingBy: 2) != 0 })
+        let environment = Environment(extensions: [ext])
+        try (expect(environment.renderTemplate(string: template, context: ["j": 3]))) == "13"
+      }
+
+      $0.it("throws when left value is not int") {
+        let template: Template = "{% for i in k to j %}{{ i }}{% endfor %}"
+        try expect(try template.render(Context(dictionary: ["j": 3, "k": "1"]))).toThrow()
+      }
+
+      $0.it("throws when right value is not int") {
+        let template: Template = "{% for i in k to j %}{{ i }}{% endfor %}"
+        try expect(try template.render(Context(dictionary: ["j": "3", "k": 1]))).toThrow()
+      }
+
+      $0.it("throws if right value is not more than left value") {
+        let template: Template = "{% for i in k to j %}{{ i }}{% endfor %}"
+        try expect(try template.render(Context(dictionary: ["k": 3, "j": 1]))).toThrow()
+      }
+
+      $0.it("throws is left range value is missing") {
+        let template: Template = "{% for i in to j %}{{ i }}{% endfor %}"
+        try expect(try template.render(Context(dictionary: ["k": 3, "j": 1]))).toThrow()
+      }
+
+      $0.it("throws is right range value is missing") {
+        let template: Template = "{% for i in k to %}{{ i }}{% endfor %}"
+        try expect(try template.render(Context(dictionary: ["k": 3, "j": 1]))).toThrow()
+      }
+
+    }
+
 #if os(OSX)
     $0.it("renders a context variable of type NSArray") {
       let nsarray_context = Context(dictionary: [
@@ -173,7 +227,7 @@ func testForNode() {
           .block(value: "for i"),
       ]
       let parser = TokenParser(tokens: tokens, environment: Environment())
-      let error = TemplateSyntaxError("'for' statements should use the following 'for x in y where condition' `for i`.")
+      let error = TemplateSyntaxError("Invalid syntax in `for i`.\n'for' statements should use the following syntax:\n`for x in y where condition`")
       try expect(try parser.parse()).toThrow(error)
     }
 
