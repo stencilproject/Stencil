@@ -10,6 +10,18 @@ extension String {
     var singleQuoteCount = 0
     var doubleQuoteCount = 0
 
+    let specialCharacters = ",|:"
+    func appendWord(_ word: String) {
+      if components.count > 0 &&
+        (specialCharacters.characters.contains(components.last!.characters.last!) ||
+          specialCharacters.contains(word))
+      {
+        components[components.count-1] += word
+      } else {
+        components.append(word)
+      }
+    }
+
     for character in self.characters {
       if character == "'" { singleQuoteCount += 1 }
       else if character == "\"" { doubleQuoteCount += 1 }
@@ -19,7 +31,7 @@ extension String {
         if separate != separator {
           word.append(separate)
         } else if singleQuoteCount % 2 == 0 && doubleQuoteCount % 2 == 0 && !word.isEmpty {
-          components.append(word)
+          appendWord(word)
           word = ""
         }
 
@@ -33,38 +45,11 @@ extension String {
     }
 
     if !word.isEmpty {
-      components.append(word)
+      appendWord(word)
     }
 
-    return smartJoin(components)
+    return components
   }
-}
-
-// joins back components around characters used in variables lists and filters
-private func smartJoin(_ components: [String]) -> [String] {
-  var joinedComponents = components
-  // convert ["a", "|", "b"] and ["a|", "b"] to ["a|b"]
-  // do not allow ["a", "|b"]
-  for char in [",", "|", ":"] {
-    while let index = joinedComponents.index(of: char) {
-      if index > 0 {
-        joinedComponents[index-1] += char
-
-        if joinedComponents.count > index + 1 {
-          joinedComponents[index-1] += joinedComponents[index+1]
-          joinedComponents.remove(at: index+1)
-        }
-      }
-      joinedComponents.remove(at: index)
-    }
-    while let index = joinedComponents.index(where: { $0.hasSuffix(char) }) {
-      if joinedComponents.count > index {
-        joinedComponents[index] += joinedComponents[index+1]
-        joinedComponents.remove(at: index+1)
-      }
-    }
-  }
-  return joinedComponents
 }
 
 
