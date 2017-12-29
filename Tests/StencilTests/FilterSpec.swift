@@ -90,32 +90,32 @@ func testFilter() {
   }
 
 
-  describe("capitalize filter") {
-    let template = Template(templateString: "{{ name|capitalize }}")
+  describe("string filters") {
 
     $0.it("capitalizes a string") {
+      let template = Template(templateString: "{{ name|capitalize }}")
       let result = try template.render(Context(dictionary: ["name": "kyle"]))
       try expect(result) == "Kyle"
     }
-  }
-
-
-  describe("uppercase filter") {
-    let template = Template(templateString: "{{ name|uppercase }}")
 
     $0.it("transforms a string to be uppercase") {
+      let template = Template(templateString: "{{ name|uppercase }}")
       let result = try template.render(Context(dictionary: ["name": "kyle"]))
       try expect(result) == "KYLE"
     }
-  }
-
-  describe("lowercase filter") {
-    let template = Template(templateString: "{{ name|lowercase }}")
 
     $0.it("transforms a string to be lowercase") {
+      let template = Template(templateString: "{{ name|lowercase }}")
       let result = try template.render(Context(dictionary: ["name": "Kyle"]))
       try expect(result) == "kyle"
     }
+
+    $0.it("transforms a string to be titlecase") {
+      let template = Template(templateString: "{{ greeting|titlecase }}")
+      let result = try template.render(Context(dictionary: ["greeting": "heLLo world"]))
+      try expect(result) == "HeLLo World"
+    }
+
   }
 
   describe("default filter") {
