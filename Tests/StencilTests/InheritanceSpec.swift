@@ -52,4 +52,22 @@ final class InheritanceTests: XCTestCase {
       """
     }
   }
+
+  func testInheritanceCache() {
+    it("can call block twice") {
+      let template: Template = "{% block repeat %}Block{% endblock %}{{ block.repeat }}"
+      try expect(try template.render()) == "BlockBlock"
+    }
+
+    it("renders child content when calling block twice in base template") {
+      let template = try self.environment.loadTemplate(name: "child-repeat.html")
+      try expect(try template.render()) == """
+      Super_Header Child_Header
+      Child_Body
+      Repeat
+      Super_Header Child_Header
+      Child_Body
+      """
+    }
+  }
 }
