@@ -135,22 +135,37 @@ func testForNode() {
       let template = Template(templateString: templateString)
       let result = try template.render(context)
 
-      let fixture = "one: I\ntwo: II\n\n"
-      try expect(result) == fixture
+      let sortedResult = result.split(separator: "\n").sorted(by: <)
+      try expect(sortedResult) == ["one: I", "two: II"]
     }
 
     $0.it("renders supports iterating over dictionary") {
-      let nodes: [NodeType] = [VariableNode(variable: "key")]
+      let nodes: [NodeType] = [
+        VariableNode(variable: "key"),
+        TextNode(text: ","),
+      ]
       let emptyNodes: [NodeType] = [TextNode(text: "empty")]
       let node = ForNode(resolvable: Variable("dict"), loopVariables: ["key"], nodes: nodes, emptyNodes: emptyNodes, where: nil)
-      try expect(try node.render(context)) == "onetwo"
+      let result = try node.render(context)
+
+      let sortedResult = result.split(separator: ",").sorted(by: <)
+      try expect(sortedResult) == ["one", "two"]
     }
 
     $0.it("renders supports iterating over dictionary") {
-      let nodes: [NodeType] = [VariableNode(variable: "key"), VariableNode(variable: "value")]
+      let nodes: [NodeType] = [
+        VariableNode(variable: "key"),
+        TextNode(text: "="),
+        VariableNode(variable: "value"),
+        TextNode(text: ","),
+      ]
       let emptyNodes: [NodeType] = [TextNode(text: "empty")]
       let node = ForNode(resolvable: Variable("dict"), loopVariables: ["key", "value"], nodes: nodes, emptyNodes: emptyNodes, where: nil)
-      try expect(try node.render(context)) == "oneItwoII"
+
+      let result = try node.render(context)
+
+      let sortedResult = result.split(separator: ",").sorted(by: <)
+      try expect(sortedResult) == ["one=I", "two=II"]
     }
 
     $0.it("handles invalid input") {
