@@ -10,17 +10,27 @@ class ForNode : NodeType {
   class func parse(_ parser:TokenParser, token:Token) throws -> NodeType {
     let components = token.components()
 
-    guard components.count >= 3 && components[2] == "in" &&
-        (components.count == 4 || (components.count >= 6 && components[4] == "where")) else {
-      throw TemplateSyntaxError("'for' statements should use the following 'for x in y where condition' `\(token.contents)`.")
+    func hasToken(_ token: String, at index: Int) -> Bool {
+      return components.count > (index + 1) && components[index] == token
+    }
+    func endsOrHasToken(_ token: String, at index: Int) -> Bool {
+      return components.count == index || hasToken(token, at: index)
+    }
+
+    guard hasToken("in", at: 2) && (endsOrHasToken("where", at: 4) || (hasToken("to", at: 4) && endsOrHasToken("where", at: 6)))
+      else {
+        let error = "Invalid syntax in `\(token.contents)`."
+        if components.contains("to") {
+          throw TemplateSyntaxError("\(error)\n'for' statements should use the following syntax:\n`for x in a to b where condition`")
+        } else {
+          throw TemplateSyntaxError("\(error)\n'for' statements should use the following syntax:\n`for x in y where condition`")
+        }
     }
 
     let loopVariables = components[1].characters
       .split(separator: ",")
       .map(String.init)
       .map { $0.trimmingCharacters(in: CharacterSet.whitespaces) }
-
-    let variable = components[3]
 
     var emptyNodes = [NodeType]()
 
@@ -35,14 +45,23 @@ class ForNode : NodeType {
       _ = parser.nextToken()
     }
 
-    let filter = try parser.compileFilter(variable)
-    let `where`: Expression?
-    if components.count >= 6 {
-      `where` = try parseExpression(components: Array(components.suffix(from: 5)), tokenParser: parser)
+    let variable: Resolvable
+    if hasToken("to", at: 4) {
+      let from = try parser.compileFilter(components[3])
+      let to = try parser.compileFilter(components[5])
+      variable = RangeVariable(from: from, to: to)
     } else {
-      `where` = nil
+      variable = try parser.compileFilter(components[3])
     }
-    return ForNode(resolvable: filter, loopVariables: loopVariables, nodes: forNodes, emptyNodes:emptyNodes, where: `where`)
+
+    var `where`: Expression?
+    if hasToken("where", at: 6) {
+      `where` = try parseExpression(components: Array(components.suffix(from: 7)), tokenParser: parser)
+    } else if hasToken("where", at: 4) {
+      `where` = try parseExpression(components: Array(components.suffix(from: 5)), tokenParser: parser)
+    }
+
+    return ForNode(resolvable: variable, loopVariables: loopVariables, nodes: forNodes, emptyNodes:emptyNodes, where: `where`)
   }
 
   init(resolvable: Resolvable, loopVariables: [String], nodes:[NodeType], emptyNodes:[NodeType], where: Expression? = nil) {

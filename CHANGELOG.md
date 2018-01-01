@@ -7,6 +7,7 @@
 - Added support for resolving superclass properties for not-NSObject subclasses
 - The `{% for %}` tag can now iterate over tuples, structures and classes via
   their stored properties.
+- Now you can construct ranges for loops using `a to b` syntax, i.e. `for i in 1 to array.count`
 
 ### Bug Fixes
 

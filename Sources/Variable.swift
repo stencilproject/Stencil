@@ -126,6 +126,34 @@ public func ==(lhs: Variable, rhs: Variable) -> Bool {
   return lhs.variable == rhs.variable
 }
 
+/// A structure used to represet range of to integer values expressed as `from to to`.
+/// Values should be numbers (they will be converted to integers) and `from` should be less than `to`.
+/// Rendering this variable produces closed range `from...to`
+public struct RangeVariable: Resolvable {
+  public let from: Resolvable
+  public let to: Resolvable
+
+  public func resolve(_ context: Context) throws -> Any? {
+    let fromResolved = try from.resolve(context)
+    let toResolved = try to.resolve(context)
+
+    guard let from = fromResolved.flatMap(toNumber(value:)).flatMap(Int.init) else {
+      throw TemplateSyntaxError("from value \(fromResolved ?? "nil") is not an int")
+    }
+
+    guard let to = toResolved.flatMap(toNumber(value:)).flatMap(Int.init) else {
+      throw TemplateSyntaxError("to value \(toResolved ?? "nil") is not an int")
+    }
+    let range = min(from, to)...max(from, to)
+    if from > to {
+      return Array(range.reversed())
+    } else {
+      return Array(range)
+    }
+  }
+
+}
+
 
 func normalize(_ current: Any?) -> Any? {
   if let current = current as? Normalizable {
