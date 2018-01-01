@@ -61,7 +61,7 @@ func testVariable() {
 
     $0.it("can resolve an integer literal") {
       let variable = Variable("5")
-      let result = try variable.resolve(context) as? Number
+      let result = try variable.resolve(context) as? Int
       try expect(result) == 5
     }
 

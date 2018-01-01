@@ -136,7 +136,19 @@ func testFilter() {
       let result = try template.render(Context(dictionary: [:]))
       try expect(result) == "Hello World"
     }
-    
+
+    $0.it("can use int as default") {
+      let template = Template(templateString: "{{ value|default:1 }}")
+      let result = try template.render(Context(dictionary: [:]))
+      try expect(result) == "1"
+    }
+
+    $0.it("can use float as default") {
+      let template = Template(templateString: "{{ value|default:1.5 }}")
+      let result = try template.render(Context(dictionary: [:]))
+      try expect(result) == "1.5"
+    }
+
     $0.it("checks for underlying nil value correctly") {
       let template = Template(templateString: "Hello {{ user.name|default:\"anonymous\" }}")
       let nilName: String? = nil
