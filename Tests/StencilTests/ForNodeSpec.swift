@@ -129,13 +129,13 @@ func testForNode() {
 
     $0.it("can iterate over dictionary") {
       let templateString = "{% for key,value in dict %}" +
-        "{{ key }}: {{ value }}\n" +
-        "{% endfor %}\n"
+        "{{ key }}: {{ value }}," +
+        "{% endfor %}"
 
       let template = Template(templateString: templateString)
       let result = try template.render(context)
 
-      let sortedResult = result.split(separator: "\n").sorted(by: <)
+      let sortedResult = result.characters.split(separator: ",").map(String.init).sorted(by: <)
       try expect(sortedResult) == ["one: I", "two: II"]
     }
 
@@ -148,7 +148,7 @@ func testForNode() {
       let node = ForNode(resolvable: Variable("dict"), loopVariables: ["key"], nodes: nodes, emptyNodes: emptyNodes, where: nil)
       let result = try node.render(context)
 
-      let sortedResult = result.split(separator: ",").sorted(by: <)
+      let sortedResult = result.characters.split(separator: ",").map(String.init).sorted(by: <)
       try expect(sortedResult) == ["one", "two"]
     }
 
@@ -164,7 +164,7 @@ func testForNode() {
 
       let result = try node.render(context)
 
-      let sortedResult = result.split(separator: ",").sorted(by: <)
+      let sortedResult = result.characters.split(separator: ",").map(String.init).sorted(by: <)
       try expect(sortedResult) == ["one=I", "two=II"]
     }
 
