@@ -7,11 +7,13 @@ func testForNode() {
   describe("ForNode") {
     let context = Context(dictionary: [
       "items": [1, 2, 3],
+      "indices": [0, 1, 2],
       "emptyItems": [Int](),
       "dict": [
         "one": "I",
         "two": "II",
-      ]
+      ],
+      "keys": ["one", "two"]
     ])
 
     $0.it("renders the given nodes for each item") {
@@ -124,6 +126,43 @@ func testForNode() {
         "- Memory Management with ARC by Kyle Fuller.\n" +
         "\n"
 
+      try expect(result) == fixture
+    }
+
+    $0.it("can subscript array with index variable") {
+      let templateString = "{% for index in indices %}" +
+        "{{ index }}: {{ items.index }}\n" +
+      "{% endfor %}\n"
+
+      let template = Template(templateString: templateString)
+      let result = try template.render(context)
+
+      let fixture = "0: 1\n1: 2\n2: 3\n\n"
+      try expect(result) == fixture
+    }
+
+    $0.it("can subscript dictionary with key variable") {
+      let templateString = "{% for key in keys %}" +
+        "{{ key }}: {{ dict.key }}\n" +
+      "{% endfor %}\n"
+
+      let template = Template(templateString: templateString)
+      let result = try template.render(context)
+
+      let fixture = "one: I\ntwo: II\n\n"
+      try expect(result) == fixture
+    }
+
+    $0.it("does not subscript dictionary with key variable if value is set but nil") {
+      let templateString = "{% for key in keys %}" +
+        "{{ key }}: {{ dict.key }}\n" +
+      "{% endfor %}\n"
+
+      let template = Template(templateString: templateString)
+      let nilValue: String? = nil
+      let result = try template.render(Context(dictionary: ["dict": ["key": nilValue], "keys": ["one", "two"]]))
+
+      let fixture = "one: \ntwo: \n\n"
       try expect(result) == fixture
     }
 
