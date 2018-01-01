@@ -5,6 +5,8 @@
 ### Enhancements
 
 - Added support for resolving superclass properties for not-NSObject subclasses
+- The `{% for %}` tag can now iterate over tuples, structures and classes via
+  their stored properties.
 
 ### Bug Fixes
 

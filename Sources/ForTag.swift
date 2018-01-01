@@ -94,6 +94,22 @@ class ForNode : NodeType {
       values = Array(range)
     } else if let range = resolved as? CountableRange<Int> {
       values = Array(range)
+    } else if let resolved = resolved {
+      let mirror = Mirror(reflecting: resolved)
+      switch mirror.displayStyle {
+      case .struct?, .tuple?:
+        values = Array(mirror.children)
+      case .class?:
+        var children = Array(mirror.children)
+        var currentMirror: Mirror? = mirror
+        while let superclassMirror = currentMirror?.superclassMirror {
+          children.append(contentsOf: superclassMirror.children)
+          currentMirror = superclassMirror
+        }
+        values = Array(children)
+      default:
+        values = []
+      }
     } else {
       values = []
     }
