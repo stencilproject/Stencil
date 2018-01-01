@@ -14,6 +14,10 @@ enum Operator {
 
 
 let operators: [Operator] = [
+  .infix("/", 4, DevideExpression.self),
+  .infix("*", 4, MultiplyExpression.self),
+  .infix("+", 3, SumExpression.self),
+  .infix("-", 3, SubstractExpression.self),
   .infix("in", 5, InExpression.self),
   .infix("or", 6, OrExpression.self),
   .infix("and", 7, AndExpression.self),
@@ -37,8 +41,7 @@ func findOperator(name: String) -> Operator? {
   return nil
 }
 
-
-enum IfToken {
+enum ExpressionToken {
   case infix(name: String, bindingPower: Int, op: InfixOperator.Type)
   case prefix(name: String, bindingPower: Int, op: PrefixOperator.Type)
   case variable(Resolvable)
@@ -57,31 +60,31 @@ enum IfToken {
     }
   }
 
-  func nullDenotation(parser: IfExpressionParser) throws -> Expression {
+  func nullDenotation(parser: ExpressionParser) throws -> Expression {
     switch self {
     case .infix(let name, _, _):
-      throw TemplateSyntaxError("'if' expression error: infix operator '\(name)' doesn't have a left hand side")
+      throw TemplateSyntaxError("expression error: infix operator '\(name)' doesn't have a left hand side")
     case .prefix(_, let bindingPower, let op):
       let expression = try parser.expression(bindingPower: bindingPower)
       return op.init(expression: expression)
     case .variable(let variable):
       return VariableExpression(variable: variable)
     case .end:
-      throw TemplateSyntaxError("'if' expression error: end")
+      throw TemplateSyntaxError("expression error: end")
     }
   }
 
-  func leftDenotation(left: Expression, parser: IfExpressionParser) throws -> Expression {
+  func leftDenotation(left: Expression, parser: ExpressionParser) throws -> Expression {
     switch self {
     case .infix(_, let bindingPower, let op):
       let right = try parser.expression(bindingPower: bindingPower)
       return op.init(lhs: left, rhs: right)
     case .prefix(let name, _, _):
-      throw TemplateSyntaxError("'if' expression error: prefix operator '\(name)' was called with a left hand side")
+      throw TemplateSyntaxError("expression error: prefix operator '\(name)' was called with a left hand side")
     case .variable(let variable):
-      throw TemplateSyntaxError("'if' expression error: variable '\(variable)' was called with a left hand side")
+      throw TemplateSyntaxError("expression error: variable '\(variable)' was called with a left hand side")
     case .end:
-      throw TemplateSyntaxError("'if' expression error: end")
+      throw TemplateSyntaxError("expression error: end")
     }
   }
 
@@ -96,8 +99,8 @@ enum IfToken {
 }
 
 
-final class IfExpressionParser {
-  let tokens: [IfToken]
+final class ExpressionParser {
+  let tokens: [ExpressionToken]
   var position: Int = 0
 
   init(components: [String], tokenParser: TokenParser) throws {
@@ -115,7 +118,7 @@ final class IfExpressionParser {
     }
   }
 
-  var currentToken: IfToken {
+  var currentToken: ExpressionToken {
     if tokens.count > position {
       return tokens[position]
     }
@@ -123,7 +126,7 @@ final class IfExpressionParser {
     return .end
   }
 
-  var nextToken: IfToken {
+  var nextToken: ExpressionToken {
     position += 1
     return currentToken
   }
@@ -156,7 +159,7 @@ final class IfExpressionParser {
 
 
 func parseExpression(components: [String], tokenParser: TokenParser) throws -> Expression {
-  let parser = try IfExpressionParser(components: components, tokenParser: tokenParser)
+  let parser = try ExpressionParser(components: components, tokenParser: tokenParser)
   return try parser.parse()
 }
 
@@ -250,7 +253,10 @@ class IfNode : NodeType {
   func render(_ context: Context) throws -> String {
     for condition in conditions {
       if let expression = condition.expression {
-        let truthy = try expression.evaluate(context: context)
+        let conditionResult = try expression.evaluate(context: context)
+        guard let truthy = conditionResult as? Bool else {
+          throw TemplateSyntaxError("\(conditionResult) is not bool")
+        }
 
         if truthy {
           return try condition.render(context)

@@ -1,5 +1,5 @@
 protocol Expression: CustomStringConvertible {
-  func evaluate(context: Context) throws -> Bool
+  func evaluate(context: Context) throws -> Any
 }
 
 
@@ -20,7 +20,7 @@ final class StaticExpression: Expression, CustomStringConvertible {
     self.value = value
   }
 
-  func evaluate(context: Context) throws -> Bool {
+  func evaluate(context: Context) throws -> Any {
     return value
   }
 
@@ -29,8 +29,7 @@ final class StaticExpression: Expression, CustomStringConvertible {
   }
 }
 
-
-final class VariableExpression: Expression, CustomStringConvertible {
+class VariableExpression: Expression, CustomStringConvertible {
   let variable: Resolvable
 
   init(variable: Resolvable) {
@@ -42,7 +41,7 @@ final class VariableExpression: Expression, CustomStringConvertible {
   }
 
   /// Resolves a variable in the given context as boolean
-  func resolve(context: Context, variable: Resolvable) throws -> Bool {
+  func evaluate(context: Context) throws -> Any {
     let result = try variable.resolve(context)
     var truthy = false
 
@@ -62,12 +61,7 @@ final class VariableExpression: Expression, CustomStringConvertible {
 
     return truthy
   }
-
-  func evaluate(context: Context) throws -> Bool {
-    return try resolve(context: context, variable: variable)
-  }
 }
-
 
 final class NotExpression: Expression, PrefixOperator, CustomStringConvertible {
   let expression: Expression
@@ -80,8 +74,8 @@ final class NotExpression: Expression, PrefixOperator, CustomStringConvertible {
     return "not \(expression)"
   }
 
-  func evaluate(context: Context) throws -> Bool {
-    return try !expression.evaluate(context: context)
+  func evaluate(context: Context) throws -> Any {
+    return try !(expression.evaluate(context: context) as! Bool)
   }
 }
 
@@ -98,7 +92,7 @@ final class InExpression: Expression, InfixOperator, CustomStringConvertible {
     return "(\(lhs) in \(rhs))"
   }
   
-  func evaluate(context: Context) throws -> Bool {
+  func evaluate(context: Context) throws -> Any {
     if let lhs = lhs as? VariableExpression, let rhs = rhs as? VariableExpression {
       let lhsValue = try lhs.variable.resolve(context)
       let rhsValue = try rhs.variable.resolve(context)
@@ -130,8 +124,8 @@ final class OrExpression: Expression, InfixOperator, CustomStringConvertible {
     return "(\(lhs) or \(rhs))"
   }
 
-  func evaluate(context: Context) throws -> Bool {
-    let lhs = try self.lhs.evaluate(context: context)
+  func evaluate(context: Context) throws -> Any {
+    let lhs = try self.lhs.evaluate(context: context) as! Bool
     if lhs {
       return lhs
     }
@@ -154,8 +148,8 @@ final class AndExpression: Expression, InfixOperator, CustomStringConvertible {
     return "(\(lhs) and \(rhs))"
   }
 
-  func evaluate(context: Context) throws -> Bool {
-    let lhs = try self.lhs.evaluate(context: context)
+  func evaluate(context: Context) throws -> Any {
+    let lhs = try self.lhs.evaluate(context: context) as! Bool
     if !lhs {
       return lhs
     }
@@ -178,7 +172,7 @@ class EqualityExpression: Expression, InfixOperator, CustomStringConvertible {
     return "(\(lhs) == \(rhs))"
   }
 
-  func evaluate(context: Context) throws -> Bool {
+  func evaluate(context: Context) throws -> Any {
     if let lhs = lhs as? VariableExpression, let rhs = rhs as? VariableExpression {
       let lhsValue = try lhs.variable.resolve(context)
       let rhsValue = try rhs.variable.resolve(context)
@@ -214,16 +208,26 @@ class NumericExpression: Expression, InfixOperator, CustomStringConvertible {
     return "(\(lhs) \(op) \(rhs))"
   }
 
-  func evaluate(context: Context) throws -> Bool {
+  func evaluate(context: Context) throws -> Any {
     if let lhs = lhs as? VariableExpression, let rhs = rhs as? VariableExpression {
       let lhsValue = try lhs.variable.resolve(context)
       let rhsValue = try rhs.variable.resolve(context)
 
-      if let lhs = lhsValue, let rhs = rhsValue {
-        if let lhs = toNumber(value: lhs), let rhs = toNumber(value: rhs) {
-          return compare(lhs: lhs, rhs: rhs)
-        }
+      guard let lhs = lhsValue else {
+        throw TemplateSyntaxError("left value is nil")
       }
+      guard let lhsNumber = toNumber(value: lhs) else {
+        throw TemplateSyntaxError("left value is not a number")
+      }
+
+      guard let rhs = rhsValue else {
+        throw TemplateSyntaxError("right value is nil")
+      }
+      guard let rhsNumber = toNumber(value: rhs) else {
+        throw TemplateSyntaxError("right value is not a number")
+      }
+
+      return compare(lhs: lhsNumber, rhs: rhsNumber)
     }
 
     return false
@@ -239,7 +243,7 @@ class NumericExpression: Expression, InfixOperator, CustomStringConvertible {
 }
 
 
-class MoreThanExpression: NumericExpression {
+final class MoreThanExpression: NumericExpression {
   override var op: String {
     return ">"
   }
@@ -250,7 +254,7 @@ class MoreThanExpression: NumericExpression {
 }
 
 
-class MoreThanEqualExpression: NumericExpression {
+final class MoreThanEqualExpression: NumericExpression {
   override var op: String {
     return ">="
   }
@@ -261,7 +265,7 @@ class MoreThanEqualExpression: NumericExpression {
 }
 
 
-class LessThanExpression: NumericExpression {
+final class LessThanExpression: NumericExpression {
   override var op: String {
     return "<"
   }
@@ -272,7 +276,7 @@ class LessThanExpression: NumericExpression {
 }
 
 
-class LessThanEqualExpression: NumericExpression {
+final class LessThanEqualExpression: NumericExpression {
   override var op: String {
     return "<="
   }
@@ -283,13 +287,13 @@ class LessThanEqualExpression: NumericExpression {
 }
 
 
-class InequalityExpression: EqualityExpression {
+final class InequalityExpression: EqualityExpression {
   override var description: String {
     return "(\(lhs) != \(rhs))"
   }
 
-  override func evaluate(context: Context) throws -> Bool {
-    return try !super.evaluate(context: context)
+  override func evaluate(context: Context) throws -> Any {
+    return try !(super.evaluate(context: context) as! Bool)
   }
 }
 
@@ -329,3 +333,105 @@ func toNumber(value: Any) -> Number? {
 
     return nil
 }
+
+class ArithmeticExpression: Expression, InfixOperator, CustomStringConvertible {
+  let lhs: Expression
+  let rhs: Expression
+
+  required init(lhs: Expression, rhs: Expression) {
+    self.lhs = lhs
+    self.rhs = rhs
+  }
+
+  var description: String {
+    return "(\(lhs) \(op) \(rhs))"
+  }
+
+  func evaluate(context: Context) throws -> Any {
+    let lhsResult: Number
+    if let lhs = lhs as? ArithmeticExpression {
+      lhsResult = try lhs.evaluate(context: context) as! Number
+    } else if let lhs = lhs as? VariableExpression {
+      let lhsValue = try lhs.variable.resolve(context)
+
+      guard let lhs = lhsValue else {
+        throw TemplateSyntaxError("left value is nil")
+      }
+      guard let lhsNumber = toNumber(value: lhs) else {
+        throw TemplateSyntaxError("left value '\(lhs)' is not a number")
+      }
+      lhsResult = lhsNumber
+    } else {
+      throw TemplateSyntaxError("invalid arithmetic expression")
+    }
+
+    let rhsResult: Number
+    if let rhs = rhs as? ArithmeticExpression {
+      rhsResult = try rhs.evaluate(context: context) as! Number
+    } else if let rhs = rhs as? VariableExpression {
+      let rhsValue = try rhs.variable.resolve(context)
+
+      guard let rhs = rhsValue else {
+        throw TemplateSyntaxError("right value is nil")
+      }
+      guard let rhsNumber = toNumber(value: rhs) else {
+        throw TemplateSyntaxError("right value '\(rhs)' is not a number")
+      }
+      rhsResult = rhsNumber
+    } else {
+      throw TemplateSyntaxError("invalid arithmetic expression")
+    }
+
+    return calculate(lhs: lhsResult, rhs: rhsResult)
+  }
+
+  var op: String {
+    return ""
+  }
+
+  func calculate(lhs: Number, rhs: Number) -> Number {
+    return 0
+  }
+}
+
+final class SumExpression: ArithmeticExpression {
+  override var op: String {
+    return "+"
+  }
+
+  override func calculate(lhs: Number, rhs: Number) -> Number {
+    return lhs + rhs
+  }
+}
+
+final class SubstractExpression: ArithmeticExpression {
+  override var op: String {
+    return "-"
+  }
+
+  override func calculate(lhs: Number, rhs: Number) -> Number {
+    return lhs - rhs
+  }
+}
+
+final class MultiplyExpression: ArithmeticExpression {
+  override var op: String {
+    return "*"
+  }
+
+  override func calculate(lhs: Number, rhs: Number) -> Number {
+    return lhs * rhs
+  }
+}
+
+final class DevideExpression: ArithmeticExpression {
+  override var op: String {
+    return "/"
+  }
+
+  override func calculate(lhs: Number, rhs: Number) -> Number {
+    return lhs / rhs
+  }
+}
+
+

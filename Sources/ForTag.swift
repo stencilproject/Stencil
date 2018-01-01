@@ -117,7 +117,7 @@ class ForNode : NodeType {
     if let `where` = self.where {
       values = try values.filter({ item -> Bool in
         return try push(value: item, context: context) {
-          try `where`.evaluate(context: context)
+          try `where`.evaluate(context: context) as! Bool
         }
       })
     }
