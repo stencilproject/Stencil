@@ -40,3 +40,8 @@ func joinFilter(value: Any?, arguments: [Any?]) throws -> Any? {
 
   return value
 }
+
+
+func safeFilter(value: Any?) throws -> Any? {
+  return escaped(html: stringify(value))
+}
