@@ -183,4 +183,20 @@ func testFilter() {
       try expect(result) == "OneTwo"
     }
   }
+
+  describe("split filter") {
+    let template = Template(templateString: "{{ value|split:\", \" }}")
+
+    $0.it("split a string into array") {
+      let result = try template.render(Context(dictionary: ["value": "One, Two"]))
+      try expect(result) == "[\"One\", \"Two\"]"
+    }
+
+    $0.it("can split without arguments") {
+      let template = Template(templateString: "{{ value|split }}")
+      let result = try template.render(Context(dictionary: ["value": "One, Two"]))
+      try expect(result) == "[\"One,\", \"Two\"]"
+    }
+  }
+
 }
