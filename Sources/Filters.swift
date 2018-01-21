@@ -26,7 +26,7 @@ func defaultFilter(value: Any?, arguments: [Any?]) -> Any? {
 }
 
 func joinFilter(value: Any?, arguments: [Any?]) throws -> Any? {
-  guard arguments.count < 2 else {
+  guard arguments.count <= 1 else {
     throw TemplateSyntaxError("'join' filter takes a single argument")
   }
 
@@ -40,3 +40,48 @@ func joinFilter(value: Any?, arguments: [Any?]) throws -> Any? {
 
   return value
 }
+
+func indentFilter(value: Any?, arguments: [Any?]) throws -> Any? {
+  guard !arguments.isEmpty else {
+    throw TemplateSyntaxError("'indent' filter takes at least 1 argument")
+  }
+  guard arguments.count <= 3 else {
+    throw TemplateSyntaxError("'indent' filter can take at most 3 arguments")
+  }
+
+  guard let indentWidth = arguments[0] as? Int else {
+    throw TemplateSyntaxError("first argument should be Int")
+  }
+
+  var indentationChar = " "
+  if arguments.count > 1 {
+    guard let value = arguments[1] as? String else {
+      throw TemplateSyntaxError("second argument should be String")
+    }
+    indentationChar = value
+  }
+
+  var indentFirst = false
+  if arguments.count > 2 {
+    guard let value = arguments[2] as? Bool else {
+      throw TemplateSyntaxError("third argument should be Bool")
+    }
+    indentFirst = value
+  }
+
+  let indentation = [String](repeating: indentationChar, count: indentWidth).joined(separator: "")
+  return indent(stringify(value), indentation: indentation, indentFirst: indentFirst)
+}
+
+
+func indent(_ content: String, indentation: String, indentFirst: Bool) -> String {
+  guard !indentation.isEmpty else { return content }
+
+  var lines = content.components(separatedBy: .newlines)
+  let firstLine = (indentFirst ? indentation : "") + lines.removeFirst()
+  let result = lines.reduce([firstLine]) { (result, line) in
+    return result + [(line.isEmpty ? "" : "\(indentation)\(line)")]
+  }
+  return result.joined(separator: "\n")
+}
+

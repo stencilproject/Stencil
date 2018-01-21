@@ -183,4 +183,24 @@ func testFilter() {
       try expect(result) == "OneTwo"
     }
   }
+
+  describe("indent filter") {
+    $0.it("indents content") {
+      let template = Template(templateString: "{{ value|indent:2 }}")
+      let result = try template.render(Context(dictionary: ["value": "One\nTwo"]))
+      try expect(result) == "One\n  Two"
+    }
+
+    $0.it("can indent with arbitrary character") {
+      let template = Template(templateString: "{{ value|indent:2,\"\t\" }}")
+      let result = try template.render(Context(dictionary: ["value": "One\nTwo"]))
+      try expect(result) == "One\n\t\tTwo"
+    }
+
+    $0.it("can indent first line") {
+      let template = Template(templateString: "{{ value|indent:2,\" \",true }}")
+      let result = try template.render(Context(dictionary: ["value": "One\nTwo"]))
+      try expect(result) == "  One\n  Two"
+    }
+  }
 }
