@@ -40,3 +40,16 @@ func joinFilter(value: Any?, arguments: [Any?]) throws -> Any? {
 
   return value
 }
+
+func splitFilter(value: Any?, arguments: [Any?]) throws -> Any? {
+  guard arguments.count < 2 else {
+    throw TemplateSyntaxError("'split' filter takes a single argument")
+  }
+
+  let separator = stringify(arguments.first ?? " ")
+  if let value = value as? String {
+    return value.components(separatedBy: separator)
+  }
+
+  return value
+}
