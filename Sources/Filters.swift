@@ -26,7 +26,7 @@ func defaultFilter(value: Any?, arguments: [Any?]) -> Any? {
 }
 
 func joinFilter(value: Any?, arguments: [Any?]) throws -> Any? {
-  guard arguments.count <= 1 else {
+  guard arguments.count < 2 else {
     throw TemplateSyntaxError("'join' filter takes a single argument")
   }
 
@@ -42,21 +42,22 @@ func joinFilter(value: Any?, arguments: [Any?]) throws -> Any? {
 }
 
 func indentFilter(value: Any?, arguments: [Any?]) throws -> Any? {
-  guard !arguments.isEmpty else {
-    throw TemplateSyntaxError("'indent' filter takes at least 1 argument")
-  }
   guard arguments.count <= 3 else {
     throw TemplateSyntaxError("'indent' filter can take at most 3 arguments")
   }
 
-  guard let indentWidth = arguments[0] as? Int else {
-    throw TemplateSyntaxError("first argument should be Int")
+  var indentWidth = 4
+  if arguments.count > 0 {
+    guard let value = arguments[0] as? Int else {
+      throw TemplateSyntaxError("'indent' filter width argument must be an Integer (\(String(describing: arguments[0])))")
+    }
+    indentWidth = value
   }
 
   var indentationChar = " "
   if arguments.count > 1 {
     guard let value = arguments[1] as? String else {
-      throw TemplateSyntaxError("second argument should be String")
+      throw TemplateSyntaxError("'indent' filter indentation argument must be a String (\(String(describing: arguments[1]))")
     }
     indentationChar = value
   }
@@ -64,7 +65,7 @@ func indentFilter(value: Any?, arguments: [Any?]) throws -> Any? {
   var indentFirst = false
   if arguments.count > 2 {
     guard let value = arguments[2] as? Bool else {
-      throw TemplateSyntaxError("third argument should be Bool")
+      throw TemplateSyntaxError("'indent' filter indentFirst argument must be a Bool")
     }
     indentFirst = value
   }

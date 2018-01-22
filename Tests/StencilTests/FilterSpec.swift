@@ -202,5 +202,11 @@ func testFilter() {
       let result = try template.render(Context(dictionary: ["value": "One\nTwo"]))
       try expect(result) == "  One\n  Two"
     }
+
+    $0.it("does not indent empty lines") {
+      let template = Template(templateString: "{{ value|indent }}")
+      let result = try template.render(Context(dictionary: ["value": "One\n\n\nTwo\n\n"]))
+      try expect(result) == "One\n\n\n    Two\n\n"
+    }
   }
 }
