@@ -8,6 +8,7 @@
 - The `{% for %}` tag can now iterate over tuples, structures and classes via
   their stored properties.
 - Added `split` filter
+- Allow default string filters to be applied to arrays
 - Similar filters are suggested when unknown filter is used
 
 ### Bug Fixes

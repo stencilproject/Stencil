@@ -1,13 +1,25 @@
 func capitalise(_ value: Any?) -> Any? {
-  return stringify(value).capitalized
+  if let array = value as? [Any?] {
+    return array.map { stringify($0).capitalized }
+  } else {
+    return stringify(value).capitalized
+  }
 }
 
 func uppercase(_ value: Any?) -> Any? {
-  return stringify(value).uppercased()
+  if let array = value as? [Any?] {
+    return array.map { stringify($0).uppercased() }
+  } else {
+    return stringify(value).uppercased()
+  }
 }
 
 func lowercase(_ value: Any?) -> Any? {
-  return stringify(value).lowercased()
+  if let array = value as? [Any?] {
+    return array.map { stringify($0).lowercased() }
+  } else {
+    return stringify(value).lowercased()
+  }
 }
 
 func defaultFilter(value: Any?, arguments: [Any?]) -> Any? {
