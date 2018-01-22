@@ -8,6 +8,7 @@
 - The `{% for %}` tag can now iterate over tuples, structures and classes via
   their stored properties.
 - Added `split` filter
+- Added `valueForKey` filter
 
 ### Bug Fixes
 
