@@ -1,13 +1,25 @@
 func capitalise(_ value: Any?) -> Any? {
-  return stringify(value).capitalized
+  if let array = value as? [Any?] {
+    return array.map { stringify($0).capitalized }
+  } else {
+    return stringify(value).capitalized
+  }
 }
 
 func uppercase(_ value: Any?) -> Any? {
-  return stringify(value).uppercased()
+  if let array = value as? [Any?] {
+    return array.map { stringify($0).uppercased() }
+  } else {
+    return stringify(value).uppercased()
+  }
 }
 
 func lowercase(_ value: Any?) -> Any? {
-  return stringify(value).lowercased()
+  if let array = value as? [Any?] {
+    return array.map { stringify($0).lowercased() }
+  } else {
+    return stringify(value).lowercased()
+  }
 }
 
 func defaultFilter(value: Any?, arguments: [Any?]) -> Any? {
@@ -36,6 +48,19 @@ func joinFilter(value: Any?, arguments: [Any?]) throws -> Any? {
     return value
       .map(stringify)
       .joined(separator: separator)
+  }
+
+  return value
+}
+
+func splitFilter(value: Any?, arguments: [Any?]) throws -> Any? {
+  guard arguments.count < 2 else {
+    throw TemplateSyntaxError("'split' filter takes a single argument")
+  }
+
+  let separator = stringify(arguments.first ?? " ")
+  if let value = value as? String {
+    return value.components(separatedBy: separator)
   }
 
   return value

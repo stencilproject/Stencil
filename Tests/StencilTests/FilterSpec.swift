@@ -89,32 +89,45 @@ func testFilter() {
     }
   }
 
+  describe("string filters") {
+    $0.context("given string") {
+      $0.it("transforms a string to be capitalized") {
+        let template = Template(templateString: "{{ name|capitalize }}")
+        let result = try template.render(Context(dictionary: ["name": "kyle"]))
+        try expect(result) == "Kyle"
+      }
 
-  describe("capitalize filter") {
-    let template = Template(templateString: "{{ name|capitalize }}")
+      $0.it("transforms a string to be uppercase") {
+        let template = Template(templateString: "{{ name|uppercase }}")
+        let result = try template.render(Context(dictionary: ["name": "kyle"]))
+        try expect(result) == "KYLE"
+      }
 
-    $0.it("capitalizes a string") {
-      let result = try template.render(Context(dictionary: ["name": "kyle"]))
-      try expect(result) == "Kyle"
+      $0.it("transforms a string to be lowercase") {
+        let template = Template(templateString: "{{ name|lowercase }}")
+        let result = try template.render(Context(dictionary: ["name": "Kyle"]))
+        try expect(result) == "kyle"
+      }
     }
-  }
 
+    $0.context("given array of strings") {
+      $0.it("transforms a string to be capitalized") {
+        let template = Template(templateString: "{{ names|capitalize }}")
+        let result = try template.render(Context(dictionary: ["names": ["kyle", "kyle"]]))
+        try expect(result) == "[\"Kyle\", \"Kyle\"]"
+      }
 
-  describe("uppercase filter") {
-    let template = Template(templateString: "{{ name|uppercase }}")
+      $0.it("transforms a string to be uppercase") {
+        let template = Template(templateString: "{{ names|uppercase }}")
+        let result = try template.render(Context(dictionary: ["names": ["kyle", "kyle"]]))
+        try expect(result) == "[\"KYLE\", \"KYLE\"]"
+      }
 
-    $0.it("transforms a string to be uppercase") {
-      let result = try template.render(Context(dictionary: ["name": "kyle"]))
-      try expect(result) == "KYLE"
-    }
-  }
-
-  describe("lowercase filter") {
-    let template = Template(templateString: "{{ name|lowercase }}")
-
-    $0.it("transforms a string to be lowercase") {
-      let result = try template.render(Context(dictionary: ["name": "Kyle"]))
-      try expect(result) == "kyle"
+      $0.it("transforms a string to be lowercase") {
+        let template = Template(templateString: "{{ names|lowercase }}")
+        let result = try template.render(Context(dictionary: ["names": ["Kyle", "Kyle"]]))
+        try expect(result) == "[\"kyle\", \"kyle\"]"
+      }
     }
   }
 
@@ -183,6 +196,22 @@ func testFilter() {
       try expect(result) == "OneTwo"
     }
   }
+
+  describe("split filter") {
+    let template = Template(templateString: "{{ value|split:\", \" }}")
+
+    $0.it("split a string into array") {
+      let result = try template.render(Context(dictionary: ["value": "One, Two"]))
+      try expect(result) == "[\"One\", \"Two\"]"
+    }
+
+    $0.it("can split without arguments") {
+      let template = Template(templateString: "{{ value|split }}")
+      let result = try template.render(Context(dictionary: ["value": "One, Two"]))
+      try expect(result) == "[\"One,\", \"Two\"]"
+    }
+  }
+
 
   describe("indent filter") {
     $0.it("indents content") {
