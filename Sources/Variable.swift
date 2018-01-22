@@ -36,7 +36,7 @@ class FilterExpression : Resolvable {
 
     return try filters.reduce(result) { x, y in
       let arguments = try y.1.map { try $0.resolve(context) }
-      return try y.0.invoke(value: x, arguments: arguments)
+      return try y.0.invoke(value: x, arguments: arguments, context: context)
     }
   }
 }

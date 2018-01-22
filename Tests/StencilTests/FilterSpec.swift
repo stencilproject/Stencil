@@ -199,4 +199,18 @@ func testFilter() {
     }
   }
 
+  describe("valueForKey filter") {
+    $0.it("can get value for predefined key") {
+      let template = Template(templateString: "{{ value|valueForKey:\"name\" }}")
+      let result = try template.render(Context(dictionary: ["value": ["name": "One"]]))
+      try expect(result) == "One"
+    }
+
+    $0.it("can get value for runtime key") {
+      let template = Template(templateString: "{{ value|valueForKey:key }}")
+      let result = try template.render(Context(dictionary: ["key": "name", "value": ["name": "One"]]))
+      try expect(result) == "One"
+    }
+  }
+
 }

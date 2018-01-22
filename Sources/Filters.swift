@@ -53,3 +53,14 @@ func splitFilter(value: Any?, arguments: [Any?]) throws -> Any? {
 
   return value
 }
+
+func valueForKeyFilter(value: Any?, arguments: [Any?], context: Context) throws -> Any? {
+  guard arguments.count == 1 else {
+    throw TemplateSyntaxError("'split' filter takes a single argument")
+  }
+
+  let key = stringify(arguments[0])
+  return try context.push(dictionary: ["filter_value": value as Any]) {
+    return try Variable("filter_value.\(key)").resolve(context)
+  }
+}
