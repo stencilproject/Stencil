@@ -213,6 +213,38 @@ func testFilter() {
   }
 
 
+  describe("filter suggestion") {
+
+    $0.it("made for unknown filter") {
+      let template = Template(templateString: "{{ value|unknownFilter }}")
+      let expectedError = TemplateSyntaxError("Unknown filter 'unknownFilter'. Found similar filters: 'knownFilter'")
+
+      let filterExtension = Extension()
+      filterExtension.registerFilter("knownFilter") { value, _ in value }
+
+      try expect(template.render(Context(dictionary: [:], environment: Environment(extensions: [filterExtension])))).toThrow(expectedError)
+    }
+
+    $0.it("made for multiple similar filters") {
+      let template = Template(templateString: "{{ value|lowerFirst }}")
+      let expectedError = TemplateSyntaxError("Unknown filter 'lowerFirst'. Found similar filters: 'lowerFirstWord', 'lowercase'")
+
+      let filterExtension = Extension()
+      filterExtension.registerFilter("lowerFirstWord") { value, _ in value }
+      filterExtension.registerFilter("lowerFirstLetter") { value, _ in value }
+
+      try expect(template.render(Context(dictionary: [:], environment: Environment(extensions: [filterExtension])))).toThrow(expectedError)
+    }
+
+    $0.it("not made when can't find similar filter") {
+      let template = Template(templateString: "{{ value|unknownFilter }}")
+      let expectedError = TemplateSyntaxError("Unknown filter 'unknownFilter'.")
+      try expect(template.render(Context(dictionary: [:]))).toThrow(expectedError)
+    }
+
+  }
+
+
   describe("indent filter") {
     $0.it("indents content") {
       let template = Template(templateString: "{{ value|indent:2 }}")
