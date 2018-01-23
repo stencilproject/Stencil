@@ -189,4 +189,52 @@ func testVariable() {
       try expect(result) == 2
     }
   }
+
+  describe("RangeVariable") {
+
+    let context: Context = {
+      let ext = Extension()
+      ext.registerFilter("incr", filter: { (arg: Any?) in toNumber(value: arg!)! + 1 })
+      let environment = Environment(extensions: [ext])
+      return Context(dictionary: [:], environment: environment)
+    }()
+
+    func makeVariable(_ token: String) throws -> RangeVariable? {
+      return try RangeVariable(token, parser: TokenParser(tokens: [], environment: context.environment))
+    }
+
+    $0.it("can resolve closed range as array") {
+      let result = try makeVariable("1...3")?.resolve(context) as? [Int]
+      try expect(result) == [1, 2, 3]
+    }
+
+    $0.it("can resolve decreasing closed range as reversed array") {
+      let result = try makeVariable("3...1")?.resolve(context) as? [Int]
+      try expect(result) == [3, 2, 1]
+    }
+
+    $0.it("can use filter on range variables") {
+      let result = try makeVariable("1|incr...3|incr")?.resolve(context) as? [Int]
+      try expect(result) == [2, 3, 4]
+    }
+
+    $0.it("throws when left value is not int") {
+      let template: Template = "{% for i in k...j %}{{ i }}{% endfor %}"
+      try expect(try template.render(Context(dictionary: ["j": 3, "k": "1"]))).toThrow()
+    }
+
+    $0.it("throws when right value is not int") {
+      let variable = try makeVariable("k...j")
+      try expect(try variable?.resolve(Context(dictionary: ["j": "3", "k": 1]))).toThrow()
+    }
+
+    $0.it("throws is left range value is missing") {
+      try  expect(makeVariable("...1")).toThrow()
+    }
+
+    $0.it("throws is right range value is missing") {
+      try  expect(makeVariable("1...")).toThrow()
+    }
+
+  }
 }

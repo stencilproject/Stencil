@@ -130,6 +130,42 @@ public func ==(lhs: Variable, rhs: Variable) -> Bool {
   return lhs.variable == rhs.variable
 }
 
+/// A structure used to represet range of two integer values expressed as `from...to`.
+/// Values should be numbers (they will be converted to integers).
+/// Rendering this variable produces array from range `from...to`.
+/// If `from` is more than `to` array will contain values of reversed range.
+public struct RangeVariable: Resolvable {
+  public let from: Resolvable
+  public let to: Resolvable
+
+  public init?(_ token: String, parser: TokenParser) throws {
+    let components = token.components(separatedBy: "...")
+    guard components.count == 2 else {
+      return nil
+    }
+
+    self.from = try parser.compileFilter(components[0])
+    self.to = try parser.compileFilter(components[1])
+  }
+
+  public func resolve(_ context: Context) throws -> Any? {
+    let fromResolved = try from.resolve(context)
+    let toResolved = try to.resolve(context)
+
+    guard let from = fromResolved.flatMap(toNumber(value:)).flatMap(Int.init) else {
+      throw TemplateSyntaxError("'from' value is not an Integer (\(fromResolved ?? "nil"))")
+    }
+
+    guard let to = toResolved.flatMap(toNumber(value:)).flatMap(Int.init) else {
+      throw TemplateSyntaxError("'to' value is not an Integer (\(toResolved ?? "nil") )")
+    }
+
+    let range = min(from, to)...max(from, to)
+    return from > to ? Array(range.reversed()) : Array(range)
+  }
+
+}
+
 
 func normalize(_ current: Any?) -> Any? {
   if let current = current as? Normalizable {
