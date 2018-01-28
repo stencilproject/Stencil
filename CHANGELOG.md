@@ -10,6 +10,7 @@
 - Added `split` filter
 - Allow default string filters to be applied to arrays
 - Similar filters are suggested when unknown filter is used
+- Added `indent` filter
 
 ### Bug Fixes
 

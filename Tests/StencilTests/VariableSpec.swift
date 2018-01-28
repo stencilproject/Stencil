@@ -71,6 +71,13 @@ func testVariable() {
       try expect(result) == 3.14
     }
 
+    $0.it("can resolve boolean literal") {
+      try expect(Variable("true").resolve(context) as? Bool) == true
+      try expect(Variable("false").resolve(context) as? Bool) == false
+      try expect(Variable("0").resolve(context) as? Int) == 0
+      try expect(Variable("1").resolve(context) as? Int) == 1
+    }
+
     $0.it("can resolve a string variable") {
       let variable = Variable("name")
       let result = try variable.resolve(context) as? String
