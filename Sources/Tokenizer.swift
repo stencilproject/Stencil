@@ -10,7 +10,12 @@ extension String {
     var singleQuoteCount = 0
     var doubleQuoteCount = 0
 
-    for character in self.characters {
+    #if swift(>=4.0)
+      let chars = self
+    #else
+      let chars = self.characters
+    #endif
+    for character in chars {
       if character == "'" { singleQuoteCount += 1 }
       else if character == "\"" { doubleQuoteCount += 1 }
 
