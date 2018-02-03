@@ -15,7 +15,12 @@ class ForNode : NodeType {
       throw TemplateSyntaxError("'for' statements should use the following 'for x in y where condition' `\(token.contents)`.")
     }
 
-    let loopVariables = components[1].characters
+    #if swift(>=4.0)
+      let chars = components[1]
+    #else
+      let chars = components[1].characters
+    #endif
+    let loopVariables = chars
       .split(separator: ",")
       .map(String.init)
       .map { $0.trimmingCharacters(in: CharacterSet.whitespaces) }
