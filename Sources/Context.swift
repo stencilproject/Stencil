@@ -52,6 +52,33 @@ public class Context {
     defer { _ = pop() }
     return try closure()
   }
+	
+	private func pop(_ locals: Set<String>) -> [String: Any?]?{
+		let top = pop() ?? [:]
+		var popped: [String: Any] = [:]
+		//propagate non local preexisting variable values down the stack
+		for (key, value) in top {
+			if !locals.contains(key) && self[key] != nil{
+				self[key] = value
+			}else{
+				popped[key] = value
+			}
+		}
+		if popped.isEmpty{
+			return nil
+		}
+		return popped
+	}
+	
+	//this mimicks typical programming language scoping rules
+	public func pushLocals<Result>(dictionary: [String: Any]? = nil, closure: (() throws -> Result)) rethrows -> Result {
+		let dictionary = dictionary ?? [:]
+		let locals = Set(dictionary.keys)
+		
+		push(dictionary)
+		defer { _ = pop(locals) }
+		return try closure()
+	}
 
   public func flatten() -> [String: Any] {
     var accumulator: [String: Any] = [:]

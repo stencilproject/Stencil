@@ -67,6 +67,22 @@ func testContext() {
       try expect(didRun).to.beTrue()
       try expect(context["name"] as? String) == "Kyle"
     }
+		
+		$0.it("allows you to push a dictionary and run a closure then restoring previous state except for parent entries") {
+			var didRun = false
+			context["parentEntry"] = "Alice"
+			
+			try context.pushLocals(dictionary: ["name": "Katie"]) {
+				didRun = true
+				context["parentEntry"] = "Bob"
+				try expect(context["parentEntry"] as? String) == "Bob"
+				try expect(context["name"] as? String) == "Katie"
+			}
+			
+			try expect(didRun).to.beTrue()
+			try expect(context["name"] as? String) == "Kyle"
+			try expect(context["parentEntry"] as? String) == "Bob"
+		}
 
     $0.it("allows you to flatten the context contents") {
       try context.push(dictionary: ["test": "abc"]) {

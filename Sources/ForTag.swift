@@ -55,7 +55,7 @@ class ForNode : NodeType {
 
   func push<Result>(value: Any, context: Context, closure: () throws -> (Result)) rethrows -> Result {
     if loopVariables.isEmpty {
-      return try context.push() {
+      return try context.pushLocals() {
         return try closure()
       }
     }
@@ -66,17 +66,17 @@ class ForNode : NodeType {
       if loopVariables.count == 2 {
         let second = loopVariables[1]
 
-        return try context.push(dictionary: [first: value.0, second: value.1]) {
+        return try context.pushLocals(dictionary: [first: value.0, second: value.1]) {
           return try closure()
         }
       }
 
-      return try context.push(dictionary: [first: value.0]) {
+      return try context.pushLocals(dictionary: [first: value.0]) {
         return try closure()
       }
     }
 
-    return try context.push(dictionary: [loopVariables.first!: value]) {
+    return try context.pushLocals(dictionary: [loopVariables.first!: value]) {
       return try closure()
     }
   }
@@ -133,7 +133,7 @@ class ForNode : NodeType {
           "counter0": index,
         ]
 
-        return try context.push(dictionary: ["forloop": forContext]) {
+        return try context.pushLocals(dictionary: ["forloop": forContext]) {
           return try push(value: item, context: context) {
             try renderNodes(nodes, context)
           }
@@ -141,7 +141,7 @@ class ForNode : NodeType {
       }.joined(separator: "")
     }
 
-    return try context.push {
+    return try context.pushLocals {
       try renderNodes(emptyNodes, context)
     }
   }
