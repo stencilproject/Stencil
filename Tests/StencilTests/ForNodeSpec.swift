@@ -134,8 +134,13 @@ func testForNode() {
 
       let template = Template(templateString: templateString)
       let result = try template.render(context)
-
+        
+      #if swift(>=4.0)
       let sortedResult = result.split(separator: ",").map(String.init).sorted(by: <)
+      #else
+      let sortedResult = result.characters.split(separator: ",").map(String.init).sorted(by: <)
+      #endif
+        
       try expect(sortedResult) == ["one: I", "two: II"]
     }
 
@@ -147,8 +152,13 @@ func testForNode() {
       let emptyNodes: [NodeType] = [TextNode(text: "empty")]
       let node = ForNode(resolvable: Variable("dict"), loopVariables: ["key"], nodes: nodes, emptyNodes: emptyNodes, where: nil)
       let result = try node.render(context)
-
+        
+      #if swift(>=4.0)
       let sortedResult = result.split(separator: ",").map(String.init).sorted(by: <)
+      #else
+      let sortedResult = result.characters.split(separator: ",").map(String.init).sorted(by: <)
+      #endif
+        
       try expect(sortedResult) == ["one", "two"]
     }
 
@@ -163,8 +173,13 @@ func testForNode() {
       let node = ForNode(resolvable: Variable("dict"), loopVariables: ["key", "value"], nodes: nodes, emptyNodes: emptyNodes, where: nil)
 
       let result = try node.render(context)
-
+        
+      #if swift(>=4.0)
       let sortedResult = result.split(separator: ",").map(String.init).sorted(by: <)
+      #else
+      let sortedResult = result.characters.split(separator: ",").map(String.init).sorted(by: <)
+      #endif
+        
       try expect(sortedResult) == ["one=I", "two=II"]
     }
 
