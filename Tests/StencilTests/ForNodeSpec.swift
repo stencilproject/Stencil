@@ -135,7 +135,7 @@ func testForNode() {
       let template = Template(templateString: templateString)
       let result = try template.render(context)
 
-      let sortedResult = result.characters.split(separator: ",").map(String.init).sorted(by: <)
+      let sortedResult = result.split(separator: ",").map(String.init).sorted(by: <)
       try expect(sortedResult) == ["one: I", "two: II"]
     }
 
@@ -148,7 +148,7 @@ func testForNode() {
       let node = ForNode(resolvable: Variable("dict"), loopVariables: ["key"], nodes: nodes, emptyNodes: emptyNodes, where: nil)
       let result = try node.render(context)
 
-      let sortedResult = result.characters.split(separator: ",").map(String.init).sorted(by: <)
+      let sortedResult = result.split(separator: ",").map(String.init).sorted(by: <)
       try expect(sortedResult) == ["one", "two"]
     }
 
@@ -164,7 +164,7 @@ func testForNode() {
 
       let result = try node.render(context)
 
-      let sortedResult = result.characters.split(separator: ",").map(String.init).sorted(by: <)
+      let sortedResult = result.split(separator: ",").map(String.init).sorted(by: <)
       try expect(sortedResult) == ["one=I", "two=II"]
     }
 
