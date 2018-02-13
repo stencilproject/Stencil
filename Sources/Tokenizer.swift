@@ -9,8 +9,14 @@ extension String {
     var separate: Character = separator
     var singleQuoteCount = 0
     var doubleQuoteCount = 0
+    
+    #if swift(>=4.0)
+    let iterateOverThis = self
+    #else
+    let iterateOverThis = self.characters
+    #endif
 
-    for character in self.characters {
+    for character in iterateOverThis {
       if character == "'" { singleQuoteCount += 1 }
       else if character == "\"" { doubleQuoteCount += 1 }
 

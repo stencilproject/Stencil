@@ -9,7 +9,12 @@ class FilterExpression : Resolvable {
   let variable: Variable
 
   init(token: String, parser: TokenParser) throws {
+    #if swift(>=4.0)
+    let bits = token.split(separator: "|").map({ String($0).trim(character: " ") })
+    #else
     let bits = token.characters.split(separator: "|").map({ String($0).trim(character: " ") })
+    #endif
+    
     if bits.isEmpty {
       filters = []
       variable = Variable("")
@@ -51,7 +56,13 @@ public struct Variable : Equatable, Resolvable {
   }
 
   fileprivate func lookup() -> [String] {
-    return variable.characters.split(separator: ".").map(String.init)
+    #if swift(>=4.0)
+    let returnValue = variable.split(separator: ".").map(String.init)
+    #else
+    let returnValue = variable.characters.split(separator: ".").map(String.init)
+    #endif
+    
+    return returnValue
   }
 
   /// Resolve the variable in the given context
@@ -60,7 +71,7 @@ public struct Variable : Equatable, Resolvable {
 
     if (variable.hasPrefix("'") && variable.hasSuffix("'")) || (variable.hasPrefix("\"") && variable.hasSuffix("\"")) {
       // String literal
-      return String(variable[variable.characters.index(after: variable.startIndex) ..< variable.characters.index(before: variable.endIndex)])
+      return String(variable[variable.index(after: variable.startIndex) ..< variable.index(before: variable.endIndex)])
     }
 
     // Number literal

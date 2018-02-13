@@ -7,7 +7,13 @@ struct Lexer {
 
   func createToken(string: String) -> Token {
     func strip() -> String {
-      guard string.characters.count > 4 else { return "" }
+      #if swift(>=4.0)
+      let stringCount = string.count
+      #else
+      let stringCount = string.characters.count
+      #endif
+        
+      guard stringCount > 4 else { return "" }
       let start = string.index(string.startIndex, offsetBy: 2)
       let end = string.index(string.endIndex, offsetBy: -2)
       return String(string[start..<end]).trim(character: " ")
