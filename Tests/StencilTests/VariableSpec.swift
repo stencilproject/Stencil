@@ -4,12 +4,21 @@ import Spectre
 
 
 #if os(OSX)
-@objc class Superclass: NSObject {
-  let name = "Foo"
-}
-@objc class Object : Superclass {
-  let title = "Hello World"
-}
+#if swift(>=4.0)
+  @objcMembers class Superclass: NSObject {
+    let name = "Foo"
+  }
+  @objcMembers class Object : Superclass {
+    let title = "Hello World"
+  }
+  #else
+  @objc class Superclass: NSObject {
+    let name = "Foo"
+  }
+  @objc class Object : Superclass {
+    let title = "Hello World"
+  }
+#endif
 #endif
 
 fileprivate struct Person {

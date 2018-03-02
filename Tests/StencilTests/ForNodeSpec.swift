@@ -135,7 +135,11 @@ func testForNode() {
       let template = Template(templateString: templateString)
       let result = try template.render(context)
 
-      let sortedResult = result.characters.split(separator: ",").map(String.init).sorted(by: <)
+        #if swift(>=4.0)
+            let sortedResult = result.split(separator: ",").map(String.init).sorted(by: <)
+        #else
+            let sortedResult = result.characters.split(separator: ",").map(String.init).sorted(by: <)
+        #endif
       try expect(sortedResult) == ["one: I", "two: II"]
     }
 
@@ -148,7 +152,11 @@ func testForNode() {
       let node = ForNode(resolvable: Variable("dict"), loopVariables: ["key"], nodes: nodes, emptyNodes: emptyNodes, where: nil)
       let result = try node.render(context)
 
-      let sortedResult = result.characters.split(separator: ",").map(String.init).sorted(by: <)
+        #if swift(>=4.0)
+            let sortedResult = result.split(separator: ",").map(String.init).sorted(by: <)
+        #else
+            let sortedResult = result.characters.split(separator: ",").map(String.init).sorted(by: <)
+        #endif
       try expect(sortedResult) == ["one", "two"]
     }
 
@@ -164,7 +172,11 @@ func testForNode() {
 
       let result = try node.render(context)
 
-      let sortedResult = result.characters.split(separator: ",").map(String.init).sorted(by: <)
+        #if swift(>=4.0)
+            let sortedResult = result.split(separator: ",").map(String.init).sorted(by: <)
+        #else
+            let sortedResult = result.characters.split(separator: ",").map(String.init).sorted(by: <)
+        #endif
       try expect(sortedResult) == ["one=I", "two=II"]
     }
 
