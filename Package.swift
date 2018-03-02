@@ -17,7 +17,7 @@ let package = Package(
     ),
     .testTarget(
       name: "StencilTests",
-      dependependencies: ["Stencil"]
+      dependencies: ["Stencil","Spectre","PathKit"]
     )
   ]
 )
