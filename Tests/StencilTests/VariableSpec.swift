@@ -5,10 +5,10 @@ import Spectre
 
 #if os(OSX)
 @objc class Superclass: NSObject {
-  let name = "Foo"
+  @objc let name = "Foo"
 }
 @objc class Object : Superclass {
-  let title = "Hello World"
+  @objc let title = "Hello World"
 }
 #endif
 
