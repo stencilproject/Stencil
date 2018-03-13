@@ -11,7 +11,8 @@ func testForNode() {
       "dict": [
         "one": "I",
         "two": "II",
-      ]
+      ],
+      "tuples": [(1, 2, 3), (4, 5, 6)]
     ])
 
     $0.it("renders the given nodes for each item") {
@@ -125,6 +126,53 @@ func testForNode() {
         "\n"
 
       try expect(result) == fixture
+    }
+
+    $0.context("given array of tuples") {
+      $0.it("can iterate over all tuple values") {
+        let templateString = "{% for first,second,third in tuples %}" +
+          "{{ first }}, {{ second }}, {{ third }}\n" +
+        "{% endfor %}\n"
+
+        let template = Template(templateString: templateString)
+        let result = try template.render(context)
+
+        let fixture = "1, 2, 3\n4, 5, 6\n\n"
+        try expect(result) == fixture
+      }
+
+      $0.it("can iterate with less number of variables") {
+        let templateString = "{% for first,second in tuples %}" +
+          "{{ first }}, {{ second }}\n" +
+        "{% endfor %}\n"
+
+        let template = Template(templateString: templateString)
+        let result = try template.render(context)
+
+        let fixture = "1, 2\n4, 5\n\n"
+        try expect(result) == fixture
+      }
+
+      $0.it("can use _ to skip variables") {
+        let templateString = "{% for first,_,third in tuples %}" +
+          "{{ first }}, {{ third }}\n" +
+        "{% endfor %}\n"
+
+        let template = Template(templateString: templateString)
+        let result = try template.render(context)
+
+        let fixture = "1, 3\n4, 6\n\n"
+        try expect(result) == fixture
+      }
+
+      $0.it("throws when number of variables is more than number of tuple values") {
+        let templateString = "{% for key,value,smth in dict %}" +
+        "{% endfor %}\n"
+
+        let template = Template(templateString: templateString)
+        try expect(template.render(context)).toThrow()
+      }
+
     }
 
     $0.it("can iterate over dictionary") {

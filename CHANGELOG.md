@@ -12,6 +12,7 @@
 - Similar filters are suggested when unknown filter is used
 - Added `indent` filter
 - Allow using new lines inside tags
+- Added support for iterating arrays of tuples
 
 ### Bug Fixes
 
