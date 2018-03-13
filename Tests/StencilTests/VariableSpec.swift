@@ -5,10 +5,10 @@ import Spectre
 
 #if os(OSX)
 @objc class Superclass: NSObject {
-  let name = "Foo"
+  @objc let name = "Foo"
 }
 @objc class Object : Superclass {
-  let title = "Hello World"
+  @objc let title = "Hello World"
 }
 #endif
 
@@ -69,6 +69,13 @@ func testVariable() {
       let variable = Variable("3.14")
       let result = try variable.resolve(context) as? Number
       try expect(result) == 3.14
+    }
+
+    $0.it("can resolve boolean literal") {
+      try expect(Variable("true").resolve(context) as? Bool) == true
+      try expect(Variable("false").resolve(context) as? Bool) == false
+      try expect(Variable("0").resolve(context) as? Int) == 0
+      try expect(Variable("1").resolve(context) as? Int) == 1
     }
 
     $0.it("can resolve a string variable") {

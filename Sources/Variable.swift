@@ -70,6 +70,10 @@ public struct Variable : Equatable, Resolvable {
     if let number = Number(variable) {
       return number
     }
+    // Boolean literal
+    if let bool = Bool(variable) {
+      return bool
+    }
 
     for bit in lookup() {
       current = normalize(current)
