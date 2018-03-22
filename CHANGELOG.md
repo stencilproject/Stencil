@@ -12,6 +12,8 @@
   [Ilya Puchka](https://github.com/yonaskolb)
   [#178](https://github.com/stencilproject/Stencil/pull/178)
 
+- Added `map`, `compact` and `filterEach` filters
+
 ### Bug Fixes
 
 - Fixed using quote as a filter parameter

@@ -100,7 +100,7 @@ final class IfExpressionParser {
   let tokens: [IfToken]
   var position: Int = 0
 
-  init(components: [String], tokenParser: TokenParser) throws {
+  init(components: [String], environment: Environment) throws {
     self.tokens = try components.map { component in
       if let op = findOperator(name: component) {
         switch op {
@@ -111,7 +111,7 @@ final class IfExpressionParser {
         }
       }
 
-      return .variable(try tokenParser.compileResolvable(component))
+      return .variable(try environment.compileResolvable(component))
     }
   }
 
@@ -155,12 +155,6 @@ final class IfExpressionParser {
 }
 
 
-func parseExpression(components: [String], tokenParser: TokenParser) throws -> Expression {
-  let parser = try IfExpressionParser(components: components, tokenParser: tokenParser)
-  return try parser.parse()
-}
-
-
 /// Represents an if condition and the associated nodes when the condition
 /// evaluates
 final class IfCondition {
@@ -187,7 +181,7 @@ class IfNode : NodeType {
     var components = token.components()
     components.removeFirst()
 
-    let expression = try parseExpression(components: components, tokenParser: parser)
+    let expression = try parser.compileExpression(components: components)
     let nodes = try parser.parse(until(["endif", "elif", "else"]))
     var conditions: [IfCondition] = [
       IfCondition(expression: expression, nodes: nodes)
@@ -197,7 +191,7 @@ class IfNode : NodeType {
     while let current = token, current.contents.hasPrefix("elif") {
       var components = current.components()
       components.removeFirst()
-      let expression = try parseExpression(components: components, tokenParser: parser)
+      let expression = try parser.compileExpression(components: components)
 
       let nodes = try parser.parse(until(["endif", "elif", "else"]))
       token = parser.nextToken()
@@ -236,7 +230,7 @@ class IfNode : NodeType {
       _ = parser.nextToken()
     }
 
-    let expression = try parseExpression(components: components, tokenParser: parser)
+    let expression = try parser.compileExpression(components: components)
     return IfNode(conditions: [
       IfCondition(expression: expression, nodes: trueNodes),
       IfCondition(expression: nil, nodes: falseNodes),

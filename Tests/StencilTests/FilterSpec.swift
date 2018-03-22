@@ -3,14 +3,19 @@ import Spectre
 
 
 func testFilter() {
+
+  func environmentWithFilter(_ name: String, closure: @escaping (Any?) throws -> Any?) -> Environment {
+    let filterExtension = Extension()
+    filterExtension.registerFilter(name, filter: closure)
+    return Environment(extensions: [filterExtension])
+  }
+
   describe("template filters") {
     let context: [String: Any] = ["name": "Kyle"]
 
     $0.it("allows you to register a custom filter") {
       let template = Template(templateString: "{{ name|repeat }}")
-
-      let repeatExtension = Extension()
-      repeatExtension.registerFilter("repeat") { (value: Any?) in
+      let env = environmentWithFilter("repeat") { (value: Any?) in
         if let value = value as? String {
           return "\(value) \(value)"
         }
@@ -18,7 +23,7 @@ func testFilter() {
         return nil
       }
 
-      let result = try template.render(Context(dictionary: context, environment: Environment(extensions: [repeatExtension])))
+      let result = try template.render(Context(dictionary: context, environment: env))
       try expect(result) == "Kyle Kyle"
     }
 
@@ -67,13 +72,11 @@ func testFilter() {
 
     $0.it("allows you to override a default filter") {
       let template = Template(templateString: "{{ name|join }}")
-
-      let repeatExtension = Extension()
-      repeatExtension.registerFilter("join") { (value: Any?) in
+      let env = environmentWithFilter("join") { (value: Any?) in
         return "joined"
       }
 
-      let result = try template.render(Context(dictionary: context, environment: Environment(extensions: [repeatExtension])))
+      let result = try template.render(Context(dictionary: context, environment: env))
       try expect(result) == "joined"
     }
 
@@ -212,7 +215,6 @@ func testFilter() {
     }
   }
 
-
   describe("filter suggestion") {
 
     $0.it("made for unknown filter") {
@@ -244,7 +246,6 @@ func testFilter() {
 
   }
 
-
   describe("indent filter") {
     $0.it("indents content") {
       let template = Template(templateString: "{{ value|indent:2 }}")
@@ -270,4 +271,76 @@ func testFilter() {
       try expect(result) == "One\n\n\n    Two\n\n"
     }
   }
+
+  describe("map filter") {
+
+    $0.it("can map over attribute") {
+      let template = Template(templateString: "{{ array|map:\"name\"}}")
+      let result = try template.render(Context(dictionary: ["array": [["name": "One"], ["name": "Two"], [:]]]))
+      try expect(result) == "[\"One\", \"Two\", nil]"
+    }
+
+    $0.it("can map over runtime attribute") {
+      let template = Template(templateString: "{{ array|map:key}}")
+      let result = try template.render(Context(dictionary: ["key": "name", "array": [["name": "One"], ["name": "Two"]]]))
+      try expect(result) == "[\"One\", \"Two\"]"
+    }
+
+    $0.it("can use default value") {
+      let template = Template(templateString: "{{ array|map:\"name\",\"anonymous\"}}")
+      let result = try template.render(Context(dictionary: ["array": [[:], ["name": "Two"]]]))
+      try expect(result) == "[\"anonymous\", \"Two\"]"
+    }
+
+    $0.it("can map single value") {
+      let template = Template(templateString: "{{ value|map:\"user.name\"}}")
+      let result = try template.render(Context(dictionary: ["value": ["user": ["name": "Two"]]]))
+      try expect(result) == "Two"
+    }
+
+  }
+
+  describe("compact filter") {
+
+    $0.it("can filter nil values") {
+      let template = Template(templateString: "{{ array|compact}}")
+      let result = try template.render(Context(dictionary: ["array": [nil, "Two"]]))
+      try expect(result) == "[\"Two\"]"
+    }
+
+    $0.it("can map and filter nil values") {
+      let template = Template(templateString: "{{ array|compact:\"name\"}}")
+      let result = try template.render(Context(dictionary: ["array": [["name": "One"], ["name": "Two"], [:]]]))
+      try expect(result) == "[\"One\", \"Two\"]"
+    }
+
+  }
+
+  describe("filterEach filter") {
+
+    $0.it("can filter using filter") {
+      let env = environmentWithFilter("isPositive") { (value) -> Any? in
+        if let number = toNumber(value: value as Any) { return number > 0 }
+        else { return nil }
+      }
+
+      let template = Template(templateString: "{{ array|filterEach:\"$0|isPositive\" }}")
+      let result = try template.render(Context(dictionary: ["array": [1, -1, 2, -2, 3, -3]], environment: env))
+      try expect(result) == "[1, 2, 3]"
+    }
+
+    $0.it("can filter using boolean expression") {
+      let template = Template(templateString: "{{ array|filterEach:\"$0 > 0\" }}")
+      let result = try template.render(Context(dictionary: ["array": [1, -1, 2, -2, 3, -3]]))
+      try expect(result) == "[1, 2, 3]"
+    }
+
+    $0.it("can filter using variable expression") {
+        let template = Template(templateString: "{{ array|filterEach:\"$0\" }}")
+        let result = try template.render(Context(dictionary: ["array": [1, -1, nil, 2, -2, 3, -3]]))
+        try expect(result) == "[1, 2, 3]"
+    }
+
+  }
+
 }

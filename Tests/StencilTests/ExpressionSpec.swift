@@ -105,19 +105,19 @@ func testExpressions() {
 
     $0.describe("expression parsing") {
       $0.it("can parse a variable expression") {
-        let expression = try parseExpression(components: ["value"], tokenParser: parser)
+        let expression = try parser.compileExpression(components: ["value"])
         try expect(expression.evaluate(context: Context())).to.beFalse()
         try expect(expression.evaluate(context: Context(dictionary: ["value": true]))).to.beTrue()
       }
 
       $0.it("can parse a not expression") {
-        let expression = try parseExpression(components: ["not", "value"], tokenParser: parser)
+        let expression = try parser.compileExpression(components: ["not", "value"])
         try expect(expression.evaluate(context: Context())).to.beTrue()
         try expect(expression.evaluate(context: Context(dictionary: ["value": true]))).to.beFalse()
       }
 
       $0.describe("and expression") {
-        let expression = try! parseExpression(components: ["lhs", "and", "rhs"], tokenParser: parser)
+        let expression = try! parser.compileExpression(components: ["lhs", "and", "rhs"])
 
         $0.it("evaluates to false with lhs false") {
           try expect(expression.evaluate(context: Context(dictionary: ["lhs": false, "rhs": true]))).to.beFalse()
@@ -137,7 +137,7 @@ func testExpressions() {
       }
 
       $0.describe("or expression") {
-        let expression = try! parseExpression(components: ["lhs", "or", "rhs"], tokenParser: parser)
+        let expression = try! parser.compileExpression(components: ["lhs", "or", "rhs"])
 
         $0.it("evaluates to true with lhs true") {
           try expect(expression.evaluate(context: Context(dictionary: ["lhs": true, "rhs": false]))).to.beTrue()
@@ -157,7 +157,7 @@ func testExpressions() {
       }
 
       $0.describe("equality expression") {
-        let expression = try! parseExpression(components: ["lhs", "==", "rhs"], tokenParser: parser)
+        let expression = try! parser.compileExpression(components: ["lhs", "==", "rhs"])
 
         $0.it("evaluates to true with equal lhs/rhs") {
           try expect(expression.evaluate(context: Context(dictionary: ["lhs": "a", "rhs": "a"]))).to.beTrue()
@@ -193,7 +193,7 @@ func testExpressions() {
       }
 
       $0.describe("inequality expression") {
-        let expression = try! parseExpression(components: ["lhs", "!=", "rhs"], tokenParser: parser)
+        let expression = try! parser.compileExpression(components: ["lhs", "!=", "rhs"])
 
         $0.it("evaluates to true with inequal lhs/rhs") {
           try expect(expression.evaluate(context: Context(dictionary: ["lhs": "a", "rhs": "b"]))).to.beTrue()
@@ -205,7 +205,7 @@ func testExpressions() {
       }
 
       $0.describe("more than expression") {
-        let expression = try! parseExpression(components: ["lhs", ">", "rhs"], tokenParser: parser)
+        let expression = try! parser.compileExpression(components: ["lhs", ">", "rhs"])
 
         $0.it("evaluates to true with lhs > rhs") {
           try expect(expression.evaluate(context: Context(dictionary: ["lhs": 5.0, "rhs": 4]))).to.beTrue()
@@ -217,7 +217,7 @@ func testExpressions() {
       }
 
       $0.describe("more than equal expression") {
-        let expression = try! parseExpression(components: ["lhs", ">=", "rhs"], tokenParser: parser)
+        let expression = try! parser.compileExpression(components: ["lhs", ">=", "rhs"])
 
         $0.it("evaluates to true with lhs == rhs") {
           try expect(expression.evaluate(context: Context(dictionary: ["lhs": 5.0, "rhs": 5]))).to.beTrue()
@@ -229,7 +229,7 @@ func testExpressions() {
       }
 
       $0.describe("less than expression") {
-        let expression = try! parseExpression(components: ["lhs", "<", "rhs"], tokenParser: parser)
+        let expression = try! parser.compileExpression(components: ["lhs", "<", "rhs"])
 
         $0.it("evaluates to true with lhs < rhs") {
           try expect(expression.evaluate(context: Context(dictionary: ["lhs": 4, "rhs": 4.5]))).to.beTrue()
@@ -241,7 +241,7 @@ func testExpressions() {
       }
 
       $0.describe("less than equal expression") {
-        let expression = try! parseExpression(components: ["lhs", "<=", "rhs"], tokenParser: parser)
+        let expression = try! parser.compileExpression(components: ["lhs", "<=", "rhs"])
 
         $0.it("evaluates to true with lhs == rhs") {
           try expect(expression.evaluate(context: Context(dictionary: ["lhs": 5.0, "rhs": 5]))).to.beTrue()
@@ -253,7 +253,7 @@ func testExpressions() {
       }
 
       $0.describe("multiple expression") {
-        let expression = try! parseExpression(components: ["one", "or", "two", "and", "not", "three"], tokenParser: parser)
+        let expression = try! parser.compileExpression(components: ["one", "or", "two", "and", "not", "three"])
 
         $0.it("evaluates to true with one") {
           try expect(expression.evaluate(context: Context(dictionary: ["one": true]))).to.beTrue()
@@ -281,7 +281,7 @@ func testExpressions() {
       }
       
       $0.describe("in expression") {
-        let expression = try! parseExpression(components: ["lhs", "in", "rhs"], tokenParser: parser)
+        let expression = try! parser.compileExpression(components: ["lhs", "in", "rhs"])
         
         $0.it("evaluates to true when rhs contains lhs") {
           try expect(expression.evaluate(context: Context(dictionary: ["lhs": 1, "rhs": [1, 2, 3]]))).to.beTrue()
