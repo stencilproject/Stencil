@@ -200,7 +200,7 @@ func testVariable() {
     }()
 
     func makeVariable(_ token: String) throws -> RangeVariable? {
-      return try RangeVariable(token, parser: TokenParser(tokens: [], environment: context.environment))
+      return try RangeVariable(token, environment: context.environment)
     }
 
     $0.it("can resolve closed range as array") {

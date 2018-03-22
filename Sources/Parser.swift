@@ -48,7 +48,7 @@ public class TokenParser {
         }
 
         if let tag = token.components().first {
-          let parser = try findTag(name: tag)
+          let parser = try environment.findTag(name: tag)
           nodes.append(try parser(self, token))
         }
       case .comment:
@@ -71,8 +71,24 @@ public class TokenParser {
     tokens.insert(token, at: 0)
   }
 
+  public func compileFilter(_ token: String) throws -> Resolvable {
+    return try environment.compileFilter(token)
+  }
+
+  public func compileExpression(components: [String]) throws -> Expression {
+    return try environment.compileExpression(components: components)
+  }
+
+  public func compileResolvable(_ token: String) throws -> Resolvable {
+    return try environment.compileResolvable(token)
+  }
+
+}
+
+extension Environment {
+
   func findTag(name: String) throws -> Extension.TagParser {
-    for ext in environment.extensions {
+    for ext in extensions {
       if let filter = ext.tags[name] {
         return filter
       }
@@ -82,7 +98,7 @@ public class TokenParser {
   }
 
   func findFilter(_ name: String) throws -> FilterType {
-    for ext in environment.extensions {
+    for ext in extensions {
       if let filter = ext.filters[name] {
         return filter
       }
@@ -97,7 +113,7 @@ public class TokenParser {
   }
 
   private func suggestedFilters(for name: String) -> [String] {
-    let allFilters = environment.extensions.flatMap({ $0.filters.keys })
+    let allFilters = extensions.flatMap({ $0.filters.keys })
 
     let filtersWithDistance = allFilters
                 .map({ (filterName: $0, distance: $0.levenshteinDistance(name)) })
@@ -111,11 +127,15 @@ public class TokenParser {
   }
 
   public func compileFilter(_ token: String) throws -> Resolvable {
-    return try FilterExpression(token: token, parser: self)
+    return try FilterExpression(token: token, environment: self)
+  }
+
+  public func compileExpression(components: [String]) throws -> Expression {
+    return try IfExpressionParser(components: components, environment: self).parse()
   }
 
   public func compileResolvable(_ token: String) throws -> Resolvable {
-    return try RangeVariable(token, parser: self)
+    return try RangeVariable(token, environment: self)
       ?? compileFilter(token)
   }
 

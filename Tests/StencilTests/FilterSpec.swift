@@ -3,14 +3,19 @@ import Spectre
 
 
 func testFilter() {
+
+  func environmentWithFilter(_ name: String, closure: @escaping (Any?) throws -> Any?) -> Environment {
+    let filterExtension = Extension()
+    filterExtension.registerFilter(name, filter: closure)
+    return Environment(extensions: [filterExtension])
+  }
+
   describe("template filters") {
     let context: [String: Any] = ["name": "Kyle"]
 
     $0.it("allows you to register a custom filter") {
       let template = Template(templateString: "{{ name|repeat }}")
-
-      let repeatExtension = Extension()
-      repeatExtension.registerFilter("repeat") { (value: Any?) in
+      let env = environmentWithFilter("repeat") { (value: Any?) in
         if let value = value as? String {
           return "\(value) \(value)"
         }
@@ -18,7 +23,7 @@ func testFilter() {
         return nil
       }
 
-      let result = try template.render(Context(dictionary: context, environment: Environment(extensions: [repeatExtension])))
+      let result = try template.render(Context(dictionary: context, environment: env))
       try expect(result) == "Kyle Kyle"
     }
 
@@ -39,19 +44,19 @@ func testFilter() {
     }
 
     $0.it("allows you to register a custom filter which accepts several arguments") {
-        let template = Template(templateString: "{{ name|repeat:'value\"1\"',\"value'2'\",'(key, value)' }}")
-
-        let repeatExtension = Extension()
-        repeatExtension.registerFilter("repeat") { value, arguments in
-            if !arguments.isEmpty {
-                return "\(value!) \(value!) with args 0: \(arguments[0]!), 1: \(arguments[1]!), 2: \(arguments[2]!)"
-            }
-
-            return nil
+      let template = Template(templateString: "{{ name|repeat:'value\"1\"',\"value'2'\",'(key, value)' }}")
+      
+      let repeatExtension = Extension()
+      repeatExtension.registerFilter("repeat") { value, arguments in
+        if !arguments.isEmpty {
+          return "\(value!) \(value!) with args 0: \(arguments[0]!), 1: \(arguments[1]!), 2: \(arguments[2]!)"
         }
-
-        let result = try template.render(Context(dictionary: context, environment: Environment(extensions: [repeatExtension])))
-        try expect(result) == "Kyle Kyle with args 0: value\"1\", 1: value'2', 2: (key, value)"
+        
+        return nil
+      }
+      
+      let result = try template.render(Context(dictionary: context, environment: Environment(extensions: [repeatExtension])))
+      try expect(result) == "Kyle Kyle with args 0: value\"1\", 1: value'2', 2: (key, value)"
     }
 
     $0.it("allows you to register a custom which throws") {
@@ -67,13 +72,11 @@ func testFilter() {
 
     $0.it("allows you to override a default filter") {
       let template = Template(templateString: "{{ name|join }}")
-
-      let repeatExtension = Extension()
-      repeatExtension.registerFilter("join") { (value: Any?) in
+      let env = environmentWithFilter("join") { (value: Any?) in
         return "joined"
       }
 
-      let result = try template.render(Context(dictionary: context, environment: Environment(extensions: [repeatExtension])))
+      let result = try template.render(Context(dictionary: context, environment: env))
       try expect(result) == "joined"
     }
 
@@ -212,7 +215,6 @@ func testFilter() {
     }
   }
 
-
   describe("filter suggestion") {
 
     $0.it("made for unknown filter") {
@@ -244,7 +246,6 @@ func testFilter() {
 
   }
 
-
   describe("indent filter") {
     $0.it("indents content") {
       let template = Template(templateString: "{{ value|indent:2 }}")
@@ -270,4 +271,27 @@ func testFilter() {
       try expect(result) == "One\n\n\n    Two\n\n"
     }
   }
+
+  describe("dynamic filter") {
+    
+    $0.it("can apply dynamic filter") {
+      let template = Template(templateString: "{{ name|filter:somefilter }}")
+      let result = try template.render(Context(dictionary: ["name": "Jhon", "somefilter": "uppercase"]))
+      try expect(result) == "JHON"
+    }
+    
+    $0.it("can apply dynamic filter on array") {
+      let template = Template(templateString: "{{ values|filter:joinfilter }}")
+      let result = try template.render(Context(dictionary: ["values": [1, 2, 3], "joinfilter": "join:\", \""]))
+      try expect(result) == "1, 2, 3"
+    }
+    
+    $0.it("throws on unknown dynamic filter") {
+      let template = Template(templateString: "{{ values|filter:unknown }}")
+      let context = Context(dictionary: ["values": [1, 2, 3], "unknown": "absurd"])
+      try expect(try template.render(context)).toThrow()
+    }
+    
+  }
+
 }

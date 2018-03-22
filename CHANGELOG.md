@@ -12,6 +12,8 @@
   [Ilya Puchka](https://github.com/yonaskolb)
   [#178](https://github.com/stencilproject/Stencil/pull/178)
 
+- Added support for dynamic filter using `filter` filter
+
 ### Bug Fixes
 
 - Fixed using quote as a filter parameter

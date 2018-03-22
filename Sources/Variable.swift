@@ -8,8 +8,8 @@ class FilterExpression : Resolvable {
   let filters: [(FilterType, [Variable])]
   let variable: Variable
 
-  init(token: String, parser: TokenParser) throws {
-    let bits = token.characters.split(separator: "|").map({ String($0).trim(character: " ") })
+  init(token: String, environment: Environment) throws {
+    let bits = token.smartSplit(separator: "|").map({ String($0).trim(character: " ") })
     if bits.isEmpty {
       filters = []
       variable = Variable("")
@@ -22,7 +22,7 @@ class FilterExpression : Resolvable {
     do {
       filters = try filterBits.map {
         let (name, arguments) = parseFilterComponents(token: $0)
-        let filter = try parser.findFilter(name)
+        let filter = try environment.findFilter(name)
         return (filter, arguments)
       }
     } catch {
@@ -36,7 +36,7 @@ class FilterExpression : Resolvable {
 
     return try filters.reduce(result) { x, y in
       let arguments = try y.1.map { try $0.resolve(context) }
-      return try y.0.invoke(value: x, arguments: arguments)
+      return try y.0.invoke(value: x, arguments: arguments, context: context)
     }
   }
 }
@@ -138,14 +138,14 @@ public struct RangeVariable: Resolvable {
   public let from: Resolvable
   public let to: Resolvable
 
-  public init?(_ token: String, parser: TokenParser) throws {
+  public init?(_ token: String, environment: Environment) throws {
     let components = token.components(separatedBy: "...")
     guard components.count == 2 else {
       return nil
     }
 
-    self.from = try parser.compileFilter(components[0])
-    self.to = try parser.compileFilter(components[1])
+    self.from = try environment.compileFilter(components[0])
+    self.to = try environment.compileFilter(components[1])
   }
 
   public func resolve(_ context: Context) throws -> Any? {
