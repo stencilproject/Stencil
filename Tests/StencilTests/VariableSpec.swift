@@ -26,6 +26,7 @@ fileprivate class WebSite {
 
 fileprivate class Blog: WebSite {
   let articles: [Article] = [Article(author: Person(name: "Kyle"))]
+  let featuring: Article? = Article(author: Person(name: "Jhon"))
 }
 
 func testVariable() {
@@ -158,6 +159,12 @@ func testVariable() {
       let variable = Variable("blog.url")
       let result = try variable.resolve(context) as? String
       try expect(result) == "blog.com"
+    }
+
+    $0.it("can resolve optional variable property using reflection") {
+      let variable = Variable("blog.featuring.author.name")
+      let result = try variable.resolve(context) as? String
+      try expect(result) == "Jhon"
     }
 
   }
