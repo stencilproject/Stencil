@@ -52,10 +52,12 @@ struct Lexer {
       "{{": "}}",
       "{%": "%}",
       "{#": "#}",
-      ]
+    ]
+    //let startTokens = ["{{", "{%", "{#"]
+    let tokenChars:[Unicode.Scalar] = ["{", "%", "#"]
 
     while !scanner.isEmpty {
-      if let text = scanner.scanForTokenStart() {
+      if let text = scanner.scanForTokenStart(tokenChars) {
         if !text.1.isEmpty {
           tokens.append(createToken(string: text.1, at: scanner.range))
         }
@@ -115,23 +117,44 @@ class Scanner {
     content = ""
     return ""
   }
-  func scanForTokenStart() -> (String, String)? {
+  func scan(until: [String]) -> (String, String)? {
+    if until.isEmpty {
+      return nil
+    }
+
+    var index = 0;
+    for char in content.unicodeScalars {
+      for string in until {
+        if string.unicodeScalars.first == char {
+          let startIndex = content.startIndex.advanced(by: index)
+          let endIndex = content.startIndex.advanced(by: index + string.count)
+          if endIndex > content.endIndex {
+            continue;
+          }
+          if String(content[startIndex..<endIndex]) == string {
+            let result = String(content[..<startIndex])
+            content = String(content[startIndex...])
+            return (string, result)
+          }
+        }
+      }
+      index += 1
+    }
+
+    return nil;
+  }
+  func scanForTokenStart(_ tokenChars:[Unicode.Scalar]) -> (String, String)? {
     var foundBrace = false
     var index = 0;
     for char in content.unicodeScalars {
       if foundBrace {
         let string:String
-        switch char {
-          case "{":
-            string = "{{"
-          case "%":
-            string = "{%"
-          case "#":
-            string = "{#"
-          default:
-            foundBrace = false
-            index += 2
-            continue;
+        if tokenChars.contains(char) {
+          string = "{\(char)"
+        } else {
+          foundBrace = false
+          index += 2
+          continue;
         }
         let startIndex = content.startIndex.advanced(by: index)
         let result = String(content[..<startIndex])
@@ -147,30 +170,6 @@ class Scanner {
       }
     }    
     return nil;
-  }
-
-  func scan(until: [String]) -> (String, String)? {
-    if until.isEmpty {
-      return nil
-    }
-
-    var index = content.startIndex
-    range = range.upperBound..<range.upperBound
-    while index != content.endIndex {
-      let substring = content.substring(from: index)
-      for string in until {
-        if substring.hasPrefix(string) {
-          let result = content.substring(to: index)
-          content = substring
-          return (string, result)
-        }
-      }
-
-      index = content.index(after: index)
-      range = range.lowerBound..<originalContent.index(after: range.upperBound)
-    }
-
-    return nil
   }
 }
 
