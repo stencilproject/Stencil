@@ -7,7 +7,7 @@ struct Lexer {
 
   func createToken(string: String) -> Token {
     func strip() -> String {
-      guard string.characters.count > 4 else { return "" }
+      guard string.count > 4 else { return "" }
       let start = string.index(string.startIndex, offsetBy: 2)
       let end = string.index(string.endIndex, offsetBy: -2)
       let trimmed = String(string[start..<end])
@@ -42,7 +42,7 @@ struct Lexer {
     ]
 
     while !scanner.isEmpty {
-      if let text = scanner.scan(until: ["{{", "{%", "{#"]) {
+      if let text = scanner.scanForTokenStart() {
         if !text.1.isEmpty {
           tokens.append(createToken(string: text.1))
         }
@@ -73,31 +73,61 @@ class Scanner {
   }
 
   func scan(until: String, returnUntil: Bool = false) -> String {
-    if until.isEmpty {
+    guard let first = until.unicodeScalars.first else {
       return ""
     }
 
-    var index = content.startIndex
-    while index != content.endIndex {
-      let substring = content.substring(from: index)
-
-      if substring.hasPrefix(until) {
-        let result = content.substring(to: index)
-        content = substring
-
-        if returnUntil {
-          content = content.substring(from: until.endIndex)
-          return result + until
+    var index = 0;
+    for char in content.unicodeScalars {
+      if char == first {
+        //Check the rest
+        if String(content[content.startIndex.advanced(by: index)..<content.startIndex.advanced(by: index + until.count)]) == until {
+          let result = String(content[..<content.startIndex.advanced(by: index)])
+          content = String(content[content.startIndex.advanced(by: index)...])
+          if returnUntil {
+            content = String(content[content.startIndex.advanced(by: until.count)...])
+            return result + until
+          }
+          return result
         }
-
-        return result
       }
-
-      index = content.index(after: index)
+      index += 1
     }
 
     content = ""
     return ""
+  }
+  func scanForTokenStart() -> (String, String)? {
+    var foundBrace = false
+    var index = 0;
+    for char in content.unicodeScalars {
+      if foundBrace {
+        let string:String
+        switch char {
+          case "{":
+            string = "{{"
+          case "%":
+            string = "{%"
+          case "#":
+            string = "{#"
+          default:
+            foundBrace = false
+            index += 2
+            continue;
+        }
+        let result = String(content[..<content.startIndex.advanced(by: index)])
+        content = String(content[content.startIndex.advanced(by: index)...])
+        return (string, result)
+      } else {
+        if char == "{" {
+          //Check next char
+          foundBrace = true
+        } else {
+          index += 1
+        }
+      }
+    }    
+    return nil;
   }
 
   func scan(until: [String]) -> (String, String)? {
