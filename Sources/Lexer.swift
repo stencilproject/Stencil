@@ -7,6 +7,13 @@ struct Lexer {
   let templateString: String
   let lines: [Line]
 
+  private static let tokenChars: [Unicode.Scalar] = ["{", "%", "#"]
+  private static let tokenCharMap: [Unicode.Scalar: Unicode.Scalar] = [
+    "{": "}",
+    "%": "%",
+    "#": "#"
+  ]
+
   init(templateName: String? = nil, templateString: String) {
     self.templateName = templateName
     self.templateString = templateString
@@ -20,9 +27,7 @@ struct Lexer {
   func createToken(string: String, at range: Range<String.Index>) -> Token {
     func strip() -> String {
       guard string.count > 4 else { return "" }
-      let start = string.index(string.startIndex, offsetBy: 2)
-      let end = string.index(string.endIndex, offsetBy: -2)
-      let trimmed = String(string[start..<end])
+      let trimmed = String(string.dropFirst(2).dropLast(2))
         .components(separatedBy: "\n")
         .filter({ !$0.isEmpty })
         .map({ $0.trim(character: " ") })
@@ -55,21 +60,14 @@ struct Lexer {
     var tokens: [Token] = []
 
     let scanner = Scanner(templateString)
-
-    let map = [
-      "{{": "}}",
-      "{%": "%}",
-      "{#": "#}",
-      ]
-
     while !scanner.isEmpty {
-      if let text = scanner.scan(until: ["{{", "{%", "{#"]) {
-        if !text.1.isEmpty {
-          tokens.append(createToken(string: text.1, at: scanner.range))
+      if let (char, text) = scanner.scanForTokenStart(Lexer.tokenChars) {
+        if !text.isEmpty {
+          tokens.append(createToken(string: text, at: scanner.range))
         }
 
-        let end = map[text.0]!
-        let result = scanner.scan(until: end, returnUntil: true)
+        guard let end = Lexer.tokenCharMap[char] else { continue }
+        let result = scanner.scanForTokenEnd(end)
         tokens.append(createToken(string: result, at: scanner.range))
       } else {
         tokens.append(createToken(string: scanner.content, at: scanner.range))
@@ -95,6 +93,9 @@ class Scanner {
   var content: String
   var range: Range<String.Index>
 
+  private static let tokenStartDelimiter: Unicode.Scalar = "{"
+  private static let tokenEndDelimiter: Unicode.Scalar = "}"
+
   init(_ content: String) {
     self.originalContent = content
     self.content = content
@@ -105,63 +106,42 @@ class Scanner {
     return content.isEmpty
   }
 
-  func scan(until: String, returnUntil: Bool = false) -> String {
-    var index = content.startIndex
+  func scanForTokenEnd(_ tokenChar: Unicode.Scalar) -> String {
+    var foundChar = false
 
-    if until.isEmpty {
-      return ""
-    }
-
-    range = range.upperBound..<range.upperBound
-    while index != content.endIndex {
-      let substring = String(content[index...])
-
-      if substring.hasPrefix(until) {
-        let result = String(content[..<index])
-
-        if returnUntil {
-          range = range.lowerBound..<originalContent.index(range.upperBound, offsetBy: until.count)
-          content = String(substring[until.endIndex...])
-          return result + until
-        }
-
-        content = substring
+    for (index, char) in content.unicodeScalars.enumerated() {
+      if foundChar && char == Scanner.tokenEndDelimiter {
+        let result = String(content.prefix(index))
+        content = String(content.dropFirst(index + 1))
+        range = range.upperBound..<originalContent.index(range.upperBound, offsetBy: index + 1)
         return result
+      } else {
+        foundChar = (char == tokenChar)
       }
-
-      index = content.index(after: index)
-      range = range.lowerBound..<originalContent.index(after: range.upperBound)
     }
 
     content = ""
     return ""
   }
 
-  func scan(until: [String]) -> (String, String)? {
-    if until.isEmpty {
-      return nil
-    }
+  func scanForTokenStart(_ tokenChars: [Unicode.Scalar]) -> (Unicode.Scalar, String)? {
+    var foundBrace = false
 
-    var index = content.startIndex
     range = range.upperBound..<range.upperBound
-    while index != content.endIndex {
-      let substring = String(content[index...])
-      for string in until {
-        if substring.hasPrefix(string) {
-          let result = String(content[..<index])
-          content = substring
-          return (string, result)
-        }
+    for (index, char) in content.unicodeScalars.enumerated() {
+      if foundBrace && tokenChars.contains(char) {
+        let result = String(content.prefix(index - 1))
+        content = String(content.dropFirst(index - 1))
+        range = range.upperBound..<originalContent.index(range.upperBound, offsetBy: index - 1)
+        return (char, result)
+      } else {
+        foundBrace = (char == Scanner.tokenStartDelimiter)
       }
-
-      index = content.index(after: index)
-      range = range.lowerBound..<originalContent.index(after: range.upperBound)
     }
 
     return nil
   }
 }
-
 
 extension String {
   func findFirstNot(character: Character) -> String.Index? {
