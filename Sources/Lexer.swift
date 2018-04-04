@@ -98,9 +98,10 @@ class Scanner {
     for char in content.unicodeScalars {
       if char == first {
         //Check the rest
-        if String(content[content.startIndex.advanced(by: index)..<content.startIndex.advanced(by: index + until.count)]) == until {
-          let result = String(content[..<content.startIndex.advanced(by: index)])
-          content = String(content[content.startIndex.advanced(by: index)...])
+        let startIndex = content.startIndex.advanced(by: index)
+        if String(content[startIndex..<content.startIndex.advanced(by: index + until.count)]) == until {
+          let result = String(content[..<startIndex])
+          content = String(content[startIndex...])
           if returnUntil {
             content = String(content[content.startIndex.advanced(by: until.count)...])
             return result + until
@@ -132,8 +133,9 @@ class Scanner {
             index += 2
             continue;
         }
-        let result = String(content[..<content.startIndex.advanced(by: index)])
-        content = String(content[content.startIndex.advanced(by: index)...])
+        let startIndex = content.startIndex.advanced(by: index)
+        let result = String(content[..<startIndex])
+        content = String(content[startIndex...])
         return (string, result)
       } else {
         if char == "{" {
