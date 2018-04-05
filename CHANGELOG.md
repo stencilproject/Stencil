@@ -1,6 +1,6 @@
 # Stencil Changelog
 
-## Master
+## 0.11.0 (2018-04-04)
 
 ### Enhancements
 
