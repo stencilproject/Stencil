@@ -178,7 +178,18 @@ func testForNode() {
         let template = Template(templateString: templateString)
         try expect(template.render(context)).toThrow()
       }
+    }
 
+    $0.it("can iterate over array with index") {
+      let templateString = "{% for index,value in items %}" +
+        "{{ index }}: {{ value }}\n" +
+      "{% endfor %}\n"
+
+      let template = Template(templateString: templateString)
+      let result = try template.render(context)
+
+      let fixture = "0: 1\n1: 2\n2: 3\n\n"
+      try expect(result) == fixture
     }
 
     $0.it("can iterate over dictionary") {
