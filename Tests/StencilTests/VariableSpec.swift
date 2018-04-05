@@ -148,7 +148,7 @@ func testVariable() {
       try expect(result) == "Foo"
     }
 #endif
-    
+
     $0.it("can resolve a value via reflection") {
       let variable = Variable("blog.articles.0.author.name")
       let result = try variable.resolve(context) as? String
@@ -167,5 +167,13 @@ func testVariable() {
       try expect(result) == "Jhon"
     }
 
+    $0.it("does not render Optional") {
+      var array: [Any?] = [1, nil]
+      array.append(array)
+      let context = Context(dictionary: ["values": array])
+
+      try expect(VariableNode(variable: "values").render(context)) == "[1, nil, [1, nil]]"
+      try expect(VariableNode(variable: "values.1").render(context)) == ""
+    }
   }
 }
