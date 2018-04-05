@@ -227,7 +227,7 @@ func testForNode() {
           .block(value: "for i"),
       ]
       let parser = TokenParser(tokens: tokens, environment: Environment())
-      let error = TemplateSyntaxError("'for' statements should use the following 'for x in y where condition' `for i`.")
+      let error = TemplateSyntaxError("'for' statements should use the syntax: `for <x> in <y> [where <condition>]")
       try expect(try parser.parse()).toThrow(error)
     }
 
@@ -304,6 +304,11 @@ func testForNode() {
       let result = try node.render(context)
 
       try expect(result) == "childString=child\nbaseString=base\nbaseInt=1\n"
+    }
+
+    $0.it("can iterate in range of variables") {
+      let template: Template = "{% for i in 1...j %}{{ i }}{% endfor %}"
+      try expect(try template.render(Context(dictionary: ["j": 3]))) == "123"
     }
 
   }
