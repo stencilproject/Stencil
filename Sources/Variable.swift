@@ -187,11 +187,33 @@ extension Mirror {
     if result == nil {
       // go through inheritance chain to reach superclass properties
       return superclassMirror?.getValue(for: key)
-    } else if let result = result, String(describing: result) == "nil" {
-      // mirror returns non-nil value even for nil-containing properties
-      // so we have to check if its value is actually nil or not
-      return nil
+    } else if let result = result {
+      guard String(describing: result) != "nil" else {
+        // mirror returns non-nil value even for nil-containing properties
+        // so we have to check if its value is actually nil or not
+        return nil
+      }
+      if let result = (result as? AnyOptional)?.wrapped {
+        return result
+      } else {
+        return result
+      }
     }
     return result
   }
 }
+
+protocol AnyOptional {
+  var wrapped: Any? { get }
+}
+
+extension Optional: AnyOptional {
+  var wrapped: Any? {
+    switch self {
+    case let .some(value): return value
+    case .none: return nil
+    }
+  }
+}
+
+

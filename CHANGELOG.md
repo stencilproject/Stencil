@@ -20,6 +20,7 @@
 - Fixed checking dictionary values for nil in `default` filter
 - Fixed comparing string variables with string literals, in Swift 4 string literals became `Substring` and thus couldn't be directly compared to strings.
 - Integer literals now resolve into Int values, not Float
+- Fixed accessing properties of optional properties via reflection
 
 
 ## 0.10.1
