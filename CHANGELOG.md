@@ -14,6 +14,7 @@
 - Allow using new lines inside tags
 - Added support for iterating arrays of tuples
 - Added support for ranges in if-in expression
+- Added property `forloop.length` to get number of items in the loop
 
 ### Bug Fixes
 
