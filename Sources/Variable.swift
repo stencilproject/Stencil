@@ -183,7 +183,7 @@ func parseFilterComponents(token: String) -> (String, [Variable]) {
 
 extension Mirror {
   func getValue(for key: String) -> Any? {
-    let result = descendant(key)
+    let result = descendant(key) ?? Int(key).flatMap({ descendant($0) })
     if result == nil {
       // go through inheritance chain to reach superclass properties
       return superclassMirror?.getValue(for: key)

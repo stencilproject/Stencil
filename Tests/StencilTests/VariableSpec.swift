@@ -40,7 +40,8 @@ func testVariable() {
       "counter": [
         "count": "kylef",
         ],
-      "article": Article(author: Person(name: "Kyle"))
+      "article": Article(author: Person(name: "Kyle")),
+      "tuple": (one: 1, two: 2)
     ])
 
 #if os(OSX)
@@ -174,6 +175,18 @@ func testVariable() {
 
       try expect(VariableNode(variable: "values").render(context)) == "[1, nil, [1, nil]]"
       try expect(VariableNode(variable: "values.1").render(context)) == ""
+    }
+
+    $0.it("can subscript tuple by index") {
+      let variable = Variable("tuple.0")
+      let result = try variable.resolve(context) as? Int
+      try expect(result) == 1
+    }
+
+    $0.it("can subscript tuple by label") {
+      let variable = Variable("tuple.two")
+      let result = try variable.resolve(context) as? Int
+      try expect(result) == 2
     }
   }
 }
