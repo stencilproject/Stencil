@@ -50,10 +50,46 @@ func testStencil() {
       let fixture = "There are 2 articles.\n" +
         "\n" +
         "    - Migrating from OCUnit to XCTest by Kyle Fuller.\n" +
-        "    - Memory Management with ARC by Kyle Fuller.\n" +
-        "\n"
+        "    - Memory Management with ARC by Kyle Fuller.\n"
 
       try expect(result) == fixture
+    }
+
+    $0.it("can remove newlines from blocks on their own line") {
+
+        let templateString = "{% for item in items %}\n" +
+            "   {{item}}\n" +
+            "{% endfor %}\n"
+
+        let context = ["items": ["item 1", "item 2"]]
+
+        let template = Template(templateString: templateString)
+        let result = try template.render(context)
+
+        let fixture =
+            "   item 1\n" +
+            "   item 2\n"
+        
+        try expect(result) == fixture
+    }
+
+    $0.it("can remove whitespace and newlines from blocks on their own line") {
+
+        let templateString = "Items:\n" +
+            "   {% for item in items %}\n" +
+            "       {{item}}\n" +
+            "   {% endfor %}\n"
+
+        let context = ["items": ["item 1", "item 2"]]
+
+        let template = Template(templateString: templateString)
+        let result = try template.render(context)
+
+        let fixture = "Items:\n" +
+            "       item 1\n" +
+            "       item 2\n"
+
+        try expect(result) == fixture
     }
 
     $0.it("can render a custom template tag") {
