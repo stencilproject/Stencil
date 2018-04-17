@@ -124,7 +124,7 @@ or to negate a variable.
     {% endif %}
 
 You may use ``and``, ``or`` and ``not`` multiple times together. ``not`` has
-higest prescidence followed by ``and``. For example:
+higest precedence followed by ``and``. For example:
 
 .. code-block:: html+django
 
