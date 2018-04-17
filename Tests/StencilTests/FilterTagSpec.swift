@@ -30,5 +30,16 @@ func testFilterTag() {
       let result = try env.renderTemplate(string: "{% filter split:\",\"|join:\";\"  %}{{ items|join:\",\" }}{% endfilter %}", context: ["items": [1, 2]])
       try expect(result) == "1;2"
     }
+
+    $0.it("can render filters with quote as an argument") {
+        let ext = Extension()
+        ext.registerFilter("replace", filter: {
+            print($1[0] as! String)
+            return ($0 as! String).replacingOccurrences(of: $1[0] as! String, with: $1[1] as! String)
+        })
+        let env = Environment(extensions: [ext])
+        let result = try env.renderTemplate(string: "{% filter replace:'\"',\"\" %}{{ items|join:\",\" }}{% endfilter %}", context: ["items": ["\"1\"", "\"2\""]])
+        try expect(result) == "1,2"
+    }
   }
 }
