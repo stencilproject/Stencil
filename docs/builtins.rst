@@ -29,8 +29,9 @@ The ``for`` tag can iterate over dictionaries.
       {% endfor %}
     </ul>
     
-It can also iterate over ranges, tuple elements, structs and classes stored properties (using ``Mirror``).
-You can iterate over range literals created using ``0...N`` syntax, both in ascending and descending order:
+It can also iterate over ranges, tuple elements, structs' and classes' stored properties (using ``Mirror``).
+
+You can iterate over range literals created using ``N...M`` syntax, both in ascending and descending order:
 
 .. code-block:: html+django
 
@@ -293,7 +294,7 @@ Built-in Filters
 ~~~~~~~~~~~~~~
 
 The capitalize filter allows you to capitalize a string.
-For example, `stencil` to `Stencil`. Can be applied to array of string to change each string.
+For example, `stencil` to `Stencil`. Can be applied to array of strings to change each string.
 
 .. code-block:: html+django
 
@@ -303,7 +304,7 @@ For example, `stencil` to `Stencil`. Can be applied to array of string to change
 ~~~~~~~~~~~~~
 
 The uppercase filter allows you to transform a string to uppercase.
-For example, `Stencil` to `STENCIL`. Can be applied to array of string to change each string.
+For example, `Stencil` to `STENCIL`. Can be applied to array of strings to change each string.
 
 .. code-block:: html+django
 
@@ -313,7 +314,7 @@ For example, `Stencil` to `STENCIL`. Can be applied to array of string to change
 ~~~~~~~~~~~~~
 
 The uppercase filter allows you to transform a string to lowercase.
-For example, `Stencil` to `stencil`. Can be applied to array of string to change each string.
+For example, `Stencil` to `stencil`. Can be applied to array of strings to change each string.
 
 .. code-block:: html+django
 
