@@ -8,11 +8,11 @@ class IncludeNode : NodeType {
   class func parse(_ parser: TokenParser, token: Token) throws -> NodeType {
     let bits = token.components()
 
-    guard bits.count == 2 || (bits.count == 4 && bits[2] == "using") else {
-      throw TemplateSyntaxError("'include' tag requires one argument, the template file to be included. Another optional argument can be used to specify the context that will be passed to the included file, using the format \"using myContext\"")
+    guard bits.count == 2 || bits.count == 3 else {
+      throw TemplateSyntaxError("'include' tag requires one argument, the template file to be included. A second optional argument can be used to specify the context that will be passed to the included file")
     }
 
-    return IncludeNode(templateName: Variable(bits[1]), includeContext: bits.count == 4 ? bits[3] : nil)
+    return IncludeNode(templateName: Variable(bits[1]), includeContext: bits.count == 3 ? bits[2] : nil)
   }
 
   init(templateName: Variable, includeContext: String? = nil) {

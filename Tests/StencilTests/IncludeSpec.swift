@@ -14,7 +14,7 @@ func testInclude() {
         let tokens: [Token] = [ .block(value: "include") ]
         let parser = TokenParser(tokens: tokens, environment: Environment())
 
-        let error = TemplateSyntaxError("'include' tag requires one argument, the template file to be included. Another optional argument can be used to specify the context that will be passed to the included file, using the format \"using myContext\"")
+        let error = TemplateSyntaxError("'include' tag requires one argument, the template file to be included. A second optional argument can be used to specify the context that will be passed to the included file")
         try expect(try parser.parse()).toThrow(error)
       }
 
@@ -58,7 +58,7 @@ func testInclude() {
       }
 
       $0.it("successfully passes context") {
-        let template = Template(templateString: "{% include \"test.html\" using child %}")
+        let template = Template(templateString: "{% include \"test.html\" child %}")
         let context = Context(dictionary: ["child": ["target": "World"]], environment: environment)
         let value = try template.render(context)
         try expect(value) == "Hello World!"
