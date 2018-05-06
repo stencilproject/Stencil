@@ -12,7 +12,7 @@
   },
   "social_media_url": "https://twitter.com/kylefuller",
   "source": {
-    "git": "https://github.com/kylef/Stencil.git",
+    "git": "https://github.com/stencilproject/Stencil.git",
     "tag": "0.11.0"
   },
   "source_files": [
