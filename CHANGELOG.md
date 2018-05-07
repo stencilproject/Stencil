@@ -2,6 +2,10 @@
 
 ## Master
 
+### Enhancements
+
+- added an optional second parameter to the `include` tag for passing a sub context to the included file
+
 ### Bug Fixes
 
 - Fixed using quote as a filter parameter
