@@ -260,6 +260,12 @@ You can include another template using the `include` tag.
 
     {% include "comment.html" %}
 
+By default the included file gets passed the current context. You can pass a sub context by using an optional 2nd parameter as a lookup in the current context.
+
+.. code-block:: html+django
+
+    {% include "comment.html" comment %}
+
 The `include` tag requires you to provide a loader which will be used to lookup
 the template.
 
