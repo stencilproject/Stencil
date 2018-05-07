@@ -27,7 +27,7 @@ class IncludeNode : NodeType {
 
     let template = try context.environment.loadTemplate(name: templateName)
 
-    let subContext = includeContext.flatMap{ context[$0] as? [String: Any] }
+    let subContext = includeContext.flatMap { context[$0] as? [String: Any] }
     return try context.push(dictionary: subContext) {
       return try template.render(context)
     }
