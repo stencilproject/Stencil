@@ -31,6 +31,23 @@ For example, if `people` was an array:
     There are {{ people.count }} people. {{ people.first }} is the first
     person, followed by {{ people.1 }}.
 
+For indirect lookup, you can prefix a variable with `$`. That variable will be evaluated first, before the actual lookup will happen.
+
+For example, if you have the following context:
+
+.. code-block:: swift
+
+    [
+      "item": [
+        "name": "John"
+      ],
+      "key": "name"
+    ]
+
+.. code-block:: html+django
+
+    The result of {{ item.$key }} will be the same as {{ item.name }}. It will first evaluate the result of {{ key }}, and only then evaluate the lookup expression.
+
 Filters
 ~~~~~~~
 
