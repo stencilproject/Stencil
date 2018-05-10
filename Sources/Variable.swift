@@ -50,8 +50,41 @@ public struct Variable : Equatable, Resolvable {
     self.variable = variable
   }
 
-  fileprivate func lookup() -> [String] {
-    return variable.characters.split(separator: ".").map(String.init)
+  // Split the lookup string and resolve references if possible
+  fileprivate func lookup(_ context: Context) throws -> [String] {
+    var current = ""
+    var referenceLevel = 0
+
+    var bits = [String]()
+    for c in variable {
+      switch c {
+      case "." where referenceLevel == 0:
+        bits += [current]
+        current = ""
+      case "[" where referenceLevel == 0:
+        bits += [current]
+        current = ""
+        referenceLevel += 1
+      case "[":
+        referenceLevel += 1
+        current.append(c)
+      case "]" where referenceLevel > 1:
+        current.append(c)
+        referenceLevel -= 1
+      case "]":
+        referenceLevel -= 1
+        let value = try Variable(current)
+          .resolve(context)
+          .flatMap { "\($0)" }
+        bits += [value ?? current]
+        current = ""
+      default:
+        current.append(c)
+      }
+    }
+    bits += [current]
+
+    return bits.filter { !$0.isEmpty }
   }
 
   /// Resolve the variable in the given context
@@ -75,15 +108,8 @@ public struct Variable : Equatable, Resolvable {
       return bool
     }
 
-    for var bit in lookup() {
+    for bit in try lookup(context) {
       current = normalize(current)
-
-      // try to evaluate bit if it's an indirection
-      if bit.hasPrefix("$"),
-        let resolved = try? Variable(String(bit.dropFirst())).resolve(context),
-        let property = resolved {
-        bit = "\(property)"
-      }
 
       if let context = current as? Context {
         current = context[bit]

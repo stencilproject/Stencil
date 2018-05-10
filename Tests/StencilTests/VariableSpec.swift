@@ -192,7 +192,7 @@ func testVariable() {
     $0.describe("Indirection") {
       $0.it("can resolve an indirect variable") {
         try context.push(dictionary: ["property": "name"]) {
-          let variable = Variable("$property")
+          let variable = Variable("[property]")
           let result = try variable.resolve(context) as? String
           try expect(result) == "Kyle"
         }
@@ -200,7 +200,7 @@ func testVariable() {
 
       $0.it("can resolve an indirect variable via reflection") {
         try context.push(dictionary: ["property": "name"]) {
-          let variable = Variable("article.author.$property")
+          let variable = Variable("article.author[property]")
           let result = try variable.resolve(context) as? String
           try expect(result) == "Kyle"
         }
@@ -208,7 +208,7 @@ func testVariable() {
 
       $0.it("can resolve an item from an array via it's indirect index") {
         try context.push(dictionary: ["property": 0]) {
-          let variable = Variable("contacts.$property")
+          let variable = Variable("contacts[property]")
           let result = try variable.resolve(context) as? String
           try expect(result) == "Katie"
         }
@@ -216,7 +216,7 @@ func testVariable() {
 
       $0.it("can resolve an item from an array via unknown index") {
         try context.push(dictionary: ["property": 5]) {
-          let variable = Variable("contacts.$property")
+          let variable = Variable("contacts[property]")
           let result = try variable.resolve(context) as? String
           try expect(result).to.beNil()
         }
@@ -225,7 +225,7 @@ func testVariable() {
 #if os(OSX)
       $0.it("can resolve an indirect variable via KVO") {
         try context.push(dictionary: ["property": "name"]) {
-          let variable = Variable("object.$property")
+          let variable = Variable("object[property]")
           let result = try variable.resolve(context) as? String
           try expect(result) == "Foo"
         }
@@ -234,7 +234,7 @@ func testVariable() {
 
       $0.it("can resolve a value via reflection") {
         try context.push(dictionary: ["property": "articles"]) {
-          let variable = Variable("blog.$property.0.author.name")
+          let variable = Variable("blog[property].0.author.name")
           let result = try variable.resolve(context) as? String
           try expect(result) == "Kyle"
         }
@@ -246,7 +246,30 @@ func testVariable() {
           "prop2": 0,
           "prop3": "name"
         ]) {
-          let variable = Variable("blog.$prop1.$prop2.author.$prop3")
+          let variable = Variable("blog[prop1][prop2].author[prop3]")
+          let result = try variable.resolve(context) as? String
+          try expect(result) == "Kyle" 
+        }
+      }
+
+      $0.it("can resolve multiple indirections") {
+        try context.push(dictionary: [
+          "prop1": "articles",
+          "prop2": 0,
+          "prop3": "name"
+        ]) {
+          let variable = Variable("blog[prop1][prop2].author[prop3]")
+          let result = try variable.resolve(context) as? String
+          try expect(result) == "Kyle" 
+        }
+      }
+
+      $0.it("can resolve recursive indirections") {
+        try context.push(dictionary: [
+          "prop1": "prop2",
+          "ref": ["prop2": "name"]
+        ]) {
+          let variable = Variable("article.author[ref[prop2]]")
           let result = try variable.resolve(context) as? String
           try expect(result) == "Kyle" 
         }

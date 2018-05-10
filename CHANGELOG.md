@@ -8,7 +8,7 @@
   [Yonas Kolb](https://github.com/yonaskolb)
   [#214](https://github.com/stencilproject/Stencil/pull/214)
 - Variables now support the subscript notation. For example, if you have a variable `key = "name"`, and an
-  object `item = ["name": "John"]`, then `{{ item[key] }}` will evaluate to "John".  s
+  object `item = ["name": "John"]`, then `{{ item[key] }}` will evaluate to "John".  
   [David Jennes](https://github.com/djbe)
   [#215](https://github.com/stencilproject/Stencil/pull/215)
 
