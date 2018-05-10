@@ -4,7 +4,9 @@
 
 ### Enhancements
 
-- added an optional second parameter to the `include` tag for passing a sub context to the included file
+- Added an optional second parameter to the `include` tag for passing a sub context to the included file.  
+  [Yonas Kolb](https://github.com/yonaskolb)
+  [#394](https://github.com/stencilproject/Stencil/pull/214)
 
 ### Bug Fixes
 
