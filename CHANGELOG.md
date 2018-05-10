@@ -6,7 +6,11 @@
 
 - Added an optional second parameter to the `include` tag for passing a sub context to the included file.  
   [Yonas Kolb](https://github.com/yonaskolb)
-  [#394](https://github.com/stencilproject/Stencil/pull/214)
+  [#214](https://github.com/stencilproject/Stencil/pull/214)
+- Variables now support the subscript notation. For example, if you have a variable `key = "name"`, and an
+  object `item = ["name": "John"]`, then `{{ item[key] }}` will evaluate to "John".  s
+  [David Jennes](https://github.com/djbe)
+  [#215](https://github.com/stencilproject/Stencil/pull/215)
 
 - Adds support for using spaces in filter expression
   [Ilya Puchka](https://github.com/yonaskolb)
@@ -14,8 +18,8 @@
 
 ### Bug Fixes
 
-- Fixed using quote as a filter parameter
-  [Ilya Puchka](https://github.com/yonaskolb)
+- Fixed using quote as a filter parameter.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
   [#210](https://github.com/stencilproject/Stencil/pull/210)
 
 
