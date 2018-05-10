@@ -4,6 +4,25 @@
 
 ### Enhancements
 
+- Added an optional second parameter to the `include` tag for passing a sub context to the included file.  
+  [Yonas Kolb](https://github.com/yonaskolb)
+  [#394](https://github.com/stencilproject/Stencil/pull/214)
+
+- Adds support for using spaces in filter expression
+  [Ilya Puchka](https://github.com/yonaskolb)
+  [#178](https://github.com/stencilproject/Stencil/pull/178)
+
+### Bug Fixes
+
+- Fixed using quote as a filter parameter
+  [Ilya Puchka](https://github.com/yonaskolb)
+  [#210](https://github.com/stencilproject/Stencil/pull/210)
+
+
+## 0.11.0 (2018-04-04)
+
+### Enhancements
+
 - Added support for resolving superclass properties for not-NSObject subclasses
 - The `{% for %}` tag can now iterate over tuples, structures and classes via
   their stored properties.
@@ -15,6 +34,7 @@
 - Added support for iterating arrays of tuples
 - Added support for ranges in if-in expression
 - Added property `forloop.length` to get number of items in the loop
+- Now you can construct ranges for loops using `a...b` syntax, i.e. `for i in 1...array.count`
 
 ### Bug Fixes
 
@@ -24,7 +44,7 @@
 - Integer literals now resolve into Int values, not Float
 - Fixed accessing properties of optional properties via reflection
 - No longer render optional values in arrays as `Optional(..)`
-- Adds support for using spaces in filter expression
+- Fixed subscription tuples by value index, i.e. `{{ tuple.0 }}`
 
 
 ## 0.10.1

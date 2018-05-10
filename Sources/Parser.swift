@@ -40,7 +40,7 @@ public class TokenParser {
       case .text(let text):
         nodes.append(TextNode(text: text))
       case .variable:
-        nodes.append(VariableNode(variable: try compileFilter(token.contents)))
+        nodes.append(VariableNode(variable: try compileResolvable(token.contents)))
       case .block:
         if let parse_until = parse_until , parse_until(self, token) {
           prependToken(token)
@@ -112,6 +112,11 @@ public class TokenParser {
 
   public func compileFilter(_ token: String) throws -> Resolvable {
     return try FilterExpression(token: token, parser: self)
+  }
+
+  public func compileResolvable(_ token: String) throws -> Resolvable {
+    return try RangeVariable(token, parser: self)
+      ?? compileFilter(token)
   }
 
 }

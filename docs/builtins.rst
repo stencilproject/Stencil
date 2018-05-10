@@ -28,6 +28,18 @@ The ``for`` tag can iterate over dictionaries.
         <li>{{ key }}: {{ value }}</li>
       {% endfor %}
     </ul>
+    
+It can also iterate over ranges, tuple elements, structs' and classes' stored properties (using ``Mirror``).
+
+You can iterate over range literals created using ``N...M`` syntax, both in ascending and descending order:
+
+.. code-block:: html+django
+
+    <ul>
+      {% for i in 1...array.count %}
+        <li>{{ i }}</li>
+      {% endfor %}
+    </ul>
 
 The ``for`` tag can contain optional ``where`` expression to filter out
 elements on which this expression evaluates to false.
@@ -59,6 +71,7 @@ The for block sets a few variables available within the loop:
 - ``last`` - True if this is the last time through the loop
 - ``counter`` - The current iteration of the loop (1 indexed)
 - ``counter0`` - The current iteration of the loop (0 indexed)
+- ``length`` - The total length of the loop
 
 For example:
 
@@ -124,7 +137,7 @@ or to negate a variable.
     {% endif %}
 
 You may use ``and``, ``or`` and ``not`` multiple times together. ``not`` has
-higest prescidence followed by ``and``. For example:
+higest precedence followed by ``and``. For example:
 
 .. code-block:: html+django
 
@@ -247,6 +260,12 @@ You can include another template using the `include` tag.
 
     {% include "comment.html" %}
 
+By default the included file gets passed the current context. You can pass a sub context by using an optional 2nd parameter as a lookup in the current context.
+
+.. code-block:: html+django
+
+    {% include "comment.html" comment %}
+
 The `include` tag requires you to provide a loader which will be used to lookup
 the template.
 
@@ -281,7 +300,7 @@ Built-in Filters
 ~~~~~~~~~~~~~~
 
 The capitalize filter allows you to capitalize a string.
-For example, `stencil` to `Stencil`.
+For example, `stencil` to `Stencil`. Can be applied to array of strings to change each string.
 
 .. code-block:: html+django
 
@@ -291,7 +310,7 @@ For example, `stencil` to `Stencil`.
 ~~~~~~~~~~~~~
 
 The uppercase filter allows you to transform a string to uppercase.
-For example, `Stencil` to `STENCIL`.
+For example, `Stencil` to `STENCIL`. Can be applied to array of strings to change each string.
 
 .. code-block:: html+django
 
@@ -301,7 +320,7 @@ For example, `Stencil` to `STENCIL`.
 ~~~~~~~~~~~~~
 
 The uppercase filter allows you to transform a string to lowercase.
-For example, `Stencil` to `stencil`.
+For example, `Stencil` to `stencil`. Can be applied to array of strings to change each string.
 
 .. code-block:: html+django
 
@@ -326,4 +345,31 @@ Join an array of items.
 
     {{ value|join:", " }}
 
-.. note:: The value MUST be an array.
+.. note:: The value MUST be an array. Default argument value is empty string.
+
+``split``
+~~~~~~~~~
+
+Split string into substrings by separator.
+
+.. code-block:: html+django
+
+    {{ value|split:", " }}
+
+.. note:: The value MUST be a String. Default argument value is a single-space string.
+
+``indent``
+~~~~~~~~~
+
+Indents lines of rendered value or block.
+
+.. code-block:: html+django
+
+    {{ value|indent:2," ",true }}
+
+Filter accepts several arguments:
+
+* indentation width: number of indentation characters to indent lines with. Default is ``4``.
+* indentation character: character to be used for indentation. Default is a space.
+* indent first line: whether first line of output should be indented or not. Default is ``false``.
+

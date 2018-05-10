@@ -30,7 +30,7 @@ extension String {
 
         if separate != separator {
           word.append(separate)
-        } else if singleQuoteCount % 2 == 0 && doubleQuoteCount % 2 == 0 && !word.isEmpty {
+        } else if (singleQuoteCount % 2 == 0 || doubleQuoteCount % 2 == 0) && !word.isEmpty {
           appendWord(word)
           word = ""
         }
