@@ -75,8 +75,15 @@ public struct Variable : Equatable, Resolvable {
       return bool
     }
 
-    for bit in lookup() {
+    for var bit in lookup() {
       current = normalize(current)
+
+      // try to evaluate bit if it's an indirection
+      if bit.hasPrefix("$"),
+        let resolved = try? Variable(String(bit.dropFirst())).resolve(context),
+        let property = resolved {
+        bit = "\(property)"
+      }
 
       if let context = current as? Context {
         current = context[bit]
