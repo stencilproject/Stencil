@@ -24,7 +24,7 @@ struct LookupParser {
       referenceLevel = 0
     }
 
-    for c in variable {
+    for c in variable.characters {
       switch c {
       case "." where referenceLevel == 0:
         try foundSeparator()
