@@ -52,39 +52,8 @@ public struct Variable : Equatable, Resolvable {
 
   // Split the lookup string and resolve references if possible
   fileprivate func lookup(_ context: Context) throws -> [String] {
-    var current = ""
-    var referenceLevel = 0
-
-    var bits = [String]()
-    for c in variable {
-      switch c {
-      case "." where referenceLevel == 0:
-        bits += [current]
-        current = ""
-      case "[" where referenceLevel == 0:
-        bits += [current]
-        current = ""
-        referenceLevel += 1
-      case "[":
-        referenceLevel += 1
-        current.append(c)
-      case "]" where referenceLevel > 1:
-        current.append(c)
-        referenceLevel -= 1
-      case "]":
-        referenceLevel -= 1
-        let value = try Variable(current)
-          .resolve(context)
-          .flatMap { "\($0)" }
-        bits += [value ?? current]
-        current = ""
-      default:
-        current.append(c)
-      }
-    }
-    bits += [current]
-
-    return bits.filter { !$0.isEmpty }
+    var parser = LookupParser(variable, in: context)
+    return try parser.parse()
   }
 
   /// Resolve the variable in the given context

@@ -190,14 +190,6 @@ func testVariable() {
     }
 
     $0.describe("Indirection") {
-      $0.it("can resolve an indirect variable") {
-        try context.push(dictionary: ["property": "name"]) {
-          let variable = Variable("[property]")
-          let result = try variable.resolve(context) as? String
-          try expect(result) == "Kyle"
-        }
-      }
-
       $0.it("can resolve an indirect variable via reflection") {
         try context.push(dictionary: ["property": "name"]) {
           let variable = Variable("article.author[property]")
@@ -269,7 +261,7 @@ func testVariable() {
           "prop1": "prop2",
           "ref": ["prop2": "name"]
         ]) {
-          let variable = Variable("article.author[ref[prop2]]")
+          let variable = Variable("article.author[ref[prop1]]")
           let result = try variable.resolve(context) as? String
           try expect(result) == "Kyle" 
         }
