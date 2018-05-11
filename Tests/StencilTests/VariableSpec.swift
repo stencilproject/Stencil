@@ -266,6 +266,28 @@ func testVariable() {
           try expect(result) == "Kyle" 
         }
       }
+
+      $0.it("throws for invalid lookup syntax") {
+        try context.push(dictionary: ["prop": "name"]) {
+          let samples = [
+            ".",
+            "..",
+            "[prop]",
+            "article.author[prop",
+            "article.author[[prop]",
+            "article.author[prop]]",
+            "article.author[]",
+            "article.author[[]]",
+            "article.author[prop][]",
+            "article.author[.]"
+          ]
+
+          for lookup in samples {
+            let variable = Variable(lookup)
+            try expect(variable.resolve(context)).toThrow()  
+          }
+        }
+      }
     }
   }
 
