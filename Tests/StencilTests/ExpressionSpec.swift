@@ -298,10 +298,10 @@ func testExpressions() {
 
       $0.describe("sub expression") {
         $0.it("evaluates correctly") {
-          let context = Context(dictionary: ["one": false, "two": false, "three": true])
+          let context = Context(dictionary: ["one": false, "two": false, "three": true, "four": true])
 
-          let expression = try! parseExpression(components: ["one", "and", "two", "or", "three"], tokenParser: parser)
-          let expressionWithBrackets = try! parseExpression(components: ["one", "and", "(", "two", "or", "three", ")"], tokenParser: parser)
+          let expression = try! parseExpression(components: ["one", "and", "two", "or", "three", "and", "four"], tokenParser: parser)
+          let expressionWithBrackets = try! parseExpression(components: ["one", "and", "(", "(", "two", ")", "or", "(", "three", "and", "four", ")", ")"], tokenParser: parser)
 
           try expect(expression.evaluate(context: context)).to.beTrue()
           try expect(expressionWithBrackets.evaluate(context: context)).to.beFalse()
