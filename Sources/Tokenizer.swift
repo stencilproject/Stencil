@@ -12,11 +12,14 @@ extension String {
 
     let specialCharacters = ",|:"
     func appendWord(_ word: String) {
-      if components.count > 0 &&
-        (specialCharacters.characters.contains(components.last!.characters.last!) ||
-          specialCharacters.contains(word))
-      {
-        components[components.count-1] += word
+      if components.count > 0 {
+        if let precedingChar = components.last?.characters.last, specialCharacters.characters.contains(precedingChar) {
+          components[components.count-1] += word
+        } else if specialCharacters.contains(word) {
+          components[components.count-1] += word
+        } else {
+          components.append(word)
+        }
       } else {
         components.append(word)
       }
