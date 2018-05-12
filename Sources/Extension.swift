@@ -20,9 +20,9 @@ open class Extension {
   }
   
   /// Registers boolean filter with it's negative counterpart prefixed with `!`
-  public func registerBooleanFilter(_ name: String, filter: @escaping (Any?) throws -> Bool?) {
+  public func registerBooleanFilter(name: String, negativeFilterName: String, filter: @escaping (Any?) throws -> Bool?) {
     filters[name] = .simple(filter)
-    filters["!\(name)"] = .simple {
+    filters[negativeFilterName] = .simple {
       guard let result = try filter($0) else { return nil }
       return !result
     }
