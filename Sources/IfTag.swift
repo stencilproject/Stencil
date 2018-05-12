@@ -113,7 +113,7 @@ final class IfExpressionParser {
   
   static func parser(components: [String], tokenParser: TokenParser) throws -> IfExpressionParser {
     try IfExpressionParser.validateBracketsBalance(components: components)
-    return try IfExpressionParser(components: components, tokenParser: tokenParser)
+    return try IfExpressionParser(components: ArraySlice(components), tokenParser: tokenParser)
   }
 
   static func validateBracketsBalance(components: [String]) throws {
@@ -128,23 +128,24 @@ final class IfExpressionParser {
     }
   }
   
-  private init(components: [String], tokenParser: TokenParser) throws {
-    var parsedComponents = [String]()
-    self.tokens = try components.enumerated().flatMap { index, component in
+  private init(components: ArraySlice<String>, tokenParser: TokenParser) throws {
+    var parsedComponents = Set<Int>()
+    self.tokens = try zip(components.indices, components).flatMap { (index, component) in
+      guard !parsedComponents.contains(index) else { return nil }
+
       if component == "(" {
-        let (expression, parsed) = try IfExpressionParser.subExpression(
-          from: index + 1,
-          components: components,
+        let (expression, parsedCount) = try IfExpressionParser.subExpression(
+          from: components.suffix(from: index + 1),
           tokenParser: tokenParser
         )
-        parsedComponents.append(contentsOf: parsed)
+        parsedComponents.formUnion(Set(index...(index + parsedCount)))
         return .subExpression(expression)
       }
       else if component == ")" {
-        parsedComponents.append(component)
+        parsedComponents.insert(index)
         return nil
-      } else if index >= parsedComponents.count {
-        parsedComponents.append(component)
+      } else {
+        parsedComponents.insert(index)
         if let op = findOperator(name: component) {
           switch op {
           case .infix(let name, let bindingPower, let cls):
@@ -154,25 +155,22 @@ final class IfExpressionParser {
           }
         }
         return .variable(try tokenParser.compileFilter(component))
-      } else {
-        return nil
       }
     }
   }
 
-  static func subExpression(from index: Int, components: [String], tokenParser: TokenParser) throws -> (Expression, [String]) {
+  static func subExpression(from components: ArraySlice<String>, tokenParser: TokenParser) throws -> (Expression, Int) {
     var bracketsBalance = 1
-    let subComponents = Array(components
-      .suffix(from: index)
+    let subComponents = components
       .prefix(while: {
         if $0 == "(" { bracketsBalance += 1 }
         else if $0 == ")" { bracketsBalance -= 1 }
         return bracketsBalance != 0
-      }))
+      })
     
     let expressionParser = try IfExpressionParser(components: subComponents, tokenParser: tokenParser)
     let expression = try expressionParser.parse()
-    return (expression, ["("] + subComponents + [")"])
+    return (expression, subComponents.count)
   }
   
   var currentToken: IfToken {
