@@ -121,10 +121,10 @@ final class IfExpressionParser {
       var bracketsBalance = $0
       if $1 == "(" { bracketsBalance += 1 }
       else if $1 == ")" { bracketsBalance -= 1 }
-      if bracketsBalance < 0 { throw TemplateSyntaxError("unbalanced brackets") }
+      if bracketsBalance < 0 { throw TemplateSyntaxError("unbalanced brackets: too many closing brackets") }
       return bracketsBalance
     }) == 0 else {
-      throw TemplateSyntaxError("unbalanced brackets")
+      throw TemplateSyntaxError("unbalanced brackets: missing closing bracket")
     }
   }
   
