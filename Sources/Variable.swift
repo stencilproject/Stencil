@@ -209,11 +209,11 @@ extension Dictionary : Normalizable {
 
 func parseFilterComponents(token: String) -> (String, [Variable]) {
   var components = token.smartSplit(separator: ":")
-  let name = components.removeFirst()
+  let name = components.removeFirst().trim(character: " ")
   let variables = components
     .joined(separator: ":")
     .smartSplit(separator: ",")
-    .map { Variable($0) }
+    .map { Variable($0.trim(character: " ")) }
   return (name, variables)
 }
 

@@ -8,9 +8,15 @@
   [Yonas Kolb](https://github.com/yonaskolb)
   [#394](https://github.com/stencilproject/Stencil/pull/214)
 
+- Adds support for using spaces in filter expression
+  [Ilya Puchka](https://github.com/yonaskolb)
+  [#178](https://github.com/stencilproject/Stencil/pull/178)
+
 ### Bug Fixes
 
 - Fixed using quote as a filter parameter
+  [Ilya Puchka](https://github.com/yonaskolb)
+  [#210](https://github.com/stencilproject/Stencil/pull/210)
 
 
 ## 0.11.0 (2018-04-04)
