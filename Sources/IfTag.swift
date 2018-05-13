@@ -112,28 +112,17 @@ final class IfExpressionParser {
   }
   
   static func parser(components: [String], tokenParser: TokenParser) throws -> IfExpressionParser {
-    try IfExpressionParser.validateBracketsBalance(components: components)
     return try IfExpressionParser(components: ArraySlice(components), tokenParser: tokenParser)
   }
 
-  static func validateBracketsBalance(components: [String]) throws {
-    guard try components.reduce(0, {
-      var bracketsBalance = $0
-      if $1 == "(" { bracketsBalance += 1 }
-      else if $1 == ")" { bracketsBalance -= 1 }
-      if bracketsBalance < 0 { throw TemplateSyntaxError("unbalanced brackets: too many closing brackets") }
-      return bracketsBalance
-    }) == 0 else {
-      throw TemplateSyntaxError("unbalanced brackets: missing closing bracket")
-    }
-  }
-  
   private init(components: ArraySlice<String>, tokenParser: TokenParser) throws {
     var parsedComponents = Set<Int>()
+    var bracketsBalance = 0
     self.tokens = try zip(components.indices, components).flatMap { (index, component) in
       guard !parsedComponents.contains(index) else { return nil }
 
       if component == "(" {
+        bracketsBalance += 1
         let (expression, parsedCount) = try IfExpressionParser.subExpression(
           from: components.suffix(from: index + 1),
           tokenParser: tokenParser
@@ -142,6 +131,10 @@ final class IfExpressionParser {
         return .subExpression(expression)
       }
       else if component == ")" {
+        bracketsBalance -= 1
+        if bracketsBalance < 0 {
+          throw TemplateSyntaxError("'if' expression error: missing opening bracket")
+        }
         parsedComponents.insert(index)
         return nil
       } else {
@@ -159,7 +152,7 @@ final class IfExpressionParser {
     }
   }
 
-  static func subExpression(from components: ArraySlice<String>, tokenParser: TokenParser) throws -> (Expression, Int) {
+  private static func subExpression(from components: ArraySlice<String>, tokenParser: TokenParser) throws -> (Expression, Int) {
     var bracketsBalance = 1
     let subComponents = components
       .prefix(while: {
@@ -167,7 +160,10 @@ final class IfExpressionParser {
         else if $0 == ")" { bracketsBalance -= 1 }
         return bracketsBalance != 0
       })
-    
+    if bracketsBalance > 0 {
+      throw TemplateSyntaxError("'if' expression error: missing closing bracket")
+    }
+
     let expressionParser = try IfExpressionParser(components: subComponents, tokenParser: tokenParser)
     let expression = try expressionParser.parse()
     return (expression, subComponents.count)

@@ -314,13 +314,20 @@ func testExpressions() {
         }
 
         $0.it("fails when brackets are not balanced") {
-          try expect(parseExpression(components: ["(", "lhs", "and", "rhs"], tokenParser: parser)).toThrow()
-          try expect(parseExpression(components: [")", "lhs", "and", "rhs"], tokenParser: parser)).toThrow()
-          try expect(parseExpression(components: ["(", "lhs", "and", "rhs", ")", "("], tokenParser: parser)).toThrow()
-          try expect(parseExpression(components: ["(", "lhs", "and", "rhs", ")", ")"], tokenParser: parser)).toThrow()
-          try expect(parseExpression(components: ["(", "lhs", "and", "rhs", ")", ")"], tokenParser: parser)).toThrow()
-          try expect(parseExpression(components: ["(", "lhs", "and", ")"], tokenParser: parser)).toThrow()
-          try expect(parseExpression(components: ["(", "and", "rhs", ")"], tokenParser: parser)).toThrow()
+          try expect(parseExpression(components: ["(", "lhs", "and", "rhs"], tokenParser: parser))
+            .toThrow(TemplateSyntaxError("'if' expression error: missing closing bracket"))
+          try expect(parseExpression(components: [")", "lhs", "and", "rhs"], tokenParser: parser))
+            .toThrow(TemplateSyntaxError("'if' expression error: missing opening bracket"))
+          try expect(parseExpression(components: ["lhs", "and", "rhs", ")"], tokenParser: parser))
+            .toThrow(TemplateSyntaxError("'if' expression error: missing opening bracket"))
+          try expect(parseExpression(components: ["(", "lhs", "and", "rhs", ")", "("], tokenParser: parser))
+            .toThrow(TemplateSyntaxError("'if' expression error: missing closing bracket"))
+          try expect(parseExpression(components: ["(", "lhs", "and", "rhs", ")", ")"], tokenParser: parser))
+            .toThrow(TemplateSyntaxError("'if' expression error: missing opening bracket"))
+          try expect(parseExpression(components: ["(", "lhs", "and", ")"], tokenParser: parser))
+            .toThrow(TemplateSyntaxError("'if' expression error: end"))
+          try expect(parseExpression(components: ["(", "and", "rhs", ")"], tokenParser: parser))
+            .toThrow(TemplateSyntaxError("'if' expression error: infix operator 'and' doesn't have a left hand side"))
         }
       }
 
