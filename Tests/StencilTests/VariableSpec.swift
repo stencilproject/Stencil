@@ -188,6 +188,98 @@ func testVariable() {
       let result = try variable.resolve(context) as? Int
       try expect(result) == 2
     }
+
+    $0.describe("Subrscripting") {
+      $0.it("can resolve a property subscript via reflection") {
+        try context.push(dictionary: ["property": "name"]) {
+          let variable = Variable("article.author[property]")
+          let result = try variable.resolve(context) as? String
+          try expect(result) == "Kyle"
+        }
+      }
+
+      $0.it("can subscript an array with a valid index") {
+        try context.push(dictionary: ["property": 0]) {
+          let variable = Variable("contacts[property]")
+          let result = try variable.resolve(context) as? String
+          try expect(result) == "Katie"
+        }
+      }
+
+      $0.it("can subscript an array with an unknown index") {
+        try context.push(dictionary: ["property": 5]) {
+          let variable = Variable("contacts[property]")
+          let result = try variable.resolve(context) as? String
+          try expect(result).to.beNil()
+        }
+      }
+
+#if os(OSX)
+      $0.it("can resolve a subscript via KVO") {
+        try context.push(dictionary: ["property": "name"]) {
+          let variable = Variable("object[property]")
+          let result = try variable.resolve(context) as? String
+          try expect(result) == "Foo"
+        }
+      }
+#endif
+
+      $0.it("can resolve an optional subscript via reflection") {
+        try context.push(dictionary: ["property": "featuring"]) {
+          let variable = Variable("blog[property].author.name")
+          let result = try variable.resolve(context) as? String
+          try expect(result) == "Jhon"
+        }
+      }
+
+      $0.it("can resolve multiple subscripts") {
+        try context.push(dictionary: [
+          "prop1": "articles",
+          "prop2": 0,
+          "prop3": "name"
+        ]) {
+          let variable = Variable("blog[prop1][prop2].author[prop3]")
+          let result = try variable.resolve(context) as? String
+          try expect(result) == "Kyle" 
+        }
+      }
+
+      $0.it("can resolve nested subscripts") {
+        try context.push(dictionary: [
+          "prop1": "prop2",
+          "ref": ["prop2": "name"]
+        ]) {
+          let variable = Variable("article.author[ref[prop1]]")
+          let result = try variable.resolve(context) as? String
+          try expect(result) == "Kyle" 
+        }
+      }
+
+      $0.it("throws for invalid keypath syntax") {
+        try context.push(dictionary: ["prop": "name"]) {
+          let samples = [
+            ".",
+            "..",
+            ".test",
+            "test..test",
+            "[prop]",
+            "article.author[prop",
+            "article.author[[prop]",
+            "article.author[prop]]",
+            "article.author[]",
+            "article.author[[]]",
+            "article.author[prop][]",
+            "article.author[prop]comments",
+            "article.author[.]"
+          ]
+
+          for lookup in samples {
+            let variable = Variable(lookup)
+            try expect(variable.resolve(context)).toThrow()  
+          }
+        }
+      }
+    }
   }
 
   describe("RangeVariable") {

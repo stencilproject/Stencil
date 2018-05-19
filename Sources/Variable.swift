@@ -50,8 +50,10 @@ public struct Variable : Equatable, Resolvable {
     self.variable = variable
   }
 
-  fileprivate func lookup() -> [String] {
-    return variable.characters.split(separator: ".").map(String.init)
+  // Split the lookup string and resolve references if possible
+  fileprivate func lookup(_ context: Context) throws -> [String] {
+    var keyPath = KeyPath(variable, in: context)
+    return try keyPath.parse()
   }
 
   /// Resolve the variable in the given context
@@ -75,7 +77,7 @@ public struct Variable : Equatable, Resolvable {
       return bool
     }
 
-    for bit in lookup() {
+    for bit in try lookup(context) {
       current = normalize(current)
 
       if let context = current as? Context {
