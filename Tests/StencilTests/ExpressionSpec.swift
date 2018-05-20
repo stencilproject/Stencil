@@ -287,12 +287,16 @@ func testExpressions() {
           try expect(expression.evaluate(context: Context(dictionary: ["lhs": 1, "rhs": [1, 2, 3]]))).to.beTrue()
           try expect(expression.evaluate(context: Context(dictionary: ["lhs": "a", "rhs": ["a", "b", "c"]]))).to.beTrue()
           try expect(expression.evaluate(context: Context(dictionary: ["lhs": "a", "rhs": "abc"]))).to.beTrue()
+          try expect(expression.evaluate(context: Context(dictionary: ["lhs": 1, "rhs": 1...3]))).to.beTrue()
+          try expect(expression.evaluate(context: Context(dictionary: ["lhs": 1, "rhs": 1..<3]))).to.beTrue()
         }
         
         $0.it("evaluates to false when rhs does not contain lhs") {
           try expect(expression.evaluate(context: Context(dictionary: ["lhs": 1, "rhs": [2, 3, 4]]))).to.beFalse()
           try expect(expression.evaluate(context: Context(dictionary: ["lhs": "a", "rhs": ["b", "c", "d"]]))).to.beFalse()
           try expect(expression.evaluate(context: Context(dictionary: ["lhs": "a", "rhs": "bcd"]))).to.beFalse()
+          try expect(expression.evaluate(context: Context(dictionary: ["lhs": 4, "rhs": 1...3]))).to.beFalse()
+          try expect(expression.evaluate(context: Context(dictionary: ["lhs": 3, "rhs": 1..<3]))).to.beFalse()
         }
       }
     }

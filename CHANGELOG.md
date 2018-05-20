@@ -4,10 +4,46 @@
 
 ### Enhancements
 
+- Added an optional second parameter to the `include` tag for passing a sub context to the included file.  
+  [Yonas Kolb](https://github.com/yonaskolb)
+  [#214](https://github.com/stencilproject/Stencil/pull/214)
+- Variables now support the subscript notation. For example, if you have a variable `key = "name"`, and an
+  object `item = ["name": "John"]`, then `{{ item[key] }}` will evaluate to "John".  
+  [David Jennes](https://github.com/djbe)
+  [#215](https://github.com/stencilproject/Stencil/pull/215)
+
+- Adds support for using spaces in filter expression.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#178](https://github.com/stencilproject/Stencil/pull/178)
+  
+- Added method to add boolean filters with their negative counterparts.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#160](https://github.com/stencilproject/Stencil/pull/160)
+
+
+### Bug Fixes
+
+- Fixed using quote as a filter parameter.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#210](https://github.com/stencilproject/Stencil/pull/210)
+
+
+## 0.11.0 (2018-04-04)
+
+### Enhancements
+
 - Added support for resolving superclass properties for not-NSObject subclasses
 - The `{% for %}` tag can now iterate over tuples, structures and classes via
   their stored properties.
-- Added method to add boolean filters with their negative counterparts
+- Added `split` filter
+- Allow default string filters to be applied to arrays
+- Similar filters are suggested when unknown filter is used
+- Added `indent` filter
+- Allow using new lines inside tags
+- Added support for iterating arrays of tuples
+- Added support for ranges in if-in expression
+- Added property `forloop.length` to get number of items in the loop
+- Now you can construct ranges for loops using `a...b` syntax, i.e. `for i in 1...array.count`
 
 ### Bug Fixes
 
@@ -15,6 +51,9 @@
 - Fixed checking dictionary values for nil in `default` filter
 - Fixed comparing string variables with string literals, in Swift 4 string literals became `Substring` and thus couldn't be directly compared to strings.
 - Integer literals now resolve into Int values, not Float
+- Fixed accessing properties of optional properties via reflection
+- No longer render optional values in arrays as `Optional(..)`
+- Fixed subscription tuples by value index, i.e. `{{ tuple.0 }}`
 
 
 ## 0.10.1

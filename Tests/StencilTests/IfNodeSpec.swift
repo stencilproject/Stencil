@@ -270,5 +270,22 @@ func testIfNode() {
       let result = try renderNodes(nodes, Context(dictionary: ["instance": SomeType()]))
       try expect(result) == ""
     }
+
+    $0.it("supports closed range variables") {
+      let tokens: [Token] = [
+        .block(value: "if value in 1...3"),
+        .text(value: "true"),
+        .block(value: "else"),
+        .text(value: "false"),
+        .block(value: "endif")
+      ]
+
+      let parser = TokenParser(tokens: tokens, environment: Environment())
+      let nodes = try parser.parse()
+
+      try expect(renderNodes(nodes, Context(dictionary: ["value": 3]))) == "true"
+      try expect(renderNodes(nodes, Context(dictionary: ["value": 4]))) == "false"
+    }
+
   }
 }
