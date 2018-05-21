@@ -90,6 +90,12 @@ func testForNode() {
       try expect(try node.render(context)) == "102132"
     }
 
+    $0.it("renders the given nodes while providing loop length") {
+      let nodes: [NodeType] = [VariableNode(variable: "item"), VariableNode(variable: "forloop.length")]
+      let node = ForNode(resolvable: Variable("items"), loopVariables: ["item"], nodes: nodes, emptyNodes: [])
+      try expect(try node.render(context)) == "132333"
+    }
+
     $0.it("renders the given nodes while filtering items using where expression") {
         let nodes: [NodeType] = [VariableNode(variable: "item"), VariableNode(variable: "forloop.counter")]
         let `where` = try parseExpression(components: ["item", ">", "1"], tokenParser: TokenParser(tokens: [], environment: Environment()))
@@ -105,8 +111,8 @@ func testForNode() {
         try expect(try node.render(context)) == "empty"
     }
 
-    $0.it("can render a filter") {
-      let templateString = "{% for article in ars|default:articles %}" +
+    $0.it("can render a filter with spaces") {
+      let templateString = "{% for article in ars | default: a, b , articles %}" +
         "- {{ article.title }} by {{ article.author }}.\n" +
         "{% endfor %}\n"
 
@@ -176,7 +182,7 @@ func testForNode() {
     }
 
     $0.it("can iterate over dictionary") {
-      let templateString = "{% for key,value in dict %}" +
+      let templateString = "{% for key, value in dict %}" +
         "{{ key }}: {{ value }}," +
         "{% endfor %}"
 
@@ -221,7 +227,7 @@ func testForNode() {
           .block(value: "for i"),
       ]
       let parser = TokenParser(tokens: tokens, environment: Environment())
-      let error = TemplateSyntaxError("'for' statements should use the following 'for x in y where condition' `for i`.")
+      let error = TemplateSyntaxError("'for' statements should use the syntax: `for <x> in <y> [where <condition>]")
       try expect(try parser.parse()).toThrow(error)
     }
 
@@ -298,6 +304,11 @@ func testForNode() {
       let result = try node.render(context)
 
       try expect(result) == "childString=child\nbaseString=base\nbaseInt=1\n"
+    }
+
+    $0.it("can iterate in range of variables") {
+      let template: Template = "{% for i in 1...j %}{{ i }}{% endfor %}"
+      try expect(try template.render(Context(dictionary: ["j": 3]))) == "123"
     }
 
   }

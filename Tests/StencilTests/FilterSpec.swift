@@ -78,9 +78,9 @@ func testFilter() {
     }
 
     $0.it("allows whitespace in expression") {
-      let template = Template(templateString: "{{ name | uppercase }}")
-      let result = try template.render(Context(dictionary: ["name": "kyle"]))
-      try expect(result) == "KYLE"
+      let template = Template(templateString: "{{ value | join : \", \" }}")
+      let result = try template.render(Context(dictionary: ["value": ["One", "Two"]]))
+      try expect(result) == "One, Two"
     }
 
     $0.it("throws when you pass arguments to simple filter") {

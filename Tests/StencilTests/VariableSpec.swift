@@ -26,6 +26,7 @@ fileprivate class WebSite {
 
 fileprivate class Blog: WebSite {
   let articles: [Article] = [Article(author: Person(name: "Kyle"))]
+  let featuring: Article? = Article(author: Person(name: "Jhon"))
 }
 
 func testVariable() {
@@ -39,7 +40,8 @@ func testVariable() {
       "counter": [
         "count": "kylef",
         ],
-      "article": Article(author: Person(name: "Kyle"))
+      "article": Article(author: Person(name: "Kyle")),
+      "tuple": (one: 1, two: 2)
     ])
 
 #if os(OSX)
@@ -147,7 +149,7 @@ func testVariable() {
       try expect(result) == "Foo"
     }
 #endif
-    
+
     $0.it("can resolve a value via reflection") {
       let variable = Variable("blog.articles.0.author.name")
       let result = try variable.resolve(context) as? String
@@ -158,6 +160,172 @@ func testVariable() {
       let variable = Variable("blog.url")
       let result = try variable.resolve(context) as? String
       try expect(result) == "blog.com"
+    }
+
+    $0.it("can resolve optional variable property using reflection") {
+      let variable = Variable("blog.featuring.author.name")
+      let result = try variable.resolve(context) as? String
+      try expect(result) == "Jhon"
+    }
+
+    $0.it("does not render Optional") {
+      var array: [Any?] = [1, nil]
+      array.append(array)
+      let context = Context(dictionary: ["values": array])
+
+      try expect(VariableNode(variable: "values").render(context)) == "[1, nil, [1, nil]]"
+      try expect(VariableNode(variable: "values.1").render(context)) == ""
+    }
+
+    $0.it("can subscript tuple by index") {
+      let variable = Variable("tuple.0")
+      let result = try variable.resolve(context) as? Int
+      try expect(result) == 1
+    }
+
+    $0.it("can subscript tuple by label") {
+      let variable = Variable("tuple.two")
+      let result = try variable.resolve(context) as? Int
+      try expect(result) == 2
+    }
+
+    $0.describe("Subrscripting") {
+      $0.it("can resolve a property subscript via reflection") {
+        try context.push(dictionary: ["property": "name"]) {
+          let variable = Variable("article.author[property]")
+          let result = try variable.resolve(context) as? String
+          try expect(result) == "Kyle"
+        }
+      }
+
+      $0.it("can subscript an array with a valid index") {
+        try context.push(dictionary: ["property": 0]) {
+          let variable = Variable("contacts[property]")
+          let result = try variable.resolve(context) as? String
+          try expect(result) == "Katie"
+        }
+      }
+
+      $0.it("can subscript an array with an unknown index") {
+        try context.push(dictionary: ["property": 5]) {
+          let variable = Variable("contacts[property]")
+          let result = try variable.resolve(context) as? String
+          try expect(result).to.beNil()
+        }
+      }
+
+#if os(OSX)
+      $0.it("can resolve a subscript via KVO") {
+        try context.push(dictionary: ["property": "name"]) {
+          let variable = Variable("object[property]")
+          let result = try variable.resolve(context) as? String
+          try expect(result) == "Foo"
+        }
+      }
+#endif
+
+      $0.it("can resolve an optional subscript via reflection") {
+        try context.push(dictionary: ["property": "featuring"]) {
+          let variable = Variable("blog[property].author.name")
+          let result = try variable.resolve(context) as? String
+          try expect(result) == "Jhon"
+        }
+      }
+
+      $0.it("can resolve multiple subscripts") {
+        try context.push(dictionary: [
+          "prop1": "articles",
+          "prop2": 0,
+          "prop3": "name"
+        ]) {
+          let variable = Variable("blog[prop1][prop2].author[prop3]")
+          let result = try variable.resolve(context) as? String
+          try expect(result) == "Kyle" 
+        }
+      }
+
+      $0.it("can resolve nested subscripts") {
+        try context.push(dictionary: [
+          "prop1": "prop2",
+          "ref": ["prop2": "name"]
+        ]) {
+          let variable = Variable("article.author[ref[prop1]]")
+          let result = try variable.resolve(context) as? String
+          try expect(result) == "Kyle" 
+        }
+      }
+
+      $0.it("throws for invalid keypath syntax") {
+        try context.push(dictionary: ["prop": "name"]) {
+          let samples = [
+            ".",
+            "..",
+            ".test",
+            "test..test",
+            "[prop]",
+            "article.author[prop",
+            "article.author[[prop]",
+            "article.author[prop]]",
+            "article.author[]",
+            "article.author[[]]",
+            "article.author[prop][]",
+            "article.author[prop]comments",
+            "article.author[.]"
+          ]
+
+          for lookup in samples {
+            let variable = Variable(lookup)
+            try expect(variable.resolve(context)).toThrow()  
+          }
+        }
+      }
+    }
+  }
+
+  describe("RangeVariable") {
+
+    let context: Context = {
+      let ext = Extension()
+      ext.registerFilter("incr", filter: { (arg: Any?) in toNumber(value: arg!)! + 1 })
+      let environment = Environment(extensions: [ext])
+      return Context(dictionary: [:], environment: environment)
+    }()
+
+    func makeVariable(_ token: String) throws -> RangeVariable? {
+      return try RangeVariable(token, parser: TokenParser(tokens: [], environment: context.environment))
+    }
+
+    $0.it("can resolve closed range as array") {
+      let result = try makeVariable("1...3")?.resolve(context) as? [Int]
+      try expect(result) == [1, 2, 3]
+    }
+
+    $0.it("can resolve decreasing closed range as reversed array") {
+      let result = try makeVariable("3...1")?.resolve(context) as? [Int]
+      try expect(result) == [3, 2, 1]
+    }
+
+    $0.it("can use filter on range variables") {
+      let result = try makeVariable("1|incr...3|incr")?.resolve(context) as? [Int]
+      try expect(result) == [2, 3, 4]
+    }
+
+    $0.it("throws when left value is not int") {
+      let template: Template = "{% for i in k...j %}{{ i }}{% endfor %}"
+      try expect(try template.render(Context(dictionary: ["j": 3, "k": "1"]))).toThrow()
+    }
+
+    $0.it("throws when right value is not int") {
+      let variable = try makeVariable("k...j")
+      try expect(try variable?.resolve(Context(dictionary: ["j": "3", "k": 1]))).toThrow()
+    }
+
+    $0.it("throws is left range value is missing") {
+      try  expect(makeVariable("...1")).toThrow()
+    }
+
+    $0.it("throws is right range value is missing") {
+      try  expect(makeVariable("1...")).toThrow()
     }
 
   }

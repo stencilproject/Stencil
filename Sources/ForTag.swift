@@ -10,17 +10,21 @@ class ForNode : NodeType {
   class func parse(_ parser:TokenParser, token:Token) throws -> NodeType {
     let components = token.components()
 
-    guard components.count >= 3 && components[2] == "in" &&
-        (components.count == 4 || (components.count >= 6 && components[4] == "where")) else {
-      throw TemplateSyntaxError("'for' statements should use the following 'for x in y where condition' `\(token.contents)`.")
+    func hasToken(_ token: String, at index: Int) -> Bool {
+      return components.count > (index + 1) && components[index] == token
+    }
+    func endsOrHasToken(_ token: String, at index: Int) -> Bool {
+      return components.count == index || hasToken(token, at: index)
+    }
+
+    guard hasToken("in", at: 2) && endsOrHasToken("where", at: 4) else {
+      throw TemplateSyntaxError("'for' statements should use the syntax: `for <x> in <y> [where <condition>]")
     }
 
     let loopVariables = components[1].characters
       .split(separator: ",")
       .map(String.init)
-      .map { $0.trimmingCharacters(in: CharacterSet.whitespaces) }
-
-    let variable = components[3]
+      .map { $0.trim(character: " ") }
 
     var emptyNodes = [NodeType]()
 
@@ -35,14 +39,13 @@ class ForNode : NodeType {
       _ = parser.nextToken()
     }
 
-    let filter = try parser.compileFilter(variable)
-    let `where`: Expression?
-    if components.count >= 6 {
-      `where` = try parseExpression(components: Array(components.suffix(from: 5)), tokenParser: parser)
-    } else {
-      `where` = nil
-    }
-    return ForNode(resolvable: filter, loopVariables: loopVariables, nodes: forNodes, emptyNodes:emptyNodes, where: `where`)
+    let resolvable = try parser.compileResolvable(components[3])
+
+    let `where` = hasToken("where", at: 4)
+      ? try parseExpression(components: Array(components.suffix(from: 5)), tokenParser: parser)
+      : nil
+
+    return ForNode(resolvable: resolvable, loopVariables: loopVariables, nodes: forNodes, emptyNodes:emptyNodes, where: `where`)
   }
 
   init(resolvable: Resolvable, loopVariables: [String], nodes:[NodeType], emptyNodes:[NodeType], where: Expression? = nil) {
@@ -132,6 +135,7 @@ class ForNode : NodeType {
           "last": index == (count - 1),
           "counter": index + 1,
           "counter0": index,
+          "length": count
         ]
 
         return try context.push(dictionary: ["forloop": forContext]) {
