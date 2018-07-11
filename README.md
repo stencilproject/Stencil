@@ -67,7 +67,8 @@ Resources to help you integrate Stencil into a Swift project:
 
 [Sourcery](https://github.com/krzysztofzablocki/Sourcery),
 [SwiftGen](https://github.com/SwiftGen/SwiftGen),
-[Kitura](https://github.com/IBM-Swift/Kitura)
+[Kitura](https://github.com/IBM-Swift/Kitura),
+[Weaver](https://github.com/scribd/Weaver)
 
 ## License
 
