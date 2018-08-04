@@ -6,19 +6,22 @@
 
 - Added an optional second parameter to the `include` tag for passing a sub context to the included file.  
   [Yonas Kolb](https://github.com/yonaskolb)
-  [#394](https://github.com/stencilproject/Stencil/pull/214)
-
-- Adds support for using spaces in filter expression.
+  [#214](https://github.com/stencilproject/Stencil/pull/214)
+- Variables now support the subscript notation. For example, if you have a variable `key = "name"`, and an
+  object `item = ["name": "John"]`, then `{{ item[key] }}` will evaluate to "John".  
+  [David Jennes](https://github.com/djbe)
+  [#215](https://github.com/stencilproject/Stencil/pull/215)
+- Adds support for using spaces in filter expression.  
   [Ilya Puchka](https://github.com/ilyapuchka)
   [#178](https://github.com/stencilproject/Stencil/pull/178)
-
-- Added support for dynamic filter using `filter` filter.
+- Added support for dynamic filter using `filter` filter. With that you can define a variable with a name of filter
+  , i.e. `myfilter = "uppercase"` and then use it to invoke this filter with `{{ string|filter:myfilter }}`.  
   [Ilya Puchka](https://github.com/ilyapuchka)
   [#203](https://github.com/stencilproject/Stencil/pull/203)
 
 ### Bug Fixes
 
-- Fixed using quote as a filter parameter
+- Fixed using quote as a filter parameter.  
   [Ilya Puchka](https://github.com/ilyapuchka)
   [#210](https://github.com/stencilproject/Stencil/pull/210)
 
@@ -27,28 +30,64 @@
 
 ### Enhancements
 
-- Added support for resolving superclass properties for not-NSObject subclasses
+- Added support for resolving superclass properties for not-NSObject subclasses.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#152](https://github.com/stencilproject/Stencil/pull/152)
 - The `{% for %}` tag can now iterate over tuples, structures and classes via
-  their stored properties.
-- Added `split` filter
-- Allow default string filters to be applied to arrays
-- Similar filters are suggested when unknown filter is used
-- Added `indent` filter
-- Allow using new lines inside tags
-- Added support for iterating arrays of tuples
-- Added support for ranges in if-in expression
-- Added property `forloop.length` to get number of items in the loop
-- Now you can construct ranges for loops using `a...b` syntax, i.e. `for i in 1...array.count`
+  their stored properties.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#172](https://github.com/stencilproject/Stencil/pull/173)
+- Added `split` filter.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#187](https://github.com/stencilproject/Stencil/pull/187)
+- Allow default string filters to be applied to arrays.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#190](https://github.com/stencilproject/Stencil/pull/190)
+- Similar filters are suggested when unknown filter is used.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#186](https://github.com/stencilproject/Stencil/pull/186)
+- Added `indent` filter.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#188](https://github.com/stencilproject/Stencil/pull/188)
+- Allow using new lines inside tags.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#202](https://github.com/stencilproject/Stencil/pull/202)
+- Added support for iterating arrays of tuples.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#177](https://github.com/stencilproject/Stencil/pull/177)
+- Added support for ranges in if-in expression.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#193](https://github.com/stencilproject/Stencil/pull/193)
+- Added property `forloop.length` to get number of items in the loop.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#171](https://github.com/stencilproject/Stencil/pull/171)
+- Now you can construct ranges for loops using `a...b` syntax, i.e. `for i in 1...array.count`.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#192](https://github.com/stencilproject/Stencil/pull/192)
 
 ### Bug Fixes
 
-- Fixed rendering `{{ block.super }}` with several levels of inheritance
-- Fixed checking dictionary values for nil in `default` filter
-- Fixed comparing string variables with string literals, in Swift 4 string literals became `Substring` and thus couldn't be directly compared to strings.
-- Integer literals now resolve into Int values, not Float
-- Fixed accessing properties of optional properties via reflection
-- No longer render optional values in arrays as `Optional(..)`
-- Fixed subscription tuples by value index, i.e. `{{ tuple.0 }}`
+- Fixed rendering `{{ block.super }}` with several levels of inheritance.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#154](https://github.com/stencilproject/Stencil/pull/154)
+- Fixed checking dictionary values for nil in `default` filter.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#162](https://github.com/stencilproject/Stencil/pull/162)
+- Fixed comparing string variables with string literals, in Swift 4 string literals became `Substring` and thus couldn't be directly compared to strings.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#168](https://github.com/stencilproject/Stencil/pull/168)
+- Integer literals now resolve into Int values, not Float.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#181](https://github.com/stencilproject/Stencil/pull/181)
+- Fixed accessing properties of optional properties via reflection.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#204](https://github.com/stencilproject/Stencil/pull/204)
+- No longer render optional values in arrays as `Optional(..)`.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#205](https://github.com/stencilproject/Stencil/pull/205)
+- Fixed subscription tuples by value index, i.e. `{{ tuple.0 }}`.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#172](https://github.com/stencilproject/Stencil/pull/172)
 
 
 ## 0.10.1
@@ -249,10 +288,10 @@
 ### Bug Fixes
 
 - Variables (`{{ variable.5 }}`) that reference an array index at an unknown
-  index will now resolve to `nil` instead of causing a crash.
+  index will now resolve to `nil` instead of causing a crash.  
   [#72](https://github.com/kylef/Stencil/issues/72)
 
-- Templates can now extend templates that extend other templates.
+- Templates can now extend templates that extend other templates.  
   [#60](https://github.com/kylef/Stencil/issues/60)
 
 - If comparisons will now treat 0 and below numbers as negative.
