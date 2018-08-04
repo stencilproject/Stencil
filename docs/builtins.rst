@@ -373,3 +373,13 @@ Filter accepts several arguments:
 * indentation character: character to be used for indentation. Default is a space.
 * indent first line: whether first line of output should be indented or not. Default is ``false``.
 
+``filter``
+~~~~~~~~~
+
+Applies filter by its name, provided as an argument.
+
+.. code-block:: html+django
+
+    {{ string|filter:myfilter }}
+
+This expression will resolve `myfilter` variable and will apply filter with such name to `string` variable.
