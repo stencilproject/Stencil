@@ -8,16 +8,18 @@
   [Yonas Kolb](https://github.com/yonaskolb)
   [#394](https://github.com/stencilproject/Stencil/pull/214)
 
-- Adds support for using spaces in filter expression
-  [Ilya Puchka](https://github.com/yonaskolb)
+- Adds support for using spaces in filter expression.
+  [Ilya Puchka](https://github.com/ilyapuchka)
   [#178](https://github.com/stencilproject/Stencil/pull/178)
 
-- Added support for dynamic filter using `filter` filter
+- Added support for dynamic filter using `filter` filter.
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#203](https://github.com/stencilproject/Stencil/pull/203)
 
 ### Bug Fixes
 
 - Fixed using quote as a filter parameter
-  [Ilya Puchka](https://github.com/yonaskolb)
+  [Ilya Puchka](https://github.com/ilyapuchka)
   [#210](https://github.com/stencilproject/Stencil/pull/210)
 
 
