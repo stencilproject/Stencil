@@ -12,8 +12,11 @@
   [David Jennes](https://github.com/djbe)
   [#215](https://github.com/stencilproject/Stencil/pull/215)
 - Adds support for using spaces in filter expression.  
-  [Ilya Puchka](https://github.com/yonaskolb)
+  [Ilya Puchka](https://github.com/ilyapuchka)
   [#178](https://github.com/stencilproject/Stencil/pull/178)
+- Now boolean expressions results can be rendered, i.e `{{ name == "John" }}` will render `true` or `false` depending on the evaluation result.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#164](https://github.com/stencilproject/Stencil/pull/164)
 
 ### Bug Fixes
 

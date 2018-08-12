@@ -9,6 +9,14 @@ func testExpressions() {
     $0.describe("VariableExpression") {
       let expression = VariableExpression(variable: Variable("value"))
 
+      $0.it("can resolve variable") {
+        let context = Context(dictionary: ["value": "known"])
+        try expect(expression.resolve(context) as? String) == "known"
+        
+        try expect(Template(templateString: "{{ value == \"known\" }}").render(["value": "known"])) == "true"
+        try expect(Template(templateString: "{{ value == \"known\" }}").render(["value": "unknown"])) == "false"
+      }
+
       $0.it("evaluates to true when value is not nil") {
         let context = Context(dictionary: ["value": "known"])
         try expect(try expression.evaluate(context: context)).to.beTrue()
@@ -93,12 +101,12 @@ func testExpressions() {
 
     $0.describe("NotExpression") {
       $0.it("returns truthy for positive expressions") {
-        let expression = NotExpression(expression: StaticExpression(value: true))
+        let expression = NotExpression(expression: VariableExpression(variable: Variable("true")))
         try expect(expression.evaluate(context: Context())).to.beFalse()
       }
 
       $0.it("returns falsy for negative expressions") {
-        let expression = NotExpression(expression: StaticExpression(value: false))
+        let expression = NotExpression(expression: VariableExpression(variable: Variable("false")))
         try expect(expression.evaluate(context: Context())).to.beTrue()
       }
     }
@@ -136,167 +144,177 @@ func testExpressions() {
         }
       }
 
+      func expectExpression(with components: [String], context: [String: Any], toBe expected: Bool,
+                            file: String = #file, line: Int = #line, function: String = #function) throws {
+        let expression = try parseExpression(components: components, tokenParser: parser)
+        try expect(expression.evaluate(context: Context(dictionary: context)), file: file, line: line, function: function) == expected
+        
+        let template = Template(templateString: "{{ \(components.joined(separator: " ")) }}")
+        let result = try template.render(context)
+        try expect(result, file: file, line: line, function: function) == String(expected)
+      }
+      
       $0.describe("or expression") {
-        let expression = try! parseExpression(components: ["lhs", "or", "rhs"], tokenParser: parser)
+        let components = ["lhs", "or", "rhs"]
 
         $0.it("evaluates to true with lhs true") {
-          try expect(expression.evaluate(context: Context(dictionary: ["lhs": true, "rhs": false]))).to.beTrue()
+          try expectExpression(with: components, context: ["lhs": true, "rhs": false], toBe: true)
         }
 
         $0.it("evaluates to true with rhs true") {
-          try expect(expression.evaluate(context: Context(dictionary: ["lhs": false, "rhs": true]))).to.beTrue()
+          try expectExpression(with: components, context: ["lhs": false, "rhs": true], toBe: true)
         }
 
         $0.it("evaluates to true with lhs and rhs true") {
-          try expect(expression.evaluate(context: Context(dictionary: ["lhs": true, "rhs": true]))).to.beTrue()
+          try expectExpression(with: components, context: ["lhs": true, "rhs": true], toBe: true)
         }
 
         $0.it("evaluates to false with lhs and rhs false") {
-          try expect(expression.evaluate(context: Context(dictionary: ["lhs": false, "rhs": false]))).to.beFalse()
+          try expectExpression(with: components, context: ["lhs": false, "rhs": false], toBe: false)
         }
       }
 
       $0.describe("equality expression") {
-        let expression = try! parseExpression(components: ["lhs", "==", "rhs"], tokenParser: parser)
+        let components = ["lhs", "==", "rhs"]
 
         $0.it("evaluates to true with equal lhs/rhs") {
-          try expect(expression.evaluate(context: Context(dictionary: ["lhs": "a", "rhs": "a"]))).to.beTrue()
+          try expectExpression(with: components, context: ["lhs": "a", "rhs": "a"], toBe: true)
         }
 
         $0.it("evaluates to false with non equal lhs/rhs") {
-          try expect(expression.evaluate(context: Context(dictionary: ["lhs": "a", "rhs": "b"]))).to.beFalse()
+          try expectExpression(with: components, context: ["lhs": "a", "rhs": "b"], toBe: false)
         }
 
         $0.it("evaluates to true with nils") {
-          try expect(expression.evaluate(context: Context(dictionary: [:]))).to.beTrue()
+          try expectExpression(with: components, context: [:], toBe: true)
         }
 
         $0.it("evaluates to true with numbers") {
-          try expect(expression.evaluate(context: Context(dictionary: ["lhs": 1, "rhs": 1.0]))).to.beTrue()
+          try expectExpression(with: components, context: ["lhs": 1, "rhs": 1.0], toBe: true)
         }
 
         $0.it("evaluates to false with non equal numbers") {
-          try expect(expression.evaluate(context: Context(dictionary: ["lhs": 1, "rhs": 1.1]))).to.beFalse()
+          try expectExpression(with: components, context: ["lhs": 1, "rhs": 1.1], toBe: false)
         }
 
         $0.it("evaluates to true with booleans") {
-          try expect(expression.evaluate(context: Context(dictionary: ["lhs": true, "rhs": true]))).to.beTrue()
+          try expectExpression(with: components, context: ["lhs": true, "rhs": true], toBe: true)
         }
 
         $0.it("evaluates to false with falsy booleans") {
-          try expect(expression.evaluate(context: Context(dictionary: ["lhs": true, "rhs": false]))).to.beFalse()
+          try expectExpression(with: components, context: ["lhs": true, "rhs": false], toBe: false)
         }
 
         $0.it("evaluates to false with different types") {
-          try expect(expression.evaluate(context: Context(dictionary: ["lhs": true, "rhs": 1]))).to.beFalse()
+          try expectExpression(with: components, context: ["lhs": true, "rhs": 1], toBe: false)
         }
       }
 
       $0.describe("inequality expression") {
-        let expression = try! parseExpression(components: ["lhs", "!=", "rhs"], tokenParser: parser)
+        let components = ["lhs", "!=", "rhs"]
 
         $0.it("evaluates to true with inequal lhs/rhs") {
-          try expect(expression.evaluate(context: Context(dictionary: ["lhs": "a", "rhs": "b"]))).to.beTrue()
+          try expectExpression(with: components, context: ["lhs": "a", "rhs": "b"], toBe: true)
         }
 
         $0.it("evaluates to false with equal lhs/rhs") {
-          try expect(expression.evaluate(context: Context(dictionary: ["lhs": "b", "rhs": "b"]))).to.beFalse()
+          try expectExpression(with: components, context: ["lhs": "b", "rhs": "b"], toBe: false)
         }
       }
 
       $0.describe("more than expression") {
-        let expression = try! parseExpression(components: ["lhs", ">", "rhs"], tokenParser: parser)
+        let components = ["lhs", ">", "rhs"]
 
         $0.it("evaluates to true with lhs > rhs") {
-          try expect(expression.evaluate(context: Context(dictionary: ["lhs": 5.0, "rhs": 4]))).to.beTrue()
+          try expectExpression(with: components, context: ["lhs": 5.0, "rhs": 4], toBe: true)
         }
 
         $0.it("evaluates to false with lhs == rhs") {
-          try expect(expression.evaluate(context: Context(dictionary: ["lhs": 5.0, "rhs": 5.0]))).to.beFalse()
+          try expectExpression(with: components, context: ["lhs": 5.0, "rhs": 5.0], toBe: false)
         }
       }
 
       $0.describe("more than equal expression") {
-        let expression = try! parseExpression(components: ["lhs", ">=", "rhs"], tokenParser: parser)
+        let components = ["lhs", ">=", "rhs"]
 
         $0.it("evaluates to true with lhs == rhs") {
-          try expect(expression.evaluate(context: Context(dictionary: ["lhs": 5.0, "rhs": 5]))).to.beTrue()
+          try expectExpression(with: components, context: ["lhs": 5.0, "rhs": 5], toBe: true)
         }
 
         $0.it("evaluates to false with lhs < rhs") {
-          try expect(expression.evaluate(context: Context(dictionary: ["lhs": 5.0, "rhs": 5.1]))).to.beFalse()
+          try expectExpression(with: components, context: ["lhs": 5.0, "rhs": 5.1], toBe: false)
         }
       }
 
       $0.describe("less than expression") {
-        let expression = try! parseExpression(components: ["lhs", "<", "rhs"], tokenParser: parser)
+        let components = ["lhs", "<", "rhs"]
 
         $0.it("evaluates to true with lhs < rhs") {
-          try expect(expression.evaluate(context: Context(dictionary: ["lhs": 4, "rhs": 4.5]))).to.beTrue()
+          try expectExpression(with: components, context: ["lhs": 4, "rhs": 4.5], toBe: true)
         }
 
         $0.it("evaluates to false with lhs == rhs") {
-          try expect(expression.evaluate(context: Context(dictionary: ["lhs": 5.0, "rhs": 5.0]))).to.beFalse()
+          try expectExpression(with: components, context: ["lhs": 5.0, "rhs": 5.0], toBe: false)
         }
       }
 
       $0.describe("less than equal expression") {
-        let expression = try! parseExpression(components: ["lhs", "<=", "rhs"], tokenParser: parser)
+        let components = ["lhs", "<=", "rhs"]
 
         $0.it("evaluates to true with lhs == rhs") {
-          try expect(expression.evaluate(context: Context(dictionary: ["lhs": 5.0, "rhs": 5]))).to.beTrue()
+          try expectExpression(with: components, context: ["lhs": 5.0, "rhs": 5], toBe: true)
         }
 
         $0.it("evaluates to false with lhs > rhs") {
-          try expect(expression.evaluate(context: Context(dictionary: ["lhs": 5.1, "rhs": 5.0]))).to.beFalse()
+          try expectExpression(with: components, context: ["lhs": 5.1, "rhs": 5.0], toBe: false)
         }
       }
 
       $0.describe("multiple expression") {
-        let expression = try! parseExpression(components: ["one", "or", "two", "and", "not", "three"], tokenParser: parser)
+        let components = ["one", "or", "two", "and", "not", "three"]
 
         $0.it("evaluates to true with one") {
-          try expect(expression.evaluate(context: Context(dictionary: ["one": true]))).to.beTrue()
+          try expectExpression(with: components, context: ["one": true], toBe: true)
         }
 
         $0.it("evaluates to true with one and three") {
-          try expect(expression.evaluate(context: Context(dictionary: ["one": true, "three": true]))).to.beTrue()
+          try expectExpression(with: components, context: ["one": true, "three": true], toBe: true)
         }
 
         $0.it("evaluates to true with two") {
-          try expect(expression.evaluate(context: Context(dictionary: ["two": true]))).to.beTrue()
+          try expectExpression(with: components, context: ["two": true], toBe: true)
         }
 
         $0.it("evaluates to false with two and three") {
-          try expect(expression.evaluate(context: Context(dictionary: ["two": true, "three": true]))).to.beFalse()
+          try expectExpression(with: components, context: ["two": true, "three": true], toBe: false)
         }
 
         $0.it("evaluates to false with two and three") {
-          try expect(expression.evaluate(context: Context(dictionary: ["two": true, "three": true]))).to.beFalse()
+          try expectExpression(with: components, context: ["two": true, "three": true], toBe: false)
         }
 
         $0.it("evaluates to false with nothing") {
-          try expect(expression.evaluate(context: Context())).to.beFalse()
+          try expectExpression(with: components, context: [:], toBe: false)
         }
       }
       
       $0.describe("in expression") {
-        let expression = try! parseExpression(components: ["lhs", "in", "rhs"], tokenParser: parser)
+        let components = ["lhs", "in", "rhs"]
         
         $0.it("evaluates to true when rhs contains lhs") {
-          try expect(expression.evaluate(context: Context(dictionary: ["lhs": 1, "rhs": [1, 2, 3]]))).to.beTrue()
-          try expect(expression.evaluate(context: Context(dictionary: ["lhs": "a", "rhs": ["a", "b", "c"]]))).to.beTrue()
-          try expect(expression.evaluate(context: Context(dictionary: ["lhs": "a", "rhs": "abc"]))).to.beTrue()
-          try expect(expression.evaluate(context: Context(dictionary: ["lhs": 1, "rhs": 1...3]))).to.beTrue()
-          try expect(expression.evaluate(context: Context(dictionary: ["lhs": 1, "rhs": 1..<3]))).to.beTrue()
+          try expectExpression(with: components, context: ["lhs": 1, "rhs": [1, 2, 3]], toBe: true)
+          try expectExpression(with: components, context: ["lhs": "a", "rhs": ["a", "b", "c"]], toBe: true)
+          try expectExpression(with: components, context: ["lhs": "a", "rhs": "abc"], toBe: true)
+          try expectExpression(with: components, context: ["lhs": 1, "rhs": 1...3], toBe: true)
+          try expectExpression(with: components, context: ["lhs": 1, "rhs": 1..<3], toBe: true)
         }
-        
+
         $0.it("evaluates to false when rhs does not contain lhs") {
-          try expect(expression.evaluate(context: Context(dictionary: ["lhs": 1, "rhs": [2, 3, 4]]))).to.beFalse()
-          try expect(expression.evaluate(context: Context(dictionary: ["lhs": "a", "rhs": ["b", "c", "d"]]))).to.beFalse()
-          try expect(expression.evaluate(context: Context(dictionary: ["lhs": "a", "rhs": "bcd"]))).to.beFalse()
-          try expect(expression.evaluate(context: Context(dictionary: ["lhs": 4, "rhs": 1...3]))).to.beFalse()
-          try expect(expression.evaluate(context: Context(dictionary: ["lhs": 3, "rhs": 1..<3]))).to.beFalse()
+          try expectExpression(with: components, context: ["lhs": 1, "rhs": [2, 3, 4]], toBe: false)
+          try expectExpression(with: components, context: ["lhs": "a", "rhs": ["b", "c", "d"]], toBe: false)
+          try expectExpression(with: components, context: ["lhs": "a", "rhs": "bcd"], toBe: false)
+          try expectExpression(with: components, context: ["lhs": 4, "rhs": 1...3], toBe: false)
+          try expectExpression(with: components, context: ["lhs": 3, "rhs": 1..<3], toBe: false)
         }
       }
     }
