@@ -149,6 +149,19 @@ Will be treated as:
 
     one or (two and three)
 
+You can use brackets to change operators precedence. For example:
+
+.. code-block:: html+django
+
+    {% if (one or two) and three %}
+
+Will be treated as:
+
+.. code-block:: text
+
+    (one or two) and three
+
+
 ``==`` operator
 """""""""""""""
 
