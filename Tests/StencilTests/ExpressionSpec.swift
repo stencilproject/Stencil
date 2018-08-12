@@ -103,17 +103,11 @@ func testExpressions() {
       $0.it("returns truthy for positive expressions") {
         let expression = NotExpression(expression: VariableExpression(variable: Variable("true")))
         try expect(expression.evaluate(context: Context())).to.beFalse()
-
-        try expect(Template(templateString: "{% if true %}true{% else %}false{% endif %}").render(Context())) == "true"
-        try expect(Template(templateString: "{% if false %}true{% else %}false{% endif %}").render(Context())) == "false"
       }
 
       $0.it("returns falsy for negative expressions") {
         let expression = NotExpression(expression: VariableExpression(variable: Variable("false")))
         try expect(expression.evaluate(context: Context())).to.beTrue()
-
-        try expect(Template(templateString: "{% if not true %}true{% else %}false{% endif %}").render(Context())) == "false"
-        try expect(Template(templateString: "{% if not false %}true{% else %}false{% endif %}").render(Context())) == "true"
       }
     }
 
@@ -150,18 +144,19 @@ func testExpressions() {
         }
       }
 
-      func expectExpression(with components: [String], context: [String: Any], toBe expected: Bool) throws {
+      func expectExpression(with components: [String], context: [String: Any], toBe expected: Bool,
+                            file: String = #file, line: Int = #line, function: String = #function) throws {
         let expression = try parseExpression(components: components, tokenParser: parser)
-        try expect(expression.evaluate(context: Context(dictionary: context))) == expected
+        try expect(expression.evaluate(context: Context(dictionary: context)), file: file, line: line, function: function) == expected
         
         let template = Template(templateString: "{{ \(components.joined(separator: " ")) }}")
         let result = try template.render(context)
-        try expect(result) == String(expected)
+        try expect(result, file: file, line: line, function: function) == String(expected)
       }
       
       $0.describe("or expression") {
         let components = ["lhs", "or", "rhs"]
-        
+
         $0.it("evaluates to true with lhs true") {
           try expectExpression(with: components, context: ["lhs": true, "rhs": false], toBe: true)
         }
