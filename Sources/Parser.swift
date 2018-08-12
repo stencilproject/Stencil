@@ -148,7 +148,7 @@ public class TokenParser {
   }
 
   public func compileResolvable(_ token: String, containedIn containingToken: Token) throws -> Resolvable {
-    return try RangeVariable(token, parser: self)
+    return try RangeVariable(token, parser: self, containedIn: containingToken)
         ?? compileFilter(token, containedIn: containingToken)
   }
 

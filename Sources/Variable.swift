@@ -50,7 +50,7 @@ public struct Variable : Equatable, Resolvable {
 
   // Split the lookup string and resolve references if possible
   fileprivate func lookup(_ context: Context) throws -> [String] {
-    var keyPath = KeyPath(variable, in: context)
+    let keyPath = KeyPath(variable, in: context)
     return try keyPath.parse()
   }
 
@@ -138,6 +138,7 @@ public struct RangeVariable: Resolvable {
   public let from: Resolvable
   public let to: Resolvable
 
+  @available(*, deprecated, message: "Use init?(_:parser:containedIn:)")
   public init?(_ token: String, parser: TokenParser) throws {
     let components = token.components(separatedBy: "...")
     guard components.count == 2 else {
@@ -146,6 +147,16 @@ public struct RangeVariable: Resolvable {
 
     self.from = try parser.compileFilter(components[0])
     self.to = try parser.compileFilter(components[1])
+  }
+
+  public init?(_ token: String, parser: TokenParser, containedIn containingToken: Token) throws {
+    let components = token.components(separatedBy: "...")
+    guard components.count == 2 else {
+      return nil
+    }
+
+    self.from = try parser.compileFilter(components[0], containedIn: containingToken)
+    self.to = try parser.compileFilter(components[1], containedIn: containingToken)
   }
 
   public func resolve(_ context: Context) throws -> Any? {
