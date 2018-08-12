@@ -19,7 +19,7 @@ open class Extension {
     })
   }
   
-  /// Registers boolean filter with it's negative counterpart prefixed with `!`
+  /// Registers boolean filter with it's negative counterpart
   public func registerBooleanFilter(name: String, negativeFilterName: String, filter: @escaping (Any?) throws -> Bool?) {
     filters[name] = .simple(filter)
     filters[negativeFilterName] = .simple {
