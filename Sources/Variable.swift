@@ -52,7 +52,7 @@ public struct Variable : Equatable, Resolvable {
 
   // Split the lookup string and resolve references if possible
   fileprivate func lookup(_ context: Context) throws -> [String] {
-    var keyPath = KeyPath(variable, in: context)
+    let keyPath = KeyPath(variable, in: context)
     return try keyPath.parse()
   }
 

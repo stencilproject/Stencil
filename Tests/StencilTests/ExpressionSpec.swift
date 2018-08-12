@@ -334,7 +334,6 @@ func testExpressions() {
             .toThrow(TemplateSyntaxError("'if' expression error: infix operator 'and' doesn't have a left hand side"))
         }
       }
-
     }
   }
 }

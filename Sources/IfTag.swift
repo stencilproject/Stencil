@@ -39,8 +39,8 @@ func findOperator(name: String) -> Operator? {
 
 
 indirect enum IfToken {
-  case infix(name: String, bindingPower: Int, op: InfixOperator.Type)
-  case prefix(name: String, bindingPower: Int, op: PrefixOperator.Type)
+  case infix(name: String, bindingPower: Int, operatorType: InfixOperator.Type)
+  case prefix(name: String, bindingPower: Int, operatorType: PrefixOperator.Type)
   case variable(Resolvable)
   case subExpression(Expression)
   case end
@@ -129,8 +129,7 @@ final class IfExpressionParser {
         )
         parsedComponents.formUnion(Set(index...(index + parsedCount)))
         return .subExpression(expression)
-      }
-      else if component == ")" {
+      } else if component == ")" {
         bracketsBalance -= 1
         if bracketsBalance < 0 {
           throw TemplateSyntaxError("'if' expression error: missing opening bracket")
@@ -141,10 +140,10 @@ final class IfExpressionParser {
         parsedComponents.insert(index)
         if let op = findOperator(name: component) {
           switch op {
-          case .infix(let name, let bindingPower, let cls):
-            return .infix(name: name, bindingPower: bindingPower, op: cls)
-          case .prefix(let name, let bindingPower, let cls):
-            return .prefix(name: name, bindingPower: bindingPower, op: cls)
+          case .infix(let name, let bindingPower, let operatorType):
+            return .infix(name: name, bindingPower: bindingPower, operatorType: operatorType)
+          case .prefix(let name, let bindingPower, let operatorType):
+            return .prefix(name: name, bindingPower: bindingPower, operatorType: operatorType)
           }
         }
         return .variable(try tokenParser.compileResolvable(component))
@@ -156,8 +155,11 @@ final class IfExpressionParser {
     var bracketsBalance = 1
     let subComponents = components
       .prefix(while: {
-        if $0 == "(" { bracketsBalance += 1 }
-        else if $0 == ")" { bracketsBalance -= 1 }
+        if $0 == "(" {
+            bracketsBalance += 1
+        } else if $0 == ")" {
+            bracketsBalance -= 1
+        }
         return bracketsBalance != 0
       })
     if bracketsBalance > 0 {
