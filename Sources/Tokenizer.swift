@@ -10,6 +10,21 @@ extension String {
     var singleQuoteCount = 0
     var doubleQuoteCount = 0
 
+    let specialCharacters = ",|:"
+    func appendWord(_ word: String) {
+      if components.count > 0 {
+        if let precedingChar = components.last?.characters.last, specialCharacters.characters.contains(precedingChar) {
+          components[components.count-1] += word
+        } else if specialCharacters.contains(word) {
+          components[components.count-1] += word
+        } else {
+          components.append(word)
+        }
+      } else {
+        components.append(word)
+      }
+    }
+
     for character in self.characters {
       if character == "'" { singleQuoteCount += 1 }
       else if character == "\"" { doubleQuoteCount += 1 }
@@ -18,8 +33,8 @@ extension String {
 
         if separate != separator {
           word.append(separate)
-        } else if singleQuoteCount % 2 == 0 && doubleQuoteCount % 2 == 0 && !word.isEmpty {
-          components.append(word)
+        } else if (singleQuoteCount % 2 == 0 || doubleQuoteCount % 2 == 0) && !word.isEmpty {
+          appendWord(word)
           word = ""
         }
 
@@ -33,7 +48,7 @@ extension String {
     }
 
     if !word.isEmpty {
-      components.append(word)
+      appendWord(word)
     }
 
     return components

@@ -78,9 +78,9 @@ func testFilter() {
     }
 
     $0.it("allows whitespace in expression") {
-      let template = Template(templateString: "{{ name | uppercase }}")
-      let result = try template.render(Context(dictionary: ["name": "kyle"]))
-      try expect(result) == "KYLE"
+      let template = Template(templateString: "{{ value | join : \", \" }}")
+      let result = try template.render(Context(dictionary: ["value": ["One", "Two"]]))
+      try expect(result) == "One, Two"
     }
 
     $0.it("throws when you pass arguments to simple filter") {
@@ -89,32 +89,45 @@ func testFilter() {
     }
   }
 
+  describe("string filters") {
+    $0.context("given string") {
+      $0.it("transforms a string to be capitalized") {
+        let template = Template(templateString: "{{ name|capitalize }}")
+        let result = try template.render(Context(dictionary: ["name": "kyle"]))
+        try expect(result) == "Kyle"
+      }
 
-  describe("capitalize filter") {
-    let template = Template(templateString: "{{    name|capitalize }}")
+      $0.it("transforms a string to be uppercase") {
+        let template = Template(templateString: "{{ name|uppercase }}")
+        let result = try template.render(Context(dictionary: ["name": "kyle"]))
+        try expect(result) == "KYLE"
+      }
 
-    $0.it("capitalizes a string") {
-      let result = try template.render(Context(dictionary: ["name": "kyle"]))
-      try expect(result) == "Kyle"
+      $0.it("transforms a string to be lowercase") {
+        let template = Template(templateString: "{{ name|lowercase }}")
+        let result = try template.render(Context(dictionary: ["name": "Kyle"]))
+        try expect(result) == "kyle"
+      }
     }
-  }
 
+    $0.context("given array of strings") {
+      $0.it("transforms a string to be capitalized") {
+        let template = Template(templateString: "{{ names|capitalize }}")
+        let result = try template.render(Context(dictionary: ["names": ["kyle", "kyle"]]))
+        try expect(result) == "[\"Kyle\", \"Kyle\"]"
+      }
 
-  describe("uppercase filter") {
-    let template = Template(templateString: "{{ name|uppercase }}")
+      $0.it("transforms a string to be uppercase") {
+        let template = Template(templateString: "{{ names|uppercase }}")
+        let result = try template.render(Context(dictionary: ["names": ["kyle", "kyle"]]))
+        try expect(result) == "[\"KYLE\", \"KYLE\"]"
+      }
 
-    $0.it("transforms a string to be uppercase") {
-      let result = try template.render(Context(dictionary: ["name": "kyle"]))
-      try expect(result) == "KYLE"
-    }
-  }
-
-  describe("lowercase filter") {
-    let template = Template(templateString: "{{ name|lowercase }}")
-
-    $0.it("transforms a string to be lowercase") {
-      let result = try template.render(Context(dictionary: ["name": "Kyle"]))
-      try expect(result) == "kyle"
+      $0.it("transforms a string to be lowercase") {
+        let template = Template(templateString: "{{ names|lowercase }}")
+        let result = try template.render(Context(dictionary: ["names": ["Kyle", "Kyle"]]))
+        try expect(result) == "[\"kyle\", \"kyle\"]"
+      }
     }
   }
 
@@ -181,6 +194,98 @@ func testFilter() {
       let template = Template(templateString: "{{ value|join }}")
       let result = try template.render(Context(dictionary: ["value": ["One", "Two"]]))
       try expect(result) == "OneTwo"
+    }
+  }
+
+  describe("split filter") {
+    let template = Template(templateString: "{{ value|split:\", \" }}")
+
+    $0.it("split a string into array") {
+      let result = try template.render(Context(dictionary: ["value": "One, Two"]))
+      try expect(result) == "[\"One\", \"Two\"]"
+    }
+
+    $0.it("can split without arguments") {
+      let template = Template(templateString: "{{ value|split }}")
+      let result = try template.render(Context(dictionary: ["value": "One, Two"]))
+      try expect(result) == "[\"One,\", \"Two\"]"
+    }
+  }
+
+
+  describe("filter suggestion") {
+    var template: Template!
+    var filterExtension: Extension!
+
+    func expectedSyntaxError(token: String, template: Template, description: String) -> TemplateSyntaxError {
+      let range = template.templateString.range(of: token)!
+      let rangeLine = template.templateString.rangeLine(range)
+      let sourceMap = SourceMap(filename: template.name, line: rangeLine)
+      let token = Token.block(value: token, at: sourceMap)
+      return TemplateSyntaxError(reason: description, token: token, stackTrace: [])
+    }
+
+    func expectError(reason: String, token: String,
+                     file: String = #file, line: Int = #line, function: String = #function) throws {
+      let expectedError = expectedSyntaxError(token: token, template: template, description: reason)
+      let environment = Environment(extensions: [filterExtension])
+
+      let error = try expect(environment.render(template: template, context: [:]),
+                             file: file, line: line, function: function).toThrow() as TemplateSyntaxError
+
+      try expect(environment.errorReporter.renderError(error), file: file, line: line, function: function) == environment.errorReporter.renderError(expectedError)
+    }
+
+    $0.it("made for unknown filter") {
+      template = Template(templateString: "{{ value|unknownFilter }}")
+
+      filterExtension = Extension()
+      filterExtension.registerFilter("knownFilter") { value, _ in value }
+
+      try expectError(reason: "Unknown filter 'unknownFilter'. Found similar filters: 'knownFilter'.", token: "value|unknownFilter")
+    }
+
+    $0.it("made for multiple similar filters") {
+      template = Template(templateString: "{{ value|lowerFirst }}")
+
+      filterExtension = Extension()
+      filterExtension.registerFilter("lowerFirstWord") { value, _ in value }
+      filterExtension.registerFilter("lowerFirstLetter") { value, _ in value }
+
+      try expectError(reason: "Unknown filter 'lowerFirst'. Found similar filters: 'lowerFirstWord', 'lowercase'.", token: "value|lowerFirst")
+    }
+
+    $0.it("not made when can't find similar filter") {
+      template = Template(templateString: "{{ value|unknownFilter }}")
+      try expectError(reason: "Unknown filter 'unknownFilter'. Found similar filters: 'lowerFirstWord'.", token: "value|unknownFilter")
+    }
+
+  }
+
+
+  describe("indent filter") {
+    $0.it("indents content") {
+      let template = Template(templateString: "{{ value|indent:2 }}")
+      let result = try template.render(Context(dictionary: ["value": "One\nTwo"]))
+      try expect(result) == "One\n  Two"
+    }
+
+    $0.it("can indent with arbitrary character") {
+      let template = Template(templateString: "{{ value|indent:2,\"\t\" }}")
+      let result = try template.render(Context(dictionary: ["value": "One\nTwo"]))
+      try expect(result) == "One\n\t\tTwo"
+    }
+
+    $0.it("can indent first line") {
+      let template = Template(templateString: "{{ value|indent:2,\" \",true }}")
+      let result = try template.render(Context(dictionary: ["value": "One\nTwo"]))
+      try expect(result) == "  One\n  Two"
+    }
+
+    $0.it("does not indent empty lines") {
+      let template = Template(templateString: "{{ value|indent }}")
+      let result = try template.render(Context(dictionary: ["value": "One\n\n\nTwo\n\n"]))
+      try expect(result) == "One\n\n\n    Two\n\n"
     }
   }
 }

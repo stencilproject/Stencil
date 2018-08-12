@@ -48,18 +48,20 @@ func testEnvironment() {
       return TemplateSyntaxError(reason: description, token: token, stackTrace: [])
     }
 
-    func expectError(reason: String, token: String) throws {
+    func expectError(reason: String, token: String,
+                     file: String = #file, line: Int = #line, function: String = #function) throws {
       let expectedError = expectedSyntaxError(token: token, template: template, description: reason)
       
-      let error = try expect(environment.render(template: template, context: ["names": ["Bob", "Alice"], "name": "Bob"])).toThrow() as TemplateSyntaxError
-      try expect(environment.errorReporter.renderError(error)) == environment.errorReporter.renderError(expectedError)
+      let error = try expect(environment.render(template: template, context: ["names": ["Bob", "Alice"], "name": "Bob"]),
+                             file: file, line: line, function: function).toThrow() as TemplateSyntaxError
+      try expect(environment.errorReporter.renderError(error), file: file, line: line, function: function) == environment.errorReporter.renderError(expectedError)
     }
 
     $0.context("given syntax error") {
 
       $0.it("reports syntax error on invalid for tag syntax") {
         template = "Hello {% for name in %}{{ name }}, {% endfor %}!"
-        try expectError(reason: "'for' statements should use the following syntax 'for x in y where condition'.", token: "for name in")
+        try expectError(reason: "'for' statements should use the syntax: `for <x> in <y> [where <condition>]`.", token: "for name in")
       }
       
       $0.it("reports syntax error on missing endfor") {
@@ -78,37 +80,37 @@ func testEnvironment() {
       
       $0.it("reports syntax error in for tag") {
         template = "{% for name in names|unknown %}{{ name }}{% endfor %}"
-        try expectError(reason: "Unknown filter 'unknown'", token: "names|unknown")
+        try expectError(reason: "Unknown filter 'unknown'. Found similar filters: 'uppercase'.", token: "names|unknown")
       }
       
       $0.it("reports syntax error in for-where tag") {
         template = "{% for name in names where name|unknown %}{{ name }}{% endfor %}"
-        try expectError(reason: "Unknown filter 'unknown'", token: "name|unknown")
+        try expectError(reason: "Unknown filter 'unknown'. Found similar filters: 'uppercase'.", token: "name|unknown")
       }
       
       $0.it("reports syntax error in if tag") {
         template = "{% if name|unknown %}{{ name }}{% endif %}"
-        try expectError(reason: "Unknown filter 'unknown'", token: "name|unknown")
+        try expectError(reason: "Unknown filter 'unknown'. Found similar filters: 'uppercase'.", token: "name|unknown")
       }
       
       $0.it("reports syntax error in elif tag") {
         template = "{% if name %}{{ name }}{% elif name|unknown %}{% endif %}"
-        try expectError(reason: "Unknown filter 'unknown'", token: "name|unknown")
+        try expectError(reason: "Unknown filter 'unknown'. Found similar filters: 'uppercase'.", token: "name|unknown")
       }
       
       $0.it("reports syntax error in ifnot tag") {
         template = "{% ifnot name|unknown %}{{ name }}{% endif %}"
-        try expectError(reason: "Unknown filter 'unknown'", token: "name|unknown")
+        try expectError(reason: "Unknown filter 'unknown'. Found similar filters: 'uppercase'.", token: "name|unknown")
       }
       
       $0.it("reports syntax error in filter tag") {
         template = "{% filter unknown %}Text{% endfilter %}"
-        try expectError(reason: "Unknown filter 'unknown'", token: "filter unknown")
+        try expectError(reason: "Unknown filter 'unknown'. Found similar filters: 'uppercase'.", token: "filter unknown")
       }
       
       $0.it("reports syntax error in variable tag") {
         template = "{{ name|unknown }}"
-        try expectError(reason: "Unknown filter 'unknown'", token: "name|unknown")
+        try expectError(reason: "Unknown filter 'unknown'. Found similar filters: 'uppercase'.", token: "name|unknown")
       }
       
     }
@@ -200,20 +202,21 @@ func testEnvironment() {
         includedTemplate = nil
       }
       
-      func expectError(reason: String, token: String, includedToken: String) throws {
+      func expectError(reason: String, token: String, includedToken: String,
+                       file: String = #file, line: Int = #line, function: String = #function) throws {
         var expectedError = expectedSyntaxError(token: token, template: template, description: reason)
         expectedError.stackTrace = [expectedSyntaxError(token: includedToken, template: includedTemplate, description: reason).token!]
         
-        let error = try expect(environment.render(template: template, context: ["target": "World"]))
-          .toThrow() as TemplateSyntaxError
-        try expect(environment.errorReporter.renderError(error)) == environment.errorReporter.renderError(expectedError)
+        let error = try expect(environment.render(template: template, context: ["target": "World"]),
+                               file: file, line: line, function: function).toThrow() as TemplateSyntaxError
+        try expect(environment.errorReporter.renderError(error), file: file, line: line, function: function) == environment.errorReporter.renderError(expectedError)
       }
       
       $0.it("reports syntax error in included template") {
         template = Template(templateString: "{% include \"invalid-include.html\" %}", environment: environment)
         includedTemplate = try environment.loadTemplate(name: "invalid-include.html")
 
-        try expectError(reason: "Unknown filter 'unknown'",
+        try expectError(reason: "Unknown filter 'unknown'. Found similar filters: 'uppercase'.",
                         token: "include \"invalid-include.html\"",
                         includedToken: "target|unknown")
       }
@@ -248,21 +251,22 @@ func testEnvironment() {
         baseTemplate = nil
       }
       
-      func expectError(reason: String, childToken: String, baseToken: String?) throws {
+      func expectError(reason: String, childToken: String, baseToken: String?,
+                       file: String = #file, line: Int = #line, function: String = #function) throws {
         var expectedError = expectedSyntaxError(token: childToken, template: childTemplate, description: reason)
         if let baseToken = baseToken {
           expectedError.stackTrace = [expectedSyntaxError(token: baseToken, template: baseTemplate, description: reason).token!]
         }
-        let error = try expect(environment.render(template: childTemplate, context: ["target": "World"]))
-          .toThrow() as TemplateSyntaxError
-        try expect(environment.errorReporter.renderError(error)) == environment.errorReporter.renderError(expectedError)
+        let error = try expect(environment.render(template: childTemplate, context: ["target": "World"]),
+                               file: file, line: line, function: function).toThrow() as TemplateSyntaxError
+        try expect(environment.errorReporter.renderError(error), file: file, line: line, function: function) == environment.errorReporter.renderError(expectedError)
       }
 
       $0.it("reports syntax error in base template") {
         childTemplate = try environment.loadTemplate(name: "invalid-child-super.html")
         baseTemplate = try environment.loadTemplate(name: "invalid-base.html")
         
-        try expectError(reason: "Unknown filter 'unknown'",
+        try expectError(reason: "Unknown filter 'unknown'. Found similar filters: 'uppercase'.",
                         childToken: "extends \"invalid-base.html\"",
                         baseToken: "target|unknown")
       }
@@ -286,7 +290,7 @@ func testEnvironment() {
         childTemplate = Template(templateString: "{% extends \"base.html\" %}\n" +
           "{% block body %}Child {{ target|unknown }}{% endblock %}", environment: environment, name: nil)
         
-        try expectError(reason: "Unknown filter 'unknown'",
+        try expectError(reason: "Unknown filter 'unknown'. Found similar filters: 'uppercase'.",
                         childToken: "target|unknown",
                         baseToken: nil)
       }
@@ -311,7 +315,7 @@ func testEnvironment() {
   }
 }
 
-private extension Expectation {
+extension Expectation {
   @discardableResult
   func toThrow<T: Error>() throws -> T {
     var thrownError: Error? = nil
