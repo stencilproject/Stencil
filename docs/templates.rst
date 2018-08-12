@@ -50,6 +50,17 @@ For example, if you have the following context:
 
     The result of {{ item[key] }} will be the same as {{ item.name }}. It will first evaluate the result of {{ key }}, and only then evaluate the lookup expression.
 
+Boolean expressions
+-------------------
+
+Boolean expressions can be rendered using ``{{ ... }}`` tag.
+For example, this will output string `true` if variable is equal to 1 and `false` otherwise:
+
+.. code-block:: html+django
+
+    {{ variable == 1 }}
+
+
 Filters
 ~~~~~~~
 
