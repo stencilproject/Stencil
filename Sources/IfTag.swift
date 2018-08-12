@@ -147,7 +147,7 @@ final class IfExpressionParser {
             return .prefix(name: name, bindingPower: bindingPower, op: cls)
           }
         }
-        return .variable(try tokenParser.compileFilter(component))
+        return .variable(try tokenParser.compileResolvable(component))
       }
     }
   }

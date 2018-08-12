@@ -64,5 +64,27 @@ func testLexer() {
       let lexer = Lexer(templateString: "{{}}")
       let _ = lexer.tokenize()
     }
+
+    $0.it("can tokenize with new lines") {
+        let lexer = Lexer(templateString:
+        "My name is {%\n" +
+        "    if name\n" +
+        "     and\n" +
+        "    name\n" +
+        "%}{{\n" +
+        "name\n" +
+        "}}{%\n" +
+        "endif %}.")
+
+        let tokens = lexer.tokenize()
+
+        try expect(tokens.count) == 5
+        try expect(tokens[0]) == Token.text(value: "My name is ")
+        try expect(tokens[1]) == Token.block(value: "if name and name")
+        try expect(tokens[2]) == Token.variable(value: "name")
+        try expect(tokens[3]) == Token.block(value: "endif")
+        try expect(tokens[4]) == Token.text(value: ".")
+
+    }
   }
 }
