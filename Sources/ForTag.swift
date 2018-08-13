@@ -46,10 +46,10 @@ class ForNode : NodeType {
       _ = parser.nextToken()
     }
 
-    return ForNode(resolvable: resolvable, loopVariables: loopVariables, nodes: forNodes, emptyNodes:emptyNodes, where: `where`, token: token)
+    return ForNode(resolvable: resolvable, loopVariables: loopVariables, nodes: forNodes, emptyNodes: emptyNodes, where: `where`, token: token)
   }
 
-  init(resolvable: Resolvable, loopVariables: [String], nodes:[NodeType], emptyNodes:[NodeType], where: Expression? = nil, token: Token? = nil) {
+  init(resolvable: Resolvable, loopVariables: [String], nodes: [NodeType], emptyNodes: [NodeType], where: Expression? = nil, token: Token? = nil) {
     self.resolvable = resolvable
     self.loopVariables = loopVariables
     self.nodes = nodes
