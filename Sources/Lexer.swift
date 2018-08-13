@@ -189,8 +189,7 @@ extension String {
       lineNumber += 1
       lineContent = line
       if let rangeOfLine = self.range(of: line), rangeOfLine.contains(range.lowerBound) {
-        offset = distance(from: rangeOfLine.lowerBound, to:
-          range.lowerBound)
+        offset = distance(from: rangeOfLine.lowerBound, to: range.lowerBound)
         break
       }
     }

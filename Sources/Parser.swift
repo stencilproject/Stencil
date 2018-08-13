@@ -120,19 +120,18 @@ public class TokenParser {
     do {
       return try FilterExpression(token: filterToken, parser: self)
     } catch {
-      if var error = error as? TemplateSyntaxError, error.token == nil {
-        // find offset of filter in the containing token so that only filter is highligted, not the whole token
-        if let filterTokenRange = containingToken.contents.range(of: filterToken) {
-          var rangeLine = containingToken.sourceMap.line
-          rangeLine.offset += containingToken.contents.distance(from: containingToken.contents.startIndex, to: filterTokenRange.lowerBound)
-          error.token = .variable(value: filterToken, at: SourceMap(filename: containingToken.sourceMap.filename, line: rangeLine))
-        } else {
-          error.token = containingToken
-        }
-        throw error
-      } else {
+      guard var syntaxError = error as? TemplateSyntaxError, syntaxError.token == nil else {
         throw error
       }
+      // find offset of filter in the containing token so that only filter is highligted, not the whole token
+      if let filterTokenRange = containingToken.contents.range(of: filterToken) {
+        var rangeLine = containingToken.sourceMap.line
+        rangeLine.offset += containingToken.contents.distance(from: containingToken.contents.startIndex, to: filterTokenRange.lowerBound)
+        syntaxError.token = .variable(value: filterToken, at: SourceMap(filename: containingToken.sourceMap.filename, line: rangeLine))
+      } else {
+        syntaxError.token = containingToken
+      }
+      throw syntaxError
     }
   }
 

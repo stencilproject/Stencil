@@ -11,13 +11,13 @@ public protocol NodeType {
 
 /// Render the collection of nodes in the given context
 public func renderNodes(_ nodes:[NodeType], _ context:Context) throws -> String {
-  return try nodes.map({
+  return try nodes.map {
     do {
       return try $0.render(context)
     } catch {
       throw error.withToken($0.token)
     }
-  }).joined(separator: "")
+    }.joined(separator: "")
 }
 
 public class SimpleNode : NodeType {

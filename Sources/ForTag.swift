@@ -31,8 +31,8 @@ class ForNode : NodeType {
     let resolvable = try parser.compileResolvable(components[3], containedIn: token)
 
     let `where` = hasToken("where", at: 4)
-        ? try parseExpression(components: Array(components.suffix(from: 5)), tokenParser: parser, token: token)
-        : nil
+      ? try parseExpression(components: Array(components.suffix(from: 5)), tokenParser: parser, token: token)
+      : nil
 
     let forNodes = try parser.parse(until(["endfor", "empty"]))
 
@@ -145,7 +145,7 @@ class ForNode : NodeType {
             try renderNodes(nodes, context)
           }
         }
-      }.joined(separator: "")
+        }.joined(separator: "")
     }
 
     return try context.push {

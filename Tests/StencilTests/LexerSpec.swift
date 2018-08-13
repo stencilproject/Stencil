@@ -77,7 +77,7 @@ func testLexer() {
           "%}{{\n" +
           "name\n" +
           "}}{%\n" +
-        "endif %}."
+      "endif %}."
 
       let lexer = Lexer(templateString: templateString)
 
