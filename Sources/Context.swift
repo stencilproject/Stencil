@@ -4,10 +4,6 @@ public class Context {
 
   public let environment: Environment
   
-  public var errorReporter: ErrorReporter {
-    return environment.errorReporter
-  }
-
   init(dictionary: [String: Any]? = nil, environment: Environment? = nil) {
     if let dictionary = dictionary {
       dictionaries = [dictionary]

@@ -54,7 +54,8 @@ func testEnvironment() {
       
       let error = try expect(environment.render(template: template, context: ["names": ["Bob", "Alice"], "name": "Bob"]),
                              file: file, line: line, function: function).toThrow() as TemplateSyntaxError
-      try expect(environment.errorReporter.renderError(error), file: file, line: line, function: function) == environment.errorReporter.renderError(expectedError)
+      let reporter = SimpleErrorReporter()
+      try expect(reporter.renderError(error), file: file, line: line, function: function) == reporter.renderError(expectedError)
     }
 
     $0.context("given syntax error") {
@@ -209,7 +210,8 @@ func testEnvironment() {
         
         let error = try expect(environment.render(template: template, context: ["target": "World"]),
                                file: file, line: line, function: function).toThrow() as TemplateSyntaxError
-        try expect(environment.errorReporter.renderError(error), file: file, line: line, function: function) == environment.errorReporter.renderError(expectedError)
+        let reporter = SimpleErrorReporter()
+        try expect(reporter.renderError(error), file: file, line: line, function: function) == reporter.renderError(expectedError)
       }
       
       $0.it("reports syntax error in included template") {
@@ -259,7 +261,8 @@ func testEnvironment() {
         }
         let error = try expect(environment.render(template: childTemplate, context: ["target": "World"]),
                                file: file, line: line, function: function).toThrow() as TemplateSyntaxError
-        try expect(environment.errorReporter.renderError(error), file: file, line: line, function: function) == environment.errorReporter.renderError(expectedError)
+        let reporter = SimpleErrorReporter()
+        try expect(reporter.renderError(error), file: file, line: line, function: function) == reporter.renderError(expectedError)
       }
 
       $0.it("reports syntax error in base template") {

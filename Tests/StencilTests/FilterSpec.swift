@@ -232,8 +232,8 @@ func testFilter() {
 
       let error = try expect(environment.render(template: template, context: [:]),
                              file: file, line: line, function: function).toThrow() as TemplateSyntaxError
-
-      try expect(environment.errorReporter.renderError(error), file: file, line: line, function: function) == environment.errorReporter.renderError(expectedError)
+      let reporter = SimpleErrorReporter()
+      try expect(reporter.renderError(error), file: file, line: line, function: function) == reporter.renderError(expectedError)
     }
 
     $0.it("made for unknown filter") {

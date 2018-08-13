@@ -3,15 +3,12 @@ public struct Environment {
   public var extensions: [Extension]
 
   public var loader: Loader?
-  public var errorReporter: ErrorReporter
 
   public init(loader: Loader? = nil,
               extensions: [Extension]? = nil,
-              templateClass: Template.Type = Template.self,
-              errorReporter: ErrorReporter = SimpleErrorReporter()) {
+              templateClass: Template.Type = Template.self) {
 
     self.templateClass = templateClass
-    self.errorReporter = errorReporter
     self.loader = loader
     self.extensions = (extensions ?? []) + [DefaultExtension()]
   }
