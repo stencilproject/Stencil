@@ -218,7 +218,9 @@ func testFilter() {
     var filterExtension: Extension!
 
     func expectedSyntaxError(token: String, template: Template, description: String) -> TemplateSyntaxError {
-      let range = template.templateString.range(of: token)!
+      guard let range = template.templateString.range(of: token) else {
+        fatalError("Can't find '\(token)' in '\(template)'")
+      }
       let rangeLine = template.templateString.rangeLine(range)
       let sourceMap = SourceMap(filename: template.name, line: rangeLine)
       let token = Token.block(value: token, at: sourceMap)
