@@ -3,6 +3,11 @@ import Spectre
 
 
 class ErrorNode : NodeType {
+  let token: Token?
+  init(token: Token? = nil) {
+    self.token = token
+  }
+
   func render(_ context: Context) throws -> String {
     throw TemplateSyntaxError("Custom Error")
   }

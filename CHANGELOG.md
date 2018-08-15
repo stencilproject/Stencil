@@ -12,8 +12,11 @@
   [David Jennes](https://github.com/djbe)
   [#215](https://github.com/stencilproject/Stencil/pull/215)
 - Adds support for using spaces in filter expression.  
-  [Ilya Puchka](https://github.com/yonaskolb)
+  [Ilya Puchka](https://github.com/ilyapuchka)
   [#178](https://github.com/stencilproject/Stencil/pull/178)
+- Improvements in error reporting.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#167](https://github.com/stencilproject/Stencil/pull/167)
 
 ### Bug Fixes
 

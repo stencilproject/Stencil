@@ -62,7 +62,7 @@ func testFilter() {
       }
 
       let context = Context(dictionary: context, environment: Environment(extensions: [repeatExtension]))
-      try expect(try template.render(context)).toThrow(TemplateSyntaxError("No Repeat"))
+      try expect(try template.render(context)).toThrow(TemplateSyntaxError(reason: "No Repeat", token: template.tokens.first))
     }
 
     $0.it("allows you to override a default filter") {
@@ -214,32 +214,52 @@ func testFilter() {
 
 
   describe("filter suggestion") {
+    var template: Template!
+    var filterExtension: Extension!
+
+    func expectedSyntaxError(token: String, template: Template, description: String) -> TemplateSyntaxError {
+      guard let range = template.templateString.range(of: token) else {
+        fatalError("Can't find '\(token)' in '\(template)'")
+      }
+      let rangeLine = template.templateString.rangeLine(range)
+      let sourceMap = SourceMap(filename: template.name, line: rangeLine)
+      let token = Token.block(value: token, at: sourceMap)
+      return TemplateSyntaxError(reason: description, token: token, stackTrace: [])
+    }
+
+    func expectError(reason: String, token: String,
+                     file: String = #file, line: Int = #line, function: String = #function) throws {
+      let expectedError = expectedSyntaxError(token: token, template: template, description: reason)
+      let environment = Environment(extensions: [filterExtension])
+
+      let error = try expect(environment.render(template: template, context: [:]),
+                             file: file, line: line, function: function).toThrow() as TemplateSyntaxError
+      let reporter = SimpleErrorReporter()
+      try expect(reporter.renderError(error), file: file, line: line, function: function) == reporter.renderError(expectedError)
+    }
 
     $0.it("made for unknown filter") {
-      let template = Template(templateString: "{{ value|unknownFilter }}")
-      let expectedError = TemplateSyntaxError("Unknown filter 'unknownFilter'. Found similar filters: 'knownFilter'")
+      template = Template(templateString: "{{ value|unknownFilter }}")
 
-      let filterExtension = Extension()
+      filterExtension = Extension()
       filterExtension.registerFilter("knownFilter") { value, _ in value }
 
-      try expect(template.render(Context(dictionary: [:], environment: Environment(extensions: [filterExtension])))).toThrow(expectedError)
+      try expectError(reason: "Unknown filter 'unknownFilter'. Found similar filters: 'knownFilter'.", token: "value|unknownFilter")
     }
 
     $0.it("made for multiple similar filters") {
-      let template = Template(templateString: "{{ value|lowerFirst }}")
-      let expectedError = TemplateSyntaxError("Unknown filter 'lowerFirst'. Found similar filters: 'lowerFirstWord', 'lowercase'")
+      template = Template(templateString: "{{ value|lowerFirst }}")
 
-      let filterExtension = Extension()
+      filterExtension = Extension()
       filterExtension.registerFilter("lowerFirstWord") { value, _ in value }
       filterExtension.registerFilter("lowerFirstLetter") { value, _ in value }
 
-      try expect(template.render(Context(dictionary: [:], environment: Environment(extensions: [filterExtension])))).toThrow(expectedError)
+      try expectError(reason: "Unknown filter 'lowerFirst'. Found similar filters: 'lowerFirstWord', 'lowercase'.", token: "value|lowerFirst")
     }
 
     $0.it("not made when can't find similar filter") {
-      let template = Template(templateString: "{{ value|unknownFilter }}")
-      let expectedError = TemplateSyntaxError("Unknown filter 'unknownFilter'.")
-      try expect(template.render(Context(dictionary: [:]))).toThrow(expectedError)
+      template = Template(templateString: "{{ value|unknownFilter }}")
+      try expectError(reason: "Unknown filter 'unknownFilter'. Found similar filters: 'lowerFirstWord'.", token: "value|unknownFilter")
     }
 
   }

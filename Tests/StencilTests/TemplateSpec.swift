@@ -1,5 +1,5 @@
 import Spectre
-import Stencil
+@testable import Stencil
 
 
 func testTemplate() {
@@ -15,5 +15,6 @@ func testTemplate() {
         let result = try template.render([ "name": "Kyle" ])
         try expect(result) == "Hello World"
     }
+    
   }
 }

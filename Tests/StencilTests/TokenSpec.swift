@@ -1,11 +1,11 @@
 import Spectre
-import Stencil
+@testable import Stencil
 
 
 func testToken() {
   describe("Token") {
     $0.it("can split the contents into components") {
-      let token = Token.text(value: "hello world")
+      let token = Token.text(value: "hello world", at: .unknown)
       let components = token.components()
 
       try expect(components.count) == 2
@@ -14,7 +14,7 @@ func testToken() {
     }
 
     $0.it("can split the contents into components with single quoted strings") {
-      let token = Token.text(value: "hello 'kyle fuller'")
+      let token = Token.text(value: "hello 'kyle fuller'", at: .unknown)
       let components = token.components()
 
       try expect(components.count) == 2
@@ -23,7 +23,7 @@ func testToken() {
     }
 
     $0.it("can split the contents into components with double quoted strings") {
-      let token = Token.text(value: "hello \"kyle fuller\"")
+      let token = Token.text(value: "hello \"kyle fuller\"", at: .unknown)
       let components = token.components()
 
       try expect(components.count) == 2
