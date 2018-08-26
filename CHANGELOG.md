@@ -1,5 +1,24 @@
 # Stencil Changelog
 
+## Master
+
+ ### Bug Fixes
+
+ _None_
+
+ ### Breaking Changes
+
+ _None_
+
+ ### New Features
+
+ _None_
+
+ ### Internal Changes
+
+ _None_
+
+
 ## 0.12.0
 
 ### Enhancements
