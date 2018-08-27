@@ -189,7 +189,7 @@ func testVariable() {
       try expect(result) == 2
     }
 
-    $0.describe("Subrscripting") {
+    $0.describe("Subscripting") {
       $0.it("can resolve a property subscript via reflection") {
         try context.push(dictionary: ["property": "name"]) {
           let variable = Variable("article.author[property]")
