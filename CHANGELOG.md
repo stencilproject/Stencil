@@ -16,7 +16,9 @@
 
  ### Internal Changes
 
- _None_
+- Updated the PathKit dependency to 0.9.0 in CocoaPods, to be in line with SPM.  
+  [David Jennes](https://github.com/djbe)
+  [#227](https://github.com/stencilproject/Stencil/pull/227)
 
 
 ## 0.12.0
