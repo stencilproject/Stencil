@@ -1,20 +1,8 @@
 # Stencil Changelog
 
-## Master
+## 0.12.1
 
- ### Bug Fixes
-
- _None_
-
- ### Breaking Changes
-
- _None_
-
- ### New Features
-
- _None_
-
- ### Internal Changes
+### Internal Changes
 
 - Updated the PathKit dependency to 0.9.0 in CocoaPods, to be in line with SPM.  
   [David Jennes](https://github.com/djbe)
