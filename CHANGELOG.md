@@ -40,6 +40,11 @@
 - Update to Spectre 0.9.0.  
   [Ilya Puchka](https://github.com/ilyapuchka)
   [#247](https://github.com/stencilproject/Stencil/pull/247)
+- Optimise Scanner performance.  
+  [Eric Thorpe](https://github.com/trametheka)
+  [Sébastien Duperron](https://github.com/Liquidsoul)
+  [David Jennes](https://github.com/djbe)
+  [#226](https://github.com/stencilproject/Stencil/pull/226)
 
 
 ## 0.12.1
