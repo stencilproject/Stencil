@@ -57,17 +57,17 @@ extension String {
 
 public struct SourceMap: Equatable {
   public let filename: String?
-  public let line: RangeLine
+  public let location: ContentLocation
 
-  init(filename: String? = nil, line: RangeLine = ("", 0, 0)) {
+  init(filename: String? = nil, location: ContentLocation = ("", 0, 0)) {
     self.filename = filename
-    self.line = line
+    self.location = location
   }
 
   static let unknown = SourceMap()
 
   public static func ==(lhs: SourceMap, rhs: SourceMap) -> Bool {
-    return lhs.filename == rhs.filename && lhs.line == rhs.line
+    return lhs.filename == rhs.filename && lhs.location == rhs.location
   }
 }
 

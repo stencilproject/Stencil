@@ -1,12 +1,20 @@
 import Foundation
 
+typealias Line = (content: String, number: UInt, range: Range<String.Index>)
+
 struct Lexer {
   let templateName: String?
   let templateString: String
+  let lines: [Line]
 
   init(templateName: String? = nil, templateString: String) {
     self.templateName = templateName
     self.templateString = templateString
+
+    self.lines = templateString.components(separatedBy: .newlines).enumerated().flatMap {
+      guard !$0.element.isEmpty else { return nil }
+      return (content: $0.element, number: UInt($0.offset + 1), templateString.range(of: $0.element)!)
+    }
   }
 
   func createToken(string: String, at range: Range<String.Index>) -> Token {
@@ -25,8 +33,8 @@ struct Lexer {
     if string.hasPrefix("{{") || string.hasPrefix("{%") || string.hasPrefix("{#") {
       let value = strip()
       let range = templateString.range(of: value, range: range) ?? range
-      let line = templateString.rangeLine(range)
-      let sourceMap = SourceMap(filename: templateName, line: line)
+      let location = rangeLocation(range)
+      let sourceMap = SourceMap(filename: templateName, location: location)
 
       if string.hasPrefix("{{") {
         return .variable(value: value, at: sourceMap)
@@ -37,8 +45,8 @@ struct Lexer {
       }
     }
 
-    let line = templateString.rangeLine(range)
-    let sourceMap = SourceMap(filename: templateName, line: line)
+    let location = rangeLocation(range)
+    let sourceMap = SourceMap(filename: templateName, location: location)
     return .text(value: string, at: sourceMap)
   }
 
@@ -70,6 +78,14 @@ struct Lexer {
     }
 
     return tokens
+  }
+
+  func rangeLocation(_ range: Range<String.Index>) -> ContentLocation {
+    guard let line = self.lines.first(where: { $0.range.contains(range.lowerBound) }) else {
+      return ("", 0, 0)
+    }
+    let offset = templateString.distance(from: line.range.lowerBound, to: range.lowerBound)
+    return (line.content, line.number, offset)
   }
 
 }
@@ -179,23 +195,6 @@ extension String {
     let last = findLastNot(character: character) ?? endIndex
     return String(self[first..<last])
   }
-
-  public func rangeLine(_ range: Range<String.Index>) -> RangeLine {
-    var lineNumber: UInt = 0
-    var offset: Int = 0
-    var lineContent = ""
-
-    for line in components(separatedBy: CharacterSet.newlines) {
-      lineNumber += 1
-      lineContent = line
-      if let rangeOfLine = self.range(of: line), rangeOfLine.contains(range.lowerBound) {
-        offset = distance(from: rangeOfLine.lowerBound, to: range.lowerBound)
-        break
-      }
-    }
-
-    return (lineContent, lineNumber, offset)
-  }
 }
 
-public typealias RangeLine = (content: String, number: UInt, offset: Int)
+public typealias ContentLocation = (content: String, lineNumber: UInt, lineOffset: Int)

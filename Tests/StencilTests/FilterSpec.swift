@@ -221,8 +221,9 @@ func testFilter() {
       guard let range = template.templateString.range(of: token) else {
         fatalError("Can't find '\(token)' in '\(template)'")
       }
-      let rangeLine = template.templateString.rangeLine(range)
-      let sourceMap = SourceMap(filename: template.name, line: rangeLine)
+      let lexer = Lexer(templateString: template.templateString)
+      let location = lexer.rangeLocation(range)
+      let sourceMap = SourceMap(filename: template.name, location: location)
       let token = Token.block(value: token, at: sourceMap)
       return TemplateSyntaxError(reason: description, token: token, stackTrace: [])
     }

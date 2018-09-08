@@ -125,9 +125,9 @@ public class TokenParser {
       }
       // find offset of filter in the containing token so that only filter is highligted, not the whole token
       if let filterTokenRange = containingToken.contents.range(of: filterToken) {
-        var rangeLine = containingToken.sourceMap.line
-        rangeLine.offset += containingToken.contents.distance(from: containingToken.contents.startIndex, to: filterTokenRange.lowerBound)
-        syntaxError.token = .variable(value: filterToken, at: SourceMap(filename: containingToken.sourceMap.filename, line: rangeLine))
+        var location = containingToken.sourceMap.location
+        location.lineOffset += containingToken.contents.distance(from: containingToken.contents.startIndex, to: filterTokenRange.lowerBound)
+        syntaxError.token = .variable(value: filterToken, at: SourceMap(filename: containingToken.sourceMap.filename, location: location))
       } else {
         syntaxError.token = containingToken
       }
