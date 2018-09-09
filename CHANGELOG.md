@@ -2,23 +2,27 @@
 
 ## Master
 
-### Bug Fixes
-
- _None_
-
-### Breaking Changes
+### Breaking
 
 - Now requires Swift 4.1 or newer.  
   [Yonas Kolb](https://github.com/yonaskolb)
   [#228](https://github.com/stencilproject/Stencil/pull/228)
 
-### New Features
+### Enhancements
 
- _None_
+_None_
+
+### Deprecations
+
+_None_
+
+### Bug Fixes
+
+_None_
 
 ### Internal Changes
 
- _None_
+_None_
 
 
 ## 0.12.1
