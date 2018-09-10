@@ -11,7 +11,7 @@ struct Lexer {
     self.templateName = templateName
     self.templateString = templateString
 
-    self.lines = templateString.components(separatedBy: .newlines).enumerated().flatMap {
+    self.lines = templateString.components(separatedBy: .newlines).enumerated().compactMap {
       guard !$0.element.isEmpty else { return nil }
       return (content: $0.element, number: UInt($0.offset + 1), templateString.range(of: $0.element)!)
     }
@@ -19,7 +19,7 @@ struct Lexer {
 
   func createToken(string: String, at range: Range<String.Index>) -> Token {
     func strip() -> String {
-      guard string.characters.count > 4 else { return "" }
+      guard string.count > 4 else { return "" }
       let start = string.index(string.startIndex, offsetBy: 2)
       let end = string.index(string.endIndex, offsetBy: -2)
       let trimmed = String(string[start..<end])
@@ -114,14 +114,14 @@ class Scanner {
 
     range = range.upperBound..<range.upperBound
     while index != content.endIndex {
-      let substring = content.substring(from: index)
+      let substring = String(content[index...])
 
       if substring.hasPrefix(until) {
-        let result = content.substring(to: index)
+        let result = String(content[..<index])
 
         if returnUntil {
-          range = range.lowerBound..<originalContent.index(range.upperBound, offsetBy: until.characters.count)
-          content = substring.substring(from: until.endIndex)
+          range = range.lowerBound..<originalContent.index(range.upperBound, offsetBy: until.count)
+          content = String(substring[until.endIndex...])
           return result + until
         }
 
@@ -145,10 +145,10 @@ class Scanner {
     var index = content.startIndex
     range = range.upperBound..<range.upperBound
     while index != content.endIndex {
-      let substring = content.substring(from: index)
+      let substring = String(content[index...])
       for string in until {
         if substring.hasPrefix(string) {
-          let result = content.substring(to: index)
+          let result = String(content[..<index])
           content = substring
           return (string, result)
         }

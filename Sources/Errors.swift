@@ -67,7 +67,7 @@ open class SimpleErrorReporter: ErrorReporter {
     func describe(token: Token) -> String {
       let templateName = token.sourceMap.filename ?? ""
       let location = token.sourceMap.location
-      let highlight = "\(String(Array(repeating: " ", count: location.lineOffset)))^\(String(Array(repeating: "~", count: max(token.contents.characters.count - 1, 0))))"
+      let highlight = "\(String(Array(repeating: " ", count: location.lineOffset)))^\(String(Array(repeating: "~", count: max(token.contents.count - 1, 0))))"
 
       return "\(templateName)\(location.lineNumber):\(location.lineOffset): error: \(templateError.reason)\n"
         + "\(location.content)\n"
