@@ -13,7 +13,7 @@ extension String {
     let specialCharacters = ",|:"
     func appendWord(_ word: String) {
       if components.count > 0 {
-        if let precedingChar = components.last?.characters.last, specialCharacters.characters.contains(precedingChar) {
+        if let precedingChar = components.last?.last, specialCharacters.contains(precedingChar) {
           components[components.count-1] += word
         } else if specialCharacters.contains(word) {
           components[components.count-1] += word
@@ -25,7 +25,7 @@ extension String {
       }
     }
 
-    for character in self.characters {
+    for character in self {
       if character == "'" { singleQuoteCount += 1 }
       else if character == "\"" { doubleQuoteCount += 1 }
 
