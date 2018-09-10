@@ -9,7 +9,7 @@ class FilterExpression : Resolvable {
   let variable: Variable
 
   init(token: String, parser: TokenParser) throws {
-    let bits = token.characters.split(separator: "|").map({ String($0).trim(character: " ") })
+    let bits = token.split(separator: "|").map({ String($0).trim(character: " ") })
     if bits.isEmpty {
       throw TemplateSyntaxError("Variable tags must include at least 1 argument")
     }
@@ -60,7 +60,7 @@ public struct Variable : Equatable, Resolvable {
 
     if (variable.hasPrefix("'") && variable.hasSuffix("'")) || (variable.hasPrefix("\"") && variable.hasSuffix("\"")) {
       // String literal
-      return String(variable[variable.characters.index(after: variable.startIndex) ..< variable.characters.index(before: variable.endIndex)])
+      return String(variable[variable.index(after: variable.startIndex) ..< variable.index(before: variable.endIndex)])
     }
 
     // Number literal

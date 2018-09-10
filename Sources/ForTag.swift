@@ -23,7 +23,7 @@ class ForNode : NodeType {
       throw TemplateSyntaxError("'for' statements should use the syntax: `for <x> in <y> [where <condition>]`.")
     }
 
-    let loopVariables = components[1].characters
+    let loopVariables = components[1]
       .split(separator: ",")
       .map(String.init)
       .map { $0.trim(character: " ") }
