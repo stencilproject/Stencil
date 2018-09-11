@@ -189,7 +189,7 @@ func testVariable() {
       try expect(result) == 2
     }
 
-    $0.describe("Subrscripting") {
+    $0.describe("Subscripting") {
       $0.it("can resolve a property subscript via reflection") {
         try context.push(dictionary: ["property": "name"]) {
           let variable = Variable("article.author[property]")
@@ -292,7 +292,9 @@ func testVariable() {
     }()
 
     func makeVariable(_ token: String) throws -> RangeVariable? {
-      return try RangeVariable(token, parser: TokenParser(tokens: [], environment: context.environment))
+      let token = Token.variable(value: token, at: .unknown)
+      let parser = TokenParser(tokens: [token], environment: context.environment)
+      return try RangeVariable(token.contents, parser: parser, containedIn: token)
     }
 
     $0.it("can resolve closed range as array") {
@@ -321,11 +323,11 @@ func testVariable() {
     }
 
     $0.it("throws is left range value is missing") {
-      try  expect(makeVariable("...1")).toThrow()
+      try expect(makeVariable("...1")).toThrow()
     }
 
     $0.it("throws is right range value is missing") {
-      try  expect(makeVariable("1...")).toThrow()
+      try expect(makeVariable("1...")).toThrow()
     }
 
   }

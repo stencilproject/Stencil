@@ -7,9 +7,9 @@ func testIfNode() {
     $0.describe("parsing") {
       $0.it("can parse an if block") {
         let tokens: [Token] = [
-          .block(value: "if value"),
-          .text(value: "true"),
-          .block(value: "endif")
+          .block(value: "if value", at: .unknown),
+          .text(value: "true", at: .unknown),
+          .block(value: "endif", at: .unknown)
         ]
 
         let parser = TokenParser(tokens: tokens, environment: Environment())
@@ -25,11 +25,11 @@ func testIfNode() {
 
       $0.it("can parse an if with else block") {
         let tokens: [Token] = [
-          .block(value: "if value"),
-          .text(value: "true"),
-          .block(value: "else"),
-          .text(value: "false"),
-          .block(value: "endif")
+          .block(value: "if value", at: .unknown),
+          .text(value: "true", at: .unknown),
+          .block(value: "else", at: .unknown),
+          .text(value: "false", at: .unknown),
+          .block(value: "endif", at: .unknown)
         ]
 
         let parser = TokenParser(tokens: tokens, environment: Environment())
@@ -50,13 +50,13 @@ func testIfNode() {
 
       $0.it("can parse an if with elif block") {
         let tokens: [Token] = [
-          .block(value: "if value"),
-          .text(value: "true"),
-          .block(value: "elif something"),
-          .text(value: "some"),
-          .block(value: "else"),
-          .text(value: "false"),
-          .block(value: "endif")
+          .block(value: "if value", at: .unknown),
+          .text(value: "true", at: .unknown),
+          .block(value: "elif something", at: .unknown),
+          .text(value: "some", at: .unknown),
+          .block(value: "else", at: .unknown),
+          .text(value: "false", at: .unknown),
+          .block(value: "endif", at: .unknown)
         ]
 
         let parser = TokenParser(tokens: tokens, environment: Environment())
@@ -81,11 +81,11 @@ func testIfNode() {
 
       $0.it("can parse an if with elif block without else") {
         let tokens: [Token] = [
-          .block(value: "if value"),
-          .text(value: "true"),
-          .block(value: "elif something"),
-          .text(value: "some"),
-          .block(value: "endif")
+          .block(value: "if value", at: .unknown),
+          .text(value: "true", at: .unknown),
+          .block(value: "elif something", at: .unknown),
+          .text(value: "some", at: .unknown),
+          .block(value: "endif", at: .unknown)
         ]
 
         let parser = TokenParser(tokens: tokens, environment: Environment())
@@ -106,15 +106,15 @@ func testIfNode() {
 
       $0.it("can parse an if with multiple elif block") {
         let tokens: [Token] = [
-          .block(value: "if value"),
-          .text(value: "true"),
-          .block(value: "elif something1"),
-          .text(value: "some1"),
-          .block(value: "elif something2"),
-          .text(value: "some2"),
-          .block(value: "else"),
-          .text(value: "false"),
-          .block(value: "endif")
+          .block(value: "if value", at: .unknown),
+          .text(value: "true", at: .unknown),
+          .block(value: "elif something1", at: .unknown),
+          .text(value: "some1", at: .unknown),
+          .block(value: "elif something2", at: .unknown),
+          .text(value: "some2", at: .unknown),
+          .block(value: "else", at: .unknown),
+          .text(value: "false", at: .unknown),
+          .block(value: "endif", at: .unknown)
         ]
 
         let parser = TokenParser(tokens: tokens, environment: Environment())
@@ -144,9 +144,9 @@ func testIfNode() {
 
       $0.it("can parse an if with complex expression") {
         let tokens: [Token] = [
-          .block(value: "if value == \"test\" and not name"),
-          .text(value: "true"),
-          .block(value: "endif")
+          .block(value: "if value == \"test\" and not name", at: .unknown),
+          .text(value: "true", at: .unknown),
+          .block(value: "endif", at: .unknown)
         ]
 
         let parser = TokenParser(tokens: tokens, environment: Environment())
@@ -156,11 +156,11 @@ func testIfNode() {
 
       $0.it("can parse an ifnot block") {
         let tokens: [Token] = [
-          .block(value: "ifnot value"),
-          .text(value: "false"),
-          .block(value: "else"),
-          .text(value: "true"),
-          .block(value: "endif")
+          .block(value: "ifnot value", at: .unknown),
+          .text(value: "false", at: .unknown),
+          .block(value: "else", at: .unknown),
+          .text(value: "true", at: .unknown),
+          .block(value: "endif", at: .unknown)
         ]
 
         let parser = TokenParser(tokens: tokens, environment: Environment())
@@ -179,22 +179,18 @@ func testIfNode() {
       }
 
       $0.it("throws an error when parsing an if block without an endif") {
-        let tokens: [Token] = [
-          .block(value: "if value"),
-        ]
+        let tokens: [Token] = [.block(value: "if value", at: .unknown)]
 
         let parser = TokenParser(tokens: tokens, environment: Environment())
-        let error = TemplateSyntaxError("`endif` was not found.")
+        let error = TemplateSyntaxError(reason: "`endif` was not found.", token: tokens.first)
         try expect(try parser.parse()).toThrow(error)
       }
 
       $0.it("throws an error when parsing an ifnot without an endif") {
-        let tokens: [Token] = [
-            .block(value: "ifnot value"),
-        ]
+        let tokens: [Token] = [.block(value: "ifnot value", at: .unknown)]
 
         let parser = TokenParser(tokens: tokens, environment: Environment())
-        let error = TemplateSyntaxError("`endif` was not found.")
+        let error = TemplateSyntaxError(reason: "`endif` was not found.", token: tokens.first)
         try expect(try parser.parse()).toThrow(error)
       }
     }
@@ -242,9 +238,9 @@ func testIfNode() {
 
     $0.it("supports variable filters in the if expression") {
         let tokens: [Token] = [
-          .block(value: "if value|uppercase == \"TEST\""),
-          .text(value: "true"),
-          .block(value: "endif")
+          .block(value: "if value|uppercase == \"TEST\"", at: .unknown),
+          .text(value: "true", at: .unknown),
+          .block(value: "endif", at: .unknown)
         ]
 
         let parser = TokenParser(tokens: tokens, environment: Environment())
@@ -256,9 +252,9 @@ func testIfNode() {
     
     $0.it("evaluates nil properties as false") {
       let tokens: [Token] = [
-        .block(value: "if instance.value"),
-        .text(value: "true"),
-        .block(value: "endif")
+        .block(value: "if instance.value", at: .unknown),
+        .text(value: "true", at: .unknown),
+        .block(value: "endif", at: .unknown)
       ]
       
       let parser = TokenParser(tokens: tokens, environment: Environment())
@@ -273,11 +269,11 @@ func testIfNode() {
 
     $0.it("supports closed range variables") {
       let tokens: [Token] = [
-        .block(value: "if value in 1...3"),
-        .text(value: "true"),
-        .block(value: "else"),
-        .text(value: "false"),
-        .block(value: "endif")
+        .block(value: "if value in 1...3", at: .unknown),
+        .text(value: "true", at: .unknown),
+        .block(value: "else", at: .unknown),
+        .text(value: "false", at: .unknown),
+        .block(value: "endif", at: .unknown)
       ]
 
       let parser = TokenParser(tokens: tokens, environment: Environment())

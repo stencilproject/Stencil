@@ -2,7 +2,8 @@ import Spectre
 import Stencil
 
 
-fileprivate class CustomNode : NodeType {
+fileprivate struct CustomNode : NodeType {
+  let token: Token?
   func render(_ context:Context) throws -> String {
     return "Hello World"
   }
@@ -24,7 +25,7 @@ func testStencil() {
     }
 
     exampleExtension.registerTag("customtag") { parser, token in
-      return CustomNode()
+      return CustomNode(token: token)
     }
 
     let environment = Environment(extensions: [exampleExtension])

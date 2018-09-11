@@ -1,13 +1,25 @@
-struct Lexer {
-  let templateString: String
+import Foundation
 
-  init(templateString: String) {
+typealias Line = (content: String, number: UInt, range: Range<String.Index>)
+
+struct Lexer {
+  let templateName: String?
+  let templateString: String
+  let lines: [Line]
+
+  init(templateName: String? = nil, templateString: String) {
+    self.templateName = templateName
     self.templateString = templateString
+
+    self.lines = templateString.components(separatedBy: .newlines).enumerated().compactMap {
+      guard !$0.element.isEmpty else { return nil }
+      return (content: $0.element, number: UInt($0.offset + 1), templateString.range(of: $0.element)!)
+    }
   }
 
-  func createToken(string: String) -> Token {
+  func createToken(string: String, at range: Range<String.Index>) -> Token {
     func strip() -> String {
-      guard string.characters.count > 4 else { return "" }
+      guard string.count > 4 else { return "" }
       let start = string.index(string.startIndex, offsetBy: 2)
       let end = string.index(string.endIndex, offsetBy: -2)
       let trimmed = String(string[start..<end])
@@ -18,15 +30,24 @@ struct Lexer {
       return trimmed
     }
 
-    if string.hasPrefix("{{") {
-      return .variable(value: strip())
-    } else if string.hasPrefix("{%") {
-      return .block(value: strip())
-    } else if string.hasPrefix("{#") {
-      return .comment(value: strip())
+    if string.hasPrefix("{{") || string.hasPrefix("{%") || string.hasPrefix("{#") {
+      let value = strip()
+      let range = templateString.range(of: value, range: range) ?? range
+      let location = rangeLocation(range)
+      let sourceMap = SourceMap(filename: templateName, location: location)
+
+      if string.hasPrefix("{{") {
+        return .variable(value: value, at: sourceMap)
+      } else if string.hasPrefix("{%") {
+        return .block(value: value, at: sourceMap)
+      } else if string.hasPrefix("{#") {
+        return .comment(value: value, at: sourceMap)
+      }
     }
 
-    return .text(value: string)
+    let location = rangeLocation(range)
+    let sourceMap = SourceMap(filename: templateName, location: location)
+    return .text(value: string, at: sourceMap)
   }
 
   /// Returns an array of tokens from a given template string.
@@ -39,33 +60,45 @@ struct Lexer {
       "{{": "}}",
       "{%": "%}",
       "{#": "#}",
-    ]
+      ]
 
     while !scanner.isEmpty {
       if let text = scanner.scan(until: ["{{", "{%", "{#"]) {
         if !text.1.isEmpty {
-          tokens.append(createToken(string: text.1))
+          tokens.append(createToken(string: text.1, at: scanner.range))
         }
 
         let end = map[text.0]!
         let result = scanner.scan(until: end, returnUntil: true)
-        tokens.append(createToken(string: result))
+        tokens.append(createToken(string: result, at: scanner.range))
       } else {
-        tokens.append(createToken(string: scanner.content))
+        tokens.append(createToken(string: scanner.content, at: scanner.range))
         scanner.content = ""
       }
     }
 
     return tokens
   }
+
+  func rangeLocation(_ range: Range<String.Index>) -> ContentLocation {
+    guard let line = self.lines.first(where: { $0.range.contains(range.lowerBound) }) else {
+      return ("", 0, 0)
+    }
+    let offset = templateString.distance(from: line.range.lowerBound, to: range.lowerBound)
+    return (line.content, line.number, offset)
+  }
+
 }
 
-
 class Scanner {
+  let originalContent: String
   var content: String
+  var range: Range<String.Index>
 
   init(_ content: String) {
+    self.originalContent = content
     self.content = content
+    range = content.startIndex..<content.startIndex
   }
 
   var isEmpty: Bool {
@@ -73,27 +106,31 @@ class Scanner {
   }
 
   func scan(until: String, returnUntil: Bool = false) -> String {
+    var index = content.startIndex
+
     if until.isEmpty {
       return ""
     }
 
-    var index = content.startIndex
+    range = range.upperBound..<range.upperBound
     while index != content.endIndex {
-      let substring = content.substring(from: index)
+      let substring = String(content[index...])
 
       if substring.hasPrefix(until) {
-        let result = content.substring(to: index)
-        content = substring
+        let result = String(content[..<index])
 
         if returnUntil {
-          content = content.substring(from: until.endIndex)
+          range = range.lowerBound..<originalContent.index(range.upperBound, offsetBy: until.count)
+          content = String(substring[until.endIndex...])
           return result + until
         }
 
+        content = substring
         return result
       }
 
       index = content.index(after: index)
+      range = range.lowerBound..<originalContent.index(after: range.upperBound)
     }
 
     content = ""
@@ -106,17 +143,19 @@ class Scanner {
     }
 
     var index = content.startIndex
+    range = range.upperBound..<range.upperBound
     while index != content.endIndex {
-      let substring = content.substring(from: index)
+      let substring = String(content[index...])
       for string in until {
         if substring.hasPrefix(string) {
-          let result = content.substring(to: index)
+          let result = String(content[..<index])
           content = substring
           return (string, result)
         }
       }
 
       index = content.index(after: index)
+      range = range.lowerBound..<originalContent.index(after: range.upperBound)
     }
 
     return nil
@@ -157,3 +196,5 @@ extension String {
     return String(self[first..<last])
   }
 }
+
+public typealias ContentLocation = (content: String, lineNumber: UInt, lineOffset: Int)

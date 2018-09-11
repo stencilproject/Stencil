@@ -11,15 +11,15 @@ func testInclude() {
 
     $0.describe("parsing") {
       $0.it("throws an error when no template is given") {
-        let tokens: [Token] = [ .block(value: "include") ]
+        let tokens: [Token] = [ .block(value: "include", at: .unknown) ]
         let parser = TokenParser(tokens: tokens, environment: Environment())
 
-        let error = TemplateSyntaxError("'include' tag requires one argument, the template file to be included. A second optional argument can be used to specify the context that will be passed to the included file")
+        let error = TemplateSyntaxError(reason: "'include' tag requires one argument, the template file to be included. A second optional argument can be used to specify the context that will be passed to the included file", token: tokens.first)
         try expect(try parser.parse()).toThrow(error)
       }
 
       $0.it("can parse a valid include block") {
-        let tokens: [Token] = [ .block(value: "include \"test.html\"") ]
+        let tokens: [Token] = [ .block(value: "include \"test.html\"", at: .unknown) ]
         let parser = TokenParser(tokens: tokens, environment: Environment())
 
         let nodes = try parser.parse()
@@ -31,7 +31,7 @@ func testInclude() {
 
     $0.describe("rendering") {
       $0.it("throws an error when rendering without a loader") {
-        let node = IncludeNode(templateName: Variable("\"test.html\""))
+        let node = IncludeNode(templateName: Variable("\"test.html\""), token: .block(value: "", at: .unknown))
 
         do {
           _ = try node.render(Context())
@@ -41,7 +41,7 @@ func testInclude() {
       }
 
       $0.it("throws an error when it cannot find the included template") {
-        let node = IncludeNode(templateName: Variable("\"unknown.html\""))
+        let node = IncludeNode(templateName: Variable("\"unknown.html\""), token: .block(value: "", at: .unknown))
 
         do {
           _ = try node.render(Context(environment: environment))
@@ -51,7 +51,7 @@ func testInclude() {
       }
 
       $0.it("successfully renders a found included template") {
-        let node = IncludeNode(templateName: Variable("\"test.html\""))
+        let node = IncludeNode(templateName: Variable("\"test.html\""), token: .block(value: "", at: .unknown))
         let context = Context(dictionary: ["target": "World"], environment: environment)
         let value = try node.render(context)
         try expect(value) == "Hello World!"
