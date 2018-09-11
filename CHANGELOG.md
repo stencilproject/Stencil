@@ -2,6 +2,39 @@
 
 ## Master
 
+### Bug Fixes
+
+ _None_
+
+### Breaking Changes
+
+- Now requires Swift 4.1 or newer.  
+  [Yonas Kolb](https://github.com/yonaskolb)
+  [#228](https://github.com/stencilproject/Stencil/pull/228)
+- You can now use brackets in boolean expressions to change operators precedence.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#165](https://github.com/stencilproject/Stencil/pull/165)
+
+### New Features
+
+ _None_
+
+### Internal Changes
+
+ _None_
+
+
+## 0.12.1
+
+### Internal Changes
+
+- Updated the PathKit dependency to 0.9.0 in CocoaPods, to be in line with SPM.  
+  [David Jennes](https://github.com/djbe)
+  [#227](https://github.com/stencilproject/Stencil/pull/227)
+
+
+## 0.12.0
+
 ### Enhancements
 
 - Added an optional second parameter to the `include` tag for passing a sub context to the included file.  
@@ -14,9 +47,9 @@
 - Adds support for using spaces in filter expression.  
   [Ilya Puchka](https://github.com/ilyapuchka)
   [#178](https://github.com/stencilproject/Stencil/pull/178)
-- You can now use brackets in boolean expressions to change operators precedence.  
+- Improvements in error reporting.  
   [Ilya Puchka](https://github.com/ilyapuchka)
-  [#165](https://github.com/stencilproject/Stencil/pull/165)
+  [#167](https://github.com/stencilproject/Stencil/pull/167)
 
 ### Bug Fixes
 

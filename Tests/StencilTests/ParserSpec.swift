@@ -6,7 +6,7 @@ func testTokenParser() {
   describe("TokenParser") {
     $0.it("can parse a text token") {
       let parser = TokenParser(tokens: [
-        .text(value: "Hello World")
+        .text(value: "Hello World", at: .unknown)
       ], environment: Environment())
 
       let nodes = try parser.parse()
@@ -18,7 +18,7 @@ func testTokenParser() {
 
     $0.it("can parse a variable token") {
       let parser = TokenParser(tokens: [
-        .variable(value: "'name'")
+        .variable(value: "'name'", at: .unknown)
       ], environment: Environment())
 
       let nodes = try parser.parse()
@@ -30,7 +30,7 @@ func testTokenParser() {
 
     $0.it("can parse a comment token") {
       let parser = TokenParser(tokens: [
-        .comment(value: "Secret stuff!")
+        .comment(value: "Secret stuff!", at: .unknown)
       ], environment: Environment())
 
       let nodes = try parser.parse()
@@ -44,7 +44,7 @@ func testTokenParser() {
       }
 
       let parser = TokenParser(tokens: [
-        .block(value: "known"),
+        .block(value: "known", at: .unknown),
       ], environment: Environment(extensions: [simpleExtension]))
 
       let nodes = try parser.parse()
@@ -52,11 +52,10 @@ func testTokenParser() {
     }
 
     $0.it("errors when parsing an unknown tag") {
-      let parser = TokenParser(tokens: [
-        .block(value: "unknown"),
-      ], environment: Environment())
+      let tokens: [Token] = [.block(value: "unknown", at: .unknown)]
+      let parser = TokenParser(tokens: tokens, environment: Environment())
 
-      try expect(try parser.parse()).toThrow(TemplateSyntaxError("Unknown template tag 'unknown'"))
+      try expect(try parser.parse()).toThrow(TemplateSyntaxError(reason: "Unknown template tag 'unknown'", token: tokens.first))
     }
   }
 }
