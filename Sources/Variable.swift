@@ -104,7 +104,9 @@ public struct Variable : Equatable, Resolvable {
         #if os(Linux)
           return nil
         #else
-          current = object.value(forKey: bit)
+          if object.responds(to: Selector(bit)) {
+            current = object.value(forKey: bit)
+          }
         #endif
       } else if let value = current {
         current = Mirror(reflecting: value).getValue(for: bit)

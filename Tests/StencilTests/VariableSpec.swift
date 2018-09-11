@@ -148,6 +148,12 @@ func testVariable() {
       let result = try variable.resolve(context) as? String
       try expect(result) == "Foo"
     }
+
+    $0.it("does not crash on KVO") {
+      let variable = Variable("object.fullname")
+      let result = try variable.resolve(context) as? String
+      try expect(result).to.beNil()
+    }
 #endif
 
     $0.it("can resolve a value via reflection") {
