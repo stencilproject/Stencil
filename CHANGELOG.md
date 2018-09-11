@@ -4,7 +4,7 @@
 
 ### Bug Fixes
 
-- Now accessing undefined keys in NSObject does not cause runtime crash and instead renders empty string.
+- Now accessing undefined keys in NSObject does not cause runtime crash and instead renders empty string.  
   [Ilya Puchka](https://github.com/ilyapuchka)
   [#234](https://github.com/stencilproject/Stencil/pull/234)
 
