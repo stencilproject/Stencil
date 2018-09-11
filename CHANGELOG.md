@@ -11,7 +11,6 @@
 - Now requires Swift 4.1 or newer.  
   [Yonas Kolb](https://github.com/yonaskolb)
   [#228](https://github.com/stencilproject/Stencil/pull/228)
-  
 - Added method to add boolean filters with their negative counterparts.  
   [Ilya Puchka](https://github.com/ilyapuchka)
   [#160](https://github.com/stencilproject/Stencil/pull/160)
