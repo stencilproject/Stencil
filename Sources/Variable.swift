@@ -128,10 +128,6 @@ public struct Variable : Equatable, Resolvable {
   }
 }
 
-public func ==(lhs: Variable, rhs: Variable) -> Bool {
-  return lhs.variable == rhs.variable
-}
-
 /// A structure used to represet range of two integer values expressed as `from...to`.
 /// Values should be numbers (they will be converted to integers).
 /// Rendering this variable produces array from range `from...to`.

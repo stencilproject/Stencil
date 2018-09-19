@@ -114,21 +114,4 @@ public enum Token : Equatable {
       return sourceMap
     }
   }
-
-}
-
-
-public func == (lhs: Token, rhs: Token) -> Bool {
-  switch (lhs, rhs) {
-  case let (.text(lhsValue, lhsAt), .text(rhsValue, rhsAt)):
-    return lhsValue == rhsValue && lhsAt == rhsAt
-  case let (.variable(lhsValue, lhsAt), .variable(rhsValue, rhsAt)):
-    return lhsValue == rhsValue && lhsAt == rhsAt
-  case let (.block(lhsValue, lhsAt), .block(rhsValue, rhsAt)):
-    return lhsValue == rhsValue && lhsAt == rhsAt
-  case let (.comment(lhsValue, lhsAt), .comment(rhsValue, rhsAt)):
-    return lhsValue == rhsValue && lhsAt == rhsAt
-  default:
-    return false
-  }
 }
