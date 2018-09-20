@@ -7,6 +7,9 @@
 - Now accessing undefined keys in NSObject does not cause runtime crash and instead renders empty string.  
   [Ilya Puchka](https://github.com/ilyapuchka)
   [#234](https://github.com/stencilproject/Stencil/pull/234)
+- `for` tag: When iterating over a dictionary the keys will now always be sorted (in an ascending order) to ensure consistent output generation.  
+  [David Jennes](https://github.com/djbe)
+  [#240](https://github.com/stencilproject/Stencil/pull/240)
 
 ### Breaking Changes
 
