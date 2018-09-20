@@ -1,14 +1,11 @@
-import XCTest
 import Spectre
 @testable import Stencil
+import XCTest
 
-
-class ContextTests: XCTestCase {
-  
-  func testContext() {
-    describe("Context") {
-      var context: Context!
-
+final class ContextTests: XCTestCase {
+  func testContextSubscripting() {
+    describe("Context Subscripting") {
+      var context = Context()
       $0.before {
         context = Context(dictionary: ["name": "Kyle"])
       }
@@ -40,6 +37,15 @@ class ContextTests: XCTestCase {
           context["name"] = "Katie"
           try expect(context["name"] as? String) == "Katie"
         }
+      }
+    }
+  }
+
+  func testContextRestoration() {
+    describe("Context Restoration") {
+      var context = Context()
+      $0.before {
+        context = Context(dictionary: ["name": "Kyle"])
       }
 
       $0.it("allows you to pop to restore previous state") {
