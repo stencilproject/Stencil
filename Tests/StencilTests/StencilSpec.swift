@@ -32,11 +32,13 @@ func testStencil() {
 
     $0.it("can render the README example") {
 
-      let templateString = "There are {{ articles.count }} articles.\n" +
-        "\n" +
-        "{% for article in articles %}" +
-        "    - {{ article.title }} by {{ article.author }}.\n" +
-        "{% endfor %}\n"
+      let templateString = """
+        There are {{ articles.count }} articles.
+
+        {% for article in articles %}\
+            - {{ article.title }} by {{ article.author }}.
+        {% endfor %}
+        """
 
       let context = [
         "articles": [
@@ -48,13 +50,13 @@ func testStencil() {
       let template = Template(templateString: templateString)
       let result = try template.render(context)
 
-      let fixture = "There are 2 articles.\n" +
-        "\n" +
-        "    - Migrating from OCUnit to XCTest by Kyle Fuller.\n" +
-        "    - Memory Management with ARC by Kyle Fuller.\n" +
-        "\n"
+      try expect(result) == """
+        There are 2 articles.
 
-      try expect(result) == fixture
+            - Migrating from OCUnit to XCTest by Kyle Fuller.
+            - Memory Management with ARC by Kyle Fuller.
+
+        """
     }
 
     $0.it("can render a custom template tag") {

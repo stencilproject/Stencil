@@ -58,7 +58,9 @@ func testInclude() {
       }
 
       $0.it("successfully passes context") {
-        let template = Template(templateString: "{% include \"test.html\" child %}")
+        let template = Template(templateString: """
+          {% include "test.html" child %}
+          """)
         let context = Context(dictionary: ["child": ["target": "World"]], environment: environment)
         let value = try template.render(context)
         try expect(value) == "Hello World!"

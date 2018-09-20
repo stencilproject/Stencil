@@ -11,17 +11,26 @@ func testInheritence() {
 
     $0.it("can inherit from another template") {
       let template = try environment.loadTemplate(name: "child.html")
-      try expect(try template.render()) == "Super_Header Child_Header\nChild_Body"
+      try expect(try template.render()) == """
+        Super_Header Child_Header
+        Child_Body
+        """
     }
 
     $0.it("can inherit from another template inheriting from another template") {
       let template = try environment.loadTemplate(name: "child-child.html")
-      try expect(try template.render()) == "Super_Header Child_Header Child_Child_Header\nChild_Body"
+      try expect(try template.render()) == """
+        Super_Header Child_Header Child_Child_Header
+        Child_Body
+        """
     }
 
     $0.it("can inherit from a template that calls a super block") {
       let template = try environment.loadTemplate(name: "child-super.html")
-      try expect(try template.render()) == "Header\nChild_Body"
+      try expect(try template.render()) == """
+        Header
+        Child_Body
+        """
     }
   }
 }
