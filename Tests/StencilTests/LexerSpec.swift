@@ -69,15 +69,16 @@ func testLexer() {
     }
 
     $0.it("can tokenize with new lines") {
-      let templateString =
-        "My name is {%\n" +
-          "    if name\n" +
-          "     and\n" +
-          "    name\n" +
-          "%}{{\n" +
-          "name\n" +
-          "}}{%\n" +
-      "endif %}."
+      let templateString = """
+        My name is {%
+            if name
+             and
+            name
+        %}{{
+        name
+        }}{%
+        endif %}.
+        """
 
       let lexer = Lexer(templateString: templateString)
 

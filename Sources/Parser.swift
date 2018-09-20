@@ -98,7 +98,10 @@ public class TokenParser {
     if suggestedFilters.isEmpty {
       throw TemplateSyntaxError("Unknown filter '\(name)'.")
     } else {
-      throw TemplateSyntaxError("Unknown filter '\(name)'. Found similar filters: \(suggestedFilters.map({ "'\($0)'" }).joined(separator: ", ")).")
+      throw TemplateSyntaxError("""
+        Unknown filter '\(name)'. \
+        Found similar filters: \(suggestedFilters.map({ "'\($0)'" }).joined(separator: ", ")).
+        """)
     }
   }
 

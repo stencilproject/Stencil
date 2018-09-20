@@ -23,7 +23,9 @@ func testFilter() {
     }
 
     $0.it("allows you to register a custom filter which accepts single argument") {
-      let template = Template(templateString: "{{ name|repeat:'value1, \"value2\"' }}")
+      let template = Template(templateString: """
+        {{ name|repeat:'value1, "value2"' }}
+        """)
 
       let repeatExtension = Extension()
       repeatExtension.registerFilter("repeat") { value, arguments in
@@ -35,11 +37,15 @@ func testFilter() {
       }
 
       let result = try template.render(Context(dictionary: context, environment: Environment(extensions: [repeatExtension])))
-      try expect(result) == "Kyle Kyle with args value1, \"value2\""
+      try expect(result) == """
+        Kyle Kyle with args value1, "value2"
+        """
     }
 
     $0.it("allows you to register a custom filter which accepts several arguments") {
-        let template = Template(templateString: "{{ name|repeat:'value\"1\"',\"value'2'\",'(key, value)' }}")
+        let template = Template(templateString: """
+          {{ name|repeat:'value"1"',"value'2'",'(key, value)' }}
+          """)
 
         let repeatExtension = Extension()
         repeatExtension.registerFilter("repeat") { value, arguments in
@@ -51,7 +57,9 @@ func testFilter() {
         }
 
         let result = try template.render(Context(dictionary: context, environment: Environment(extensions: [repeatExtension])))
-        try expect(result) == "Kyle Kyle with args 0: value\"1\", 1: value'2', 2: (key, value)"
+        try expect(result) == """
+          Kyle Kyle with args 0: value"1", 1: value'2', 2: (key, value)
+          """
     }
 
     $0.it("allows you to register a custom which throws") {
@@ -78,7 +86,9 @@ func testFilter() {
     }
 
     $0.it("allows whitespace in expression") {
-      let template = Template(templateString: "{{ value | join : \", \" }}")
+      let template = Template(templateString: """
+          {{ value | join : ", " }}
+          """)
       let result = try template.render(Context(dictionary: ["value": ["One", "Two"]]))
       try expect(result) == "One, Two"
     }
@@ -114,25 +124,33 @@ func testFilter() {
       $0.it("transforms a string to be capitalized") {
         let template = Template(templateString: "{{ names|capitalize }}")
         let result = try template.render(Context(dictionary: ["names": ["kyle", "kyle"]]))
-        try expect(result) == "[\"Kyle\", \"Kyle\"]"
+        try expect(result) == """
+          ["Kyle", "Kyle"]
+          """
       }
 
       $0.it("transforms a string to be uppercase") {
         let template = Template(templateString: "{{ names|uppercase }}")
         let result = try template.render(Context(dictionary: ["names": ["kyle", "kyle"]]))
-        try expect(result) == "[\"KYLE\", \"KYLE\"]"
+        try expect(result) == """
+          ["KYLE", "KYLE"]
+          """
       }
 
       $0.it("transforms a string to be lowercase") {
         let template = Template(templateString: "{{ names|lowercase }}")
         let result = try template.render(Context(dictionary: ["names": ["Kyle", "Kyle"]]))
-        try expect(result) == "[\"kyle\", \"kyle\"]"
+        try expect(result) == """
+          ["kyle", "kyle"]
+          """
       }
     }
   }
 
   describe("default filter") {
-    let template = Template(templateString: "Hello {{ name|default:\"World\" }}")
+    let template = Template(templateString: """
+      Hello {{ name|default:"World" }}
+      """)
 
     $0.it("shows the variable value") {
       let result = try template.render(Context(dictionary: ["name": "Kyle"]))
@@ -145,7 +163,9 @@ func testFilter() {
     }
 
     $0.it("supports multiple defaults") {
-      let template = Template(templateString: "Hello {{ name|default:a,b,c,\"World\" }}")
+      let template = Template(templateString: """
+        Hello {{ name|default:a,b,c,"World" }}
+        """)
       let result = try template.render(Context(dictionary: [:]))
       try expect(result) == "Hello World"
     }
@@ -163,7 +183,9 @@ func testFilter() {
     }
 
     $0.it("checks for underlying nil value correctly") {
-      let template = Template(templateString: "Hello {{ user.name|default:\"anonymous\" }}")
+      let template = Template(templateString: """
+        Hello {{ user.name|default:"anonymous" }}
+        """)
       let nilName: String? = nil
       let user: [String: Any?] = ["name": nilName]
       let result = try template.render(Context(dictionary: ["user": user]))
@@ -172,7 +194,9 @@ func testFilter() {
   }
 
   describe("join filter") {
-    let template = Template(templateString: "{{ value|join:\", \" }}")
+    let template = Template(templateString: """
+      {{ value|join:", " }}
+      """)
 
     $0.it("joins a collection of strings") {
       let result = try template.render(Context(dictionary: ["value": ["One", "Two"]]))
@@ -185,30 +209,42 @@ func testFilter() {
     }
 
     $0.it("can join by non string") {
-      let template = Template(templateString: "{{ value|join:separator }}")
+      let template = Template(templateString: """
+        {{ value|join:separator }}
+        """)
       let result = try template.render(Context(dictionary: ["value": ["One", "Two"], "separator": true]))
       try expect(result) == "OnetrueTwo"
     }
 
     $0.it("can join without arguments") {
-      let template = Template(templateString: "{{ value|join }}")
+      let template = Template(templateString: """
+        {{ value|join }}
+        """)
       let result = try template.render(Context(dictionary: ["value": ["One", "Two"]]))
       try expect(result) == "OneTwo"
     }
   }
 
   describe("split filter") {
-    let template = Template(templateString: "{{ value|split:\", \" }}")
+    let template = Template(templateString: """
+      {{ value|split:", " }}
+      """)
 
     $0.it("split a string into array") {
       let result = try template.render(Context(dictionary: ["value": "One, Two"]))
-      try expect(result) == "[\"One\", \"Two\"]"
+      try expect(result) == """
+        ["One", "Two"]
+        """
     }
 
     $0.it("can split without arguments") {
-      let template = Template(templateString: "{{ value|split }}")
+      let template = Template(templateString: """
+        {{ value|split }}
+        """)
       let result = try template.render(Context(dictionary: ["value": "One, Two"]))
-      try expect(result) == "[\"One,\", \"Two\"]"
+      try expect(result) == """
+        ["One,", "Two"]
+        """
     }
   }
 
@@ -268,27 +304,67 @@ func testFilter() {
 
   describe("indent filter") {
     $0.it("indents content") {
-      let template = Template(templateString: "{{ value|indent:2 }}")
-      let result = try template.render(Context(dictionary: ["value": "One\nTwo"]))
-      try expect(result) == "One\n  Two"
+      let template = Template(templateString: """
+        {{ value|indent:2 }}
+        """)
+      let result = try template.render(Context(dictionary: ["value": """
+        One
+        Two
+        """]))
+      try expect(result) == """
+        One
+          Two
+        """
     }
 
     $0.it("can indent with arbitrary character") {
-      let template = Template(templateString: "{{ value|indent:2,\"\t\" }}")
-      let result = try template.render(Context(dictionary: ["value": "One\nTwo"]))
-      try expect(result) == "One\n\t\tTwo"
+      let template = Template(templateString: """
+        {{ value|indent:2,"\t" }}
+        """)
+      let result = try template.render(Context(dictionary: ["value": """
+        One
+        Two
+        """]))
+      try expect(result) == """
+        One
+        \t\tTwo
+        """
     }
 
     $0.it("can indent first line") {
-      let template = Template(templateString: "{{ value|indent:2,\" \",true }}")
-      let result = try template.render(Context(dictionary: ["value": "One\nTwo"]))
-      try expect(result) == "  One\n  Two"
+      let template = Template(templateString: """
+        {{ value|indent:2," ",true }}
+        """)
+      let result = try template.render(Context(dictionary: ["value": """
+        One
+        Two
+        """]))
+      try expect(result) == """
+          One
+          Two
+        """
     }
 
     $0.it("does not indent empty lines") {
-      let template = Template(templateString: "{{ value|indent }}")
-      let result = try template.render(Context(dictionary: ["value": "One\n\n\nTwo\n\n"]))
-      try expect(result) == "One\n\n\n    Two\n\n"
+      let template = Template(templateString: """
+        {{ value|indent }}
+        """)
+      let result = try template.render(Context(dictionary: ["value": """
+        One
+
+
+        Two
+
+
+        """]))
+      try expect(result) == """
+        One
+
+
+            Two
+
+
+        """
     }
   }
 }
