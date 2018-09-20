@@ -58,18 +58,48 @@ public protocol Resolvable {
 public class VariableNode : NodeType {
   public let variable: Resolvable
   public var token: Token?
+  let condition: Expression?
+
+  class func parse(_ parser:TokenParser, token:Token) throws -> NodeType {
+    var components = token.components()
+
+    func hasToken(_ token: String, at index: Int) -> Bool {
+      return components.count > (index + 1) && components[index] == token
+    }
+
+    let condition = hasToken("if", at: 1)
+      ? try parseExpression(components: Array(components.suffix(from: 2)), tokenParser: parser, token: token)
+      : nil
+
+    let filter = try parser.compileResolvable(components[0], containedIn: token)
+    return VariableNode(variable: filter, token: token, condition: condition)
+  }
 
   public init(variable: Resolvable, token: Token? = nil) {
     self.variable = variable
     self.token = token
+    self.condition = nil
+  }
+
+  init(variable: Resolvable, token: Token? = nil, condition: Expression?) {
+    self.variable = variable
+    self.token = token
+    self.condition = condition
   }
 
   public init(variable: String, token: Token? = nil) {
     self.variable = Variable(variable)
     self.token = token
+    self.condition = nil
   }
 
   public func render(_ context: Context) throws -> String {
+    if let condition = self.condition {
+      guard try condition.evaluate(context: context) == true else {
+        return ""
+      }
+    }
+
     let result = try variable.resolve(context)
     return stringify(result)
   }
