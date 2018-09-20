@@ -16,11 +16,13 @@
 
 ### New Features
 
- _None_
+_None_
 
 ### Internal Changes
 
- _None_
+- Updated the codebase to use Swift 4 features.  
+  [David Jennes](https://github.com/djbe)
+  [#239](https://github.com/stencilproject/Stencil/pull/239)
 
 
 ## 0.12.1
