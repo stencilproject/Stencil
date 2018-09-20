@@ -16,7 +16,7 @@
 
 ### New Features
 
-- Now you can conditionally render variables with `{{ variable if condition }}`, which is a shorthand for `{% if condition %}{{ variable }}{% endif %}`  
+- Now you can conditionally render variables with `{{ variable if condition }}`, which is a shorthand for `{% if condition %}{{ variable }}{% endif %}`. You can also use `else` like `{{ variable1 if condition else variable2 }}`, which is a shorthand for `{% if condition %}{{ variable1 }}{% else %}{{ variable2 }}{% endif %}`  
   [Ilya Puchka](https://github.com/ilyapuchka)
   [#243](https://github.com/stencilproject/Stencil/pull/243)
 

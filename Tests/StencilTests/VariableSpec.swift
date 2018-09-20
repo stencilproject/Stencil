@@ -346,6 +346,11 @@ func testVariable() {
       try expect(template.render(Context(dictionary: ["variable": "b"]))) == ""
     }
 
+    $0.it("can render with else expression") {
+      let template: Template = "{{ variable if variable|uppercase == \"A\" else fallback|uppercase }}"
+      try expect(template.render(Context(dictionary: ["variable": "b", "fallback": "c"]))) == "C"
+    }
+
     $0.it("throws when used invalid condition") {
       let template: Template = "{{ variable if variable \"A\" }}"
       try expect(template.render(Context(dictionary: ["variable": "a"]))).toThrow()

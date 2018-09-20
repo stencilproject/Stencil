@@ -59,6 +59,7 @@ public class VariableNode : NodeType {
   public let variable: Resolvable
   public var token: Token?
   let condition: Expression?
+  let elseExpression: Resolvable?
 
   class func parse(_ parser:TokenParser, token:Token) throws -> NodeType {
     var components = token.components()
@@ -67,36 +68,53 @@ public class VariableNode : NodeType {
       return components.count > (index + 1) && components[index] == token
     }
 
-    let condition = hasToken("if", at: 1)
-      ? try parseExpression(components: Array(components.suffix(from: 2)), tokenParser: parser, token: token)
-      : nil
+    let condition: Expression?
+    let elseExpression: Resolvable?
+
+    if hasToken("if", at: 1) {
+      let components = Array(components.suffix(from: 2))
+      if let elseIndex = components.index(of: "else") {
+        condition = try parseExpression(components: Array(components.prefix(upTo: elseIndex)), tokenParser: parser, token: token)
+        let elseToken = components.suffix(from: elseIndex.advanced(by: 1)).joined(separator: " ")
+        elseExpression = try parser.compileResolvable(elseToken, containedIn: token)
+      } else {
+        condition = try parseExpression(components: components, tokenParser: parser, token: token)
+        elseExpression = nil
+      }
+    } else {
+      condition = nil
+      elseExpression = nil
+    }
 
     let filter = try parser.compileResolvable(components[0], containedIn: token)
-    return VariableNode(variable: filter, token: token, condition: condition)
+    return VariableNode(variable: filter, token: token, condition: condition, elseExpression: elseExpression)
   }
 
   public init(variable: Resolvable, token: Token? = nil) {
     self.variable = variable
     self.token = token
     self.condition = nil
+    self.elseExpression = nil
   }
 
-  init(variable: Resolvable, token: Token? = nil, condition: Expression?) {
+  init(variable: Resolvable, token: Token? = nil, condition: Expression?, elseExpression: Resolvable?) {
     self.variable = variable
     self.token = token
     self.condition = condition
+    self.elseExpression = elseExpression
   }
 
   public init(variable: String, token: Token? = nil) {
     self.variable = Variable(variable)
     self.token = token
     self.condition = nil
+    self.elseExpression = nil
   }
 
   public func render(_ context: Context) throws -> String {
     if let condition = self.condition {
-      guard try condition.evaluate(context: context) == true else {
-        return ""
+      if try condition.evaluate(context: context) == false {
+        return try elseExpression?.resolve(context).map(stringify) ?? ""
       }
     }
 
