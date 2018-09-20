@@ -14,12 +14,13 @@ open class Extension {
 
   /// Registers a simple template tag with a name and a handler
   public func registerSimpleTag(_ name: String, handler: @escaping (Context) throws -> String) {
-    registerTag(name, parser: { parser, token in
-      return SimpleNode(token: token, handler: handler)
-    })
+    registerTag(name) { _, token in
+      SimpleNode(token: token, handler: handler)
+    }
   }
-  
+
   /// Registers boolean filter with it's negative counterpart
+  // swiftlint:disable:next discouraged_optional_boolean
   public func registerFilter(name: String, negativeFilterName: String, filter: @escaping (Any?) throws -> Bool?) {
     filters[name] = .simple(filter)
     filters[negativeFilterName] = .simple {
@@ -43,7 +44,6 @@ open class Extension {
     filters[name] = .arguments(filter)
   }
 }
-
 
 class DefaultExtension: Extension {
   override init() {
@@ -76,7 +76,6 @@ class DefaultExtension: Extension {
     registerFilter("filter", filter: filterFilter)
   }
 }
-
 
 protocol FilterType {
   func invoke(value: Any?, arguments: [Any?], context: Context) throws -> Any?

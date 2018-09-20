@@ -10,16 +10,16 @@ import Foundation
 
 #if !swift(>=4.1)
   public extension Collection {
-    func index(_ i: Self.Index, offsetBy n: Int) -> Self.Index {
-        let indexDistance = Self.IndexDistance(n)
-        return index(i, offsetBy: indexDistance)
+    func index(_ index: Self.Index, offsetBy offset: Int) -> Self.Index {
+        let indexDistance = Self.IndexDistance(offset)
+        return self.index(index, offsetBy: indexDistance)
     }
   }
 #endif
 
 #if !swift(>=4.1)
 public extension TemplateSyntaxError {
-  public static func ==(lhs: TemplateSyntaxError, rhs: TemplateSyntaxError) -> Bool {
+  public static func == (lhs: TemplateSyntaxError, rhs: TemplateSyntaxError) -> Bool {
     return lhs.reason == rhs.reason &&
       lhs.description == rhs.description &&
       lhs.token == rhs.token &&
@@ -31,7 +31,7 @@ public extension TemplateSyntaxError {
 
 #if !swift(>=4.1)
 public extension Variable {
-  public static func ==(lhs: Variable, rhs: Variable) -> Bool {
+  public static func == (lhs: Variable, rhs: Variable) -> Bool {
     return lhs.variable == rhs.variable
   }
 }

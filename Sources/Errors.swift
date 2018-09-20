@@ -18,14 +18,14 @@ public class TemplateDoesNotExist: Error, CustomStringConvertible {
   }
 }
 
-public struct TemplateSyntaxError : Error, Equatable, CustomStringConvertible {
+public struct TemplateSyntaxError: Error, Equatable, CustomStringConvertible {
   public let reason: String
   public var description: String { return reason }
   public internal(set) var token: Token?
   public internal(set) var stackTrace: [Token]
   public var templateName: String? { return token?.sourceMap.filename }
   var allTokens: [Token] {
-    return stackTrace + (token.map({ [$0] }) ?? [])
+    return stackTrace + (token.map { [$0] } ?? [])
   }
 
   public init(reason: String, token: Token? = nil, stackTrace: [Token] = []) {
@@ -50,7 +50,7 @@ extension Error {
   }
 }
 
-public protocol ErrorReporter: class {
+public protocol ErrorReporter: AnyObject {
   func renderError(_ error: Error) -> String
 }
 

@@ -1,14 +1,14 @@
 import Foundation
 
-class ForNode : NodeType {
+class ForNode: NodeType {
   let resolvable: Resolvable
   let loopVariables: [String]
-  let nodes:[NodeType]
+  let nodes: [NodeType]
   let emptyNodes: [NodeType]
   let `where`: Expression?
   let token: Token?
 
-  class func parse(_ parser:TokenParser, token:Token) throws -> NodeType {
+  class func parse(_ parser: TokenParser, token: Token) throws -> NodeType {
     let components = token.components
 
     func hasToken(_ token: String, at index: Int) -> Bool {
@@ -46,10 +46,24 @@ class ForNode : NodeType {
       _ = parser.nextToken()
     }
 
-    return ForNode(resolvable: resolvable, loopVariables: loopVariables, nodes: forNodes, emptyNodes: emptyNodes, where: `where`, token: token)
+    return ForNode(
+      resolvable: resolvable,
+      loopVariables: loopVariables,
+      nodes: forNodes,
+      emptyNodes: emptyNodes,
+      where: `where`,
+      token: token
+    )
   }
 
-  init(resolvable: Resolvable, loopVariables: [String], nodes: [NodeType], emptyNodes: [NodeType], where: Expression? = nil, token: Token? = nil) {
+  init(
+    resolvable: Resolvable,
+    loopVariables: [String],
+    nodes: [NodeType],
+    emptyNodes: [NodeType],
+    where: Expression? = nil,
+    token: Token? = nil
+  ) {
     self.resolvable = resolvable
     self.loopVariables = loopVariables
     self.nodes = nodes
@@ -58,10 +72,48 @@ class ForNode : NodeType {
     self.token = token
   }
 
-  func push<Result>(value: Any, context: Context, closure: () throws -> (Result)) throws -> Result {
+  func render(_ context: Context) throws -> String {
+    var values = try resolve(context)
+
+    if let `where` = self.where {
+      values = try values.filter { item -> Bool in
+        try push(value: item, context: context) {
+          try `where`.evaluate(context: context)
+        }
+      }
+    }
+
+    if !values.isEmpty {
+      let count = values.count
+
+      return try zip(0..., values)
+        .map { index, item in
+          let forContext: [String: Any] = [
+            "first": index == 0,
+            "last": index == (count - 1),
+            "counter": index + 1,
+            "counter0": index,
+            "length": count
+          ]
+
+          return try context.push(dictionary: ["forloop": forContext]) {
+            try push(value: item, context: context) {
+              try renderNodes(nodes, context)
+            }
+          }
+        }
+        .joined()
+    }
+
+    return try context.push {
+      try renderNodes(emptyNodes, context)
+    }
+  }
+
+  private func push<Result>(value: Any, context: Context, closure: () throws -> (Result)) throws -> Result {
     if loopVariables.isEmpty {
-      return try context.push() {
-        return try closure()
+      return try context.push {
+        try closure()
       }
     }
 
@@ -71,27 +123,26 @@ class ForNode : NodeType {
         throw TemplateSyntaxError("Tuple '\(value)' has less values than loop variables")
       }
       var variablesContext = [String: Any]()
-      valueMirror.children.prefix(loopVariables.count).enumerated().forEach({ (offset, element) in
+      valueMirror.children.prefix(loopVariables.count).enumerated().forEach { offset, element in
         if loopVariables[offset] != "_" {
           variablesContext[loopVariables[offset]] = element.value
         }
-      })
+      }
 
       return try context.push(dictionary: variablesContext) {
-        return try closure()
+        try closure()
       }
     }
 
-    return try context.push(dictionary: [loopVariables.first!: value]) {
-      return try closure()
+    return try context.push(dictionary: [loopVariables.first ?? "": value]) {
+      try closure()
     }
   }
 
-  func render(_ context: Context) throws -> String {
+  private func resolve(_ context: Context) throws -> [Any] {
     let resolved = try resolvable.resolve(context)
 
     var values: [Any]
-
     if let dictionary = resolved as? [String: Any], !dictionary.isEmpty {
       values = dictionary.sorted { $0.key < $1.key }
     } else if let array = resolved as? [Any] {
@@ -120,36 +171,6 @@ class ForNode : NodeType {
       values = []
     }
 
-    if let `where` = self.where {
-      values = try values.filter({ item -> Bool in
-        return try push(value: item, context: context) {
-          try `where`.evaluate(context: context)
-        }
-      })
-    }
-
-    if !values.isEmpty {
-      let count = values.count
-
-      return try values.enumerated().map { index, item in
-        let forContext: [String: Any] = [
-          "first": index == 0,
-          "last": index == (count - 1),
-          "counter": index + 1,
-          "counter0": index,
-          "length": count
-        ]
-
-        return try context.push(dictionary: ["forloop": forContext]) {
-          return try push(value: item, context: context) {
-            try renderNodes(nodes, context)
-          }
-        }
-        }.joined(separator: "")
-    }
-
-    return try context.push {
-      try renderNodes(emptyNodes, context)
-    }
+    return values
   }
 }

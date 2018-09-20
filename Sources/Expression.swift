@@ -2,16 +2,13 @@ public protocol Expression: CustomStringConvertible {
   func evaluate(context: Context) throws -> Bool
 }
 
-
 protocol InfixOperator: Expression {
   init(lhs: Expression, rhs: Expression)
 }
 
-
 protocol PrefixOperator: Expression {
   init(expression: Expression)
 }
-
 
 final class StaticExpression: Expression, CustomStringConvertible {
   let value: Bool
@@ -28,7 +25,6 @@ final class StaticExpression: Expression, CustomStringConvertible {
     return "\(value)"
   }
 }
-
 
 final class VariableExpression: Expression, CustomStringConvertible {
   let variable: Resolvable
@@ -48,7 +44,7 @@ final class VariableExpression: Expression, CustomStringConvertible {
 
     if let result = result as? [Any] {
       truthy = !result.isEmpty
-    } else if let result = result as? [String:Any] {
+    } else if let result = result as? [String: Any] {
       truthy = !result.isEmpty
     } else if let result = result as? Bool {
       truthy = result
@@ -67,7 +63,6 @@ final class VariableExpression: Expression, CustomStringConvertible {
     return try resolve(context: context, variable: variable)
   }
 }
-
 
 final class NotExpression: Expression, PrefixOperator, CustomStringConvertible {
   let expression: Expression
@@ -144,7 +139,6 @@ final class OrExpression: Expression, InfixOperator, CustomStringConvertible {
   }
 }
 
-
 final class AndExpression: Expression, InfixOperator, CustomStringConvertible {
   let lhs: Expression
   let rhs: Expression
@@ -167,7 +161,6 @@ final class AndExpression: Expression, InfixOperator, CustomStringConvertible {
     return try rhs.evaluate(context: context)
   }
 }
-
 
 class EqualityExpression: Expression, InfixOperator, CustomStringConvertible {
   let lhs: Expression
@@ -204,7 +197,6 @@ class EqualityExpression: Expression, InfixOperator, CustomStringConvertible {
   }
 }
 
-
 class NumericExpression: Expression, InfixOperator, CustomStringConvertible {
   let lhs: Expression
   let rhs: Expression
@@ -215,7 +207,7 @@ class NumericExpression: Expression, InfixOperator, CustomStringConvertible {
   }
 
   var description: String {
-    return "(\(lhs) \(op) \(rhs))"
+    return "(\(lhs) \(symbol) \(rhs))"
   }
 
   func evaluate(context: Context) throws -> Bool {
@@ -233,7 +225,7 @@ class NumericExpression: Expression, InfixOperator, CustomStringConvertible {
     return false
   }
 
-  var op: String {
+  var symbol: String {
     return ""
   }
 
@@ -242,9 +234,8 @@ class NumericExpression: Expression, InfixOperator, CustomStringConvertible {
   }
 }
 
-
 class MoreThanExpression: NumericExpression {
-  override var op: String {
+  override var symbol: String {
     return ">"
   }
 
@@ -253,9 +244,8 @@ class MoreThanExpression: NumericExpression {
   }
 }
 
-
 class MoreThanEqualExpression: NumericExpression {
-  override var op: String {
+  override var symbol: String {
     return ">="
   }
 
@@ -264,9 +254,8 @@ class MoreThanEqualExpression: NumericExpression {
   }
 }
 
-
 class LessThanExpression: NumericExpression {
-  override var op: String {
+  override var symbol: String {
     return "<"
   }
 
@@ -275,9 +264,8 @@ class LessThanExpression: NumericExpression {
   }
 }
 
-
 class LessThanEqualExpression: NumericExpression {
-  override var op: String {
+  override var symbol: String {
     return "<="
   }
 
@@ -285,7 +273,6 @@ class LessThanEqualExpression: NumericExpression {
     return lhs <= rhs
   }
 }
-
 
 class InequalityExpression: EqualityExpression {
   override var description: String {
@@ -297,7 +284,7 @@ class InequalityExpression: EqualityExpression {
   }
 }
 
-
+// swiftlint:disable:next cyclomatic_complexity
 func toNumber(value: Any) -> Number? {
     if let value = value as? Float {
         return Number(value)

@@ -24,8 +24,9 @@ struct Lexer {
     self.templateString = templateString
 
     self.lines = templateString.components(separatedBy: .newlines).enumerated().compactMap {
-      guard !$0.element.isEmpty else { return nil }
-      return (content: $0.element, number: UInt($0.offset + 1), templateString.range(of: $0.element)!)
+      guard !$0.element.isEmpty,
+        let range = templateString.range(of: $0.element) else { return nil }
+      return (content: $0.element, number: UInt($0.offset + 1), range)
     }
   }
 
@@ -43,8 +44,8 @@ struct Lexer {
       guard string.count > 4 else { return "" }
       let trimmed = String(string.dropFirst(2).dropLast(2))
         .components(separatedBy: "\n")
-        .filter({ !$0.isEmpty })
-        .map({ $0.trim(character: " ") })
+        .filter { !$0.isEmpty }
+        .map { $0.trim(character: " ") }
         .joined(separator: " ")
       return trimmed
     }
