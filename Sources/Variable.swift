@@ -104,7 +104,9 @@ public struct Variable : Equatable, Resolvable {
         #if os(Linux)
           return nil
         #else
-          current = object.value(forKey: bit)
+          if object.responds(to: Selector(bit)) {
+            current = object.value(forKey: bit)
+          }
         #endif
       } else if let value = current {
         current = Mirror(reflecting: value).getValue(for: bit)
@@ -124,10 +126,6 @@ public struct Variable : Equatable, Resolvable {
 
     return normalize(current)
   }
-}
-
-public func ==(lhs: Variable, rhs: Variable) -> Bool {
-  return lhs.variable == rhs.variable
 }
 
 /// A structure used to represet range of two integer values expressed as `from...to`.

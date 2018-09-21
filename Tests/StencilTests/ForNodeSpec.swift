@@ -112,9 +112,11 @@ func testForNode() {
     }
 
     $0.it("can render a filter with spaces") {
-      let templateString = "{% for article in ars | default: a, b , articles %}" +
-        "- {{ article.title }} by {{ article.author }}.\n" +
-      "{% endfor %}\n"
+      let templateString = """
+        {% for article in ars | default: a, b , articles %}\
+        - {{ article.title }} by {{ article.author }}.
+        {% endfor %}
+        """
 
       let context = Context(dictionary: [
         "articles": [
@@ -126,54 +128,70 @@ func testForNode() {
       let template = Template(templateString: templateString)
       let result = try template.render(context)
 
-      let fixture = "" +
-        "- Migrating from OCUnit to XCTest by Kyle Fuller.\n" +
-        "- Memory Management with ARC by Kyle Fuller.\n" +
-      "\n"
+      try expect(result) == """
+        - Migrating from OCUnit to XCTest by Kyle Fuller.
+        - Memory Management with ARC by Kyle Fuller.
 
-      try expect(result) == fixture
+        """
     }
 
     $0.context("given array of tuples") {
       $0.it("can iterate over all tuple values") {
-        let templateString = "{% for first,second,third in tuples %}" +
-          "{{ first }}, {{ second }}, {{ third }}\n" +
-        "{% endfor %}\n"
+        let templateString = """
+          {% for first,second,third in tuples %}\
+          {{ first }}, {{ second }}, {{ third }}
+          {% endfor %}
+          """
 
         let template = Template(templateString: templateString)
         let result = try template.render(context)
 
-        let fixture = "1, 2, 3\n4, 5, 6\n\n"
-        try expect(result) == fixture
+        try expect(result) == """
+          1, 2, 3
+          4, 5, 6
+
+          """
       }
 
       $0.it("can iterate with less number of variables") {
-        let templateString = "{% for first,second in tuples %}" +
-          "{{ first }}, {{ second }}\n" +
-        "{% endfor %}\n"
+        let templateString = """
+          {% for first,second in tuples %}\
+          {{ first }}, {{ second }}
+          {% endfor %}
+          """
 
         let template = Template(templateString: templateString)
         let result = try template.render(context)
 
-        let fixture = "1, 2\n4, 5\n\n"
-        try expect(result) == fixture
+        try expect(result) == """
+          1, 2
+          4, 5
+
+          """
       }
 
       $0.it("can use _ to skip variables") {
-        let templateString = "{% for first,_,third in tuples %}" +
-          "{{ first }}, {{ third }}\n" +
-        "{% endfor %}\n"
+        let templateString = """
+          {% for first,_,third in tuples %}\
+          {{ first }}, {{ third }}
+          {% endfor %}
+          """
 
         let template = Template(templateString: templateString)
         let result = try template.render(context)
 
-        let fixture = "1, 3\n4, 6\n\n"
-        try expect(result) == fixture
+        try expect(result) == """
+          1, 3
+          4, 6
+
+          """
       }
 
       $0.it("throws when number of variables is more than number of tuple values") {
-        let templateString = "{% for key,value,smth in dict %}" +
-        "{% endfor %}\n"
+        let templateString = """
+          {% for key,value,smth in dict %}
+          {% endfor %}
+          """
 
         let template = Template(templateString: templateString)
         try expect(template.render(context)).toThrow()
@@ -182,15 +200,18 @@ func testForNode() {
     }
 
     $0.it("can iterate over dictionary") {
-      let templateString = "{% for key, value in dict %}" +
-        "{{ key }}: {{ value }}," +
-      "{% endfor %}"
+      let templateString = """
+        {% for key, value in dict %}\
+        {{ key }}: {{ value }},\
+        {% endfor %}
+        """
 
       let template = Template(templateString: templateString)
       let result = try template.render(context)
 
-      let sortedResult = result.split(separator: ",").map(String.init).sorted(by: <)
-      try expect(sortedResult) == ["one: I", "two: II"]
+      try expect(result) == """
+        one: I,two: II,
+        """
     }
 
     $0.it("renders supports iterating over dictionary") {
@@ -202,8 +223,9 @@ func testForNode() {
       let node = ForNode(resolvable: Variable("dict"), loopVariables: ["key"], nodes: nodes, emptyNodes: emptyNodes, where: nil)
       let result = try node.render(context)
 
-      let sortedResult = result.split(separator: ",").map(String.init).sorted(by: <)
-      try expect(sortedResult) == ["one", "two"]
+      try expect(result) == """
+        one,two,
+        """
     }
 
     $0.it("renders supports iterating over dictionary") {
@@ -215,11 +237,11 @@ func testForNode() {
         ]
       let emptyNodes: [NodeType] = [TextNode(text: "empty")]
       let node = ForNode(resolvable: Variable("dict"), loopVariables: ["key", "value"], nodes: nodes, emptyNodes: emptyNodes, where: nil)
-
       let result = try node.render(context)
 
-      let sortedResult = result.split(separator: ",").map(String.init).sorted(by: <)
-      try expect(sortedResult) == ["one=I", "two=II"]
+      try expect(result) == """
+        one=I,two=II,
+        """
     }
 
     $0.it("handles invalid input") {
@@ -248,7 +270,11 @@ func testForNode() {
       let node = ForNode(resolvable: Variable("struct"), loopVariables: ["property", "value"], nodes: nodes, emptyNodes: [])
       let result = try node.render(context)
 
-      try expect(result) == "string=abc\nnumber=123\n"
+      try expect(result) == """
+        string=abc
+        number=123
+
+        """
     }
 
     $0.it("can iterate tuple items") {
@@ -266,7 +292,11 @@ func testForNode() {
       let node = ForNode(resolvable: Variable("tuple"), loopVariables: ["label", "value"], nodes: nodes, emptyNodes: [])
       let result = try node.render(context)
 
-      try expect(result) == "one=1\ntwo=dva\n"
+      try expect(result) == """
+        one=1
+        two=dva
+
+        """
     }
 
     $0.it("can iterate over class properties") {
@@ -297,11 +327,16 @@ func testForNode() {
         VariableNode(variable: "value"),
         TextNode(text: "\n"),
         ]
-      
+
       let node = ForNode(resolvable: Variable("class"), loopVariables: ["label", "value"], nodes: nodes, emptyNodes: [])
       let result = try node.render(context)
 
-      try expect(result) == "childString=child\nbaseString=base\nbaseInt=1\n"
+      try expect(result) == """
+        childString=child
+        baseString=base
+        baseInt=1
+
+        """
     }
 
     $0.it("can iterate in range of variables") {
@@ -312,7 +347,6 @@ func testForNode() {
   }
 
 }
-
 
 fileprivate struct Article {
   let title: String

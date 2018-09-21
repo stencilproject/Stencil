@@ -27,7 +27,9 @@ func testFilterTag() {
         return ($0 as! String).components(separatedBy: $1[0] as! String)
       })
       let env = Environment(extensions: [ext])
-      let result = try env.renderTemplate(string: "{% filter split:\",\"|join:\";\"  %}{{ items|join:\",\" }}{% endfilter %}", context: ["items": [1, 2]])
+      let result = try env.renderTemplate(string: """
+        {% filter split:","|join:";"  %}{{ items|join:"," }}{% endfilter %}
+        """, context: ["items": [1, 2]])
       try expect(result) == "1;2"
     }
 
@@ -38,7 +40,9 @@ func testFilterTag() {
             return ($0 as! String).replacingOccurrences(of: $1[0] as! String, with: $1[1] as! String)
         })
         let env = Environment(extensions: [ext])
-        let result = try env.renderTemplate(string: "{% filter replace:'\"',\"\" %}{{ items|join:\",\" }}{% endfilter %}", context: ["items": ["\"1\"", "\"2\""]])
+        let result = try env.renderTemplate(string: """
+          {% filter replace:'"',"" %}{{ items|join:"," }}{% endfilter %}
+          """, context: ["items": ["\"1\"", "\"2\""]])
         try expect(result) == "1,2"
     }
   }

@@ -4,7 +4,12 @@
 
 ### Bug Fixes
 
- _None_
+- Now accessing undefined keys in NSObject does not cause runtime crash and instead renders empty string.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#234](https://github.com/stencilproject/Stencil/pull/234)
+- `for` tag: When iterating over a dictionary the keys will now always be sorted (in an ascending order) to ensure consistent output generation.  
+  [David Jennes](https://github.com/djbe)
+  [#240](https://github.com/stencilproject/Stencil/pull/240)
 
 ### Breaking Changes
 
@@ -17,11 +22,13 @@
 
 ### New Features
 
- _None_
+_None_
 
 ### Internal Changes
 
- _None_
+- Updated the codebase to use Swift 4 features.  
+  [David Jennes](https://github.com/djbe)
+  [#239](https://github.com/stencilproject/Stencil/pull/239)
 
 
 ## 0.12.1
