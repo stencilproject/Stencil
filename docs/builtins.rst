@@ -149,7 +149,7 @@ Will be treated as:
 
     one or (two and three)
 
-You can use brackets to change operators precedence. For example:
+You can use parentheses to change operator precedence. For example:
 
 .. code-block:: html+django
 
