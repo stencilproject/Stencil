@@ -72,13 +72,13 @@ public class VariableNode : NodeType {
     let elseExpression: Resolvable?
 
     if hasToken("if", at: 1) {
-      let components = Array(components.suffix(from: 2))
+      let components = components.suffix(from: 2)
       if let elseIndex = components.index(of: "else") {
         condition = try parseExpression(components: Array(components.prefix(upTo: elseIndex)), tokenParser: parser, token: token)
         let elseToken = components.suffix(from: elseIndex.advanced(by: 1)).joined(separator: " ")
         elseExpression = try parser.compileResolvable(elseToken, containedIn: token)
       } else {
-        condition = try parseExpression(components: components, tokenParser: parser, token: token)
+        condition = try parseExpression(components: Array(components), tokenParser: parser, token: token)
         elseExpression = nil
       }
     } else {
@@ -112,10 +112,8 @@ public class VariableNode : NodeType {
   }
 
   public func render(_ context: Context) throws -> String {
-    if let condition = self.condition {
-      if try condition.evaluate(context: context) == false {
-        return try elseExpression?.resolve(context).map(stringify) ?? ""
-      }
+    if let condition = self.condition, try condition.evaluate(context: context) == false {
+      return try elseExpression?.resolve(context).map(stringify) ?? ""
     }
 
     let result = try variable.resolve(context)
