@@ -16,6 +16,9 @@
 - Now requires Swift 4.1 or newer.  
   [Yonas Kolb](https://github.com/yonaskolb)
   [#228](https://github.com/stencilproject/Stencil/pull/228)
+- You can now use parentheses in boolean expressions to change operator precedence.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#165](https://github.com/stencilproject/Stencil/pull/165)
 
 ### New Features
 
