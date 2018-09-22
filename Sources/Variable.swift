@@ -100,6 +100,20 @@ public struct Variable : Equatable, Resolvable {
         } else if bit == "count" {
           current = array.count
         }
+      } else if let string = current as? String {
+        if let index = Int(bit) {
+          if index >= 0 && index < string.count {
+            current = string[index]
+          } else {
+            current = nil
+          }
+        } else if bit == "first" {
+          current = string.first
+        } else if bit == "last" {
+          current = string.last
+        } else if bit == "count" {
+          current = string.count
+        }
       } else if let object = current as? NSObject {  // NSKeyValueCoding
         #if os(Linux)
           return nil
