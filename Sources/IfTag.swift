@@ -118,7 +118,7 @@ final class IfExpressionParser {
   private init(components: ArraySlice<String>, tokenParser: TokenParser, token: Token) throws {
     var parsedComponents = Set<Int>()
     var bracketsBalance = 0
-    self.tokens = try zip(components.indices, components).flatMap { (index, component) in
+    self.tokens = try zip(components.indices, components).compactMap { (index, component) in
       guard !parsedComponents.contains(index) else { return nil }
 
       if component == "(" {
