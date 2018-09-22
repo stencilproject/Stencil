@@ -26,7 +26,7 @@
   [Ilya Puchka](https://github.com/ilyapuchka)
   [#243](https://github.com/stencilproject/Stencil/pull/243)
 
-- Now you can access string characters by index or get string length the same was as if it was an array, i.e. `{{ 'string'.first }}`, `{{ 'string'.last }}`, `{{ 'string'.1 }}`, `{{ 'string'.count }}`  
+- Now you can access string characters by index or get string length the same was as if it was an array, i.e. `{{ 'string'.first }}`, `{{ 'string'.last }}`, `{{ 'string'.1 }}`, `{{ 'string'.count }}`.  
   [Ilya Puchka](https://github.com/ilyapuchka)
   [#245](https://github.com/stencilproject/Stencil/pull/245)
 

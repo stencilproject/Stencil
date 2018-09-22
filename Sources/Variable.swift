@@ -75,24 +75,6 @@ public struct Variable : Equatable, Resolvable {
       return bool
     }
 
-    func resolveCollection<T: Collection>(_ collection: T, bit: String) -> Any? {
-      if let index = Int(bit) {
-        if index >= 0 && index < collection.count {
-          return collection[collection.index(collection.startIndex, offsetBy: index)]
-        } else {
-          return nil
-        }
-      } else if bit == "first" {
-        return collection.first
-      } else if bit == "last" {
-        return collection[collection.index(collection.endIndex, offsetBy: -1)]
-      } else if bit == "count" {
-        return collection.count
-      } else {
-        return nil
-      }
-    }
-
     for bit in try lookup(context) {
       current = normalize(current)
 
@@ -133,6 +115,24 @@ public struct Variable : Equatable, Resolvable {
     }
 
     return normalize(current)
+  }
+}
+
+fileprivate func resolveCollection<T: Collection>(_ collection: T, bit: String) -> Any? {
+  if let index = Int(bit) {
+    if index >= 0 && index < collection.count {
+      return collection[collection.index(collection.startIndex, offsetBy: index)]
+    } else {
+      return nil
+    }
+  } else if bit == "first" {
+    return collection.first
+  } else if bit == "last" {
+    return collection[collection.index(collection.endIndex, offsetBy: -1)]
+  } else if bit == "count" {
+    return collection.count
+  } else {
+    return nil
   }
 }
 
