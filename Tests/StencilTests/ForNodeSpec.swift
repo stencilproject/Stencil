@@ -209,8 +209,9 @@ func testForNode() {
       let template = Template(templateString: templateString)
       let result = try template.render(context)
 
-      let sortedResult = result.split(separator: ",").map(String.init).sorted(by: <)
-      try expect(sortedResult) == ["one: I", "two: II"]
+      try expect(result) == """
+        one: I,two: II,
+        """
     }
 
     $0.it("renders supports iterating over dictionary") {
@@ -222,8 +223,9 @@ func testForNode() {
       let node = ForNode(resolvable: Variable("dict"), loopVariables: ["key"], nodes: nodes, emptyNodes: emptyNodes, where: nil)
       let result = try node.render(context)
 
-      let sortedResult = result.split(separator: ",").map(String.init).sorted(by: <)
-      try expect(sortedResult) == ["one", "two"]
+      try expect(result) == """
+        one,two,
+        """
     }
 
     $0.it("renders supports iterating over dictionary") {
@@ -235,11 +237,11 @@ func testForNode() {
         ]
       let emptyNodes: [NodeType] = [TextNode(text: "empty")]
       let node = ForNode(resolvable: Variable("dict"), loopVariables: ["key", "value"], nodes: nodes, emptyNodes: emptyNodes, where: nil)
-
       let result = try node.render(context)
 
-      let sortedResult = result.split(separator: ",").map(String.init).sorted(by: <)
-      try expect(sortedResult) == ["one=I", "two=II"]
+      try expect(result) == """
+        one=I,two=II,
+        """
     }
 
     $0.it("handles invalid input") {

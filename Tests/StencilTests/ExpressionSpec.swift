@@ -6,6 +6,11 @@ func testExpressions() {
   describe("Expression") {
     let parser = TokenParser(tokens: [], environment: Environment())
 
+    func parseExpression(components: [String]) throws -> Expression {
+      let parser = try IfExpressionParser.parser(components: components, tokenParser: parser, token: .text(value: "", at: .unknown))
+      return try parser.parse()
+    }
+
     $0.describe("VariableExpression") {
       let expression = VariableExpression(variable: Variable("value"))
 
@@ -105,19 +110,19 @@ func testExpressions() {
 
     $0.describe("expression parsing") {
       $0.it("can parse a variable expression") {
-        let expression = try parseExpression(components: ["value"], tokenParser: parser, token: .text(value: "", at: .unknown))
+        let expression = try parseExpression(components: ["value"])
         try expect(expression.evaluate(context: Context())).to.beFalse()
         try expect(expression.evaluate(context: Context(dictionary: ["value": true]))).to.beTrue()
       }
 
       $0.it("can parse a not expression") {
-        let expression = try parseExpression(components: ["not", "value"], tokenParser: parser, token: .text(value: "", at: .unknown))
+        let expression = try parseExpression(components: ["not", "value"])
         try expect(expression.evaluate(context: Context())).to.beTrue()
         try expect(expression.evaluate(context: Context(dictionary: ["value": true]))).to.beFalse()
       }
 
       $0.describe("and expression") {
-        let expression = try! parseExpression(components: ["lhs", "and", "rhs"], tokenParser: parser, token: .text(value: "", at: .unknown))
+        let expression = try! parseExpression(components: ["lhs", "and", "rhs"])
 
         $0.it("evaluates to false with lhs false") {
           try expect(expression.evaluate(context: Context(dictionary: ["lhs": false, "rhs": true]))).to.beFalse()
@@ -137,7 +142,7 @@ func testExpressions() {
       }
 
       $0.describe("or expression") {
-        let expression = try! parseExpression(components: ["lhs", "or", "rhs"], tokenParser: parser, token: .text(value: "", at: .unknown))
+        let expression = try! parseExpression(components: ["lhs", "or", "rhs"])
 
         $0.it("evaluates to true with lhs true") {
           try expect(expression.evaluate(context: Context(dictionary: ["lhs": true, "rhs": false]))).to.beTrue()
@@ -157,7 +162,7 @@ func testExpressions() {
       }
 
       $0.describe("equality expression") {
-        let expression = try! parseExpression(components: ["lhs", "==", "rhs"], tokenParser: parser, token: .text(value: "", at: .unknown))
+        let expression = try! parseExpression(components: ["lhs", "==", "rhs"])
 
         $0.it("evaluates to true with equal lhs/rhs") {
           try expect(expression.evaluate(context: Context(dictionary: ["lhs": "a", "rhs": "a"]))).to.beTrue()
@@ -193,7 +198,7 @@ func testExpressions() {
       }
 
       $0.describe("inequality expression") {
-        let expression = try! parseExpression(components: ["lhs", "!=", "rhs"], tokenParser: parser, token: .text(value: "", at: .unknown))
+        let expression = try! parseExpression(components: ["lhs", "!=", "rhs"])
 
         $0.it("evaluates to true with inequal lhs/rhs") {
           try expect(expression.evaluate(context: Context(dictionary: ["lhs": "a", "rhs": "b"]))).to.beTrue()
@@ -205,7 +210,7 @@ func testExpressions() {
       }
 
       $0.describe("more than expression") {
-        let expression = try! parseExpression(components: ["lhs", ">", "rhs"], tokenParser: parser, token: .text(value: "", at: .unknown))
+        let expression = try! parseExpression(components: ["lhs", ">", "rhs"])
 
         $0.it("evaluates to true with lhs > rhs") {
           try expect(expression.evaluate(context: Context(dictionary: ["lhs": 5.0, "rhs": 4]))).to.beTrue()
@@ -217,7 +222,7 @@ func testExpressions() {
       }
 
       $0.describe("more than equal expression") {
-        let expression = try! parseExpression(components: ["lhs", ">=", "rhs"], tokenParser: parser, token: .text(value: "", at: .unknown))
+        let expression = try! parseExpression(components: ["lhs", ">=", "rhs"])
 
         $0.it("evaluates to true with lhs == rhs") {
           try expect(expression.evaluate(context: Context(dictionary: ["lhs": 5.0, "rhs": 5]))).to.beTrue()
@@ -229,7 +234,7 @@ func testExpressions() {
       }
 
       $0.describe("less than expression") {
-        let expression = try! parseExpression(components: ["lhs", "<", "rhs"], tokenParser: parser, token: .text(value: "", at: .unknown))
+        let expression = try! parseExpression(components: ["lhs", "<", "rhs"])
 
         $0.it("evaluates to true with lhs < rhs") {
           try expect(expression.evaluate(context: Context(dictionary: ["lhs": 4, "rhs": 4.5]))).to.beTrue()
@@ -241,7 +246,7 @@ func testExpressions() {
       }
 
       $0.describe("less than equal expression") {
-        let expression = try! parseExpression(components: ["lhs", "<=", "rhs"], tokenParser: parser, token: .text(value: "", at: .unknown))
+        let expression = try! parseExpression(components: ["lhs", "<=", "rhs"])
 
         $0.it("evaluates to true with lhs == rhs") {
           try expect(expression.evaluate(context: Context(dictionary: ["lhs": 5.0, "rhs": 5]))).to.beTrue()
@@ -253,7 +258,7 @@ func testExpressions() {
       }
 
       $0.describe("multiple expression") {
-        let expression = try! parseExpression(components: ["one", "or", "two", "and", "not", "three"], tokenParser: parser, token: .text(value: "", at: .unknown))
+        let expression = try! parseExpression(components: ["one", "or", "two", "and", "not", "three"])
 
         $0.it("evaluates to true with one") {
           try expect(expression.evaluate(context: Context(dictionary: ["one": true]))).to.beTrue()
@@ -281,7 +286,7 @@ func testExpressions() {
       }
       
       $0.describe("in expression") {
-        let expression = try! parseExpression(components: ["lhs", "in", "rhs"], tokenParser: parser, token: .text(value: "", at: .unknown))
+        let expression = try! parseExpression(components: ["lhs", "in", "rhs"])
         
         $0.it("evaluates to true when rhs contains lhs") {
           try expect(expression.evaluate(context: Context(dictionary: ["lhs": 1, "rhs": [1, 2, 3]]))).to.beTrue()
@@ -297,6 +302,41 @@ func testExpressions() {
           try expect(expression.evaluate(context: Context(dictionary: ["lhs": "a", "rhs": "bcd"]))).to.beFalse()
           try expect(expression.evaluate(context: Context(dictionary: ["lhs": 4, "rhs": 1...3]))).to.beFalse()
           try expect(expression.evaluate(context: Context(dictionary: ["lhs": 3, "rhs": 1..<3]))).to.beFalse()
+        }
+      }
+
+      $0.describe("sub expression") {
+        $0.it("evaluates correctly") {
+          let context = Context(dictionary: ["one": false, "two": false, "three": true, "four": true])
+
+          let expression = try! parseExpression(components: ["one", "and", "two", "or", "three", "and", "four"])
+          let expressionWithBrackets = try! parseExpression(components: ["one", "and", "(", "(", "two", ")", "or", "(", "three", "and", "four", ")", ")"])
+
+          try expect(expression.evaluate(context: context)).to.beTrue()
+          try expect(expressionWithBrackets.evaluate(context: context)).to.beFalse()
+
+          let notExpression = try! parseExpression(components: ["not", "one", "or", "three"])
+          let notExpressionWithBrackets = try! parseExpression(components: ["not", "(", "one", "or", "three", ")"])
+
+          try expect(notExpression.evaluate(context: context)).to.beTrue()
+          try expect(notExpressionWithBrackets.evaluate(context: context)).to.beFalse()
+        }
+
+        $0.it("fails when brackets are not balanced") {
+          try expect(parseExpression(components: ["(", "lhs", "and", "rhs"]))
+            .toThrow(TemplateSyntaxError("'if' expression error: missing closing bracket"))
+          try expect(parseExpression(components: [")", "lhs", "and", "rhs"]))
+            .toThrow(TemplateSyntaxError("'if' expression error: missing opening bracket"))
+          try expect(parseExpression(components: ["lhs", "and", "rhs", ")"]))
+            .toThrow(TemplateSyntaxError("'if' expression error: missing opening bracket"))
+          try expect(parseExpression(components: ["(", "lhs", "and", "rhs", ")", "("]))
+            .toThrow(TemplateSyntaxError("'if' expression error: missing closing bracket"))
+          try expect(parseExpression(components: ["(", "lhs", "and", "rhs", ")", ")"]))
+            .toThrow(TemplateSyntaxError("'if' expression error: missing opening bracket"))
+          try expect(parseExpression(components: ["(", "lhs", "and", ")"]))
+            .toThrow(TemplateSyntaxError("'if' expression error: end"))
+          try expect(parseExpression(components: ["(", "and", "rhs", ")"]))
+            .toThrow(TemplateSyntaxError("'if' expression error: infix operator 'and' doesn't have a left hand side"))
         }
       }
     }
