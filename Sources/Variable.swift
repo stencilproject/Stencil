@@ -118,7 +118,7 @@ public struct Variable : Equatable, Resolvable {
   }
 }
 
-fileprivate func resolveCollection<T: Collection>(_ collection: T, bit: String) -> Any? {
+private func resolveCollection<T: Collection>(_ collection: T, bit: String) -> Any? {
   if let index = Int(bit) {
     if index >= 0 && index < collection.count {
       return collection[collection.index(collection.startIndex, offsetBy: index)]
