@@ -75,6 +75,24 @@ public struct Variable : Equatable, Resolvable {
       return bool
     }
 
+    func resolveCollection<T: Collection>(_ collection: T, bit: String) -> Any? {
+      if let index = Int(bit) {
+        if index >= 0 && index < collection.count {
+          return collection[collection.index(collection.startIndex, offsetBy: index)]
+        } else {
+          return nil
+        }
+      } else if bit == "first" {
+        return collection.first
+      } else if bit == "last" {
+        return collection[collection.index(collection.endIndex, offsetBy: -1)]
+      } else if bit == "count" {
+        return collection.count
+      } else {
+        return nil
+      }
+    }
+
     for bit in try lookup(context) {
       current = normalize(current)
 
@@ -87,33 +105,9 @@ public struct Variable : Equatable, Resolvable {
           current = dictionary[bit]
         }
       } else if let array = current as? [Any] {
-        if let index = Int(bit) {
-          if index >= 0 && index < array.count {
-            current = array[index]
-          } else {
-            current = nil
-          }
-        } else if bit == "first" {
-          current = array.first
-        } else if bit == "last" {
-          current = array.last
-        } else if bit == "count" {
-          current = array.count
-        }
+        current = resolveCollection(array, bit: bit)
       } else if let string = current as? String {
-        if let index = Int(bit) {
-          if index >= 0 && index < string.count {
-            current = string[index]
-          } else {
-            current = nil
-          }
-        } else if bit == "first" {
-          current = string.first
-        } else if bit == "last" {
-          current = string.last
-        } else if bit == "count" {
-          current = string.count
-        }
+        current = resolveCollection(string, bit: bit)
       } else if let object = current as? NSObject {  // NSKeyValueCoding
         #if os(Linux)
           return nil
