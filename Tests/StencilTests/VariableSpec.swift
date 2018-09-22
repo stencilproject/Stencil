@@ -86,54 +86,104 @@ func testVariable() {
       try expect(result) == "Kyle"
     }
 
-    $0.it("can resolve an item from a dictionary") {
-      let variable = Variable("profiles.github")
-      let result = try variable.resolve(context) as? String
-      try expect(result) == "kylef"
+    $0.context("given string") {
+      $0.it("can resolve an item via it's index") {
+        let variable = Variable("name.0")
+        let result = try variable.resolve(context) as? Character
+        try expect(result) == "K"
+
+        let variable1 = Variable("name.1")
+        let result1 = try variable1.resolve(context) as? Character
+        try expect(result1) == "y"
+      }
+
+      $0.it("can resolve an item via unknown index") {
+        let variable = Variable("name.5")
+        let result = try variable.resolve(context) as? Character
+        try expect(result).to.beNil()
+
+        let variable1 = Variable("name.-5")
+        let result1 = try variable1.resolve(context) as? Character
+        try expect(result1).to.beNil()
+      }
+
+      $0.it("can resolve the first item") {
+        let variable = Variable("name.first")
+        let result = try variable.resolve(context) as? Character
+        try expect(result) == "K"
+      }
+
+      $0.it("can resolve the last item") {
+        let variable = Variable("name.last")
+        let result = try variable.resolve(context) as? Character
+        try expect(result) == "e"
+      }
+
+      $0.it("can get the characters count") {
+        let variable = Variable("name.count")
+        let result = try variable.resolve(context) as? Int
+        try expect(result) == 4
+      }
     }
 
-    $0.it("can resolve an item from an array via it's index") {
-      let variable = Variable("contacts.0")
-      let result = try variable.resolve(context) as? String
-      try expect(result) == "Katie"
+    $0.context("given dictionary") {
+      $0.it("can resolve an item") {
+        let variable = Variable("profiles.github")
+        let result = try variable.resolve(context) as? String
+        try expect(result) == "kylef"
+      }
+
+      $0.it("can get the count") {
+        let variable = Variable("profiles.count")
+        let result = try variable.resolve(context) as? Int
+        try expect(result) == 1
+      }
+    }
+
+    $0.context("given array") {
+      $0.it("can resolve an item via it's index") {
+        let variable = Variable("contacts.0")
+        let result = try variable.resolve(context) as? String
+        try expect(result) == "Katie"
 
         let variable1 = Variable("contacts.1")
         let result1 = try variable1.resolve(context) as? String
         try expect(result1) == "Carlton"
-    }
+      }
 
-    $0.it("can resolve an item from an array via unknown index") {
-      let variable = Variable("contacts.5")
-      let result = try variable.resolve(context) as? String
-      try expect(result).to.beNil()
+      $0.it("can resolve an item via unknown index") {
+        let variable = Variable("contacts.5")
+        let result = try variable.resolve(context) as? String
+        try expect(result).to.beNil()
 
-      let variable1 = Variable("contacts.-5")
-      let result1 = try variable1.resolve(context) as? String
-      try expect(result1).to.beNil()
-    }
+        let variable1 = Variable("contacts.-5")
+        let result1 = try variable1.resolve(context) as? String
+        try expect(result1).to.beNil()
+      }
 
-    $0.it("can resolve the first item from an array") {
-      let variable = Variable("contacts.first")
-      let result = try variable.resolve(context) as? String
-      try expect(result) == "Katie"
-    }
+      $0.it("can resolve the first item") {
+        let variable = Variable("contacts.first")
+        let result = try variable.resolve(context) as? String
+        try expect(result) == "Katie"
+      }
 
-    $0.it("can resolve the last item from an array") {
-      let variable = Variable("contacts.last")
-      let result = try variable.resolve(context) as? String
-      try expect(result) == "Carlton"
+      $0.it("can resolve the last item") {
+        let variable = Variable("contacts.last")
+        let result = try variable.resolve(context) as? String
+        try expect(result) == "Carlton"
+      }
+
+      $0.it("can get the count") {
+        let variable = Variable("contacts.count")
+        let result = try variable.resolve(context) as? Int
+        try expect(result) == 2
+      }
     }
 
     $0.it("can resolve a property with reflection") {
       let variable = Variable("article.author.name")
       let result = try variable.resolve(context) as? String
       try expect(result) == "Kyle"
-    }
-
-    $0.it("can get the count of a dictionary") {
-      let variable = Variable("profiles.count")
-      let result = try variable.resolve(context) as? Int
-      try expect(result) == 1
     }
 
 #if os(OSX)

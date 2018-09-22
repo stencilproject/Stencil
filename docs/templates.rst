@@ -20,9 +20,9 @@ following lookup:
 
 - Context lookup
 - Dictionary lookup
-- Array lookup (first, last, count, index)
+- Array and string lookup (first, last, count, by index)
 - Key value coding lookup
-- Type introspection
+- Type introspection (via ``Mirror``)
 
 For example, if `people` was an array:
 
