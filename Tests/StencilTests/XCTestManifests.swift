@@ -36,6 +36,12 @@ extension ForNodeTests {
     ]
 }
 
+extension IfNodeTests {
+    static let __allTests = [
+        ("testIfNode", testIfNode),
+    ]
+}
+
 extension IncludeTests {
     static let __allTests = [
         ("testInclude", testInclude),
@@ -63,6 +69,12 @@ extension NodeTests {
 extension NowNodeTests {
     static let __allTests = [
         ("testNowNode", testNowNode),
+    ]
+}
+
+extension StencilTests {
+    static let __allTests = [
+        ("testStencil", testStencil),
     ]
 }
 
@@ -105,11 +117,13 @@ public func __allTests() -> [XCTestCaseEntry] {
         testCase(FilterTagTests.__allTests),
         testCase(FilterTests.__allTests),
         testCase(ForNodeTests.__allTests),
+        testCase(IfNodeTests.__allTests),
         testCase(IncludeTests.__allTests),
         testCase(InheritenceTests.__allTests),
         testCase(LexerTests.__allTests),
         testCase(NodeTests.__allTests),
         testCase(NowNodeTests.__allTests),
+        testCase(StencilTests.__allTests),
         testCase(TemplateLoaderTests.__allTests),
         testCase(TemplateTests.__allTests),
         testCase(TokenParserTests.__allTests),

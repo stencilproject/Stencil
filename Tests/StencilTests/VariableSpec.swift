@@ -30,7 +30,7 @@ fileprivate class Blog: WebSite {
   let featuring: Article? = Article(author: Person(name: "Jhon"))
 }
 
-class VariableTests {
+class VariableTests: XCTestCase {
   func testVariable() {
     describe("Variable") {
       let context = Context(dictionary: [
