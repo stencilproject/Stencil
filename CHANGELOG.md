@@ -28,6 +28,9 @@ _None_
 - `Token` type converted to struct to allow computing token components only once.  
   [Ilya Puchka](https://github.com/ilyapuchka)
   [#256](https://github.com/stencilproject/Stencil/pull/256)
+- Added SwiftLint to the project.  
+  [David Jennes](https://github.com/djbe)
+  [#249](https://github.com/stencilproject/Stencil/pull/249)
 
 
 ## 0.13.1
