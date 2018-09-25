@@ -2,16 +2,7 @@
 
 ## Master
 
-### Bug Fixes
-
-- Now accessing undefined keys in NSObject does not cause runtime crash and instead renders empty string.  
-  [Ilya Puchka](https://github.com/ilyapuchka)
-  [#234](https://github.com/stencilproject/Stencil/pull/234)
-- `for` tag: When iterating over a dictionary the keys will now always be sorted (in an ascending order) to ensure consistent output generation.  
-  [David Jennes](https://github.com/djbe)
-  [#240](https://github.com/stencilproject/Stencil/pull/240)
-
-### Breaking Changes
+### Breaking
 
 - Now requires Swift 4.1 or newer.  
   [Yonas Kolb](https://github.com/yonaskolb)
@@ -23,7 +14,7 @@
   [Ilya Puchka](https://github.com/ilyapuchka)
   [#160](https://github.com/stencilproject/Stencil/pull/160)
 
-### New Features
+### Enhancements
 
 - Now you can conditionally render variables with `{{ variable if condition }}`, which is a shorthand for `{% if condition %}{{ variable }}{% endif %}`. You can also use `else` like `{{ variable1 if condition else variable2 }}`, which is a shorthand for `{% if condition %}{{ variable1 }}{% else %}{{ variable2 }}{% endif %}`  
   [Ilya Puchka](https://github.com/ilyapuchka)
@@ -31,6 +22,18 @@
 - Now you can access string characters by index or get string length the same was as if it was an array, i.e. `{{ 'string'.first }}`, `{{ 'string'.last }}`, `{{ 'string'.1 }}`, `{{ 'string'.count }}`.  
   [Ilya Puchka](https://github.com/ilyapuchka)
   [#245](https://github.com/stencilproject/Stencil/pull/245)
+
+### Bug Fixes
+
+- Fixed the performance issues introduced in Stencil 0.12 with the error log improvements.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#230](https://github.com/stencilproject/Stencil/pull/230)
+- Now accessing undefined keys in NSObject does not cause runtime crash and instead renders empty string.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#234](https://github.com/stencilproject/Stencil/pull/234)
+- `for` tag: When iterating over a dictionary the keys will now always be sorted (in an ascending order) to ensure consistent output generation.  
+  [David Jennes](https://github.com/djbe)
+  [#240](https://github.com/stencilproject/Stencil/pull/240)
 
 ### Internal Changes
 
