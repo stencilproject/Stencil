@@ -4,24 +4,42 @@
 
 ### Bug Fixes
 
- _None_
+- Now accessing undefined keys in NSObject does not cause runtime crash and instead renders empty string.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#234](https://github.com/stencilproject/Stencil/pull/234)
+- `for` tag: When iterating over a dictionary the keys will now always be sorted (in an ascending order) to ensure consistent output generation.  
+  [David Jennes](https://github.com/djbe)
+  [#240](https://github.com/stencilproject/Stencil/pull/240)
 
 ### Breaking Changes
 
 - Now requires Swift 4.1 or newer.  
   [Yonas Kolb](https://github.com/yonaskolb)
   [#228](https://github.com/stencilproject/Stencil/pull/228)
+- You can now use parentheses in boolean expressions to change operator precedence.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#165](https://github.com/stencilproject/Stencil/pull/165)
 - Added method to add boolean filters with their negative counterparts.  
   [Ilya Puchka](https://github.com/ilyapuchka)
   [#160](https://github.com/stencilproject/Stencil/pull/160)
 
 ### New Features
 
- _None_
+- Now you can conditionally render variables with `{{ variable if condition }}`, which is a shorthand for `{% if condition %}{{ variable }}{% endif %}`. You can also use `else` like `{{ variable1 if condition else variable2 }}`, which is a shorthand for `{% if condition %}{{ variable1 }}{% else %}{{ variable2 }}{% endif %}`  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#243](https://github.com/stencilproject/Stencil/pull/243)
+- Now you can access string characters by index or get string length the same was as if it was an array, i.e. `{{ 'string'.first }}`, `{{ 'string'.last }}`, `{{ 'string'.1 }}`, `{{ 'string'.count }}`.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#245](https://github.com/stencilproject/Stencil/pull/245)
 
 ### Internal Changes
 
- _None_
+- Updated the codebase to use Swift 4 features.  
+  [David Jennes](https://github.com/djbe)
+  [#239](https://github.com/stencilproject/Stencil/pull/239)
+- Update to Spectre 0.9.0.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#247](https://github.com/stencilproject/Stencil/pull/247)
 
 
 ## 0.12.1

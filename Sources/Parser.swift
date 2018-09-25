@@ -40,8 +40,7 @@ public class TokenParser {
       case .text(let text, _):
         nodes.append(TextNode(text: text))
       case .variable:
-        let filter = try compileResolvable(token.contents, containedIn: token)
-        nodes.append(VariableNode(variable: filter, token: token))
+        try nodes.append(VariableNode.parse(self, token: token))
       case .block:
         if let parse_until = parse_until , parse_until(self, token) {
           prependToken(token)
@@ -98,7 +97,10 @@ public class TokenParser {
     if suggestedFilters.isEmpty {
       throw TemplateSyntaxError("Unknown filter '\(name)'.")
     } else {
-      throw TemplateSyntaxError("Unknown filter '\(name)'. Found similar filters: \(suggestedFilters.map({ "'\($0)'" }).joined(separator: ", ")).")
+      throw TemplateSyntaxError("""
+        Unknown filter '\(name)'. \
+        Found similar filters: \(suggestedFilters.map({ "'\($0)'" }).joined(separator: ", ")).
+        """)
     }
   }
 
