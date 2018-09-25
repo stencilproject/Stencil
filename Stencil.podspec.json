@@ -24,7 +24,7 @@
     "tvos": "9.0"
   },
   "cocoapods_version": "1.4.0",
-  "swift_version": "4.1",
+  "swift_version": "4.2",
   "requires_arc": true,
   "dependencies": {
     "PathKit": [
