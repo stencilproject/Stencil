@@ -1,6 +1,6 @@
 # Stencil Changelog
 
-## Master
+## 0.13.0
 
 ### Breaking
 
