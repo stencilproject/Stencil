@@ -57,6 +57,7 @@ extension InheritenceTests {
 extension LexerTests {
     static let __allTests = [
         ("testLexer", testLexer),
+        ("testPerformance", testPerformance),
     ]
 }
 
