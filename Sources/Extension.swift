@@ -20,7 +20,7 @@ open class Extension {
   }
   
   /// Registers boolean filter with it's negative counterpart
-  public func registerBooleanFilter(name: String, negativeFilterName: String, filter: @escaping (Any?) throws -> Bool?) {
+  public func registerFilter(name: String, negativeFilterName: String, filter: @escaping (Any?) throws -> Bool?) {
     filters[name] = .simple(filter)
     filters[negativeFilterName] = .simple {
       guard let result = try filter($0) else { return nil }

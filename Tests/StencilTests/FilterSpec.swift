@@ -25,7 +25,7 @@ class FilterTests: XCTestCase {
         
       $0.it("allows you to register boolean filters") {
         let repeatExtension = Extension()
-        repeatExtension.registerBooleanFilter(name: "isPositive", negativeFilterName: "isNotPositive") { (value: Any?) in
+        repeatExtension.registerFilter(name: "isPositive", negativeFilterName: "isNotPositive") { (value: Any?) in
           if let value = value as? Int {
             return value > 0
           }
