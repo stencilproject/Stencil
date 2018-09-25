@@ -7,7 +7,12 @@ struct Lexer {
   let templateString: String
   let lines: [Line]
 
+  /// The potential token start characters. In a template these appear after a
+  /// `{` character, for example `{{`, `{%`, `{#`, ...
   private static let tokenChars: [Unicode.Scalar] = ["{", "%", "#"]
+
+  /// The token end characters, corresponding to their token start characters.
+  /// For example, a variable token starts with `{{` and ends with `}}`
   private static let tokenCharMap: [Unicode.Scalar: Unicode.Scalar] = [
     "{": "}",
     "%": "%",
@@ -24,6 +29,15 @@ struct Lexer {
     }
   }
 
+  /// Create a token that will be passed on to the parser, with the given
+  /// content and a range. The content will be tested to see if it's a
+  /// `variable`, a `block` or a `comment`, otherwise it'll default to a simple
+  /// `text` token.
+  ///
+  /// - Parameters:
+  ///   - string: The content string of the token
+  ///   - range: The range within the template content, used for smart
+  ///            error reporting
   func createToken(string: String, at range: Range<String.Index>) -> Token {
     func strip() -> String {
       guard string.count > 4 else { return "" }
@@ -55,7 +69,10 @@ struct Lexer {
     return .text(value: string, at: sourceMap)
   }
 
-  /// Returns an array of tokens from a given template string.
+  /// Transforms the template into a list of tokens, that will eventually be
+  /// passed on to the parser.
+  ///
+  /// - Returns: The list of tokens (see `createToken(string: at:)`).
   func tokenize() -> [Token] {
     var tokens: [Token] = []
 
@@ -78,6 +95,11 @@ struct Lexer {
     return tokens
   }
 
+  /// Finds the line matching the given range (for a token)
+  ///
+  /// - Parameter range: The range to search for.
+  /// - Returns: The content for that line, the line number and offset within
+  ///            the line.
   func rangeLocation(_ range: Range<String.Index>) -> ContentLocation {
     guard let line = self.lines.first(where: { $0.range.contains(range.lowerBound) }) else {
       return ("", 0, 0)
@@ -93,7 +115,9 @@ class Scanner {
   var content: String
   var range: Range<String.Index>
 
+  /// The start delimiter for a token.
   private static let tokenStartDelimiter: Unicode.Scalar = "{"
+  /// And the corresponding end delimiter for a token.
   private static let tokenEndDelimiter: Unicode.Scalar = "}"
 
   init(_ content: String) {
@@ -106,6 +130,17 @@ class Scanner {
     return content.isEmpty
   }
 
+  /// Scans for the end of a token, with a specific ending character. If we're
+  /// searching for the end of a block token `%}`, this method receives a `%`.
+  /// The scanner will search for that `%` followed by a `}`.
+  ///
+  /// Note: if the end of a token is found, the `content` and `range`
+  /// properties are updated to reflect this. `content` will be set to what
+  /// remains of the template after the token. `range` will be set to the range
+  /// of the token within the template.
+  ///
+  /// - Parameter tokenChar: The token end character to search for.
+  /// - Returns: The content of a token, or "" if no token end was found.
   func scanForTokenEnd(_ tokenChar: Unicode.Scalar) -> String {
     var foundChar = false
 
@@ -124,6 +159,21 @@ class Scanner {
     return ""
   }
 
+  /// Scans for the start of a token, with a list of potential starting
+  /// characters. To scan for the start of variables (`{{`), blocks (`{%`) and
+  /// comments (`{#`), this method receives the characters `{`, `%` and `#`.
+  /// The scanner will search for a `{`, followed by one of the search
+  /// characters. It will give the found character, and the content that came
+  /// before the token.
+  ///
+  /// Note: if the start of a token is found, the `content` and `range`
+  /// properties are updated to reflect this. `content` will be set to what
+  /// remains of the template starting with the token. `range` will be set to
+  /// the start of the token within the template.
+  ///
+  /// - Parameter tokenChars: List of token start characters to search for.
+  /// - Returns: The found token start character, together with the content
+  ///            before the token, or nil of no token start was found.
   func scanForTokenStart(_ tokenChars: [Unicode.Scalar]) -> (Unicode.Scalar, String)? {
     var foundBrace = false
 
