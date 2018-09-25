@@ -14,7 +14,7 @@ dependencies inside ``Package.swift``.
     let package = Package(
       name: "MyApplication",
       dependencies: [
-        .Package(url: "https://github.com/kylef/Stencil.git", majorVersion: 0, minor: 8),
+        .Package(url: "https://github.com/stencilproject/Stencil.git", majorVersion: 0, minor: 12),
       ]
     )
 
@@ -37,7 +37,7 @@ Carthage
 
     .. code-block:: text
 
-        github "kylef/Stencil" ~> 0.8.0
+        github "stencilproject/Stencil" ~> 0.12.1
 
 2) Checkout your dependencies, generate the Stencil Xcode project, and then use Carthage to build Stencil:
 
