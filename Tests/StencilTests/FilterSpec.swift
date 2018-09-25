@@ -22,6 +22,24 @@ class FilterTests: XCTestCase {
         let result = try template.render(Context(dictionary: context, environment: Environment(extensions: [repeatExtension])))
         try expect(result) == "Kyle Kyle"
       }
+        
+      $0.it("allows you to register boolean filters") {
+        let repeatExtension = Extension()
+        repeatExtension.registerFilter(name: "isPositive", negativeFilterName: "isNotPositive") { (value: Any?) in
+          if let value = value as? Int {
+            return value > 0
+          }
+          return nil
+        }
+        
+        let result = try Template(templateString: "{{ value|isPositive }}")
+          .render(Context(dictionary: ["value": 1], environment: Environment(extensions: [repeatExtension])))
+        try expect(result) == "true"
+        
+        let negativeResult = try Template(templateString: "{{ value|isNotPositive }}")
+          .render(Context(dictionary: ["value": -1], environment: Environment(extensions: [repeatExtension])))
+        try expect(negativeResult) == "true"
+      }
 
       $0.it("allows you to register a custom filter which accepts single argument") {
         let template = Template(templateString: """

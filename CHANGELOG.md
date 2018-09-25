@@ -19,6 +19,9 @@
 - You can now use parentheses in boolean expressions to change operator precedence.  
   [Ilya Puchka](https://github.com/ilyapuchka)
   [#165](https://github.com/stencilproject/Stencil/pull/165)
+- Added method to add boolean filters with their negative counterparts.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#160](https://github.com/stencilproject/Stencil/pull/160)
 
 ### New Features
 
