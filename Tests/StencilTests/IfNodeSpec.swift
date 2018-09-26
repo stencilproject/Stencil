@@ -145,7 +145,7 @@ class IfNodeTests: XCTestCase {
 
         $0.it("can parse an if with complex expression") {
           let tokens: [Token] = [
-            .block(value: "if value == \"test\" and (not name or not (name and surname))", at: .unknown),
+            .block(value: "if value == \"test\" and (not name or not (name and surname) or( some )and other )", at: .unknown),
             .text(value: "true", at: .unknown),
             .block(value: "endif", at: .unknown)
           ]

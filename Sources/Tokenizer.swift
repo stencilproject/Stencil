@@ -17,12 +17,12 @@ extension String {
           components[components.count-1] += word
         } else if specialCharacters.contains(word) {
           components[components.count-1] += word
-        } else if word != "(" && word.hasPrefix("(") {
-          components.append("(")
+        } else if word != "(" && word.hasPrefix("(") || word != ")" && word.hasPrefix(")") {
+          components.append(String(word.first!))
           appendWord(String(word.dropFirst()))
-        } else if word != ")" && word.hasSuffix(")") {
+        } else if word != "(" && word.hasSuffix("(") || word != ")" && word.hasSuffix(")") {
           appendWord(String(word.dropLast()))
-          components.append(")")
+          components.append(String(word.last!))
         } else {
           components.append(word)
         }
