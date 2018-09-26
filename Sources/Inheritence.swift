@@ -53,7 +53,7 @@ class ExtendsNode : NodeType {
   let token: Token?
 
   class func parse(_ parser: TokenParser, token: Token) throws -> NodeType {
-    let bits = token.components()
+    let bits = token.components
 
     guard bits.count == 2 else {
       throw TemplateSyntaxError("'extends' takes one argument, the template file to be extended")
@@ -124,7 +124,7 @@ class BlockNode : NodeType {
   let token: Token?
 
   class func parse(_ parser: TokenParser, token: Token) throws -> NodeType {
-    let bits = token.components()
+    let bits = token.components
 
     guard bits.count == 2 else {
       throw TemplateSyntaxError("'block' tag takes one argument, the block name")
@@ -163,7 +163,7 @@ class BlockNode : NodeType {
     var childContext: [String: Any] = [BlockContext.contextKey: blockContext]
 
     if let blockSuperNode = child.nodes.first(where: {
-      if case .variable(let variable, _)? = $0.token, variable == "block.super" { return true }
+      if let token = $0.token, case .variable = token.kind, token.contents == "block.super" { return true }
       else { return false}
     }) {
       do {
