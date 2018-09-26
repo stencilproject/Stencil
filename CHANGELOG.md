@@ -1,6 +1,6 @@
 # Stencil Changelog
 
-## Master
+## 0.13.1
 
 ### Bug Fixes
 
