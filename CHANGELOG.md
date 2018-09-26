@@ -1,5 +1,14 @@
 # Stencil Changelog
 
+## Master
+
+### Bug Fixes
+
+- Fixed a bug in Stencil 0.13 where tags without spaces were incorrectly parsed.  
+  [David Jennes](https://github.com/djbe)
+  [#252](https://github.com/stencilproject/Stencil/pull/252)
+
+
 ## 0.13.0
 
 ### Breaking
