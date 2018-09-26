@@ -17,6 +17,12 @@ extension String {
           components[components.count-1] += word
         } else if specialCharacters.contains(word) {
           components[components.count-1] += word
+        } else if word != "(" && word.hasPrefix("(") {
+          components.append("(")
+          appendWord(String(word.dropFirst()))
+        } else if word != ")" && word.hasSuffix(")") {
+          appendWord(String(word.dropLast()))
+          components.append(")")
         } else {
           components.append(word)
         }
