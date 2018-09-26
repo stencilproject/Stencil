@@ -88,7 +88,7 @@ public class Token: Equatable {
   public let sourceMap: SourceMap
   
   /// Returns the underlying value as an array seperated by spaces
-  public lazy var components: [String] = self.contents.smartSplit()
+  public private(set) lazy var components: [String] = self.contents.smartSplit()
   
   init(contents: String, kind: Kind, sourceMap: SourceMap) {
     self.contents = contents
