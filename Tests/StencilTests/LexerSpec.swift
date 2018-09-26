@@ -16,7 +16,7 @@ class LexerTests: XCTestCase {
         let tokens = lexer.tokenize()
 
         try expect(tokens.count) == 1
-        try expect(tokens.first) == .text(value: "Hello World", at: SourceMap(location: ("Hello World", 1, 0)))
+        try expect(tokens.first) == .text(value: "Hello World", at: makeSourceMap("Hello World", for: lexer))
       }
 
       $0.it("can tokenize a comment") {
@@ -24,7 +24,7 @@ class LexerTests: XCTestCase {
         let tokens = lexer.tokenize()
 
         try expect(tokens.count) == 1
-        try expect(tokens.first) == .comment(value: "Comment", at: SourceMap(location: ("{# Comment #}", 1, 3)))
+        try expect(tokens.first) == .comment(value: "Comment", at: makeSourceMap("Comment", for: lexer))
       }
 
       $0.it("can tokenize a variable") {
@@ -32,7 +32,15 @@ class LexerTests: XCTestCase {
         let tokens = lexer.tokenize()
 
         try expect(tokens.count) == 1
-        try expect(tokens.first) == .variable(value: "Variable", at: SourceMap(location: ("{{ Variable }}", 1, 3)))
+        try expect(tokens.first) == .variable(value: "Variable", at: makeSourceMap("Variable", for: lexer))
+      }
+
+      $0.it("can tokenize a token without spaces") {
+        let lexer = Lexer(templateString: "{{Variable}}")
+        let tokens = lexer.tokenize()
+
+        try expect(tokens.count) == 1
+        try expect(tokens.first) == .variable(value: "Variable", at: makeSourceMap("Variable", for: lexer))
       }
 
       $0.it("can tokenize unclosed tag by ignoring it") {
@@ -41,7 +49,7 @@ class LexerTests: XCTestCase {
         let tokens = lexer.tokenize()
 
         try expect(tokens.count) == 1
-        try expect(tokens.first) == .text(value: "", at: SourceMap(location: ("{{ thing", 1, 0)))
+        try expect(tokens.first) == .text(value: "", at: makeSourceMap("{{ thing", for: lexer))
       }
 
       $0.it("can tokenize a mixture of content") {
