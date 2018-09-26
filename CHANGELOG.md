@@ -1,5 +1,28 @@
 # Stencil Changelog
 
+## Master
+
+### Breaking
+
+_None_
+
+### Enhancements
+
+_None_
+
+### Deprecations
+
+_None_
+
+### Bug Fixes
+
+_None_
+
+### Internal Changes
+
+_None_
+
+
 ## 0.13.1
 
 ### Bug Fixes
@@ -16,15 +39,15 @@
 - Now requires Swift 4.1 or newer.  
   [Yonas Kolb](https://github.com/yonaskolb)
   [#228](https://github.com/stencilproject/Stencil/pull/228)
+
+### Enhancements
+
 - You can now use parentheses in boolean expressions to change operator precedence.  
   [Ilya Puchka](https://github.com/ilyapuchka)
   [#165](https://github.com/stencilproject/Stencil/pull/165)
 - Added method to add boolean filters with their negative counterparts.  
   [Ilya Puchka](https://github.com/ilyapuchka)
   [#160](https://github.com/stencilproject/Stencil/pull/160)
-
-### Enhancements
-
 - Now you can conditionally render variables with `{{ variable if condition }}`, which is a shorthand for `{% if condition %}{{ variable }}{% endif %}`. You can also use `else` like `{{ variable1 if condition else variable2 }}`, which is a shorthand for `{% if condition %}{{ variable1 }}{% else %}{{ variable2 }}{% endif %}`  
   [Ilya Puchka](https://github.com/ilyapuchka)
   [#243](https://github.com/stencilproject/Stencil/pull/243)
