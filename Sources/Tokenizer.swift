@@ -18,11 +18,11 @@ extension String {
         } else if specialCharacters.contains(word) {
           components[components.count-1] += word
         } else if word != "(" && word.hasPrefix("(") || word != ")" && word.hasPrefix(")") {
-          components.append(String(word.first!))
+          components.append(String(word.prefix(1)))
           appendWord(String(word.dropFirst()))
         } else if word != "(" && word.hasSuffix("(") || word != ")" && word.hasSuffix(")") {
           appendWord(String(word.dropLast()))
-          components.append(String(word.last!))
+          components.append(String(word.suffix(1)))
         } else {
           components.append(word)
         }
