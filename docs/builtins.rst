@@ -264,6 +264,15 @@ You can chain multiple filters with a pipe (`|`).
       Capitalised.
     {% endfilter %}
 
+You can use shorthand syntax by dropping `filter` keyword and changing closing tag:
+
+.. code-block:: html+django
+
+    {% lowercase %}
+        This Text Will First Be Lowercased, Then The First Character Will BE
+        Capitalised.
+    {% endlowercase %}
+
 ``include``
 ~~~~~~~~~~~
 

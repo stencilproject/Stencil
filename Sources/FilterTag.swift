@@ -3,21 +3,23 @@ class FilterNode : NodeType {
   let nodes: [NodeType]
   let token: Token?
 
-  class func parse(_ parser: TokenParser, token: Token) throws -> NodeType {
-    let bits = token.components
-
-    guard bits.count == 2 else {
-      throw TemplateSyntaxError("'filter' tag takes one argument, the filter expression")
+  class func parse(tag: String) -> Extension.TagParser {
+    return { parser, token in
+      let bits = token.components
+      
+      guard bits.count <= 2 else {
+        throw TemplateSyntaxError("'filter' tag takes one argument, the filter expression")
+      }
+      
+      let blocks = try parser.parse(until(["end\(tag)"]))
+      
+      guard parser.nextToken() != nil else {
+        throw TemplateSyntaxError("`end\(tag)` was not found.")
+      }
+      
+      let resolvable = try parser.compileFilter("filter_value|\(bits[bits.count - 1])", containedIn: token)
+      return FilterNode(nodes: blocks, resolvable: resolvable, token: token)
     }
-
-    let blocks = try parser.parse(until(["endfilter"]))
-
-    guard parser.nextToken() != nil else {
-      throw TemplateSyntaxError("`endfilter` was not found.")
-    }
-
-    let resolvable = try parser.compileFilter("filter_value|\(bits[1])", containedIn: token)
-    return FilterNode(nodes: blocks, resolvable: resolvable, token: token)
   }
 
   init(nodes: [NodeType], resolvable: Resolvable, token: Token) {

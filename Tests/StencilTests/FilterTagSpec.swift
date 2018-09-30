@@ -46,6 +46,24 @@ class FilterTagTests: XCTestCase {
           """, context: ["items": ["\"1\"", "\"2\""]])
         try expect(result) == "1,2"
       }
+      
+      $0.it("can render filter with shorthand syntax") {
+        let template = Template(templateString: "{% uppercase %}Test{% enduppercase %}")
+        let result = try template.render()
+        try expect(result) == "TEST"
+      }
+
+      $0.it("can render multiple filters with shorthand syntax") {
+        let ext = Extension()
+        ext.registerFilter("split", filter: {
+          return ($0 as! String).components(separatedBy: $1[0] as! String)
+        })
+        let env = Environment(extensions: [ext])
+        let result = try env.renderTemplate(string: """
+        {% split:","|join:";"  %}{{ items|join:"," }}{% endsplit %}
+        """, context: ["items": [1, 2]])
+        try expect(result) == "1;2"
+      }
     }
   }
 }

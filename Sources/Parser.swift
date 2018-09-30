@@ -82,8 +82,13 @@ public class TokenParser {
         return filter
       }
     }
-
-    throw TemplateSyntaxError("Unknown template tag '\(name)'")
+    
+    let (name, _) = parseFilterComponents(token: name)
+    if environment.extensions.contains(where: { $0.filters[name] != nil }) {
+      return FilterNode.parse(tag: name)
+    } else {
+      throw TemplateSyntaxError("Unknown template tag '\(name)'")
+    }
   }
 
   func findFilter(_ name: String) throws -> FilterType {

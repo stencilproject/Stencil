@@ -8,7 +8,9 @@ _None_
 
 ### Enhancements
 
-_None_
+- Allow shorthand syntax for filter tags, i.e. `{% uppercase %}String{% enduppercase %}`.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#257](https://github.com/stencilproject/Stencil/pull/257)
 
 ### Deprecations
 
