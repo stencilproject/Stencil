@@ -20,7 +20,9 @@ _None_
 
 ### Internal Changes
 
-_None_
+- `Token` type converted to struct to allow computing token components only once.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#256](https://github.com/stencilproject/Stencil/pull/256)
 
 
 ## 0.13.1
