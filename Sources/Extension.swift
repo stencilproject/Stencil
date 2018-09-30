@@ -57,7 +57,7 @@ class DefaultExtension: Extension {
     registerTag("include", parser: IncludeNode.parse)
     registerTag("extends", parser: ExtendsNode.parse)
     registerTag("block", parser: BlockNode.parse)
-    registerTag("filter", parser: FilterNode.parse)
+    registerTag("filter", parser: FilterNode.parse(tag: "filter"))
   }
 
   fileprivate func registerDefaultFilters() {
