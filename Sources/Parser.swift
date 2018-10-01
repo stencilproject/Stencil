@@ -76,14 +76,17 @@ public class TokenParser {
     tokens.insert(token, at: 0)
   }
 
+  /// Create filter expression from a string contained in provided token
   public func compileFilter(_ filterToken: String, containedIn token: Token) throws -> Resolvable {
     return try environment.compileFilter(filterToken, containedIn: token)
   }
 
+  /// Create boolean expression from components contained in provided token
   public func compileExpression(components: [String], token: Token) throws -> Expression {
     return try environment.compileExpression(components: components, containedIn: token)
   }
 
+  /// Create resolvable (i.e. range variable or filter expression) from a string contained in provided token
   public func compileResolvable(_ token: String, containedIn containingToken: Token) throws -> Resolvable {
     return try environment.compileResolvable(token, containedIn: containingToken)
   }
@@ -134,10 +137,12 @@ extension Environment {
     return filtersWithDistance.filter({ $0.distance == minDistance }).map({ $0.filterName })
   }
 
+  /// Create filter expression from a string
   public func compileFilter(_ token: String) throws -> Resolvable {
     return try FilterExpression(token: token, environment: self)
   }
 
+  /// Create filter expression from a string contained in provided token
   public func compileFilter(_ filterToken: String, containedIn containingToken: Token) throws -> Resolvable {
     do {
       return try FilterExpression(token: filterToken, environment: self)
@@ -157,16 +162,19 @@ extension Environment {
     }
   }
 
+  /// Create resolvable (i.e. range variable or filter expression) from a string
   public func compileResolvable(_ token: String) throws -> Resolvable {
     return try RangeVariable(token, environment: self)
       ?? compileFilter(token)
   }
 
+  /// Create resolvable (i.e. range variable or filter expression) from a string contained in provided token
   public func compileResolvable(_ token: String, containedIn containingToken: Token) throws -> Resolvable {
     return try RangeVariable(token, environment: self, containedIn: containingToken)
         ?? compileFilter(token, containedIn: containingToken)
   }
 
+  /// Create boolean expression from components contained in provided token
   public func compileExpression(components: [String], containedIn token: Token) throws -> Expression {
     return try IfExpressionParser.parser(components: components, environment: self, token: token).parse()
   }
