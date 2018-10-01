@@ -22,17 +22,10 @@ struct Lexer {
   init(templateName: String? = nil, templateString: String) {
     self.templateName = templateName
     self.templateString = templateString
-    #if swift(>=4.1)
-      self.lines = templateString.components(separatedBy: .newlines).enumerated().compactMap {
-        guard !$0.element.isEmpty else { return nil }
-        return (content: $0.element, number: UInt($0.offset + 1), templateString.range(of: $0.element)!)
-      }
-    #else
-      self.lines = templateString.components(separatedBy: .newlines).enumerated().flatMap {
-        guard !$0.element.isEmpty else { return nil }
-        return (content: $0.element, number: UInt($0.offset + 1), templateString.range(of: $0.element)!)
-      }
-    #endif
+    self.lines = templateString.components(separatedBy: .newlines).enumerated().compactMap {
+      guard !$0.element.isEmpty else { return nil }
+      return (content: $0.element, number: UInt($0.offset + 1), templateString.range(of: $0.element)!)
+    }
   }
 
   /// Create a token that will be passed on to the parser, with the given

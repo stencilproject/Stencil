@@ -63,11 +63,7 @@ class ExtendsNode : NodeType {
     guard (parsedNodes.any { $0 is ExtendsNode }) == nil else {
       throw TemplateSyntaxError("'extends' cannot appear more than once in the same template")
     }
-    #if swift(>=4.1)
-        let blockNodes = parsedNodes.compactMap { $0 as? BlockNode }
-    #else
-        let blockNodes = parsedNodes.flatMap { $0 as? BlockNode }
-    #endif
+    let blockNodes = parsedNodes.compactMap { $0 as? BlockNode }
     let nodes = blockNodes.reduce([String: BlockNode]()) { (accumulator, node) -> [String: BlockNode] in
       var dict = accumulator
       dict[node.name] = node

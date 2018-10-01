@@ -117,12 +117,8 @@ public struct Variable : Equatable, Resolvable {
     return normalize(current)
   }
     
-  public static func ==(lhs: Variable, rhs: Variable) -> Bool {
-    return lhs.variable == rhs.variable
-  }
 }
 
-#if swift(>=4.1)
 private func resolveCollection<T: Collection>(_ collection: T, bit: String) -> Any? {
   if let index = Int(bit) {
     if index >= 0 && index < collection.count {
@@ -140,25 +136,6 @@ private func resolveCollection<T: Collection>(_ collection: T, bit: String) -> A
     return nil
   }
 }
-#else
-private func resolveCollection<T: Collection>(_ collection: T, bit: String) -> Any? where T.IndexDistance == Int {
-  if let index = Int(bit) {
-    if index >= 0 && index < collection.count {
-      return collection[collection.index(collection.startIndex, offsetBy: index)]
-    } else {
-      return nil
-    }
-  } else if bit == "first" {
-    return collection.first
-  } else if bit == "last" {
-    return collection[collection.index(collection.endIndex, offsetBy: -1)]
-  } else if bit == "count" {
-    return collection.count
-  } else {
-    return nil
-  }
-}
-#endif
 
 /// A structure used to represet range of two integer values expressed as `from...to`.
 /// Values should be numbers (they will be converted to integers).

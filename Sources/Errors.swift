@@ -37,15 +37,8 @@ public struct TemplateSyntaxError : Error, Equatable, CustomStringConvertible {
   public init(_ description: String) {
     self.init(reason: description)
   }
-    
-  public static func ==(lhs: TemplateSyntaxError, rhs: TemplateSyntaxError) -> Bool {
-    return lhs.reason == rhs.reason &&
-    lhs.description == rhs.description &&
-    lhs.token == rhs.token &&
-    lhs.stackTrace == rhs.stackTrace &&
-    lhs.templateName == rhs.templateName &&
-    lhs.allTokens == rhs.allTokens
-  }
+  
+  
 }
 
 extension Error {

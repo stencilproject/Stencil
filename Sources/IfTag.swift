@@ -118,12 +118,7 @@ final class IfExpressionParser {
   private init(components: ArraySlice<String>, tokenParser: TokenParser, token: Token) throws {
     var parsedComponents = Set<Int>()
     var bracketsBalance = 0
-    #if swift(>=4.1)
-    self.tokens = try zip(components.indices, components).compactMap { try parseComponent(index: $0.0, component: $0.1) }
-    #else
-    self.tokens = try zip(components.indices, components).flatMap { try parseComponent(index: $0.0, component: $0.1) }
-    #endif
-    func parseComponent(index: Int, component: String) throws -> IfToken? {
+    self.tokens = try zip(components.indices, components).compactMap { (index, component) in
       guard !parsedComponents.contains(index) else { return nil }
 
       if component == "(" {
