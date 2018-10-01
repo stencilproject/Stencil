@@ -389,10 +389,10 @@ Filter accepts several arguments:
 ``filter``
 ~~~~~~~~~
 
-Applies filter by its name, provided as an argument.
+Applies the filter with the name provided as an argument to the current expression.
 
 .. code-block:: html+django
 
     {{ string|filter:myfilter }}
 
-This expression will resolve `myfilter` variable and will apply filter with such name to `string` variable.
+This expression will resolve the `myfilter` variable, find a filter named the same as resolved value, and will apply it to the `string` variable. I.e. if `myfilter` variable resolves to string `uppercase` this expression will apply file `uppercase` to `string` variable.
