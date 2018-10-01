@@ -1,3 +1,8 @@
+import XCTest
+
 import StencilTests
 
-stencilTests()
+var tests = [XCTestCaseEntry]()
+tests += StencilTests.__allTests()
+
+XCTMain(tests)

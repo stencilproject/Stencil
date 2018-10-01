@@ -2,6 +2,100 @@
 
 ## Master
 
+### Breaking
+
+_None_
+
+### Enhancements
+
+- Added support for dynamic filter using `filter` filter. With that you can define a variable with a name of filter
+, i.e. `myfilter = "uppercase"` and then use it to invoke this filter with `{{ string|filter:myfilter }}`.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#203](https://github.com/stencilproject/Stencil/pull/203)
+
+### Deprecations
+
+_None_
+
+### Bug Fixes
+
+_None_
+
+### Internal Changes
+
+_None_
+
+
+## 0.13.1
+
+### Bug Fixes
+
+- Fixed a bug in Stencil 0.13 where tags without spaces were incorrectly parsed.  
+  [David Jennes](https://github.com/djbe)
+  [#252](https://github.com/stencilproject/Stencil/pull/252)
+
+
+## 0.13.0
+
+### Breaking
+
+- Now requires Swift 4.1 or newer.  
+  [Yonas Kolb](https://github.com/yonaskolb)
+  [#228](https://github.com/stencilproject/Stencil/pull/228)
+
+### Enhancements
+
+- You can now use parentheses in boolean expressions to change operator precedence.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#165](https://github.com/stencilproject/Stencil/pull/165)
+- Added method to add boolean filters with their negative counterparts.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#160](https://github.com/stencilproject/Stencil/pull/160)
+- Now you can conditionally render variables with `{{ variable if condition }}`, which is a shorthand for `{% if condition %}{{ variable }}{% endif %}`. You can also use `else` like `{{ variable1 if condition else variable2 }}`, which is a shorthand for `{% if condition %}{{ variable1 }}{% else %}{{ variable2 }}{% endif %}`  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#243](https://github.com/stencilproject/Stencil/pull/243)
+- Now you can access string characters by index or get string length the same was as if it was an array, i.e. `{{ 'string'.first }}`, `{{ 'string'.last }}`, `{{ 'string'.1 }}`, `{{ 'string'.count }}`.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#245](https://github.com/stencilproject/Stencil/pull/245)
+
+### Bug Fixes
+
+- Fixed the performance issues introduced in Stencil 0.12 with the error log improvements.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#230](https://github.com/stencilproject/Stencil/pull/230)
+- Now accessing undefined keys in NSObject does not cause runtime crash and instead renders empty string.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#234](https://github.com/stencilproject/Stencil/pull/234)
+- `for` tag: When iterating over a dictionary the keys will now always be sorted (in an ascending order) to ensure consistent output generation.  
+  [David Jennes](https://github.com/djbe)
+  [#240](https://github.com/stencilproject/Stencil/pull/240)
+
+### Internal Changes
+
+- Updated the codebase to use Swift 4 features.  
+  [David Jennes](https://github.com/djbe)
+  [#239](https://github.com/stencilproject/Stencil/pull/239)
+- Update to Spectre 0.9.0.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#247](https://github.com/stencilproject/Stencil/pull/247)
+- Optimise Scanner performance.  
+  [Eric Thorpe](https://github.com/trametheka)
+  [Sébastien Duperron](https://github.com/Liquidsoul)
+  [David Jennes](https://github.com/djbe)
+  [#226](https://github.com/stencilproject/Stencil/pull/226)
+
+
+## 0.12.1
+
+### Internal Changes
+
+- Updated the PathKit dependency to 0.9.0 in CocoaPods, to be in line with SPM.  
+  [David Jennes](https://github.com/djbe)
+  [#227](https://github.com/stencilproject/Stencil/pull/227)
+
+
+## 0.12.0
+
 ### Enhancements
 
 - Added an optional second parameter to the `include` tag for passing a sub context to the included file.  
@@ -14,10 +108,9 @@
 - Adds support for using spaces in filter expression.  
   [Ilya Puchka](https://github.com/ilyapuchka)
   [#178](https://github.com/stencilproject/Stencil/pull/178)
-- Added support for dynamic filter using `filter` filter. With that you can define a variable with a name of filter
-  , i.e. `myfilter = "uppercase"` and then use it to invoke this filter with `{{ string|filter:myfilter }}`.  
+- Improvements in error reporting.  
   [Ilya Puchka](https://github.com/ilyapuchka)
-  [#203](https://github.com/stencilproject/Stencil/pull/203)
+  [#167](https://github.com/stencilproject/Stencil/pull/167)
 
 ### Bug Fixes
 

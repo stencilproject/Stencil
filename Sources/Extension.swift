@@ -15,8 +15,17 @@ open class Extension {
   /// Registers a simple template tag with a name and a handler
   public func registerSimpleTag(_ name: String, handler: @escaping (Context) throws -> String) {
     registerTag(name, parser: { parser, token in
-      return SimpleNode(handler: handler)
+      return SimpleNode(token: token, handler: handler)
     })
+  }
+  
+  /// Registers boolean filter with it's negative counterpart
+  public func registerFilter(name: String, negativeFilterName: String, filter: @escaping (Any?) throws -> Bool?) {
+    filters[name] = .simple(filter)
+    filters[negativeFilterName] = .simple {
+      guard let result = try filter($0) else { return nil }
+      return !result
+    }
   }
 
   /// Registers a template filter with the given name
@@ -46,9 +55,9 @@ class DefaultExtension: Extension {
     registerTag("for", parser: ForNode.parse)
     registerTag("if", parser: IfNode.parse)
     registerTag("ifnot", parser: IfNode.parse_ifnot)
-#if !os(Linux)
-    registerTag("now", parser: NowNode.parse)
-#endif
+    #if !os(Linux)
+      registerTag("now", parser: NowNode.parse)
+    #endif
     registerTag("include", parser: IncludeNode.parse)
     registerTag("extends", parser: ExtendsNode.parse)
     registerTag("block", parser: BlockNode.parse)

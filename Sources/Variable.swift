@@ -8,11 +8,9 @@ class FilterExpression : Resolvable {
   let filters: [(FilterType, [Variable])]
   let variable: Variable
 
-  init(token: String, environment: Environment) throws {
-    let bits = token.smartSplit(separator: "|").map({ String($0).trim(character: " ") })
+  init(token: String, parser: TokenParser) throws {
+    let bits = token.split(separator: "|").map({ String($0).trim(character: " ") })
     if bits.isEmpty {
-      filters = []
-      variable = Variable("")
       throw TemplateSyntaxError("Variable tags must include at least 1 argument")
     }
 
@@ -52,7 +50,7 @@ public struct Variable : Equatable, Resolvable {
 
   // Split the lookup string and resolve references if possible
   fileprivate func lookup(_ context: Context) throws -> [String] {
-    var keyPath = KeyPath(variable, in: context)
+    let keyPath = KeyPath(variable, in: context)
     return try keyPath.parse()
   }
 
@@ -62,7 +60,7 @@ public struct Variable : Equatable, Resolvable {
 
     if (variable.hasPrefix("'") && variable.hasSuffix("'")) || (variable.hasPrefix("\"") && variable.hasSuffix("\"")) {
       // String literal
-      return String(variable[variable.characters.index(after: variable.startIndex) ..< variable.characters.index(before: variable.endIndex)])
+      return String(variable[variable.index(after: variable.startIndex) ..< variable.index(before: variable.endIndex)])
     }
 
     // Number literal
@@ -89,25 +87,17 @@ public struct Variable : Equatable, Resolvable {
           current = dictionary[bit]
         }
       } else if let array = current as? [Any] {
-        if let index = Int(bit) {
-          if index >= 0 && index < array.count {
-            current = array[index]
-          } else {
-            current = nil
-          }
-        } else if bit == "first" {
-          current = array.first
-        } else if bit == "last" {
-          current = array.last
-        } else if bit == "count" {
-          current = array.count
-        }
+        current = resolveCollection(array, bit: bit)
+      } else if let string = current as? String {
+        current = resolveCollection(string, bit: bit)
       } else if let object = current as? NSObject {  // NSKeyValueCoding
-#if os(Linux)
-        return nil
-#else
-        current = object.value(forKey: bit)
-#endif
+        #if os(Linux)
+          return nil
+        #else
+          if object.responds(to: Selector(bit)) {
+            current = object.value(forKey: bit)
+          }
+        #endif
       } else if let value = current {
         current = Mirror(reflecting: value).getValue(for: bit)
         if current == nil {
@@ -128,8 +118,22 @@ public struct Variable : Equatable, Resolvable {
   }
 }
 
-public func ==(lhs: Variable, rhs: Variable) -> Bool {
-  return lhs.variable == rhs.variable
+private func resolveCollection<T: Collection>(_ collection: T, bit: String) -> Any? {
+  if let index = Int(bit) {
+    if index >= 0 && index < collection.count {
+      return collection[collection.index(collection.startIndex, offsetBy: index)]
+    } else {
+      return nil
+    }
+  } else if bit == "first" {
+    return collection.first
+  } else if bit == "last" {
+    return collection[collection.index(collection.endIndex, offsetBy: -1)]
+  } else if bit == "count" {
+    return collection.count
+  } else {
+    return nil
+  }
 }
 
 /// A structure used to represet range of two integer values expressed as `from...to`.
@@ -140,7 +144,8 @@ public struct RangeVariable: Resolvable {
   public let from: Resolvable
   public let to: Resolvable
 
-  public init?(_ token: String, environment: Environment) throws {
+  @available(*, deprecated, message: "Use init?(_:parser:containedIn:)")
+  public init?(_ token: String, parser: TokenParser) throws {
     let components = token.components(separatedBy: "...")
     guard components.count == 2 else {
       return nil
@@ -148,6 +153,16 @@ public struct RangeVariable: Resolvable {
 
     self.from = try environment.compileFilter(components[0])
     self.to = try environment.compileFilter(components[1])
+  }
+
+  public init?(_ token: String, parser: TokenParser, containedIn containingToken: Token) throws {
+    let components = token.components(separatedBy: "...")
+    guard components.count == 2 else {
+      return nil
+    }
+
+    self.from = try parser.compileFilter(components[0], containedIn: containingToken)
+    self.to = try parser.compileFilter(components[1], containedIn: containingToken)
   }
 
   public func resolve(_ context: Context) throws -> Any? {

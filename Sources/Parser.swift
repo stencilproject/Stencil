@@ -37,10 +37,10 @@ public class TokenParser {
       let token = nextToken()!
 
       switch token {
-      case .text(let text):
+      case .text(let text, _):
         nodes.append(TextNode(text: text))
       case .variable:
-        nodes.append(VariableNode(variable: try compileResolvable(token.contents)))
+        try nodes.append(VariableNode.parse(self, token: token))
       case .block:
         if let parse_until = parse_until , parse_until(self, token) {
           prependToken(token)
@@ -48,8 +48,13 @@ public class TokenParser {
         }
 
         if let tag = token.components().first {
-          let parser = try environment.findTag(name: tag)
-          nodes.append(try parser(self, token))
+          do {
+            let parser = try findTag(name: tag)
+            let node = try parser(self, token)
+            nodes.append(node)
+          } catch {
+            throw error.withToken(token)
+          }
         }
       case .comment:
         continue
@@ -108,7 +113,10 @@ extension Environment {
     if suggestedFilters.isEmpty {
       throw TemplateSyntaxError("Unknown filter '\(name)'.")
     } else {
-      throw TemplateSyntaxError("Unknown filter '\(name)'. Found similar filters: \(suggestedFilters.map({ "'\($0)'" }).joined(separator: ", "))")
+      throw TemplateSyntaxError("""
+        Unknown filter '\(name)'. \
+        Found similar filters: \(suggestedFilters.map({ "'\($0)'" }).joined(separator: ", ")).
+        """)
     }
   }
 
@@ -118,7 +126,7 @@ extension Environment {
     let filtersWithDistance = allFilters
                 .map({ (filterName: $0, distance: $0.levenshteinDistance(name)) })
                 // do not suggest filters which names are shorter than the distance
-                .filter({ $0.filterName.characters.count > $0.distance })
+                .filter({ $0.filterName.count > $0.distance })
     guard let minDistance = filtersWithDistance.min(by: { $0.distance < $1.distance })?.distance else {
       return []
     }
@@ -126,6 +134,26 @@ extension Environment {
     return filtersWithDistance.filter({ $0.distance == minDistance }).map({ $0.filterName })
   }
 
+  public func compileFilter(_ filterToken: String, containedIn containingToken: Token) throws -> Resolvable {
+    do {
+      return try FilterExpression(token: filterToken, parser: self)
+    } catch {
+      guard var syntaxError = error as? TemplateSyntaxError, syntaxError.token == nil else {
+        throw error
+      }
+      // find offset of filter in the containing token so that only filter is highligted, not the whole token
+      if let filterTokenRange = containingToken.contents.range(of: filterToken) {
+        var location = containingToken.sourceMap.location
+        location.lineOffset += containingToken.contents.distance(from: containingToken.contents.startIndex, to: filterTokenRange.lowerBound)
+        syntaxError.token = .variable(value: filterToken, at: SourceMap(filename: containingToken.sourceMap.filename, location: location))
+      } else {
+        syntaxError.token = containingToken
+      }
+      throw syntaxError
+    }
+  }
+
+  @available(*, deprecated, message: "Use compileFilter(_:containedIn:)")
   public func compileFilter(_ token: String) throws -> Resolvable {
     return try FilterExpression(token: token, environment: self)
   }
@@ -134,9 +162,15 @@ extension Environment {
     return try IfExpressionParser(components: components, environment: self).parse()
   }
 
+  @available(*, deprecated, message: "Use compileResolvable(_:containedIn:)")
   public func compileResolvable(_ token: String) throws -> Resolvable {
     return try RangeVariable(token, environment: self)
       ?? compileFilter(token)
+  }
+
+  public func compileResolvable(_ token: String, containedIn containingToken: Token) throws -> Resolvable {
+    return try RangeVariable(token, parser: self, containedIn: containingToken)
+        ?? compileFilter(token, containedIn: containingToken)
   }
 
 }
@@ -155,10 +189,10 @@ extension String {
     // initialize v0 (the previous row of distances)
     // this row is A[0][i]: edit distance for an empty s
     // the distance is just the number of characters to delete from t
-    last = [Int](0...target.characters.count)
-    current = [Int](repeating: 0, count: target.characters.count + 1)
+    last = [Int](0...target.count)
+    current = [Int](repeating: 0, count: target.count + 1)
 
-    for i in 0..<self.characters.count {
+    for i in 0..<self.count {
       // calculate v1 (current row distances) from the previous row v0
 
       // first element of v1 is A[i+1][0]
@@ -166,7 +200,7 @@ extension String {
       current[0] = i + 1
 
       // use formula to fill in the rest of the row
-      for j in 0..<target.characters.count {
+      for j in 0..<target.count {
         current[j+1] = Swift.min(
           last[j+1] + 1,
           current[j] + 1,
@@ -178,7 +212,7 @@ extension String {
       last = current
     }
 
-    return current[target.characters.count]
+    return current[target.count]
   }
 
 }

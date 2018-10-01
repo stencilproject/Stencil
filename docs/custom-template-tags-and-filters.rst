@@ -48,6 +48,17 @@ Registering custom filters with arguments:
       return value
     }
 
+Registering custom boolean filters:
+
+.. code-block:: swift
+
+    ext.registerFilter("ordinary", negativeFilterName: "odd") { (value: Any?) in
+        if let value = value as? Int {
+            return myInt % 2 == 0
+        }
+        return nil
+    }
+
 Custom Tags
 -----------
 
