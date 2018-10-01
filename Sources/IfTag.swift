@@ -111,11 +111,11 @@ final class IfExpressionParser {
     self.tokens = tokens
   }
   
-  static func parser(components: [String], tokenParser: TokenParser, token: Token) throws -> IfExpressionParser {
-    return try IfExpressionParser(components: ArraySlice(components), tokenParser: tokenParser, token: token)
+  static func parser(components: [String], environment: Environment, token: Token) throws -> IfExpressionParser {
+    return try IfExpressionParser(components: ArraySlice(components), environment: environment, token: token)
   }
 
-  private init(components: ArraySlice<String>, tokenParser: TokenParser, token: Token) throws {
+  private init(components: ArraySlice<String>, environment: Environment, token: Token) throws {
     var parsedComponents = Set<Int>()
     var bracketsBalance = 0
     self.tokens = try zip(components.indices, components).compactMap { (index, component) in
@@ -125,7 +125,7 @@ final class IfExpressionParser {
         bracketsBalance += 1
         let (expression, parsedCount) = try IfExpressionParser.subExpression(
           from: components.suffix(from: index + 1),
-          tokenParser: tokenParser,
+          environment: environment,
           token: token
         )
         parsedComponents.formUnion(Set(index...(index + parsedCount)))
@@ -147,12 +147,12 @@ final class IfExpressionParser {
             return .prefix(name: name, bindingPower: bindingPower, operatorType: operatorType)
           }
         }
-        return .variable(try tokenParser.compileResolvable(component, containedIn: token))
+        return .variable(try environment.compileResolvable(component, containedIn: token))
       }
     }
   }
 
-  private static func subExpression(from components: ArraySlice<String>, tokenParser: TokenParser, token: Token) throws -> (Expression, Int) {
+  private static func subExpression(from components: ArraySlice<String>, environment: Environment, token: Token) throws -> (Expression, Int) {
     var bracketsBalance = 1
     let subComponents = components
       .prefix(while: {
@@ -167,7 +167,7 @@ final class IfExpressionParser {
       throw TemplateSyntaxError("'if' expression error: missing closing bracket")
     }
 
-    let expressionParser = try IfExpressionParser(components: subComponents, tokenParser: tokenParser, token: token)
+    let expressionParser = try IfExpressionParser(components: subComponents, environment: environment, token: token)
     let expression = try expressionParser.parse()
     return (expression, subComponents.count)
   }
@@ -239,7 +239,7 @@ class IfNode : NodeType {
     var components = token.components()
     components.removeFirst()
 
-    let expression = try parseExpression(components: components, tokenParser: parser, token: token)
+    let expression = try parser.compileExpression(components: components, token: token)
     let nodes = try parser.parse(until(["endif", "elif", "else"]))
     var conditions: [IfCondition] = [
       IfCondition(expression: expression, nodes: nodes)
@@ -249,7 +249,7 @@ class IfNode : NodeType {
     while let current = nextToken, current.contents.hasPrefix("elif") {
       var components = current.components()
       components.removeFirst()
-      let expression = try parseExpression(components: components, tokenParser: parser, token: current)
+      let expression = try parser.compileExpression(components: components, token: current)
 
       let nodes = try parser.parse(until(["endif", "elif", "else"]))
       nextToken = parser.nextToken()
@@ -277,7 +277,7 @@ class IfNode : NodeType {
     var trueNodes = [NodeType]()
     var falseNodes = [NodeType]()
 
-    let expression = try parseExpression(components: components, tokenParser: parser, token: token)
+    let expression = try parser.compileExpression(components: components, token: token)
     falseNodes = try parser.parse(until(["endif", "else"]))
 
     guard let token = parser.nextToken() else {

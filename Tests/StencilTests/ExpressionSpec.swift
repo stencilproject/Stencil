@@ -5,10 +5,9 @@ import Spectre
 class ExpressionsTests: XCTestCase {
   func testExpressions() {
     describe("Expression") {
-      let parser = TokenParser(tokens: [], environment: Environment())
 
       func parseExpression(components: [String]) throws -> Expression {
-        let parser = try IfExpressionParser.parser(components: components, tokenParser: parser, token: .text(value: "", at: .unknown))
+        let parser = try IfExpressionParser.parser(components: components, environment: Environment(), token: .text(value: "", at: .unknown))
         return try parser.parse()
       }
 

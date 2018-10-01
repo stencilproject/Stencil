@@ -38,6 +38,7 @@ open class Extension {
     filters[name] = .arguments({ value, args, _ in try filter(value, args) })
   }
 
+  /// Registers a template filter with the given name
   public func registerFilter(_ name: String, filter: @escaping (Any?, [Any?], Context) throws -> Any?) {
     filters[name] = .arguments(filter)
   }

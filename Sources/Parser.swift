@@ -49,7 +49,7 @@ public class TokenParser {
 
         if let tag = token.components().first {
           do {
-            let parser = try findTag(name: tag)
+            let parser = try environment.findTag(name: tag)
             let node = try parser(self, token)
             nodes.append(node)
           } catch {
@@ -76,16 +76,16 @@ public class TokenParser {
     tokens.insert(token, at: 0)
   }
 
-  public func compileFilter(_ token: String) throws -> Resolvable {
-    return try environment.compileFilter(token)
+  public func compileFilter(_ filterToken: String, containedIn token: Token) throws -> Resolvable {
+    return try environment.compileFilter(filterToken, containedIn: token)
   }
 
-  public func compileExpression(components: [String]) throws -> Expression {
-    return try environment.compileExpression(components: components)
+  public func compileExpression(components: [String], token: Token) throws -> Expression {
+    return try environment.compileExpression(components: components, containedIn: token)
   }
 
-  public func compileResolvable(_ token: String) throws -> Resolvable {
-    return try environment.compileResolvable(token)
+  public func compileResolvable(_ token: String, containedIn containingToken: Token) throws -> Resolvable {
+    return try environment.compileResolvable(token, containedIn: containingToken)
   }
 
 }
@@ -134,9 +134,13 @@ extension Environment {
     return filtersWithDistance.filter({ $0.distance == minDistance }).map({ $0.filterName })
   }
 
+  public func compileFilter(_ token: String) throws -> Resolvable {
+    return try FilterExpression(token: token, environment: self)
+  }
+
   public func compileFilter(_ filterToken: String, containedIn containingToken: Token) throws -> Resolvable {
     do {
-      return try FilterExpression(token: filterToken, parser: self)
+      return try FilterExpression(token: filterToken, environment: self)
     } catch {
       guard var syntaxError = error as? TemplateSyntaxError, syntaxError.token == nil else {
         throw error
@@ -153,24 +157,18 @@ extension Environment {
     }
   }
 
-  @available(*, deprecated, message: "Use compileFilter(_:containedIn:)")
-  public func compileFilter(_ token: String) throws -> Resolvable {
-    return try FilterExpression(token: token, environment: self)
-  }
-
-  public func compileExpression(components: [String]) throws -> Expression {
-    return try IfExpressionParser(components: components, environment: self).parse()
-  }
-
-  @available(*, deprecated, message: "Use compileResolvable(_:containedIn:)")
   public func compileResolvable(_ token: String) throws -> Resolvable {
     return try RangeVariable(token, environment: self)
       ?? compileFilter(token)
   }
 
   public func compileResolvable(_ token: String, containedIn containingToken: Token) throws -> Resolvable {
-    return try RangeVariable(token, parser: self, containedIn: containingToken)
+    return try RangeVariable(token, environment: self, containedIn: containingToken)
         ?? compileFilter(token, containedIn: containingToken)
+  }
+
+  public func compileExpression(components: [String], containedIn token: Token) throws -> Expression {
+    return try IfExpressionParser.parser(components: components, environment: self, token: token).parse()
   }
 
 }

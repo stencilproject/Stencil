@@ -31,7 +31,7 @@ class ForNode : NodeType {
     let resolvable = try parser.compileResolvable(components[3], containedIn: token)
 
     let `where` = hasToken("where", at: 4)
-      ? try parseExpression(components: Array(components.suffix(from: 5)), tokenParser: parser, token: token)
+      ? try parser.compileExpression(components: Array(components.suffix(from: 5)), token: token)
       : nil
 
     let forNodes = try parser.parse(until(["endfor", "empty"]))

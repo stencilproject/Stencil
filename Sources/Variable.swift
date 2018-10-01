@@ -8,8 +8,8 @@ class FilterExpression : Resolvable {
   let filters: [(FilterType, [Variable])]
   let variable: Variable
 
-  init(token: String, parser: TokenParser) throws {
-    let bits = token.split(separator: "|").map({ String($0).trim(character: " ") })
+  init(token: String, environment: Environment) throws {
+    let bits = token.smartSplit(separator: "|").map({ String($0).trim(character: " ") })
     if bits.isEmpty {
       throw TemplateSyntaxError("Variable tags must include at least 1 argument")
     }
@@ -144,8 +144,7 @@ public struct RangeVariable: Resolvable {
   public let from: Resolvable
   public let to: Resolvable
 
-  @available(*, deprecated, message: "Use init?(_:parser:containedIn:)")
-  public init?(_ token: String, parser: TokenParser) throws {
+  public init?(_ token: String, environment: Environment) throws {
     let components = token.components(separatedBy: "...")
     guard components.count == 2 else {
       return nil
@@ -155,14 +154,14 @@ public struct RangeVariable: Resolvable {
     self.to = try environment.compileFilter(components[1])
   }
 
-  public init?(_ token: String, parser: TokenParser, containedIn containingToken: Token) throws {
+  public init?(_ token: String, environment: Environment, containedIn containingToken: Token) throws {
     let components = token.components(separatedBy: "...")
     guard components.count == 2 else {
       return nil
     }
 
-    self.from = try parser.compileFilter(components[0], containedIn: containingToken)
-    self.to = try parser.compileFilter(components[1], containedIn: containingToken)
+    self.from = try environment.compileFilter(components[0], containedIn: containingToken)
+    self.to = try environment.compileFilter(components[1], containedIn: containingToken)
   }
 
   public func resolve(_ context: Context) throws -> Any? {

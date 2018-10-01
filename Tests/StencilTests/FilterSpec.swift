@@ -386,28 +386,28 @@ class FilterTests: XCTestCase {
           """
       }
     }
+    
+    describe("dynamic filter") {
+      
+      $0.it("can apply dynamic filter") {
+        let template = Template(templateString: "{{ name|filter:somefilter }}")
+        let result = try template.render(Context(dictionary: ["name": "Jhon", "somefilter": "uppercase"]))
+        try expect(result) == "JHON"
+      }
+      
+      $0.it("can apply dynamic filter on array") {
+        let template = Template(templateString: "{{ values|filter:joinfilter }}")
+        let result = try template.render(Context(dictionary: ["values": [1, 2, 3], "joinfilter": "join:\", \""]))
+        try expect(result) == "1, 2, 3"
+      }
+      
+      $0.it("throws on unknown dynamic filter") {
+        let template = Template(templateString: "{{ values|filter:unknown }}")
+        let context = Context(dictionary: ["values": [1, 2, 3], "unknown": "absurd"])
+        try expect(try template.render(context)).toThrow()
+      }
+      
+    }
+    
   }
-
-  describe("dynamic filter") {
-    
-    $0.it("can apply dynamic filter") {
-      let template = Template(templateString: "{{ name|filter:somefilter }}")
-      let result = try template.render(Context(dictionary: ["name": "Jhon", "somefilter": "uppercase"]))
-      try expect(result) == "JHON"
-    }
-    
-    $0.it("can apply dynamic filter on array") {
-      let template = Template(templateString: "{{ values|filter:joinfilter }}")
-      let result = try template.render(Context(dictionary: ["values": [1, 2, 3], "joinfilter": "join:\", \""]))
-      try expect(result) == "1, 2, 3"
-    }
-    
-    $0.it("throws on unknown dynamic filter") {
-      let template = Template(templateString: "{{ values|filter:unknown }}")
-      let context = Context(dictionary: ["values": [1, 2, 3], "unknown": "absurd"])
-      try expect(try template.render(context)).toThrow()
-    }
-    
-  }
-
 }
