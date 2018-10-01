@@ -1,5 +1,4 @@
 import Foundation
-import PathKit
 
 #if os(Linux)
 let NSFileNoSuchFileError = 4
@@ -22,29 +21,6 @@ open class Template: ExpressibleByStringLiteral {
 
     let lexer = Lexer(templateName: name, templateString: templateString)
     tokens = lexer.tokenize()
-  }
-
-  /// Create a template with the given name inside the given bundle
-  @available(*, deprecated, message: "Use Environment/FileSystemLoader instead")
-  public convenience init(named:String, inBundle bundle:Bundle? = nil) throws {
-    let useBundle = bundle ??  Bundle.main
-    guard let url = useBundle.url(forResource: named, withExtension: nil) else {
-      throw NSError(domain: NSCocoaErrorDomain, code: NSFileNoSuchFileError, userInfo: nil)
-    }
-
-    try self.init(URL:url)
-  }
-
-  /// Create a template with a file found at the given URL
-  @available(*, deprecated, message: "Use Environment/FileSystemLoader instead")
-  public convenience init(URL:Foundation.URL) throws {
-    try self.init(path: Path(URL.path))
-  }
-
-  /// Create a template with a file found at the given path
-  @available(*, deprecated, message: "Use Environment/FileSystemLoader instead")
-  public convenience init(path: Path, environment: Environment? = nil, name: String? = nil) throws {
-    self.init(templateString: try path.read(), environment: environment, name: name)
   }
 
   // MARK: ExpressibleByStringLiteral
