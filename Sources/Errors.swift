@@ -37,8 +37,6 @@ public struct TemplateSyntaxError : Error, Equatable, CustomStringConvertible {
   public init(_ description: String) {
     self.init(reason: description)
   }
-  
-  
 }
 
 extension Error {

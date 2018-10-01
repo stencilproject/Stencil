@@ -22,6 +22,7 @@ struct Lexer {
   init(templateName: String? = nil, templateString: String) {
     self.templateName = templateName
     self.templateString = templateString
+
     self.lines = templateString.components(separatedBy: .newlines).enumerated().compactMap {
       guard !$0.element.isEmpty else { return nil }
       return (content: $0.element, number: UInt($0.offset + 1), templateString.range(of: $0.element)!)
