@@ -39,7 +39,7 @@ func defaultFilter(value: Any?, arguments: [Any?]) -> Any? {
 
 func joinFilter(value: Any?, arguments: [Any?]) throws -> Any? {
   guard arguments.count < 2 else {
-    throw TemplateSyntaxError("'join' filter takes a single argument")
+    throw TemplateSyntaxError("'join' filter takes at most one argument")
   }
 
   let separator = stringify(arguments.first ?? "")
@@ -55,7 +55,7 @@ func joinFilter(value: Any?, arguments: [Any?]) throws -> Any? {
 
 func splitFilter(value: Any?, arguments: [Any?]) throws -> Any? {
   guard arguments.count < 2 else {
-    throw TemplateSyntaxError("'split' filter takes a single argument")
+    throw TemplateSyntaxError("'split' filter takes at most one argument")
   }
 
   let separator = stringify(arguments.first ?? " ")
@@ -115,3 +115,16 @@ func indent(_ content: String, indentation: String, indentFirst: Bool) -> String
   return result.joined(separator: "\n")
 }
 
+func filterFilter(value: Any?, arguments: [Any?], context: Context) throws -> Any? {
+  guard let value = value else { return nil }
+  guard arguments.count == 1 else {
+    throw TemplateSyntaxError("'filter' filter takes one argument")
+  }
+  
+  let attribute = stringify(arguments[0])
+
+  let expr = try context.environment.compileFilter("$0|\(attribute)")
+  return try context.push(dictionary: ["$0": value]) {
+    try expr.resolve(context)
+  }
+}

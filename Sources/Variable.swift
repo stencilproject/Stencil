@@ -8,8 +8,8 @@ class FilterExpression : Resolvable {
   let filters: [(FilterType, [Variable])]
   let variable: Variable
 
-  init(token: String, parser: TokenParser) throws {
-    let bits = token.split(separator: "|").map({ String($0).trim(character: " ") })
+  init(token: String, environment: Environment) throws {
+    let bits = token.smartSplit(separator: "|").map({ String($0).trim(character: " ") })
     if bits.isEmpty {
       throw TemplateSyntaxError("Variable tags must include at least 1 argument")
     }
@@ -20,7 +20,7 @@ class FilterExpression : Resolvable {
     do {
       filters = try filterBits.map {
         let (name, arguments) = parseFilterComponents(token: $0)
-        let filter = try parser.findFilter(name)
+        let filter = try environment.findFilter(name)
         return (filter, arguments)
       }
     } catch {
@@ -34,7 +34,7 @@ class FilterExpression : Resolvable {
 
     return try filters.reduce(result) { x, y in
       let arguments = try y.1.map { try $0.resolve(context) }
-      return try y.0.invoke(value: x, arguments: arguments)
+      return try y.0.invoke(value: x, arguments: arguments, context: context)
     }
   }
 }
@@ -144,25 +144,24 @@ public struct RangeVariable: Resolvable {
   public let from: Resolvable
   public let to: Resolvable
 
-  @available(*, deprecated, message: "Use init?(_:parser:containedIn:)")
-  public init?(_ token: String, parser: TokenParser) throws {
+  public init?(_ token: String, environment: Environment) throws {
     let components = token.components(separatedBy: "...")
     guard components.count == 2 else {
       return nil
     }
 
-    self.from = try parser.compileFilter(components[0])
-    self.to = try parser.compileFilter(components[1])
+    self.from = try environment.compileFilter(components[0])
+    self.to = try environment.compileFilter(components[1])
   }
 
-  public init?(_ token: String, parser: TokenParser, containedIn containingToken: Token) throws {
+  public init?(_ token: String, environment: Environment, containedIn containingToken: Token) throws {
     let components = token.components(separatedBy: "...")
     guard components.count == 2 else {
       return nil
     }
 
-    self.from = try parser.compileFilter(components[0], containedIn: containingToken)
-    self.to = try parser.compileFilter(components[1], containedIn: containingToken)
+    self.from = try environment.compileFilter(components[0], containedIn: containingToken)
+    self.to = try environment.compileFilter(components[1], containedIn: containingToken)
   }
 
   public func resolve(_ context: Context) throws -> Any? {

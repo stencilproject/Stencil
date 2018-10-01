@@ -1,4 +1,4 @@
-protocol Expression: CustomStringConvertible {
+public protocol Expression: CustomStringConvertible {
   func evaluate(context: Context) throws -> Bool
 }
 

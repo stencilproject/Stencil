@@ -8,7 +8,10 @@ _None_
 
 ### Enhancements
 
-_None_
+- Added support for dynamic filter using `filter` filter. With that you can define a variable with a name of filter
+, i.e. `myfilter = "uppercase"` and then use it to invoke this filter with `{{ string|filter:myfilter }}`.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#203](https://github.com/stencilproject/Stencil/pull/203)
 
 ### Deprecations
 

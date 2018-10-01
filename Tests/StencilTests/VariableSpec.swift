@@ -351,8 +351,7 @@ class VariableTests: XCTestCase {
 
       func makeVariable(_ token: String) throws -> RangeVariable? {
         let token = Token.variable(value: token, at: .unknown)
-        let parser = TokenParser(tokens: [token], environment: context.environment)
-        return try RangeVariable(token.contents, parser: parser, containedIn: token)
+        return try RangeVariable(token.contents, environment: context.environment, containedIn: token)
       }
 
       $0.it("can resolve closed range as array") {
