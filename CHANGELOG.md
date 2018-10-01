@@ -19,11 +19,15 @@ _None_
 
 ### Bug Fixes
 
-_None_
+- Fixed using parenthesis in boolean expressions, they now can be used without spaces around them.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#254](https://github.com/stencilproject/Stencil/pull/254)
 
 ### Internal Changes
 
-_None_
+- `Token` type converted to struct to allow computing token components only once.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#256](https://github.com/stencilproject/Stencil/pull/256)
 
 
 ## 0.13.1

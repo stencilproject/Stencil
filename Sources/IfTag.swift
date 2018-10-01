@@ -236,7 +236,7 @@ class IfNode : NodeType {
   let token: Token?
 
   class func parse(_ parser: TokenParser, token: Token) throws -> NodeType {
-    var components = token.components()
+    var components = token.components
     components.removeFirst()
 
     let expression = try parser.compileExpression(components: components, token: token)
@@ -247,7 +247,7 @@ class IfNode : NodeType {
 
     var nextToken = parser.nextToken()
     while let current = nextToken, current.contents.hasPrefix("elif") {
-      var components = current.components()
+      var components = current.components
       components.removeFirst()
       let expression = try parser.compileExpression(components: components, token: current)
 
@@ -269,7 +269,7 @@ class IfNode : NodeType {
   }
 
   class func parse_ifnot(_ parser: TokenParser, token: Token) throws -> NodeType {
-    var components = token.components()
+    var components = token.components
     guard components.count == 2 else {
       throw TemplateSyntaxError("'ifnot' statements should use the following syntax 'ifnot condition'.")
     }

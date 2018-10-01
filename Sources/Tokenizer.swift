@@ -17,6 +17,12 @@ extension String {
           components[components.count-1] += word
         } else if specialCharacters.contains(word) {
           components[components.count-1] += word
+        } else if word != "(" && word.first == "(" || word != ")" && word.first == ")" {
+          components.append(String(word.prefix(1)))
+          appendWord(String(word.dropFirst()))
+        } else if word != "(" && word.last == "(" || word != ")" && word.last == ")" {
+          appendWord(String(word.dropLast()))
+          components.append(String(word.suffix(1)))
         } else {
           components.append(word)
         }
@@ -71,47 +77,53 @@ public struct SourceMap: Equatable {
   }
 }
 
-public enum Token : Equatable {
+public class Token: Equatable {
+  public enum Kind: Equatable {
+    /// A token representing a piece of text.
+    case text
+    /// A token representing a variable.
+    case variable
+    /// A token representing a comment.
+    case comment
+    /// A token representing a template block.
+    case block
+  }
+  
+  public let contents: String
+  public let kind: Kind
+  public let sourceMap: SourceMap
+  
+  /// Returns the underlying value as an array seperated by spaces
+  public private(set) lazy var components: [String] = self.contents.smartSplit()
+  
+  init(contents: String, kind: Kind, sourceMap: SourceMap) {
+    self.contents = contents
+    self.kind = kind
+    self.sourceMap = sourceMap
+  }
+  
   /// A token representing a piece of text.
-  case text(value: String, at: SourceMap)
+  public static func text(value: String, at sourceMap: SourceMap) -> Token {
+    return Token(contents: value, kind: .text, sourceMap: sourceMap)
+  }
 
   /// A token representing a variable.
-  case variable(value: String, at: SourceMap)
+  public static func variable(value: String, at sourceMap: SourceMap) -> Token {
+    return Token(contents: value, kind: .variable, sourceMap: sourceMap)
+  }
 
   /// A token representing a comment.
-  case comment(value: String, at: SourceMap)
+  public static func comment(value: String, at sourceMap: SourceMap) -> Token {
+    return Token(contents: value, kind: .comment, sourceMap: sourceMap)
+  }
 
   /// A token representing a template block.
-  case block(value: String, at: SourceMap)
-
-  /// Returns the underlying value as an array seperated by spaces
-  public func components() -> [String] {
-    switch self {
-    case .block(let value, _),
-         .variable(let value, _),
-         .text(let value, _),
-         .comment(let value, _):
-      return value.smartSplit()
-    }
+  public static func block(value: String, at sourceMap: SourceMap) -> Token {
+    return Token(contents: value, kind: .block, sourceMap: sourceMap)
+  }
+  
+  public static func == (lhs: Token, rhs: Token) -> Bool {
+    return lhs.contents == rhs.contents && lhs.kind == rhs.kind && lhs.sourceMap == rhs.sourceMap
   }
 
-  public var contents: String {
-    switch self {
-    case .block(let value, _),
-         .variable(let value, _),
-         .text(let value, _),
-         .comment(let value, _):
-      return value
-    }
-  }
-
-  public var sourceMap: SourceMap {
-    switch self {
-    case .block(_, let sourceMap),
-         .variable(_, let sourceMap),
-         .text(_, let sourceMap),
-         .comment(_, let sourceMap):
-      return sourceMap
-    }
-  }
 }

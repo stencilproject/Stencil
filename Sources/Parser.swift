@@ -1,6 +1,6 @@
 public func until(_ tags: [String]) -> ((TokenParser, Token) -> Bool) {
   return { parser, token in
-    if let name = token.components().first {
+    if let name = token.components.first {
       for tag in tags {
         if name == tag {
           return true
@@ -36,9 +36,9 @@ public class TokenParser {
     while tokens.count > 0 {
       let token = nextToken()!
 
-      switch token {
-      case .text(let text, _):
-        nodes.append(TextNode(text: text))
+      switch token.kind {
+      case .text:
+        nodes.append(TextNode(text: token.contents))
       case .variable:
         try nodes.append(VariableNode.parse(self, token: token))
       case .block:
@@ -47,7 +47,7 @@ public class TokenParser {
           return nodes
         }
 
-        if let tag = token.components().first {
+        if let tag = token.components.first {
           do {
             let parser = try environment.findTag(name: tag)
             let node = try parser(self, token)
