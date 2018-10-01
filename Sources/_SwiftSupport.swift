@@ -1,7 +1,6 @@
 import Foundation
 
-#if swift(>=4.1)
-#else
+#if !swift(>=4.1)
   public extension Sequence {
     func compactMap<ElementOfResult>(_ transform: (Element) throws -> ElementOfResult?) rethrows -> [ElementOfResult] {
       return try flatMap(transform)
@@ -9,8 +8,7 @@ import Foundation
   }
 #endif
 
-#if swift(>=4.1)
-#else
+#if !swift(>=4.1)
   public extension Collection {
     func index(_ i: Self.Index, offsetBy n: Int) -> Self.Index {
         let indexDistance = Self.IndexDistance(n)
@@ -19,8 +17,7 @@ import Foundation
   }
 #endif
 
-#if swift(>=4.1)
-#else
+#if !swift(>=4.1)
 public extension TemplateSyntaxError {
   public static func ==(lhs: TemplateSyntaxError, rhs: TemplateSyntaxError) -> Bool {
     return lhs.reason == rhs.reason &&
@@ -32,8 +29,7 @@ public extension TemplateSyntaxError {
 }
 #endif
 
-#if swift(>=4.1)
-#else
+#if !swift(>=4.1)
 public extension Variable {
   public static func ==(lhs: Variable, rhs: Variable) -> Bool {
     return lhs.variable == rhs.variable
