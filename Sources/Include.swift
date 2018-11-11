@@ -1,7 +1,6 @@
 import PathKit
 
-
-class IncludeNode : NodeType {
+class IncludeNode: NodeType {
   let templateName: Variable
   let includeContext: String?
   let token: Token?
@@ -34,9 +33,9 @@ class IncludeNode : NodeType {
     let template = try context.environment.loadTemplate(name: templateName)
 
     do {
-      let subContext = includeContext.flatMap { context[$0] as? [String: Any] }
+      let subContext = includeContext.flatMap { context[$0] as? [String: Any] } ?? [:]
       return try context.push(dictionary: subContext) {
-        return try template.render(context)
+        try template.render(context)
       }
     } catch {
       if let error = error as? TemplateSyntaxError {
@@ -47,4 +46,3 @@ class IncludeNode : NodeType {
     }
   }
 }
-

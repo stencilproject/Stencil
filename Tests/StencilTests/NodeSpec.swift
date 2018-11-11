@@ -1,8 +1,8 @@
-import XCTest
 import Spectre
 @testable import Stencil
+import XCTest
 
-class ErrorNode : NodeType {
+class ErrorNode: NodeType {
   let token: Token?
   init(token: Token? = nil) {
     self.token = token
@@ -13,54 +13,50 @@ class ErrorNode : NodeType {
   }
 }
 
-class NodeTests: XCTestCase {
-  func testNode() {
-    describe("Node") {
-      let context = Context(dictionary: [
-        "name": "Kyle",
-        "age": 27,
-        "items": [1, 2, 3],
-        ])
+final class NodeTests: XCTestCase {
+  let context = Context(dictionary: [
+    "name": "Kyle",
+    "age": 27,
+    "items": [1, 2, 3]
+  ])
 
-      $0.describe("TextNode") {
-        $0.it("renders the given text") {
-          let node = TextNode(text: "Hello World")
-          try expect(try node.render(context)) == "Hello World"
-        }
-      }
+  func testTextNode() {
+    it("renders the given text") {
+      let node = TextNode(text: "Hello World")
+      try expect(try node.render(self.context)) == "Hello World"
+    }
+  }
 
-      $0.describe("VariableNode") {
-        $0.it("resolves and renders the variable") {
-          let node = VariableNode(variable: Variable("name"))
-          try expect(try node.render(context)) == "Kyle"
-        }
+  func testVariableNode() {
+    it("resolves and renders the variable") {
+      let node = VariableNode(variable: Variable("name"))
+      try expect(try node.render(self.context)) == "Kyle"
+    }
 
-        $0.it("resolves and renders a non string variable") {
-          let node = VariableNode(variable: Variable("age"))
-          try expect(try node.render(context)) == "27"
-        }
-      }
+    it("resolves and renders a non string variable") {
+      let node = VariableNode(variable: Variable("age"))
+      try expect(try node.render(self.context)) == "27"
+    }
+  }
 
-      $0.describe("rendering nodes") {
-        $0.it("renders the nodes") {
-          let nodes: [NodeType] = [
-            TextNode(text:"Hello "),
-            VariableNode(variable: "name"),
-            ]
+  func testRendering() {
+    it("renders the nodes") {
+      let nodes: [NodeType] = [
+        TextNode(text: "Hello "),
+        VariableNode(variable: "name")
+      ]
 
-          try expect(try renderNodes(nodes, context)) == "Hello Kyle"
-        }
+      try expect(try renderNodes(nodes, self.context)) == "Hello Kyle"
+    }
 
-        $0.it("correctly throws a nodes failure") {
-          let nodes: [NodeType] = [
-            TextNode(text:"Hello "),
-            VariableNode(variable: "name"),
-            ErrorNode(),
-            ]
+    it("correctly throws a nodes failure") {
+      let nodes: [NodeType] = [
+        TextNode(text: "Hello "),
+        VariableNode(variable: "name"),
+        ErrorNode()
+      ]
 
-          try expect(try renderNodes(nodes, context)).toThrow(TemplateSyntaxError("Custom Error"))
-        }
-      }
+      try expect(try renderNodes(nodes, self.context)).toThrow(TemplateSyntaxError("Custom Error"))
     }
   }
 }

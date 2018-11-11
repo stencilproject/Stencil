@@ -33,7 +33,6 @@ class BlockContext {
   }
 }
 
-
 extension Collection {
   func any(_ closure: (Iterator.Element) -> Bool) -> Iterator.Element? {
     for element in self {
@@ -46,10 +45,9 @@ extension Collection {
   }
 }
 
-
-class ExtendsNode : NodeType {
+class ExtendsNode: NodeType {
   let templateName: Variable
-  let blocks: [String:BlockNode]
+  let blocks: [String: BlockNode]
   let token: Token?
 
   class func parse(_ parser: TokenParser, token: Token) throws -> NodeType {
@@ -66,7 +64,7 @@ class ExtendsNode : NodeType {
 
     let blockNodes = parsedNodes.compactMap { $0 as? BlockNode }
 
-    let nodes = blockNodes.reduce([String: BlockNode]()) { (accumulator, node) -> [String: BlockNode] in
+    let nodes = blockNodes.reduce([String: BlockNode]()) { accumulator, node -> [String: BlockNode] in
       var dict = accumulator
       dict[node.name] = node
       return dict
@@ -102,7 +100,7 @@ class ExtendsNode : NodeType {
       // pushes base template and renders it's content
       // block_context contains all blocks from child templates
       return try context.push(dictionary: [BlockContext.contextKey: blockContext]) {
-        return try baseTemplate.render(context)
+        try baseTemplate.render(context)
       }
     } catch {
       // if error template is already set (see catch in BlockNode)
@@ -117,8 +115,7 @@ class ExtendsNode : NodeType {
   }
 }
 
-
-class BlockNode : NodeType {
+class BlockNode: NodeType {
   let name: String
   let nodes: [NodeType]
   let token: Token?
@@ -133,7 +130,7 @@ class BlockNode : NodeType {
     let blockName = bits[1]
     let nodes = try parser.parse(until(["endblock"]))
     _ = parser.nextToken()
-    return BlockNode(name:blockName, nodes:nodes, token: token)
+    return BlockNode(name: blockName, nodes: nodes, token: token)
   }
 
   init(name: String, nodes: [NodeType], token: Token) {
@@ -148,7 +145,7 @@ class BlockNode : NodeType {
       // render extension node
       do {
         return try context.push(dictionary: childContext) {
-          return try child.render(context)
+          try child.render(context)
         }
       } catch {
         throw error.withToken(child.token)
@@ -163,8 +160,11 @@ class BlockNode : NodeType {
     var childContext: [String: Any] = [BlockContext.contextKey: blockContext]
 
     if let blockSuperNode = child.nodes.first(where: {
-      if let token = $0.token, case .variable = token.kind, token.contents == "block.super" { return true }
-      else { return false}
+      if let token = $0.token, case .variable = token.kind, token.contents == "block.super" {
+        return true
+      } else {
+        return false
+      }
     }) {
       do {
         // render base node so that its content can be used as part of child node that extends it

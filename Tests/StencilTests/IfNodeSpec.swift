@@ -1,289 +1,288 @@
-import XCTest
 import Spectre
 @testable import Stencil
+import XCTest
 
-class IfNodeTests: XCTestCase {
-  func testIfNode() {
-    describe("IfNode") {
-      $0.describe("parsing") {
-        $0.it("can parse an if block") {
-          let tokens: [Token] = [
-            .block(value: "if value", at: .unknown),
-            .text(value: "true", at: .unknown),
-            .block(value: "endif", at: .unknown)
-          ]
+private struct SomeType {
+  let value: String? = nil
+}
 
-          let parser = TokenParser(tokens: tokens, environment: Environment())
-          let nodes = try parser.parse()
-          let node = nodes.first as? IfNode
+final class IfNodeTests: XCTestCase {
+  func testParseIf() {
+    it("can parse an if block") {
+      let tokens: [Token] = [
+        .block(value: "if value", at: .unknown),
+        .text(value: "true", at: .unknown),
+        .block(value: "endif", at: .unknown)
+      ]
 
-          let conditions = node?.conditions
-          try expect(conditions?.count) == 1
-          try expect(conditions?[0].nodes.count) == 1
-          let trueNode = conditions?[0].nodes.first as? TextNode
-          try expect(trueNode?.text) == "true"
-        }
+      let parser = TokenParser(tokens: tokens, environment: Environment())
+      let nodes = try parser.parse()
+      let node = nodes.first as? IfNode
 
-        $0.it("can parse an if with else block") {
-          let tokens: [Token] = [
-            .block(value: "if value", at: .unknown),
-            .text(value: "true", at: .unknown),
-            .block(value: "else", at: .unknown),
-            .text(value: "false", at: .unknown),
-            .block(value: "endif", at: .unknown)
-          ]
-
-          let parser = TokenParser(tokens: tokens, environment: Environment())
-          let nodes = try parser.parse()
-          let node = nodes.first as? IfNode
-
-          let conditions = node?.conditions
-          try expect(conditions?.count) == 2
-
-          try expect(conditions?[0].nodes.count) == 1
-          let trueNode = conditions?[0].nodes.first as? TextNode
-          try expect(trueNode?.text) == "true"
-
-          try expect(conditions?[1].nodes.count) == 1
-          let falseNode = conditions?[1].nodes.first as? TextNode
-          try expect(falseNode?.text) == "false"
-        }
-
-        $0.it("can parse an if with elif block") {
-          let tokens: [Token] = [
-            .block(value: "if value", at: .unknown),
-            .text(value: "true", at: .unknown),
-            .block(value: "elif something", at: .unknown),
-            .text(value: "some", at: .unknown),
-            .block(value: "else", at: .unknown),
-            .text(value: "false", at: .unknown),
-            .block(value: "endif", at: .unknown)
-          ]
-
-          let parser = TokenParser(tokens: tokens, environment: Environment())
-          let nodes = try parser.parse()
-          let node = nodes.first as? IfNode
-
-          let conditions = node?.conditions
-          try expect(conditions?.count) == 3
-
-          try expect(conditions?[0].nodes.count) == 1
-          let trueNode = conditions?[0].nodes.first as? TextNode
-          try expect(trueNode?.text) == "true"
-
-          try expect(conditions?[1].nodes.count) == 1
-          let elifNode = conditions?[1].nodes.first as? TextNode
-          try expect(elifNode?.text) == "some"
-
-          try expect(conditions?[2].nodes.count) == 1
-          let falseNode = conditions?[2].nodes.first as? TextNode
-          try expect(falseNode?.text) == "false"
-        }
-
-        $0.it("can parse an if with elif block without else") {
-          let tokens: [Token] = [
-            .block(value: "if value", at: .unknown),
-            .text(value: "true", at: .unknown),
-            .block(value: "elif something", at: .unknown),
-            .text(value: "some", at: .unknown),
-            .block(value: "endif", at: .unknown)
-          ]
-
-          let parser = TokenParser(tokens: tokens, environment: Environment())
-          let nodes = try parser.parse()
-          let node = nodes.first as? IfNode
-
-          let conditions = node?.conditions
-          try expect(conditions?.count) == 2
-
-          try expect(conditions?[0].nodes.count) == 1
-          let trueNode = conditions?[0].nodes.first as? TextNode
-          try expect(trueNode?.text) == "true"
-
-          try expect(conditions?[1].nodes.count) == 1
-          let elifNode = conditions?[1].nodes.first as? TextNode
-          try expect(elifNode?.text) == "some"
-        }
-
-        $0.it("can parse an if with multiple elif block") {
-          let tokens: [Token] = [
-            .block(value: "if value", at: .unknown),
-            .text(value: "true", at: .unknown),
-            .block(value: "elif something1", at: .unknown),
-            .text(value: "some1", at: .unknown),
-            .block(value: "elif something2", at: .unknown),
-            .text(value: "some2", at: .unknown),
-            .block(value: "else", at: .unknown),
-            .text(value: "false", at: .unknown),
-            .block(value: "endif", at: .unknown)
-          ]
-
-          let parser = TokenParser(tokens: tokens, environment: Environment())
-          let nodes = try parser.parse()
-          let node = nodes.first as? IfNode
-
-          let conditions = node?.conditions
-          try expect(conditions?.count) == 4
-
-          try expect(conditions?[0].nodes.count) == 1
-          let trueNode = conditions?[0].nodes.first as? TextNode
-          try expect(trueNode?.text) == "true"
-
-          try expect(conditions?[1].nodes.count) == 1
-          let elifNode = conditions?[1].nodes.first as? TextNode
-          try expect(elifNode?.text) == "some1"
-
-          try expect(conditions?[2].nodes.count) == 1
-          let elif2Node = conditions?[2].nodes.first as? TextNode
-          try expect(elif2Node?.text) == "some2"
-
-          try expect(conditions?[3].nodes.count) == 1
-          let falseNode = conditions?[3].nodes.first as? TextNode
-          try expect(falseNode?.text) == "false"
-        }
-
-
-        $0.it("can parse an if with complex expression") {
-          let tokens: [Token] = [
-            .block(value: "if value == \"test\" and (not name or not (name and surname) or( some )and other )", at: .unknown),
-            .text(value: "true", at: .unknown),
-            .block(value: "endif", at: .unknown)
-          ]
-
-          let parser = TokenParser(tokens: tokens, environment: Environment())
-          let nodes = try parser.parse()
-          try expect(nodes.first is IfNode).beTrue()
-        }
-
-        $0.it("can parse an ifnot block") {
-          let tokens: [Token] = [
-            .block(value: "ifnot value", at: .unknown),
-            .text(value: "false", at: .unknown),
-            .block(value: "else", at: .unknown),
-            .text(value: "true", at: .unknown),
-            .block(value: "endif", at: .unknown)
-          ]
-
-          let parser = TokenParser(tokens: tokens, environment: Environment())
-          let nodes = try parser.parse()
-          let node = nodes.first as? IfNode
-          let conditions = node?.conditions
-          try expect(conditions?.count) == 2
-
-          try expect(conditions?[0].nodes.count) == 1
-          let trueNode = conditions?[0].nodes.first as? TextNode
-          try expect(trueNode?.text) == "true"
-
-          try expect(conditions?[1].nodes.count) == 1
-          let falseNode = conditions?[1].nodes.first as? TextNode
-          try expect(falseNode?.text) == "false"
-        }
-
-        $0.it("throws an error when parsing an if block without an endif") {
-          let tokens: [Token] = [.block(value: "if value", at: .unknown)]
-
-          let parser = TokenParser(tokens: tokens, environment: Environment())
-          let error = TemplateSyntaxError(reason: "`endif` was not found.", token: tokens.first)
-          try expect(try parser.parse()).toThrow(error)
-        }
-
-        $0.it("throws an error when parsing an ifnot without an endif") {
-          let tokens: [Token] = [.block(value: "ifnot value", at: .unknown)]
-
-          let parser = TokenParser(tokens: tokens, environment: Environment())
-          let error = TemplateSyntaxError(reason: "`endif` was not found.", token: tokens.first)
-          try expect(try parser.parse()).toThrow(error)
-        }
-      }
-
-      $0.describe("rendering") {
-        $0.it("renders a true expression") {
-          let node = IfNode(conditions: [
-            IfCondition(expression: StaticExpression(value: true), nodes: [TextNode(text: "1")]),
-            IfCondition(expression: StaticExpression(value: true), nodes: [TextNode(text: "2")]),
-            IfCondition(expression: nil, nodes: [TextNode(text: "3")]),
-            ])
-
-          try expect(try node.render(Context())) == "1"
-        }
-
-        $0.it("renders the first true expression") {
-          let node = IfNode(conditions: [
-            IfCondition(expression: StaticExpression(value: false), nodes: [TextNode(text: "1")]),
-            IfCondition(expression: StaticExpression(value: true), nodes: [TextNode(text: "2")]),
-            IfCondition(expression: nil, nodes: [TextNode(text: "3")]),
-            ])
-
-          try expect(try node.render(Context())) == "2"
-        }
-
-        $0.it("renders the empty expression when other conditions are falsy") {
-          let node = IfNode(conditions: [
-            IfCondition(expression: StaticExpression(value: false), nodes: [TextNode(text: "1")]),
-            IfCondition(expression: StaticExpression(value: false), nodes: [TextNode(text: "2")]),
-            IfCondition(expression: nil, nodes: [TextNode(text: "3")]),
-            ])
-
-          try expect(try node.render(Context())) == "3"
-        }
-
-        $0.it("renders empty when no truthy conditions") {
-          let node = IfNode(conditions: [
-            IfCondition(expression: StaticExpression(value: false), nodes: [TextNode(text: "1")]),
-            IfCondition(expression: StaticExpression(value: false), nodes: [TextNode(text: "2")]),
-            ])
-
-          try expect(try node.render(Context())) == ""
-        }
-      }
-
-      $0.it("supports variable filters in the if expression") {
-        let tokens: [Token] = [
-          .block(value: "if value|uppercase == \"TEST\"", at: .unknown),
-          .text(value: "true", at: .unknown),
-          .block(value: "endif", at: .unknown)
-        ]
-
-        let parser = TokenParser(tokens: tokens, environment: Environment())
-        let nodes = try parser.parse()
-
-        let result = try renderNodes(nodes, Context(dictionary: ["value": "test"]))
-        try expect(result) == "true"
-      }
-
-      $0.it("evaluates nil properties as false") {
-        let tokens: [Token] = [
-          .block(value: "if instance.value", at: .unknown),
-          .text(value: "true", at: .unknown),
-          .block(value: "endif", at: .unknown)
-        ]
-
-        let parser = TokenParser(tokens: tokens, environment: Environment())
-        let nodes = try parser.parse()
-
-        struct SomeType {
-          let value: String? = nil
-        }
-        let result = try renderNodes(nodes, Context(dictionary: ["instance": SomeType()]))
-        try expect(result) == ""
-      }
-
-      $0.it("supports closed range variables") {
-        let tokens: [Token] = [
-          .block(value: "if value in 1...3", at: .unknown),
-          .text(value: "true", at: .unknown),
-          .block(value: "else", at: .unknown),
-          .text(value: "false", at: .unknown),
-          .block(value: "endif", at: .unknown)
-        ]
-
-        let parser = TokenParser(tokens: tokens, environment: Environment())
-        let nodes = try parser.parse()
-
-        try expect(renderNodes(nodes, Context(dictionary: ["value": 3]))) == "true"
-        try expect(renderNodes(nodes, Context(dictionary: ["value": 4]))) == "false"
-      }
-
+      let conditions = node?.conditions
+      try expect(conditions?.count) == 1
+      try expect(conditions?[0].nodes.count) == 1
+      let trueNode = conditions?[0].nodes.first as? TextNode
+      try expect(trueNode?.text) == "true"
     }
+
+    it("can parse an if with complex expression") {
+      let tokens: [Token] = [
+        .block(value: """
+          if value == \"test\" and (not name or not (name and surname) or( some )and other )
+          """, at: .unknown),
+        .text(value: "true", at: .unknown),
+        .block(value: "endif", at: .unknown)
+      ]
+
+      let parser = TokenParser(tokens: tokens, environment: Environment())
+      let nodes = try parser.parse()
+      try expect(nodes.first is IfNode).beTrue()
+    }
+  }
+
+  func testParseIfWithElse() throws {
+    let tokens: [Token] = [
+      .block(value: "if value", at: .unknown),
+      .text(value: "true", at: .unknown),
+      .block(value: "else", at: .unknown),
+      .text(value: "false", at: .unknown),
+      .block(value: "endif", at: .unknown)
+    ]
+
+    let parser = TokenParser(tokens: tokens, environment: Environment())
+    let nodes = try parser.parse()
+    let node = nodes.first as? IfNode
+
+    let conditions = node?.conditions
+    try expect(conditions?.count) == 2
+
+    try expect(conditions?[0].nodes.count) == 1
+    let trueNode = conditions?[0].nodes.first as? TextNode
+    try expect(trueNode?.text) == "true"
+
+    try expect(conditions?[1].nodes.count) == 1
+    let falseNode = conditions?[1].nodes.first as? TextNode
+    try expect(falseNode?.text) == "false"
+  }
+
+  func testParseIfWithElif() throws {
+    let tokens: [Token] = [
+      .block(value: "if value", at: .unknown),
+      .text(value: "true", at: .unknown),
+      .block(value: "elif something", at: .unknown),
+      .text(value: "some", at: .unknown),
+      .block(value: "else", at: .unknown),
+      .text(value: "false", at: .unknown),
+      .block(value: "endif", at: .unknown)
+    ]
+
+    let parser = TokenParser(tokens: tokens, environment: Environment())
+    let nodes = try parser.parse()
+    let node = nodes.first as? IfNode
+
+    let conditions = node?.conditions
+    try expect(conditions?.count) == 3
+
+    try expect(conditions?[0].nodes.count) == 1
+    let trueNode = conditions?[0].nodes.first as? TextNode
+    try expect(trueNode?.text) == "true"
+
+    try expect(conditions?[1].nodes.count) == 1
+    let elifNode = conditions?[1].nodes.first as? TextNode
+    try expect(elifNode?.text) == "some"
+
+    try expect(conditions?[2].nodes.count) == 1
+    let falseNode = conditions?[2].nodes.first as? TextNode
+    try expect(falseNode?.text) == "false"
+  }
+
+  func testParseIfWithElifWithoutElse() throws {
+    let tokens: [Token] = [
+      .block(value: "if value", at: .unknown),
+      .text(value: "true", at: .unknown),
+      .block(value: "elif something", at: .unknown),
+      .text(value: "some", at: .unknown),
+      .block(value: "endif", at: .unknown)
+    ]
+
+    let parser = TokenParser(tokens: tokens, environment: Environment())
+    let nodes = try parser.parse()
+    let node = nodes.first as? IfNode
+
+    let conditions = node?.conditions
+    try expect(conditions?.count) == 2
+
+    try expect(conditions?[0].nodes.count) == 1
+    let trueNode = conditions?[0].nodes.first as? TextNode
+    try expect(trueNode?.text) == "true"
+
+    try expect(conditions?[1].nodes.count) == 1
+    let elifNode = conditions?[1].nodes.first as? TextNode
+    try expect(elifNode?.text) == "some"
+  }
+
+  func testParseMultipleElif() throws {
+    let tokens: [Token] = [
+      .block(value: "if value", at: .unknown),
+      .text(value: "true", at: .unknown),
+      .block(value: "elif something1", at: .unknown),
+      .text(value: "some1", at: .unknown),
+      .block(value: "elif something2", at: .unknown),
+      .text(value: "some2", at: .unknown),
+      .block(value: "else", at: .unknown),
+      .text(value: "false", at: .unknown),
+      .block(value: "endif", at: .unknown)
+    ]
+
+    let parser = TokenParser(tokens: tokens, environment: Environment())
+    let nodes = try parser.parse()
+    let node = nodes.first as? IfNode
+
+    let conditions = node?.conditions
+    try expect(conditions?.count) == 4
+
+    try expect(conditions?[0].nodes.count) == 1
+    let trueNode = conditions?[0].nodes.first as? TextNode
+    try expect(trueNode?.text) == "true"
+
+    try expect(conditions?[1].nodes.count) == 1
+    let elifNode = conditions?[1].nodes.first as? TextNode
+    try expect(elifNode?.text) == "some1"
+
+    try expect(conditions?[2].nodes.count) == 1
+    let elif2Node = conditions?[2].nodes.first as? TextNode
+    try expect(elif2Node?.text) == "some2"
+
+    try expect(conditions?[3].nodes.count) == 1
+    let falseNode = conditions?[3].nodes.first as? TextNode
+    try expect(falseNode?.text) == "false"
+  }
+
+  func testParseIfnot() throws {
+    let tokens: [Token] = [
+      .block(value: "ifnot value", at: .unknown),
+      .text(value: "false", at: .unknown),
+      .block(value: "else", at: .unknown),
+      .text(value: "true", at: .unknown),
+      .block(value: "endif", at: .unknown)
+    ]
+
+    let parser = TokenParser(tokens: tokens, environment: Environment())
+    let nodes = try parser.parse()
+    let node = nodes.first as? IfNode
+    let conditions = node?.conditions
+    try expect(conditions?.count) == 2
+
+    try expect(conditions?[0].nodes.count) == 1
+    let trueNode = conditions?[0].nodes.first as? TextNode
+    try expect(trueNode?.text) == "true"
+
+    try expect(conditions?[1].nodes.count) == 1
+    let falseNode = conditions?[1].nodes.first as? TextNode
+    try expect(falseNode?.text) == "false"
+  }
+
+  func testParsingErrors() {
+    it("throws an error when parsing an if block without an endif") {
+      let tokens: [Token] = [.block(value: "if value", at: .unknown)]
+
+      let parser = TokenParser(tokens: tokens, environment: Environment())
+      let error = TemplateSyntaxError(reason: "`endif` was not found.", token: tokens.first)
+      try expect(try parser.parse()).toThrow(error)
+    }
+
+    it("throws an error when parsing an ifnot without an endif") {
+      let tokens: [Token] = [.block(value: "ifnot value", at: .unknown)]
+
+      let parser = TokenParser(tokens: tokens, environment: Environment())
+      let error = TemplateSyntaxError(reason: "`endif` was not found.", token: tokens.first)
+      try expect(try parser.parse()).toThrow(error)
+    }
+  }
+
+  func testRendering() {
+    it("renders a true expression") {
+      let node = IfNode(conditions: [
+        IfCondition(expression: StaticExpression(value: true), nodes: [TextNode(text: "1")]),
+        IfCondition(expression: StaticExpression(value: true), nodes: [TextNode(text: "2")]),
+        IfCondition(expression: nil, nodes: [TextNode(text: "3")])
+      ])
+
+      try expect(try node.render(Context())) == "1"
+    }
+
+    it("renders the first true expression") {
+      let node = IfNode(conditions: [
+        IfCondition(expression: StaticExpression(value: false), nodes: [TextNode(text: "1")]),
+        IfCondition(expression: StaticExpression(value: true), nodes: [TextNode(text: "2")]),
+        IfCondition(expression: nil, nodes: [TextNode(text: "3")])
+      ])
+
+      try expect(try node.render(Context())) == "2"
+    }
+
+    it("renders the empty expression when other conditions are falsy") {
+      let node = IfNode(conditions: [
+        IfCondition(expression: StaticExpression(value: false), nodes: [TextNode(text: "1")]),
+        IfCondition(expression: StaticExpression(value: false), nodes: [TextNode(text: "2")]),
+        IfCondition(expression: nil, nodes: [TextNode(text: "3")])
+      ])
+
+      try expect(try node.render(Context())) == "3"
+    }
+
+    it("renders empty when no truthy conditions") {
+      let node = IfNode(conditions: [
+        IfCondition(expression: StaticExpression(value: false), nodes: [TextNode(text: "1")]),
+        IfCondition(expression: StaticExpression(value: false), nodes: [TextNode(text: "2")])
+      ])
+
+      try expect(try node.render(Context())) == ""
+    }
+  }
+
+  func testSupportVariableFilters() throws {
+    let tokens: [Token] = [
+      .block(value: "if value|uppercase == \"TEST\"", at: .unknown),
+      .text(value: "true", at: .unknown),
+      .block(value: "endif", at: .unknown)
+    ]
+
+    let parser = TokenParser(tokens: tokens, environment: Environment())
+    let nodes = try parser.parse()
+
+    let result = try renderNodes(nodes, Context(dictionary: ["value": "test"]))
+    try expect(result) == "true"
+  }
+
+  func testEvaluatesNilAsFalse() throws {
+    let tokens: [Token] = [
+      .block(value: "if instance.value", at: .unknown),
+      .text(value: "true", at: .unknown),
+      .block(value: "endif", at: .unknown)
+    ]
+
+    let parser = TokenParser(tokens: tokens, environment: Environment())
+    let nodes = try parser.parse()
+
+    let result = try renderNodes(nodes, Context(dictionary: ["instance": SomeType()]))
+    try expect(result) == ""
+  }
+
+  func testSupportsRangeVariables() throws {
+    let tokens: [Token] = [
+      .block(value: "if value in 1...3", at: .unknown),
+      .text(value: "true", at: .unknown),
+      .block(value: "else", at: .unknown),
+      .text(value: "false", at: .unknown),
+      .block(value: "endif", at: .unknown)
+    ]
+
+    let parser = TokenParser(tokens: tokens, environment: Environment())
+    let nodes = try parser.parse()
+
+    try expect(renderNodes(nodes, Context(dictionary: ["value": 3]))) == "true"
+    try expect(renderNodes(nodes, Context(dictionary: ["value": 4]))) == "false"
   }
 }
