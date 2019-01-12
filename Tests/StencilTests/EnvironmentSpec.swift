@@ -133,6 +133,11 @@ final class EnvironmentTests: XCTestCase {
         token: "name|unknown"
       )
     }
+    
+    it("reports error in variable tag") {
+      self.template = "{{ }}"
+      try self.expectError(reason: "Missing variable name", token: " ")
+    }
   }
 
   func testRenderingError() {
@@ -153,7 +158,7 @@ final class EnvironmentTests: XCTestCase {
 
     it("reports passing argument to simple filter") {
       self.template = "{{ name|uppercase:5 }}"
-      try self.expectError(reason: "cannot invoke filter with an argument", token: "name|uppercase:5")
+      try self.expectError(reason: "Can't invoke filter with an argument", token: "name|uppercase:5")
     }
 
     it("reports rendering error in custom tag") {

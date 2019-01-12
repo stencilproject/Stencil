@@ -84,7 +84,10 @@ public class VariableNode: NodeType {
       elseExpression = nil
     }
 
-    let filter = try parser.compileResolvable(components[0], containedIn: token)
+    guard let resolvable = components.first else {
+      throw TemplateSyntaxError(reason: "Missing variable name", token: token)
+    }
+    let filter = try parser.compileResolvable(resolvable, containedIn: token)
     return VariableNode(variable: filter, token: token, condition: condition, elseExpression: elseExpression)
   }
 
