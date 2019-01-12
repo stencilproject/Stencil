@@ -89,7 +89,7 @@ enum Filter: FilterType {
     switch self {
     case let .simple(filter):
       if !arguments.isEmpty {
-        throw TemplateSyntaxError("cannot invoke filter with an argument")
+        throw TemplateSyntaxError("Can't invoke filter with an argument")
       }
       return try filter(value)
     case let .arguments(filter):
