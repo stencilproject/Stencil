@@ -71,15 +71,9 @@ public class VariableNode: NodeType {
 
     if hasToken("if", at: 1) {
       let components = components.suffix(from: 2)
-      #if swift(<5.0)
-      let elseIndex = components.index(of: "else")
-      #else
-      let elseIndex = components.firstIndex(of: "else")
-      #endif
-
-      if let safeElseIndex = elseIndex {
-        condition = try parser.compileExpression(components: Array(components.prefix(upTo: safeElseIndex)), token: token)
-        let elseToken = components.suffix(from: safeElseIndex.advanced(by: 1)).joined(separator: " ")
+      if let elseIndex = components.firstIndex(of: "else") {
+        condition = try parser.compileExpression(components: Array(components.prefix(upTo: elseIndex)), token: token)
+        let elseToken = components.suffix(from: elseIndex.advanced(by: 1)).joined(separator: " ")
         elseExpression = try parser.compileResolvable(elseToken, containedIn: token)
       } else {
         condition = try parser.compileExpression(components: Array(components), token: token)
