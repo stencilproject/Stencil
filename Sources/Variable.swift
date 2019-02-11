@@ -249,7 +249,7 @@ extension Mirror {
       // go through inheritance chain to reach superclass properties
       return superclassMirror?.getValue(for: key)
     } else if let result = result {
-      guard String(describing: result) != "nil" else {
+      guard String(describing: result) != "nil", String(describing: result) != "none" else {
         // mirror returns non-nil value even for nil-containing properties
         // so we have to check if its value is actually nil or not
         return nil
