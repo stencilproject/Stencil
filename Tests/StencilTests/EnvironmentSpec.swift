@@ -215,7 +215,8 @@ final class EnvironmentIncludeTemplateTests: XCTestCase {
   override func setUp() {
     super.setUp()
 
-    let path = Path(#file) + ".." + "fixtures"
+    let basePath: String = #file
+    let path = Path(basePath) + ".." + "fixtures"
     let loader = FileSystemLoader(paths: [path])
     environment = Environment(loader: loader)
     template = ""
@@ -291,7 +292,8 @@ final class EnvironmentBaseAndChildTemplateTests: XCTestCase {
   override func setUp() {
     super.setUp()
 
-    let path = Path(#file) + ".." + "fixtures"
+    let basePath: String = #file
+    let path = Path(basePath) + ".." + "fixtures"
     let loader = FileSystemLoader(paths: [path])
     environment = Environment(loader: loader)
     childTemplate = ""

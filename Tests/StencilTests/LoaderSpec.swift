@@ -5,7 +5,8 @@ import XCTest
 
 final class TemplateLoaderTests: XCTestCase {
   func testFileSystemLoader() {
-    let path = Path(#file) + ".."  + "fixtures"
+    let basePath: String = #file
+    let path = Path(basePath) + ".." + "fixtures"
     let loader = FileSystemLoader(paths: [path])
     let environment = Environment(loader: loader)
 

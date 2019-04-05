@@ -21,7 +21,7 @@ matrix:
     - os: linux
       env: SWIFT_VERSION=4.2.3
     - os: linux
-      env: SWIFT_VERSION=5.0-DEVELOPMENT-SNAPSHOT-2019-03-10-a
+      env: SWIFT_VERSION=5.0
 language: generic
 sudo: required
 dist: trusty
