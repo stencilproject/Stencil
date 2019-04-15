@@ -117,8 +117,7 @@ final class LexerTests: XCTestCase {
   }
 
   func testPerformance() throws {
-    let basePath: String = #file
-    let path = Path(basePath) + ".."  + "fixtures" + "huge.html"
+    let path = Path(#file as String) + ".."  + "fixtures" + "huge.html"
     let content: String = try path.read()
 
     measure {

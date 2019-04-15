@@ -4,10 +4,7 @@ import Spectre
 import XCTest
 
 final class IncludeTests: XCTestCase {
-  let path: Path = {
-    let basePath: String = #file
-    return Path(basePath) + ".." + "fixtures"
-  }()
+  let path = Path(#file as String) + ".." + "fixtures"
   lazy var loader = FileSystemLoader(paths: [path])
   lazy var environment = Environment(loader: loader)
 
