@@ -71,7 +71,7 @@ public class VariableNode: NodeType {
 
     if hasToken("if", at: 1) {
       let components = components.suffix(from: 2)
-      if let elseIndex = components.index(of: "else") {
+      if let elseIndex = components.firstIndex(of: "else") {
         condition = try parser.compileExpression(components: Array(components.prefix(upTo: elseIndex)), token: token)
         let elseToken = components.suffix(from: elseIndex.advanced(by: 1)).joined(separator: " ")
         elseExpression = try parser.compileResolvable(elseToken, containedIn: token)
