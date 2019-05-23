@@ -4,7 +4,7 @@ import Stencil
 import XCTest
 
 final class InheritanceTests: XCTestCase {
-  let path = Path(#file) + ".." + "fixtures"
+  let path = Path(#file as String) + ".." + "fixtures"
   lazy var loader = FileSystemLoader(paths: [path])
   lazy var environment = Environment(loader: loader)
 
