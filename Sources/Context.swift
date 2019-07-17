@@ -14,6 +14,10 @@ public class Context {
     self.environment = environment ?? Environment()
   }
 
+  convenience init(object: Any? = nil, environment: Environment? = nil) {
+    self.init(dictionary: Context.dictionaryFromAny(object: object ?? [:]), environment: environment)
+  }
+    
   public subscript(key: String) -> Any? {
     /// Retrieves a variable's value, starting at the current context and going upwards
     get {
@@ -45,13 +49,29 @@ public class Context {
     return dictionaries.popLast()
   }
 
+  /// return a dictionary describing an object
+  static fileprivate func dictionaryFromAny(object: Any) -> [String: Any] {
+    if let dictionary = object as? [String: Any] {
+      return dictionary
+    } else {
+      let dictionary = Mirror(reflecting: object).asDictionary()
+      return dictionary
+    }
+  }
+    
   /// Push a new level onto the context for the duration of the execution of the given closure
   public func push<Result>(dictionary: [String: Any] = [:], closure: (() throws -> Result)) rethrows -> Result {
     push(dictionary)
     defer { _ = pop() }
     return try closure()
   }
-
+    
+  /// Push a new level onto the context for the duration of the execution of the given closure
+  public func push<Result>(object: Any, closure: (() throws -> Result)) rethrows -> Result {
+    let dictionary = Context.dictionaryFromAny(object: object)
+    return try push(dictionary: dictionary, closure: closure)
+  }
+    
   public func flatten() -> [String: Any] {
     var accumulator: [String: Any] = [:]
 

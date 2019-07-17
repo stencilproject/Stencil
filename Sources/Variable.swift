@@ -262,6 +262,16 @@ extension Mirror {
     }
     return result
   }
+    
+  func asDictionary() -> [String: Any] {
+    var dictionary : [String: Any] = superclassMirror?.asDictionary() ?? [:]
+    for child in children {
+      if let name = child.label {
+        dictionary[name] = child.value
+      }
+    }
+    return dictionary
+  }
 }
 
 protocol AnyOptional {
