@@ -267,7 +267,11 @@ extension Mirror {
     var dictionary : [String: Any] = superclassMirror?.asDictionary() ?? [:]
     for child in children {
       if let name = child.label {
-        dictionary[name] = child.value
+        if let result = (child.value as? AnyOptional)?.wrapped {
+            dictionary[name] = result
+        } else {
+            dictionary[name] = child.value
+        }
       }
     }
     return dictionary
