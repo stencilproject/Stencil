@@ -147,8 +147,8 @@ class Scanner {
 
     for (index, char) in content.unicodeScalars.enumerated() {
       if foundChar && char == Scanner.tokenEndDelimiter {
-        let result = String(content.prefix(index + 1))
-        content = String(content.dropFirst(index + 1))
+        let result = String(content.unicodeScalars.prefix(index + 1))
+        content = String(content.unicodeScalars.dropFirst(index + 1))
         range = range.upperBound..<originalContent.unicodeScalars.index(range.upperBound, offsetBy: index + 1)
         return result
       } else {
