@@ -126,6 +126,17 @@ final class LexerTests: XCTestCase {
     }
   }
 
+  func testCombiningDiaeresis() throws {
+    let path = Path(#file as String) + ".."  + "fixtures" + "combining-diaeresis.html"
+    let content: String = try path.read()
+
+    let lexer = Lexer(templateString: content)
+    let tokens = lexer.tokenize()
+
+    try expect(tokens.count) == 3
+    assert(tokens[1].contents == "test")
+  }
+
   private func makeSourceMap(_ token: String, for lexer: Lexer, options: String.CompareOptions = []) -> SourceMap {
     guard let range = lexer.templateString.range(of: token, options: options) else { fatalError("Token not found") }
     return SourceMap(location: lexer.rangeLocation(range))
