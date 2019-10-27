@@ -133,7 +133,7 @@ final class LexerTests: XCTestCase {
     let lexer = Lexer(templateString: content)
     let tokens = lexer.tokenize()
 
-    try expect(tokens.count) == 3
+    try expect(tokens.count) == 9
     assert(tokens[1].contents == "test")
   }
 
