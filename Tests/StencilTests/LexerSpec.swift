@@ -134,7 +134,7 @@ final class LexerTests: XCTestCase {
     let tokens = lexer.tokenize()
 
     try expect(tokens.count) == 9
-    assert(tokens[1].contents == "test")
+    assert(tokens[1].contents == "if test")
   }
 
   private func makeSourceMap(_ token: String, for lexer: Lexer, options: String.CompareOptions = []) -> SourceMap {
