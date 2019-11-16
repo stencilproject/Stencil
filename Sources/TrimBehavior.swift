@@ -11,7 +11,7 @@ public struct TrimBehavior: Equatable {
   var leading: Trim
   var trailing: Trim
 
-  public enum Trim {
+  public enum Trim: Equatable {
     /// nothing
     case none
 
@@ -76,6 +76,11 @@ public struct TrimBehavior: Equatable {
 
   private static let leadingWhitespace = try! NSRegularExpression(pattern: "^[ \t]*")
   private static let trailingWhitespace = try! NSRegularExpression(pattern: "[ \t]*$")
+
+  public static func == (lhs: TrimBehavior, rhs: TrimBehavior) -> Bool {
+    return lhs.leading == rhs.leading && lhs.trailing == rhs.trailing
+  }
+
 }
 
 

@@ -1,4 +1,3 @@
-#if !canImport(ObjectiveC)
 import XCTest
 
 extension ContextTests {
@@ -273,6 +272,7 @@ extension VariableTests {
     ]
 }
 
+#if !os(macOS)
 public func __allTests() -> [XCTestCaseEntry] {
     return [
         testCase(ContextTests.__allTests__ContextTests),

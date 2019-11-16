@@ -80,7 +80,7 @@ public struct SourceMap: Equatable {
 }
 
 public struct WhitespaceBehavior: Equatable {
-  public enum Behavior {
+  public enum Behavior: Equatable {
     case unspecified
     case trim
     case keep
@@ -90,6 +90,10 @@ public struct WhitespaceBehavior: Equatable {
   let trailing: Behavior
 
   public static let unspecified = WhitespaceBehavior(leading: .unspecified, trailing: .unspecified)
+
+  public static func == (lhs: WhitespaceBehavior, rhs: WhitespaceBehavior) -> Bool {
+    return lhs.leading == rhs.leading && lhs.trailing == rhs.trailing
+  }
 }
 
 public class Token: Equatable {
