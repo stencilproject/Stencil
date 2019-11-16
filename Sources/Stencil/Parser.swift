@@ -19,6 +19,7 @@ public class TokenParser {
 
   fileprivate var tokens: [Token]
   fileprivate let environment: Environment
+  fileprivate var previousWhiteSpace: WhitespaceBehaviour.Behaviour?
 
   /// Simple initializer
   public init(tokens: [Token], environment: Environment) {
@@ -41,10 +42,12 @@ public class TokenParser {
 
       switch token.kind {
       case .text:
-        nodes.append(TextNode(text: token.contents))
+        nodes.append(TextNode(text: token.contents, trimBehaviour: trimBehaviour))
       case .variable:
+        previousWhiteSpace = nil
         try nodes.append(VariableNode.parse(self, token: token))
       case .block:
+        previousWhiteSpace = token.whitespace?.trailing
         if let parseUntil = parseUntil, parseUntil(self, token) {
           prependToken(token)
           return nodes
@@ -60,6 +63,7 @@ public class TokenParser {
           }
         }
       case .comment:
+        previousWhiteSpace = nil
         continue
       }
     }
@@ -74,6 +78,10 @@ public class TokenParser {
     }
 
     return nil
+  }
+
+  func peekWhitespace() -> WhitespaceBehaviour.Behaviour? {
+    tokens.first?.whitespace?.leading
   }
 
   /// Insert a token 
@@ -94,6 +102,27 @@ public class TokenParser {
   /// Create resolvable (i.e. range variable or filter expression) from a string contained in provided token
   public func compileResolvable(_ token: String, containedIn containingToken: Token) throws -> Resolvable {
     try environment.compileResolvable(token, containedIn: containingToken)
+  }
+
+  private var trimBehaviour: TrimBehaviour {
+    var behaviour: TrimBehaviour = .nothing
+
+    if let leading = previousWhiteSpace {
+      if leading == .unspecified {
+        behaviour.leading = environment.trimBehaviour.trailing
+      } else {
+        behaviour.leading = leading == .trim ? .whitespaceAndNewLines : .nothing
+      }
+    }
+    if let trailing = peekWhitespace() {
+      if trailing == .unspecified {
+        behaviour.trailing = environment.trimBehaviour.leading
+      } else {
+        behaviour.trailing = trailing == .trim ? .whitespaceAndNewLines : .nothing
+      }
+    }
+
+    return behaviour
   }
 }
 

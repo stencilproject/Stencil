@@ -79,6 +79,19 @@ public struct SourceMap: Equatable {
   }
 }
 
+public struct WhitespaceBehaviour: Equatable {
+  public enum Behaviour {
+    case unspecified
+    case trim
+    case keep
+  }
+
+  let leading: Behaviour
+  let trailing: Behaviour
+
+  public static let unspecified = WhitespaceBehaviour(leading: .unspecified, trailing: .unspecified)
+}
+
 public class Token: Equatable {
   public enum Kind: Equatable {
     /// A token representing a piece of text.
@@ -94,14 +107,16 @@ public class Token: Equatable {
   public let contents: String
   public let kind: Kind
   public let sourceMap: SourceMap
+  public var whitespace: WhitespaceBehaviour?
 
   /// Returns the underlying value as an array seperated by spaces
   public private(set) lazy var components: [String] = self.contents.smartSplit()
 
-  init(contents: String, kind: Kind, sourceMap: SourceMap) {
+  init(contents: String, kind: Kind, sourceMap: SourceMap, whitespace: WhitespaceBehaviour? = nil) {
     self.contents = contents
     self.kind = kind
     self.sourceMap = sourceMap
+    self.whitespace = whitespace
   }
 
   /// A token representing a piece of text.
@@ -120,8 +135,12 @@ public class Token: Equatable {
   }
 
   /// A token representing a template block.
-  public static func block(value: String, at sourceMap: SourceMap) -> Token {
-    Token(contents: value, kind: .block, sourceMap: sourceMap)
+  public static func block(
+    value: String,
+    at sourceMap: SourceMap,
+    whitespace: WhitespaceBehaviour = .unspecified
+  ) -> Token {
+    Token(contents: value, kind: .block, sourceMap: sourceMap, whitespace: whitespace)
   }
 
   public static func == (lhs: Token, rhs: Token) -> Bool {
