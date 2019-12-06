@@ -32,7 +32,7 @@ feel right at home with Stencil.
     ]
 
     let environment = Environment(loader: FileSystemLoader(paths: ["templates/"])
-    let rendered = try environment.renderTemplate(name: context)
+    let rendered = try environment.renderTemplate(name: "articles.html", context: context)
 
     print(rendered)
 
