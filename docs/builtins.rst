@@ -149,6 +149,19 @@ Will be treated as:
 
     one or (two and three)
 
+You can use parentheses to change operator precedence. For example:
+
+.. code-block:: html+django
+
+    {% if (one or two) and three %}
+
+Will be treated as:
+
+.. code-block:: text
+
+    (one or two) and three
+
+
 ``==`` operator
 """""""""""""""
 
@@ -373,3 +386,13 @@ Filter accepts several arguments:
 * indentation character: character to be used for indentation. Default is a space.
 * indent first line: whether first line of output should be indented or not. Default is ``false``.
 
+``filter``
+~~~~~~~~~
+
+Applies the filter with the name provided as an argument to the current expression.
+
+.. code-block:: html+django
+
+    {{ string|filter:myfilter }}
+
+This expression will resolve the `myfilter` variable, find a filter named the same as resolved value, and will apply it to the `string` variable. I.e. if `myfilter` variable resolves to string `uppercase` this expression will apply file `uppercase` to `string` variable.

@@ -1,90 +1,133 @@
+import PathKit
 import Spectre
 @testable import Stencil
+import XCTest
 
+final class LexerTests: XCTestCase {
+  func testText() throws {
+    let lexer = Lexer(templateString: "Hello World")
+    let tokens = lexer.tokenize()
 
-func testLexer() {
-  describe("Lexer") {
-    $0.it("can tokenize text") {
-      let lexer = Lexer(templateString: "Hello World")
-      let tokens = lexer.tokenize()
+    try expect(tokens.count) == 1
+    try expect(tokens.first) == .text(value: "Hello World", at: makeSourceMap("Hello World", for: lexer))
+  }
 
-      try expect(tokens.count) == 1
-      try expect(tokens.first) == .text(value: "Hello World")
+  func testComment() throws {
+    let lexer = Lexer(templateString: "{# Comment #}")
+    let tokens = lexer.tokenize()
+
+    try expect(tokens.count) == 1
+    try expect(tokens.first) == .comment(value: "Comment", at: makeSourceMap("Comment", for: lexer))
+  }
+
+  func testVariable() throws {
+    let lexer = Lexer(templateString: "{{ Variable }}")
+    let tokens = lexer.tokenize()
+
+    try expect(tokens.count) == 1
+    try expect(tokens.first) == .variable(value: "Variable", at: makeSourceMap("Variable", for: lexer))
+  }
+
+  func testTokenWithoutSpaces() throws {
+    let lexer = Lexer(templateString: "{{Variable}}")
+    let tokens = lexer.tokenize()
+
+    try expect(tokens.count) == 1
+    try expect(tokens.first) == .variable(value: "Variable", at: makeSourceMap("Variable", for: lexer))
+  }
+
+  func testUnclosedTag() throws {
+    let templateString = "{{ thing"
+    let lexer = Lexer(templateString: templateString)
+    let tokens = lexer.tokenize()
+
+    try expect(tokens.count) == 1
+    try expect(tokens.first) == .text(value: "", at: makeSourceMap("{{ thing", for: lexer))
+  }
+
+  func testContentMixture() throws {
+    let templateString = "My name is {{ myname }}."
+    let lexer = Lexer(templateString: templateString)
+    let tokens = lexer.tokenize()
+
+    try expect(tokens.count) == 3
+    try expect(tokens[0]) == Token.text(value: "My name is ", at: makeSourceMap("My name is ", for: lexer))
+    try expect(tokens[1]) == Token.variable(value: "myname", at: makeSourceMap("myname", for: lexer))
+    try expect(tokens[2]) == Token.text(value: ".", at: makeSourceMap(".", for: lexer))
+  }
+
+  func testVariablesWithoutBeingGreedy() throws {
+    let templateString = "{{ thing }}{{ name }}"
+    let lexer = Lexer(templateString: templateString)
+    let tokens = lexer.tokenize()
+
+    try expect(tokens.count) == 2
+    try expect(tokens[0]) == Token.variable(value: "thing", at: makeSourceMap("thing", for: lexer))
+    try expect(tokens[1]) == Token.variable(value: "name", at: makeSourceMap("name", for: lexer))
+  }
+
+  func testUnclosedBlock() throws {
+    let lexer = Lexer(templateString: "{%}")
+    _ = lexer.tokenize()
+  }
+
+  func testTokenizeIncorrectSyntaxWithoutCrashing() throws {
+    let lexer = Lexer(templateString: "func some() {{% if %}")
+    _ = lexer.tokenize()
+  }
+
+  func testEmptyVariable() throws {
+    let lexer = Lexer(templateString: "{{}}")
+    _ = lexer.tokenize()
+  }
+
+  func testNewlines() throws {
+    let templateString = """
+      My name is {%
+          if name
+           and
+          name
+      %}{{
+      name
+      }}{%
+      endif %}.
+      """
+    let lexer = Lexer(templateString: templateString)
+    let tokens = lexer.tokenize()
+
+    try expect(tokens.count) == 5
+    try expect(tokens[0]) == Token.text(value: "My name is ", at: makeSourceMap("My name is", for: lexer))
+    try expect(tokens[1]) == Token.block(value: "if name and name", at: makeSourceMap("{%", for: lexer))
+    try expect(tokens[2]) == Token.variable(value: "name", at: makeSourceMap("name", for: lexer, options: .backwards))
+    try expect(tokens[3]) == Token.block(value: "endif", at: makeSourceMap("endif", for: lexer))
+    try expect(tokens[4]) == Token.text(value: ".", at: makeSourceMap(".", for: lexer))
+  }
+
+  func testEscapeSequence() throws {
+    let templateString = "class Some {{ '{' }}{% if true %}{{ stuff }}{% endif %}"
+    let lexer = Lexer(templateString: templateString)
+    let tokens = lexer.tokenize()
+
+    try expect(tokens.count) == 5
+    try expect(tokens[0]) == Token.text(value: "class Some ", at: makeSourceMap("class Some ", for: lexer))
+    try expect(tokens[1]) == Token.variable(value: "'{'", at: makeSourceMap("'{'", for: lexer))
+    try expect(tokens[2]) == Token.block(value: "if true", at: makeSourceMap("if true", for: lexer))
+    try expect(tokens[3]) == Token.variable(value: "stuff", at: makeSourceMap("stuff", for: lexer))
+    try expect(tokens[4]) == Token.block(value: "endif", at: makeSourceMap("endif", for: lexer))
+  }
+
+  func testPerformance() throws {
+    let path = Path(#file as String) + ".."  + "fixtures" + "huge.html"
+    let content: String = try path.read()
+
+    measure {
+      let lexer = Lexer(templateString: content)
+      _ = lexer.tokenize()
     }
+  }
 
-    $0.it("can tokenize a comment") {
-      let lexer = Lexer(templateString: "{# Comment #}")
-      let tokens = lexer.tokenize()
-
-      try expect(tokens.count) == 1
-      try expect(tokens.first) == .comment(value: "Comment")
-    }
-
-    $0.it("can tokenize a variable") {
-      let lexer = Lexer(templateString: "{{ Variable }}")
-      let tokens = lexer.tokenize()
-
-      try expect(tokens.count) == 1
-      try expect(tokens.first) == .variable(value: "Variable")
-    }
-
-    $0.it("can tokenize unclosed tag by ignoring it") {
-      let lexer = Lexer(templateString: "{{ thing")
-      let tokens = lexer.tokenize()
-
-      try expect(tokens.count) == 1
-      try expect(tokens.first) == .text(value: "")
-    }
-
-    $0.it("can tokenize a mixture of content") {
-      let lexer = Lexer(templateString: "My name is {{ name }}.")
-      let tokens = lexer.tokenize()
-
-      try expect(tokens.count) == 3
-      try expect(tokens[0]) == Token.text(value: "My name is ")
-      try expect(tokens[1]) == Token.variable(value: "name")
-      try expect(tokens[2]) == Token.text(value: ".")
-    }
-
-    $0.it("can tokenize two variables without being greedy") {
-      let lexer = Lexer(templateString: "{{ thing }}{{ name }}")
-      let tokens = lexer.tokenize()
-
-      try expect(tokens.count) == 2
-      try expect(tokens[0]) == Token.variable(value: "thing")
-      try expect(tokens[1]) == Token.variable(value: "name")
-    }
-
-    $0.it("can tokenize an unclosed block") {
-      let lexer = Lexer(templateString: "{%}")
-      let _ = lexer.tokenize()
-    }
-
-    $0.it("can tokenize an empty variable") {
-      let lexer = Lexer(templateString: "{{}}")
-      let _ = lexer.tokenize()
-    }
-
-    $0.it("can tokenize with new lines") {
-        let lexer = Lexer(templateString:
-        "My name is {%\n" +
-        "    if name\n" +
-        "     and\n" +
-        "    name\n" +
-        "%}{{\n" +
-        "name\n" +
-        "}}{%\n" +
-        "endif %}.")
-
-        let tokens = lexer.tokenize()
-
-        try expect(tokens.count) == 5
-        try expect(tokens[0]) == Token.text(value: "My name is ")
-        try expect(tokens[1]) == Token.block(value: "if name and name")
-        try expect(tokens[2]) == Token.variable(value: "name")
-        try expect(tokens[3]) == Token.block(value: "endif")
-        try expect(tokens[4]) == Token.text(value: ".")
-
-    }
+  private func makeSourceMap(_ token: String, for lexer: Lexer, options: String.CompareOptions = []) -> SourceMap {
+    guard let range = lexer.templateString.range(of: token, options: options) else { fatalError("Token not found") }
+    return SourceMap(location: lexer.rangeLocation(range))
   }
 }

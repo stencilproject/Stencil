@@ -1,12 +1,12 @@
 import Spectre
 @testable import Stencil
+import XCTest
 
-
-func testTokenParser() {
-  describe("TokenParser") {
-    $0.it("can parse a text token") {
+final class TokenParserTests: XCTestCase {
+  func testTokenParser() {
+    it("can parse a text token") {
       let parser = TokenParser(tokens: [
-        .text(value: "Hello World")
+        .text(value: "Hello World", at: .unknown)
       ], environment: Environment())
 
       let nodes = try parser.parse()
@@ -16,9 +16,9 @@ func testTokenParser() {
       try expect(node?.text) == "Hello World"
     }
 
-    $0.it("can parse a variable token") {
+    it("can parse a variable token") {
       let parser = TokenParser(tokens: [
-        .variable(value: "'name'")
+        .variable(value: "'name'", at: .unknown)
       ], environment: Environment())
 
       let nodes = try parser.parse()
@@ -28,35 +28,37 @@ func testTokenParser() {
       try expect(result) == "name"
     }
 
-    $0.it("can parse a comment token") {
+    it("can parse a comment token") {
       let parser = TokenParser(tokens: [
-        .comment(value: "Secret stuff!")
+        .comment(value: "Secret stuff!", at: .unknown)
       ], environment: Environment())
 
       let nodes = try parser.parse()
       try expect(nodes.count) == 0
     }
 
-    $0.it("can parse a tag token") {
+    it("can parse a tag token") {
       let simpleExtension = Extension()
       simpleExtension.registerSimpleTag("known") { _ in
-        return ""
+        ""
       }
 
       let parser = TokenParser(tokens: [
-        .block(value: "known"),
+        .block(value: "known", at: .unknown)
       ], environment: Environment(extensions: [simpleExtension]))
 
       let nodes = try parser.parse()
       try expect(nodes.count) == 1
     }
 
-    $0.it("errors when parsing an unknown tag") {
-      let parser = TokenParser(tokens: [
-        .block(value: "unknown"),
-      ], environment: Environment())
+    it("errors when parsing an unknown tag") {
+      let tokens: [Token] = [.block(value: "unknown", at: .unknown)]
+      let parser = TokenParser(tokens: tokens, environment: Environment())
 
-      try expect(try parser.parse()).toThrow(TemplateSyntaxError("Unknown template tag 'unknown'"))
+      try expect(try parser.parse()).toThrow(TemplateSyntaxError(
+        reason: "Unknown template tag 'unknown'",
+        token: tokens.first)
+      )
     }
   }
 }

@@ -7,7 +7,8 @@ let NSFileNoSuchFileError = 4
 
 /// A class representing a template
 open class Template: ExpressibleByStringLiteral {
-  let environment: Environment
+  let templateString: String
+  var environment: Environment
   let tokens: [Token]
 
   /// The name of the loaded Template if the Template was loaded from a Loader
@@ -17,25 +18,26 @@ open class Template: ExpressibleByStringLiteral {
   public required init(templateString: String, environment: Environment? = nil, name: String? = nil) {
     self.environment = environment ?? Environment()
     self.name = name
+    self.templateString = templateString
 
-    let lexer = Lexer(templateString: templateString)
+    let lexer = Lexer(templateName: name, templateString: templateString)
     tokens = lexer.tokenize()
   }
 
   /// Create a template with the given name inside the given bundle
   @available(*, deprecated, message: "Use Environment/FileSystemLoader instead")
-  public convenience init(named:String, inBundle bundle:Bundle? = nil) throws {
-    let useBundle = bundle ??  Bundle.main
+  public convenience init(named: String, inBundle bundle: Bundle? = nil) throws {
+    let useBundle = bundle ?? Bundle.main
     guard let url = useBundle.url(forResource: named, withExtension: nil) else {
       throw NSError(domain: NSCocoaErrorDomain, code: NSFileNoSuchFileError, userInfo: nil)
     }
 
-    try self.init(URL:url)
+    try self.init(URL: url)
   }
 
   /// Create a template with a file found at the given URL
   @available(*, deprecated, message: "Use Environment/FileSystemLoader instead")
-  public convenience init(URL:Foundation.URL) throws {
+  public convenience init(URL: Foundation.URL) throws {
     try self.init(path: Path(URL.path))
   }
 
@@ -70,8 +72,9 @@ open class Template: ExpressibleByStringLiteral {
     return try renderNodes(nodes, context)
   }
 
+  // swiftlint:disable discouraged_optional_collection
   /// Render the given template
   open func render(_ dictionary: [String: Any]? = nil) throws -> String {
-    return try render(Context(dictionary: dictionary, environment: environment))
+    return try render(Context(dictionary: dictionary ?? [:], environment: environment))
   }
 }
