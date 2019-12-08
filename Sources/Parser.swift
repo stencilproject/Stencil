@@ -139,10 +139,6 @@ extension Environment {
     return try FilterExpression(token: token, environment: self)
   }
 
-  public func compileExpression(components: [String]) throws -> Expression {
-    return try IfExpressionParser(components: components, environment: self).parse()
-  }
-
   /// Create filter expression from a string contained in provided token
   public func compileFilter(_ filterToken: String, containedIn containingToken: Token) throws -> Resolvable {
     do {

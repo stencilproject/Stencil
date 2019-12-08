@@ -2,7 +2,7 @@ import Foundation
 
 typealias Line = (content: String, number: UInt, range: Range<String.Index>)
 
-struct Lexer {
+public struct Lexer {
   let templateName: String?
   let templateString: String
   let lines: [Line]
@@ -19,7 +19,7 @@ struct Lexer {
     "#": "#"
   ]
 
-  init(templateName: String? = nil, templateString: String) {
+  public init(templateName: String? = nil, templateString: String) {
     self.templateName = templateName
     self.templateString = templateString
 
@@ -74,7 +74,7 @@ struct Lexer {
   /// passed on to the parser.
   ///
   /// - Returns: The list of tokens (see `createToken(string: at:)`).
-  func tokenize() -> [Token] {
+  public func tokenize() -> [Token] {
     var tokens: [Token] = []
 
     let scanner = Scanner(templateString)

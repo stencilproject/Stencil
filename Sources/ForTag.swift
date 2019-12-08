@@ -46,12 +46,6 @@ class ForNode: NodeType {
       _ = parser.nextToken()
     }
 
-    let resolvable = try parser.compileResolvable(components[3])
-
-    let `where` = hasToken("where", at: 4)
-      ? try parser.compileExpression(components: Array(components.suffix(from: 5)))
-      : nil
-
     return ForNode(
       resolvable: resolvable,
       loopVariables: loopVariables,

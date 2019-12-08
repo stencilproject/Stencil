@@ -115,27 +115,6 @@ final class ForNodeTests: XCTestCase {
       try expect(try node.render(self.context)) == "2132"
     }
 
-    $0.it("can render a filter with spaces") {
-      let templateString = "{% for article in ars | default: a, b , articles %}" +
-        "- {{ article.title }} by {{ article.author }}.\n" +
-        "{% endfor %}\n"
-
-      let context = Context(dictionary: [
-        "articles": [
-          Article(title: "Migrating from OCUnit to XCTest", author: "Kyle Fuller"),
-          Article(title: "Memory Management with ARC", author: "Kyle Fuller"),
-        ]
-      ])
-
-      let template = Template(templateString: templateString)
-      let result = try template.render(context)
-
-      let fixture = "" +
-        "- Migrating from OCUnit to XCTest by Kyle Fuller.\n" +
-        "- Memory Management with ARC by Kyle Fuller.\n" +
-        "\n"
-
-      try expect(result) == fixture
     it("renders the given empty nodes when all items filtered out with where expression") {
       let nodes: [NodeType] = [VariableNode(variable: "item")]
       let emptyNodes: [NodeType] = [TextNode(text: "empty")]

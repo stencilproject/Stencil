@@ -168,10 +168,10 @@ func compactFilter(value: Any?, arguments: [Any?], context: Context) throws -> A
     array = mapped
   }
 
-  return array.flatMap({ item -> Any? in
-    if let unwrapped = item, String(describing: unwrapped) != "nil" { return unwrapped }
-    else { return nil }
-  })
+  return array.compactMap { item -> Any? in
+    guard let unwrapped = item, String(describing: unwrapped) != "nil" else { return nil }
+    return unwrapped
+  }
 }
 
 func filterEachFilter(value: Any?, arguments: [Any?], context: Context) throws -> Any? {
@@ -179,8 +179,11 @@ func filterEachFilter(value: Any?, arguments: [Any?], context: Context) throws -
     throw TemplateSyntaxError("'filterEach' filter takes one argument")
   }
 
-  let attribute = stringify(arguments[0])
-  let expr = try context.environment.compileExpression(components: Token.block(value: attribute).components())
+  guard let token = Lexer(templateString: stringify(arguments[0])).tokenize().first else {
+    throw TemplateSyntaxError("Can't parse filter expression")
+  }
+
+  let expr = try context.environment.compileExpression(components: token.components, containedIn: token)
 
   if let array = value as? [Any] {
     return try array.filter {
