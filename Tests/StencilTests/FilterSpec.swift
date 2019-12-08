@@ -435,13 +435,13 @@ final class FilterTests: XCTestCase {
       }
       let env = Environment(extensions: [ext])
 
-      let template = Template(templateString: #"{{ array|select:"$0|isPositive" }}"#)
+      let template = Template(templateString: "{{ array|select:\"$0|isPositive\" }}")
       let result = try template.render(Context(dictionary: ["array": [1, -1, 2, -2, 3, -3]], environment: env))
       try expect(result) == "[1, 2, 3]"
     }
 
     it("can filter using boolean expression") {
-      let template = Template(templateString: #"{{ array|select:"$0 > 0" }}"#)
+      let template = Template(templateString: "{{ array|select:\"$0 > 0\" }}")
       let result = try template.render(Context(dictionary: ["array": [1, -1, 2, -2, 3, -3]]))
       try expect(result) == "[1, 2, 3]"
     }
