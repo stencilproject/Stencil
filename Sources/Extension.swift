@@ -76,7 +76,7 @@ class DefaultExtension: Extension {
     registerFilter("filter", filter: filterFilter)
     registerFilter("map", filter: mapFilter)
     registerFilter("compact", filter: compactFilter)
-    registerFilter("filterEach", filter: filterEachFilter)
+    registerFilter("select", filter: selectFilter)
   }
 }
 

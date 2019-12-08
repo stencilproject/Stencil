@@ -174,9 +174,9 @@ func compactFilter(value: Any?, arguments: [Any?], context: Context) throws -> A
   }
 }
 
-func filterEachFilter(value: Any?, arguments: [Any?], context: Context) throws -> Any? {
+func selectFilter(value: Any?, arguments: [Any?], context: Context) throws -> Any? {
   guard arguments.count == 1 else {
-    throw TemplateSyntaxError("'filterEach' filter takes one argument")
+    throw TemplateSyntaxError("'select' filter takes one argument")
   }
 
   guard let token = Lexer(templateString: stringify(arguments[0])).tokenize().first else {

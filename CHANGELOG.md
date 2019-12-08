@@ -12,6 +12,10 @@ _None_
 , i.e. `myfilter = "uppercase"` and then use it to invoke this filter with `{{ string|filter:myfilter }}`.  
   [Ilya Puchka](https://github.com/ilyapuchka)
   [#203](https://github.com/stencilproject/Stencil/pull/203)
+  
+- Added `map`, `compact` and `select` filters.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#189](https://github.com/stencilproject/Stencil/pull/189)
 
 ### Deprecations
 
@@ -126,7 +130,6 @@ _None_
   [Ilya Puchka](https://github.com/ilyapuchka)
   [#167](https://github.com/stencilproject/Stencil/pull/167)
 
-- Added `map`, `compact` and `filterEach` filters
 
 ### Bug Fixes
 
