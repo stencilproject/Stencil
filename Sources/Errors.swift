@@ -55,6 +55,7 @@ public protocol ErrorReporter: AnyObject {
 }
 
 open class SimpleErrorReporter: ErrorReporter {
+  public init() { }
 
   open func renderError(_ error: Error) -> String {
     guard let templateError = error as? TemplateSyntaxError else { return error.localizedDescription }

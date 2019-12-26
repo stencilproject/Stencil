@@ -12,6 +12,9 @@ _None_
 , i.e. `myfilter = "uppercase"` and then use it to invoke this filter with `{{ string|filter:myfilter }}`.  
   [Ilya Puchka](https://github.com/ilyapuchka)
   [#203](https://github.com/stencilproject/Stencil/pull/203)
+- Added option to throw when a variable used in a template could not be resolved.  
+  [Andres Cecilia Luque](https://github.com/acecilia)
+  [#289](https://github.com/stencilproject/Stencil/pull/289)
 
 ### Deprecations
 
