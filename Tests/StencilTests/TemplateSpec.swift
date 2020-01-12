@@ -12,7 +12,7 @@ final class TemplateTests: XCTestCase {
 
     it("can render a template from a string literal") {
         let template: Template = "Hello World"
-        let result = try template.render(object:[ "name": "Kyle" ])
+        let result = try template.render(object: ["name": "Kyle"])
         try expect(result) == "Hello World"
     }
   }
