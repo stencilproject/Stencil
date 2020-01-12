@@ -114,7 +114,7 @@ struct Lexer {
 class Scanner {
   let originalContent: String
   var content: String
-  var range: Range<String.Index>
+  var range: Range<String.UnicodeScalarView.Index>
 
   /// The start delimiter for a token.
   private static let tokenStartDelimiter: Unicode.Scalar = "{"
@@ -124,7 +124,7 @@ class Scanner {
   init(_ content: String) {
     self.originalContent = content
     self.content = content
-    range = content.startIndex..<content.startIndex
+    range = content.unicodeScalars.startIndex..<content.unicodeScalars.startIndex
   }
 
   var isEmpty: Bool {
@@ -147,9 +147,9 @@ class Scanner {
 
     for (index, char) in content.unicodeScalars.enumerated() {
       if foundChar && char == Scanner.tokenEndDelimiter {
-        let result = String(content.prefix(index + 1))
-        content = String(content.dropFirst(index + 1))
-        range = range.upperBound..<originalContent.index(range.upperBound, offsetBy: index + 1)
+        let result = String(content.unicodeScalars.prefix(index + 1))
+        content = String(content.unicodeScalars.dropFirst(index + 1))
+        range = range.upperBound..<originalContent.unicodeScalars.index(range.upperBound, offsetBy: index + 1)
         return result
       } else {
         foundChar = (char == tokenChar)
@@ -181,9 +181,9 @@ class Scanner {
     range = range.upperBound..<range.upperBound
     for (index, char) in content.unicodeScalars.enumerated() {
       if foundBrace && tokenChars.contains(char) {
-        let result = String(content.prefix(index - 1))
-        content = String(content.dropFirst(index - 1))
-        range = range.upperBound..<originalContent.index(range.upperBound, offsetBy: index - 1)
+        let result = String(content.unicodeScalars.prefix(index - 1))
+        content = String(content.unicodeScalars.dropFirst(index - 1))
+        range = range.upperBound..<originalContent.unicodeScalars.index(range.upperBound, offsetBy: index - 1)
         return (char, result)
       } else {
         foundBrace = (char == Scanner.tokenStartDelimiter)
