@@ -6,7 +6,7 @@ final class TemplateTests: XCTestCase {
   func testTemplate() {
     it("can render a template from a string") {
       let template = Template(templateString: "Hello World")
-      let result = try template.render(object:[ "name": "Kyle" ])
+      let result = try template.render(object: ["name": "Kyle"])
       try expect(result) == "Hello World"
     }
 
