@@ -14,7 +14,7 @@ public class Context {
     self.environment = environment ?? Environment()
   }
 
-  convenience init(object: Any? = nil, environment: Environment? = nil) {
+  convenience public init(object: Any? = nil, environment: Environment? = nil) {
     self.init(dictionary: Context.dictionaryFromAny(object: object ?? [:]), environment: environment)
   }
     
