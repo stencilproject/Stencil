@@ -35,6 +35,9 @@ _None_
 - Added SwiftLint to the project.  
   [David Jennes](https://github.com/djbe)
   [#249](https://github.com/stencilproject/Stencil/pull/249)
+- Updated to Swift 5.  
+  [Jungwon An](https://github.com/kawoou)
+  [#268](https://github.com/stencilproject/Stencil/pull/268)
 
 
 ## 0.13.1

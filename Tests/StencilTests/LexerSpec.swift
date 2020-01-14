@@ -126,6 +126,16 @@ final class LexerTests: XCTestCase {
     }
   }
 
+  func testCombiningDiaeresis() throws {
+    // the symbol "ü" in the `templateString` is unusually encoded as 0x75 0xCC 0x88 (LATIN SMALL LETTER U + COMBINING DIAERESIS) instead of 0xC3 0xBC (LATIN SMALL LETTER U WITH DIAERESIS)
+    let templateString = "ü\n{% if test %}ü{% endif %}\n{% if ü %}ü{% endif %}\n"
+    let lexer = Lexer(templateString: templateString)
+    let tokens = lexer.tokenize()
+
+    try expect(tokens.count) == 9
+    assert(tokens[1].contents == "if test")
+  }
+
   private func makeSourceMap(_ token: String, for lexer: Lexer, options: String.CompareOptions = []) -> SourceMap {
     guard let range = lexer.templateString.range(of: token, options: options) else { fatalError("Token not found") }
     return SourceMap(location: lexer.rangeLocation(range))
