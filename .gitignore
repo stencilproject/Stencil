@@ -1,5 +1,6 @@
 .conche/
 .build/
+.swiftpm/
 Packages/
 Package.pins
 *.xcodeproj
