@@ -50,17 +50,17 @@ open class Template: ExpressibleByStringLiteral {
   // MARK: ExpressibleByStringLiteral
 
   // Create a templaVte with a template string literal
-  public convenience required init(stringLiteral value: String) {
+  public required convenience init(stringLiteral value: String) {
     self.init(templateString: value)
   }
 
   // Create a template with a template string literal
-  public convenience required init(extendedGraphemeClusterLiteral value: StringLiteralType) {
+  public required convenience init(extendedGraphemeClusterLiteral value: StringLiteralType) {
     self.init(stringLiteral: value)
   }
 
   // Create a template with a template string literal
-  public convenience required init(unicodeScalarLiteral value: StringLiteralType) {
+  public required convenience init(unicodeScalarLiteral value: StringLiteralType) {
     self.init(stringLiteral: value)
   }
 

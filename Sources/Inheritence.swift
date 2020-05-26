@@ -63,11 +63,8 @@ class ExtendsNode: NodeType {
     }
 
     let blockNodes = parsedNodes.compactMap { $0 as? BlockNode }
-
-    let nodes = blockNodes.reduce([String: BlockNode]()) { accumulator, node -> [String: BlockNode] in
-      var dict = accumulator
-      dict[node.name] = node
-      return dict
+    let nodes = blockNodes.reduce(into: [String: BlockNode]()) { accumulator, node in
+      accumulator[node.name] = node
     }
 
     return ExtendsNode(templateName: Variable(bits[1]), blocks: nodes, token: token)
@@ -185,5 +182,4 @@ class BlockNode: NodeType {
     }
     return childContext
   }
-
 }

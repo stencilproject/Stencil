@@ -133,7 +133,7 @@ final class EnvironmentTests: XCTestCase {
         token: "name|unknown"
       )
     }
-    
+
     it("reports error in variable tag") {
       self.template = "{{ }}"
       try self.expectError(reason: "Missing variable name", token: " ")
@@ -261,11 +261,13 @@ final class EnvironmentIncludeTemplateTests: XCTestCase {
     function: String = #function
   ) throws {
     var expectedError = expectedSyntaxError(token: token, template: template, description: reason)
-    expectedError.stackTrace = [expectedSyntaxError(
-      token: includedToken,
-      template: includedTemplate,
-      description: reason
-      ).token].compactMap { $0 }
+    expectedError.stackTrace = [
+      expectedSyntaxError(
+        token: includedToken,
+        template: includedTemplate,
+        description: reason
+      ).token
+    ].compactMap { $0 }
 
     let error = try expect(
       self.environment.render(template: self.template, context: ["target": "World"]),
@@ -368,11 +370,13 @@ final class EnvironmentBaseAndChildTemplateTests: XCTestCase {
   ) throws {
     var expectedError = expectedSyntaxError(token: childToken, template: childTemplate, description: reason)
     if let baseToken = baseToken {
-      expectedError.stackTrace = [expectedSyntaxError(
-        token: baseToken,
-        template: baseTemplate,
-        description: reason
-        ).token].compactMap { $0 }
+      expectedError.stackTrace = [
+        expectedSyntaxError(
+          token: baseToken,
+          template: baseTemplate,
+          description: reason
+        ).token
+      ].compactMap { $0 }
     }
     let error = try expect(
       self.environment.render(template: self.childTemplate, context: ["target": "World"]),
