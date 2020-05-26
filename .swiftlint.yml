@@ -1,47 +1,90 @@
 swiftlint_version: 0.39.2
 
+disabled_rules:
+  # Remove this once we remove old swift support
+  - implicit_return
+
 opt_in_rules:
   - anyobject_protocol
   - array_init
   - attributes
+  - closure_body_length
   - closure_end_indentation
   - closure_spacing
+  - collection_alignment
+  - contains_over_filter_count
+  - contains_over_filter_is_empty
   - contains_over_first_not_nil
+  - contains_over_range_nil_comparison
   - convenience_type
   - discouraged_optional_boolean
   - discouraged_optional_collection
+  - duplicate_enum_cases
+  - duplicate_imports
+  - empty_collection_literal
   - empty_count
   - empty_string
   - fallthrough
   - fatal_error_message
   - first_where
+  - flatmap_over_map_reduce
   - force_unwrapping
-  - implicit_return
-  - implicitly_unwrapped_optional
+  - identical_operands
+  - inert_defer
   - joined_default_parameter
+  - last_where
+  - legacy_hashing
+  - legacy_random
   - literal_expression_end_indentation
   - lower_acl_than_parent
   - modifier_order
   - multiline_arguments
   - multiline_function_chains
+  - multiline_literal_brackets
   - multiline_parameters
+  - multiline_parameters_brackets
+  - nslocalizedstring_key
+  - nsobject_prefer_isequal
   - number_separator
+  - object_literal
   - operator_usage_whitespace
   - overridden_super_call
   - override_in_extension
+  - prefer_self_type_over_type_of_self
   - private_action
   - private_outlet
   - prohibited_super_call
+  - raw_value_for_camel_cased_codable_enum
+  - reduce_boolean
+  - reduce_into
   - redundant_nil_coalescing
+  - redundant_objc_attribute
   - sorted_first_last
   - sorted_imports
+  - static_operator
+  - strong_iboutlet
+  - toggle_bool
   - trailing_closure
   - unavailable_function
   - unneeded_parentheses_in_closure_argument
+  - unowned_variable_capture
+  - unused_capture_list
+  - unused_control_flow_label
+  - unused_declaration
+  - unused_setter_value
   - vertical_parameter_alignment_on_call
+  - vertical_whitespace_closing_braces
+  - vertical_whitespace_opening_braces
+  - xct_specific_matcher
   - yoda_condition
+  # Enable this again once we remove old swift support
+  # - optional_enum_case_matching
+  # - legacy_multiple
 
 # Rules customization
+closure_body_length:
+  warning: 25
+
 line_length:
   warning: 120
   error: 200
