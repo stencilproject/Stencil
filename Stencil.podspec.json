@@ -23,12 +23,12 @@
     "osx": "10.9",
     "tvos": "9.0"
   },
-  "cocoapods_version": ">= 1.4.0",
-  "swift_version": "5.0",
+  "cocoapods_version": ">= 1.7.0",
+  "swift_versions": ["4.2", "5.0"],
   "requires_arc": true,
   "dependencies": {
     "PathKit": [
-      "~> 0.9.0"
+      "~> 1.0.0"
     ]
   }
 }
