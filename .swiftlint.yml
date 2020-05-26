@@ -1,3 +1,5 @@
+swiftlint_version: 0.39.2
+
 opt_in_rules:
   - anyobject_protocol
   - array_init
