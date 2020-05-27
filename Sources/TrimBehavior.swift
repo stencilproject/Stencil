@@ -41,7 +41,6 @@ public struct TrimBehavior: Equatable {
 
   static func leadingRegex(trim: Trim) -> NSRegularExpression {
     switch trim {
-
     case .none:
       fatalError("No RegularExpression for none")
     case .whitespace:
@@ -55,7 +54,6 @@ public struct TrimBehavior: Equatable {
 
   static func trailingRegex(trim: Trim) -> NSRegularExpression {
     switch trim {
-
     case .none:
       fatalError("No RegularExpression for none")
     case .whitespace:
@@ -82,5 +80,3 @@ public struct TrimBehavior: Equatable {
   }
 
 }
-
-
