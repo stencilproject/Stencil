@@ -30,10 +30,16 @@ class FilterExpression: Resolvable {
   func resolve(_ context: Context) throws -> Any? {
     let result = try variable.resolve(context)
 
-    return try filters.reduce(result) { value, filter in
+    let filteredResult = try filters.reduce(result) { value, filter in
       let arguments = try filter.1.map { try $0.resolve(context) }
       return try filter.0.invoke(value: value, arguments: arguments, context: context)
     }
+
+    if filteredResult == nil, context.environment.throwOnUnresolvedVariable {
+      throw TemplateSyntaxError("Variable could not be resolved")
+    }
+
+    return filteredResult
   }
 }
 

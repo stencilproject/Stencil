@@ -1,16 +1,19 @@
 public struct Environment {
   public let templateClass: Template.Type
   public var extensions: [Extension]
+  public let throwOnUnresolvedVariable: Bool
 
   public var loader: Loader?
 
   public init(loader: Loader? = nil,
               extensions: [Extension] = [],
+              throwOnUnresolvedVariable: Bool = false,
               templateClass: Template.Type = Template.self) {
 
     self.templateClass = templateClass
     self.loader = loader
     self.extensions = extensions + [DefaultExtension()]
+    self.throwOnUnresolvedVariable = throwOnUnresolvedVariable
   }
 
   public func loadTemplate(name: String) throws -> Template {
