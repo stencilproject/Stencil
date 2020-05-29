@@ -4,7 +4,9 @@
 
 ### Breaking
 
-_None_
+- Drop support for Swift < 4.2. For Swift 4 support, you should use Stencil 0.13.1.  
+  [David Jennes](https://github.com/djbe)
+  [#294](https://github.com/stencilproject/Stencil/pull/294)
 
 ### Enhancements
 
@@ -22,7 +24,6 @@ _None_
 - Fixed using parenthesis in boolean expressions, they now can be used without spaces around them.  
   [Ilya Puchka](https://github.com/ilyapuchka)
   [#254](https://github.com/stencilproject/Stencil/pull/254)
-
 - Throw syntax error on empty variable tags (`{{ }}`) instead `fatalError`.  
   [Ilya Puchka](https://github.com/ilyapuchka)
   [#263](https://github.com/stencilproject/Stencil/pull/263)
