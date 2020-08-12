@@ -325,10 +325,12 @@ final class FilterTests: XCTestCase {
     let template = Template(templateString: """
       {{ value|indent:2 }}
       """)
-    let result = try template.render(Context(dictionary: ["value": """
+    let result = try template.render(Context(dictionary: [
+      "value": """
       One
       Two
-      """]))
+      """
+    ]))
     try expect(result) == """
       One
         Two
@@ -339,10 +341,12 @@ final class FilterTests: XCTestCase {
     let template = Template(templateString: """
       {{ value|indent:2,"\t" }}
       """)
-    let result = try template.render(Context(dictionary: ["value": """
+    let result = try template.render(Context(dictionary: [
+      "value": """
       One
       Two
-      """]))
+      """
+    ]))
     try expect(result) == """
       One
       \t\tTwo
@@ -353,10 +357,12 @@ final class FilterTests: XCTestCase {
     let template = Template(templateString: """
       {{ value|indent:2," ",true }}
       """)
-    let result = try template.render(Context(dictionary: ["value": """
+    let result = try template.render(Context(dictionary: [
+      "value": """
       One
       Two
-      """]))
+      """
+    ]))
     try expect(result) == """
         One
         Two
@@ -367,14 +373,16 @@ final class FilterTests: XCTestCase {
     let template = Template(templateString: """
       {{ value|indent }}
       """)
-    let result = try template.render(Context(dictionary: ["value": """
+    let result = try template.render(Context(dictionary: [
+      "value": """
       One
 
 
       Two
 
 
-      """]))
+      """
+    ]))
     try expect(result) == """
       One
 

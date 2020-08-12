@@ -108,7 +108,6 @@ struct Lexer {
     let offset = templateString.distance(from: line.range.lowerBound, to: range.lowerBound)
     return (line.content, line.number, offset)
   }
-
 }
 
 class Scanner {

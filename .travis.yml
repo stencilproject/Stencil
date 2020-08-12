@@ -15,7 +15,7 @@ sudo: required
 dist: trusty
 install:
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then eval "$(curl -sL https://swiftenv.fuller.li/install.sh)"; fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then wget --output-document /tmp/SwiftLint.pkg https://github.com/realm/SwiftLint/releases/download/0.27.0/SwiftLint.pkg &&
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then wget --output-document /tmp/SwiftLint.pkg https://github.com/realm/SwiftLint/releases/download/0.39.2/SwiftLint.pkg &&
     sudo installer -pkg /tmp/SwiftLint.pkg -target /; fi
 script:
   - swift test
