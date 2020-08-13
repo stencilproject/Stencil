@@ -54,8 +54,7 @@ public class Context {
     if let dictionary = object as? [String: Any] {
       return dictionary
     } else {
-      let dictionary = Mirror(reflecting: object).asDictionary()
-      return dictionary
+      return Mirror(reflecting: object).asDictionary()
     }
   }
     
