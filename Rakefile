@@ -89,6 +89,7 @@ namespace :release do
     sh("git", "push", "-u", "origin", branch)
 
     url = `git remote get-url origin`.chomp.gsub('git@github.com:', 'https://github.com/').gsub(/\.git$/, '')
+    title = "Release #{version}"
     body = <<~BODY
       This PR prepares release #{version}.
   
@@ -99,6 +100,6 @@ namespace :release do
     BODY
 
     header "Opening PR"
-    sh("open", "#{url}/compare/master...#{branch}?quick_pull=1&body=#{CGI.escape(body)}")
+    sh("open", "#{url}/compare/master...#{branch}?quick_pull=1&title=#{CGI.escape(title)}&body=#{CGI.escape(body)}")
   end  
 end
