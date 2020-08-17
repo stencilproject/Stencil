@@ -1,3 +1,25 @@
+## Master
+
+### Breaking
+
+_None_
+
+### Enhancements
+
+_None_
+
+### Deprecations
+
+_None_
+
+### Bug Fixes
+
+_None_
+
+### Internal Changes
+
+_None_
+
 # Stencil Changelog
 
 ## 0.14.0
