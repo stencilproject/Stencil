@@ -38,7 +38,7 @@ namespace :github do
   # rake github:create_release
   task :create_release do
     tag_name = current_pod_version
-    title = "Release #{args[:version]}"
+    title = tag_name
     body = changelog_first_section()
     res = github_client.create_release(repo_slug, tag_name, name: title, body: body)
     info "GitHub Release created: #{res['html_url']}"
