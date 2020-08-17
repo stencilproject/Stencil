@@ -28,16 +28,16 @@ namespace :github do
     info "Pull request created: #{res['html_url']}"
   end
 
-  # rake github:tag[version]
-  task :tag, [:version] do |_, args|
-    tag = args[:version]
+  # rake github:tag
+  task :tag do
+    tag = current_pod_version
     sh("git", "tag", tag)
     sh("git", "push", origin, tag)
   end
 
-  # rake github:create_release[version]
-  task :create_release, [:version] do |_, args|
-    tag_name = args[:version]
+  # rake github:create_release
+  task :create_release do
+    tag_name = current_pod_version
     title = "Release #{args[:version]}"
     body = changelog_first_section()
     res = github_client.create_release(repo_slug, tag_name, name: title, body: body)

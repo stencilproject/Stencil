@@ -5,8 +5,7 @@ namespace :release do
   # rake release:new
   desc "Ask for a version number and prepare a release PR for that version"
   task :new do
-    current_version = JSON.parse(File.read(PODSPEC_FILE))['version']
-    info "Current version is: #{current_version}"
+    info "Current version is: #{current_pod_version}"
     print "What version do you want to release? "
     new_version = STDIN.gets.chomp
 
@@ -19,7 +18,7 @@ namespace :release do
 
   # rake release:finish[version]
   desc "Finish a release after the PR has been merged, by tagging master and pushing to trunk"
-  task :finish, [:version] => ['github:pull_master', 'github:tag', 'pod:push', 'github:create_release', 'changelog:reset']
+  task :finish => ['github:pull_master', 'github:tag', 'pod:push', 'github:create_release', 'changelog:reset']
 
 
   ### Helper tasks ###

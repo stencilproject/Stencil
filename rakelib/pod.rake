@@ -1,3 +1,9 @@
+require 'json'
+
+def current_pod_version
+  JSON.parse(File.read(PODSPEC_FILE))['version']
+end
+
 namespace :pod do
   # rake pod:lint
   desc "Lint the podspec"
