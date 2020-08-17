@@ -39,7 +39,7 @@ namespace :release do
     podspec = JSON.parse(File.read(PODSPEC_FILE))
     podspec['version'] = version
     podspec['source']['tag'] = version
-    File.write(PODSPEC_FILE, JSON.pretty_generate(podspec))
+    File.write(PODSPEC_FILE, JSON.pretty_generate(podspec) + "\n")
 
     replace(CHANGELOG_FILE, '## Master' => "\#\# #{version}")
     replace("docs/conf.py",
