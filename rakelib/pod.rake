@@ -1,0 +1,14 @@
+namespace :pod do
+  # rake pod:lint
+  desc "Lint the podspec"
+  task :lint do
+    header "Linting podspec"
+    sh("pod", "lib", "lint", PODSPEC_FILE)
+  end
+
+  desc "Push the podspec to trunk"
+  task :push do
+    header "Pushing podspec to trunk"
+    sh("pod", "trunk", "push", PODSPEC_FILE)
+  end
+end
