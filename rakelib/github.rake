@@ -11,7 +11,7 @@ def github_client
 end
 
 namespace :github do
-  ### rake github:release_pr[version] ###
+  # rake github:create_release_pr[version]
   task :create_release_pr, [:version] do |_, args|
     version = args[:version]
     branch = release_branch(version)
@@ -28,17 +28,25 @@ namespace :github do
     info "Pull request created: #{res['html_url']}"
   end
 
+  # rake github:tag[version]
   task :tag, [:version] do |_, args|
     tag = args[:version]
     sh("git", "tag", tag)
     sh("git", "push", origin, tag)
   end
 
+  # rake github:create_release[version]
   task :create_release, [:version] do |_, args|
     tag_name = args[:version]
     title = "Release #{args[:version]}"
     body = changelog_first_section()
     res = github_client.create_release(repo_slug, tag_name, name: title, body: body)
     info "GitHub Release created: #{res['html_url']}"
+  end
+
+  # rake github:pull_master
+  task :pull_master do
+    sh("git", "switch", "master")
+    sh("git", "pull")
   end
 end

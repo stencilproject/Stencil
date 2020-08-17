@@ -14,10 +14,12 @@ namespace :release do
   end
 
   # rake release:start[version]
-  task :start, [:version] => ['release:create_branch', 'release:update_files', 'pod:lint', 'release:push_branch', 'github:create_release_pr']
+  desc "Start a release by creating a PR with the required changes to bump the version"
+  task :start, [:version] => ['release:create_branch', 'release:update_files', 'pod:lint', 'release:push_branch', 'github:create_release_pr', 'github:pull_master']
 
   # rake release:finish[version]
-  task :finish, [:version] => ['github:tag', 'pod:push', 'github:create_release', 'changelog:reset']
+  desc "Finish a release after the PR has been merged, by tagging master and pushing to trunk"
+  task :finish, [:version] => ['github:pull_master', 'github:tag', 'pod:push', 'github:create_release', 'changelog:reset']
 
 
   ### Helper tasks ###
