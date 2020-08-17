@@ -32,7 +32,7 @@ namespace :github do
   task :tag do
     tag = current_pod_version
     sh("git", "tag", tag)
-    sh("git", "push", origin, tag)
+    sh("git", "push", "origin", tag)
   end
 
   # rake github:create_release
