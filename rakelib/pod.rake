@@ -6,6 +6,7 @@ namespace :pod do
     sh("pod", "lib", "lint", PODSPEC_FILE)
   end
 
+  # rake pod:push
   desc "Push the podspec to trunk"
   task :push do
     header "Pushing podspec to trunk"
