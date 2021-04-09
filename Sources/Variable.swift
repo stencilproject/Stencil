@@ -51,8 +51,6 @@ public struct Variable: Equatable, Resolvable {
     if variable.count > 1 && ((variable.hasPrefix("'") && variable.hasSuffix("'")) || (variable.hasPrefix("\"") && variable.hasSuffix("\""))) {
       // String literal
       return String(variable[variable.index(after: variable.startIndex) ..< variable.index(before: variable.endIndex)])
-    } else {
-      return ""
     }
 
     // Number literal
