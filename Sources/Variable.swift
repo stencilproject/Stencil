@@ -48,10 +48,11 @@ public struct Variable: Equatable, Resolvable {
 
   /// Resolve the variable in the given context
   public func resolve(_ context: Context) throws -> Any? {
-    if (variable.hasPrefix("'") && variable.hasSuffix("'")) || (variable.hasPrefix("\"") && variable.hasSuffix("\"")) {
+    if variable.count > 1 && (variable.hasPrefix("'") && variable.hasSuffix("'")) || (variable.hasPrefix("\"") && variable.hasSuffix("\"")) {
       // String literal
-      guard variable.count > 1 else { return "" }
       return String(variable[variable.index(after: variable.startIndex) ..< variable.index(before: variable.endIndex)])
+    } else {
+      return ""
     }
 
     // Number literal
