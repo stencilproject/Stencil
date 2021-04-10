@@ -14,7 +14,9 @@ _None_
 
 ### Bug Fixes
 
-_None_
+- Fix for crashing range indexes when variable length is 1.  
+  [Łukasz Kuczborski](https://github.com/lkuczborski)
+  [#306](https://github.com/stencilproject/Stencil/pull/306)
 
 ### Internal Changes
 
