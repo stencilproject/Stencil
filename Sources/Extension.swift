@@ -74,6 +74,9 @@ class DefaultExtension: Extension {
     registerFilter("split", filter: splitFilter)
     registerFilter("indent", filter: indentFilter)
     registerFilter("filter", filter: filterFilter)
+    registerFilter("map", filter: mapFilter)
+    registerFilter("compact", filter: compactFilter)
+    registerFilter("select", filter: selectFilter)
   }
 }
 

@@ -75,6 +75,17 @@ final class EnvironmentTests: XCTestCase {
       self.template = "{% for name in names %}{{ name }}{% end %}"
       try self.expectError(reason: "Unknown template tag 'end'", token: "end")
     }
+
+    it("reports syntax error on invalid filter expression") {
+      self.template = "{{ array|select: $0|isPositive }}"
+      let ext = Extension()
+      ext.registerFilter("isPositive") { (value) -> Any? in
+        if let number = toNumber(value: value as Any) { return number > 0 }
+        else { return nil }
+      }
+      self.environment = Environment(extensions: [ext])
+      try self.expectError(reason: "Can't parse filter expression", token: "array|select: $0|isPositive")
+    }
   }
 
   func testUnknownFilter() {

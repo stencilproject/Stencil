@@ -3,6 +3,7 @@ import Spectre
 import XCTest
 
 final class FilterTests: XCTestCase {
+  
   func testRegistration() {
     let context: [String: Any] = ["name": "Kyle"]
 
@@ -391,6 +392,73 @@ final class FilterTests: XCTestCase {
 
 
       """
+  }
+
+  func testMapfilter() throws {
+    it("can map over attribute") {
+      let template = Template(templateString: "{{ array|map:\"name\"}}")
+      let result = try template.render(Context(dictionary: ["array": [["name": "One"], ["name": "Two"], [:]]]))
+      try expect(result) == "[\"One\", \"Two\", nil]"
+    }
+
+    it("can map over runtime attribute") {
+      let template = Template(templateString: "{{ array|map:key}}")
+      let result = try template.render(Context(dictionary: ["key": "name", "array": [["name": "One"], ["name": "Two"]]]))
+      try expect(result) == "[\"One\", \"Two\"]"
+    }
+
+    it("can use default value") {
+      let template = Template(templateString: "{{ array|map:\"name\",\"anonymous\"}}")
+      let result = try template.render(Context(dictionary: ["array": [[:], ["name": "Two"]]]))
+      try expect(result) == "[\"anonymous\", \"Two\"]"
+    }
+
+    it("can map single value") {
+      let template = Template(templateString: "{{ value|map:\"user.name\"}}")
+      let result = try template.render(Context(dictionary: ["value": ["user": ["name": "Two"]]]))
+      try expect(result) == "Two"
+    }
+  }
+
+  func testCompactFilter() throws {
+    it("can filter nil values") {
+      let template = Template(templateString: "{{ array|compact}}")
+      let result = try template.render(Context(dictionary: ["array": [nil, "Two"]]))
+      try expect(result) == "[\"Two\"]"
+    }
+
+    it("can map and filter nil values") {
+      let template = Template(templateString: "{{ array|compact:\"name\"}}")
+      let result = try template.render(Context(dictionary: ["array": [["name": "One"], ["name": "Two"], [:]]]))
+      try expect(result) == "[\"One\", \"Two\"]"
+    }
+  }
+
+  func testSelectFilter() throws {
+    it("can filter using filter") {
+      let ext = Extension()
+      ext.registerFilter("isPositive") { (value) -> Any? in
+        if let number = toNumber(value: value as Any) { return number > 0 }
+        else { return nil }
+      }
+      let env = Environment(extensions: [ext])
+
+      let template = Template(templateString: "{{ array|select:\"$0|isPositive\" }}")
+      let result = try template.render(Context(dictionary: ["array": [1, -1, 2, -2, 3, -3]], environment: env))
+      try expect(result) == "[1, 2, 3]"
+    }
+
+    it("can filter using boolean expression") {
+      let template = Template(templateString: "{{ array|select:\"$0 > 0\" }}")
+      let result = try template.render(Context(dictionary: ["array": [1, -1, 2, -2, 3, -3]]))
+      try expect(result) == "[1, 2, 3]"
+    }
+
+    it("can filter using variable expression") {
+      let template = Template(templateString: "{{ array|select:\"$0\" }}")
+      let result = try template.render(Context(dictionary: ["array": [1, -1, nil, 2, -2, 3, -3]]))
+      try expect(result) == "[1, 2, 3]"
+    }
   }
 
   func testDynamicFilters() throws {

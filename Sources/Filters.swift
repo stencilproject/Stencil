@@ -127,3 +127,71 @@ func filterFilter(value: Any?, arguments: [Any?], context: Context) throws -> An
     try expr.resolve(context)
   }
 }
+
+func mapFilter(value: Any?, arguments: [Any?], context: Context) throws -> Any? {
+  guard arguments.count >= 1 && arguments.count <= 2 else {
+    throw TemplateSyntaxError("'map' filter takes one or two arguments")
+  }
+
+  let attribute = stringify(arguments[0])
+  let variable = Variable("map_item.\(attribute)")
+  let defaultValue = arguments.count == 2 ? arguments[1] : nil
+
+  let resolveVariable = { (item: Any) throws -> Any in
+    let result = try context.push(dictionary: ["map_item": item]) {
+      try variable.resolve(context)
+    }
+    if let result = result { return result }
+    else if let defaultValue = defaultValue { return defaultValue }
+    else { return result as Any }
+  }
+
+
+  if let array = value as? [Any] {
+    return try array.map(resolveVariable)
+  } else {
+    return try resolveVariable(value as Any)
+  }
+}
+
+func compactFilter(value: Any?, arguments: [Any?], context: Context) throws -> Any? {
+  guard arguments.count <= 1 else {
+    throw TemplateSyntaxError("'compact' filter takes at most one argument")
+  }
+
+  guard var array = value as? [Any?] else { return value }
+
+  if arguments.count == 1 {
+    guard let mapped = try mapFilter(value: array, arguments: arguments, context: context) as? [Any?] else {
+      return value
+    }
+    array = mapped
+  }
+
+  return array.compactMap { item -> Any? in
+    guard let unwrapped = item, String(describing: unwrapped) != "nil" else { return nil }
+    return unwrapped
+  }
+}
+
+func selectFilter(value: Any?, arguments: [Any?], context: Context) throws -> Any? {
+  guard arguments.count == 1 else {
+    throw TemplateSyntaxError("'select' filter takes one argument")
+  }
+
+  guard let token = Lexer(templateString: stringify(arguments[0])).tokenize().first else {
+    throw TemplateSyntaxError("Can't parse filter expression")
+  }
+
+  let expr = try context.environment.compileExpression(components: token.components, containedIn: token)
+
+  if let array = value as? [Any] {
+    return try array.filter {
+      try context.push(dictionary: ["$0": $0]) {
+        try expr.evaluate(context: context)
+      }
+    }
+  }
+
+  return value
+}

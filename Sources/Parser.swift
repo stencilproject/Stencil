@@ -90,6 +90,7 @@ public class TokenParser {
 }
 
 extension Environment {
+
   func findTag(name: String) throws -> Extension.TagParser {
     for ext in extensions {
       if let filter = ext.tags[name] {
