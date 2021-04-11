@@ -1,16 +1,6 @@
-## Master
+# Stencil Changelog
 
-### Breaking
-
-_None_
-
-### Enhancements
-
-_None_
-
-### Deprecations
-
-_None_
+## 0.14.1
 
 ### Bug Fixes
 
@@ -18,11 +8,6 @@ _None_
   [Łukasz Kuczborski](https://github.com/lkuczborski)
   [#306](https://github.com/stencilproject/Stencil/pull/306)
 
-### Internal Changes
-
-_None_
-
-# Stencil Changelog
 
 ## 0.14.0
 
@@ -38,10 +23,6 @@ _None_
 , i.e. `myfilter = "uppercase"` and then use it to invoke this filter with `{{ string|filter:myfilter }}`.  
   [Ilya Puchka](https://github.com/ilyapuchka)
   [#203](https://github.com/stencilproject/Stencil/pull/203)
-
-### Deprecations
-
-_None_
 
 ### Bug Fixes
 
