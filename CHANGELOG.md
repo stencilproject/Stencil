@@ -18,7 +18,9 @@ _None_
 
 ### Internal Changes
 
-_None_
+- Update Spectre (0.10) and PathKit to support Xcode 13.  
+  [Astromonkee](https://github.com/astromonkee)
+  [#314](https://github.com/stencilproject/Stencil/pull/314)
 
 # Stencil Changelog
 
