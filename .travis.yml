@@ -1,25 +1,13 @@
 matrix:
   include:
     - os: osx
-      osx_image: xcode9.2
-      env: SWIFT_VERSION=4.0.3
-    - os: osx
-      osx_image: xcode9.4
-      env: SWIFT_VERSION=4.1
-    - os: osx
-      osx_image: xcode10
+      osx_image: xcode11.4
       env: SWIFT_VERSION=4.2
     - os: osx
-      osx_image: xcode10.2
+      osx_image: xcode11.4
       env: SWIFT_VERSION=5.0
     - os: linux
-      env: SWIFT_VERSION=4.0.3
-    - os: linux
-      env: SWIFT_VERSION=4.1
-    - os: linux
       env: SWIFT_VERSION=4.2
-    - os: linux
-      env: SWIFT_VERSION=4.2.3
     - os: linux
       env: SWIFT_VERSION=5.0
 language: generic
@@ -27,7 +15,7 @@ sudo: required
 dist: trusty
 install:
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then eval "$(curl -sL https://swiftenv.fuller.li/install.sh)"; fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then wget --output-document /tmp/SwiftLint.pkg https://github.com/realm/SwiftLint/releases/download/0.27.0/SwiftLint.pkg &&
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then wget --output-document /tmp/SwiftLint.pkg https://github.com/realm/SwiftLint/releases/download/0.39.2/SwiftLint.pkg &&
     sudo installer -pkg /tmp/SwiftLint.pkg -target /; fi
 script:
   - swift test

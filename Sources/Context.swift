@@ -4,7 +4,7 @@ public class Context {
 
   public let environment: Environment
 
-  init(dictionary: [String: Any] = [:], environment: Environment? = nil) {
+  public init(dictionary: [String: Any] = [:], environment: Environment? = nil) {
     if !dictionary.isEmpty {
       dictionaries = [dictionary]
     } else {

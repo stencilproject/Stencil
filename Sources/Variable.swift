@@ -48,7 +48,7 @@ public struct Variable: Equatable, Resolvable {
 
   /// Resolve the variable in the given context
   public func resolve(_ context: Context) throws -> Any? {
-    if (variable.hasPrefix("'") && variable.hasSuffix("'")) || (variable.hasPrefix("\"") && variable.hasSuffix("\"")) {
+    if variable.count > 1 && ((variable.hasPrefix("'") && variable.hasSuffix("'")) || (variable.hasPrefix("\"") && variable.hasSuffix("\""))) {
       // String literal
       return String(variable[variable.index(after: variable.startIndex) ..< variable.index(before: variable.endIndex)])
     }
@@ -189,7 +189,6 @@ public struct RangeVariable: Resolvable {
     let range = min(lower, upper)...max(lower, upper)
     return lower > upper ? Array(range.reversed()) : Array(range)
   }
-
 }
 
 func normalize(_ current: Any?) -> Any? {

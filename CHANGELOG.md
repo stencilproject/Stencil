@@ -1,5 +1,3 @@
-# Stencil Changelog
-
 ## Master
 
 ### Breaking
@@ -27,10 +25,45 @@ _None_
 
 ### Bug Fixes
 
+_None_
+
+### Internal Changes
+
+- Update Spectre (0.10) and PathKit to support Xcode 13.  
+  [Astromonkee](https://github.com/astromonkee)
+  [#314](https://github.com/stencilproject/Stencil/pull/314)
+
+# Stencil Changelog
+
+## 0.14.1
+
+### Bug Fixes
+
+- Fix for crashing range indexes when variable length is 1.  
+  [Łukasz Kuczborski](https://github.com/lkuczborski)
+  [#306](https://github.com/stencilproject/Stencil/pull/306)
+
+
+## 0.14.0
+
+### Breaking
+
+- Drop support for Swift < 4.2. For Swift 4 support, you should use Stencil 0.13.1.  
+  [David Jennes](https://github.com/djbe)
+  [#294](https://github.com/stencilproject/Stencil/pull/294)
+
+### Enhancements
+
+- Added support for dynamic filter using `filter` filter. With that you can define a variable with a name of filter
+, i.e. `myfilter = "uppercase"` and then use it to invoke this filter with `{{ string|filter:myfilter }}`.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#203](https://github.com/stencilproject/Stencil/pull/203)
+
+### Bug Fixes
+
 - Fixed using parenthesis in boolean expressions, they now can be used without spaces around them.  
   [Ilya Puchka](https://github.com/ilyapuchka)
   [#254](https://github.com/stencilproject/Stencil/pull/254)
-
 - Throw syntax error on empty variable tags (`{{ }}`) instead `fatalError`.  
   [Ilya Puchka](https://github.com/ilyapuchka)
   [#263](https://github.com/stencilproject/Stencil/pull/263)
@@ -43,6 +76,9 @@ _None_
 - Added SwiftLint to the project.  
   [David Jennes](https://github.com/djbe)
   [#249](https://github.com/stencilproject/Stencil/pull/249)
+- Updated to Swift 5.  
+  [Jungwon An](https://github.com/kawoou)
+  [#268](https://github.com/stencilproject/Stencil/pull/268)
 
 
 ## 0.13.1

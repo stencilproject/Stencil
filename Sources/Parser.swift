@@ -112,7 +112,6 @@ public class TokenParser {
   public func compileResolvable(_ token: String, containedIn containingToken: Token) throws -> Resolvable {
     return try environment.compileResolvable(token, containedIn: containingToken)
   }
-
 }
 
 extension Environment {
@@ -205,7 +204,6 @@ extension Environment {
   public func compileExpression(components: [String], containedIn token: Token) throws -> Expression {
     return try IfExpressionParser.parser(components: components, environment: self, token: token).parse()
   }
-
 }
 
 // https://en.wikipedia.org/wiki/Levenshtein_distance#Iterative_with_two_matrix_rows

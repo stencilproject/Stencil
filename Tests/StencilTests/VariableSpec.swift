@@ -63,13 +63,25 @@ final class VariableTests: XCTestCase {
       let result = try variable.resolve(self.context) as? String
       try expect(result) == "name"
     }
+    
+    it("can resolve a string literal with one double quote") {
+      let variable = Variable("\"")
+      let result = try variable.resolve(self.context) as? String
+      try expect(result).to.beNil()
+    }
 
     it("can resolve a string literal with single quotes") {
       let variable = Variable("'name'")
       let result = try variable.resolve(self.context) as? String
       try expect(result) == "name"
     }
-
+    
+    it("can resolve a string literal with one single quote") {
+      let variable = Variable("'")
+      let result = try variable.resolve(self.context) as? String
+      try expect(result).to.beNil()
+    }
+    
     it("can resolve an integer literal") {
       let variable = Variable("5")
       let result = try variable.resolve(self.context) as? Int

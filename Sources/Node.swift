@@ -71,7 +71,7 @@ public class VariableNode: NodeType {
   let elseExpression: Resolvable?
 
   class func parse(_ parser: TokenParser, token: Token) throws -> NodeType {
-    var components = token.components
+    let components = token.components
 
     func hasToken(_ token: String, at index: Int) -> Bool {
       return components.count > (index + 1) && components[index] == token

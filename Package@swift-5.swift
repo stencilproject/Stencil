@@ -7,8 +7,8 @@ let package = Package(
     .library(name: "Stencil", targets: ["Stencil"])
   ],
   dependencies: [
-    .package(url: "https://github.com/kylef/PathKit.git", from: "1.0.0"),
-    .package(url: "https://github.com/kylef/Spectre.git", from: "0.9.0")
+    .package(url: "https://github.com/kylef/PathKit.git", from: "1.0.1"),
+    .package(url: "https://github.com/kylef/Spectre.git", from: "0.10.1")
   ],
   targets: [
     .target(name: "Stencil", dependencies: [
@@ -19,5 +19,5 @@ let package = Package(
       "Spectre"
     ])
   ],
-  swiftLanguageVersions: [.v4, .v4_2, .v5]
+  swiftLanguageVersions: [.v4_2, .v5]
 )
