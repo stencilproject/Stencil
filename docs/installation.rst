@@ -26,7 +26,7 @@ If you're using CocoaPods, you can add Stencil to your ``Podfile`` and then run
 
 .. code-block:: ruby
 
-    pod 'Stencil', '~> 0.14.1'
+    pod 'Stencil', '~> 0.14.2'
 
 Carthage
 --------
@@ -37,7 +37,7 @@ Carthage
 
     .. code-block:: text
 
-        github "stencilproject/Stencil" ~> 0.14.1
+        github "stencilproject/Stencil" ~> 0.14.2
 
 2) Checkout your dependencies, generate the Stencil Xcode project, and then use Carthage to build Stencil:
 
