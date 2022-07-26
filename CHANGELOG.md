@@ -9,6 +9,9 @@ _None_
 - Made the `tokens` property on a `Template` public.  
   [Stefanomondino](https://github.com/stefanomondino)
   [#292](https://github.com/stencilproject/Stencil/pull/292)
+- Made the `Template.render(_:)` method (that accepts a `Context`) public.  
+  [David Jennes](https://github.com/djbe)
+  [#322](https://github.com/stencilproject/Stencil/pull/322)
 
 ### Deprecations
 
