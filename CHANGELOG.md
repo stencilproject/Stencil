@@ -6,7 +6,9 @@ _None_
 
 ### Enhancements
 
-_None_
+- Made the `tokens` property on a `Template` public.  
+  [Stefanomondino](https://github.com/stefanomondino)
+  [#292](https://github.com/stencilproject/Stencil/pull/292)
 
 ### Deprecations
 
