@@ -13,7 +13,7 @@ let package = Package(
   targets: [
     .target(name: "Stencil", dependencies: [
       "PathKit"
-    ], path: "Sources"),
+    ]),
     .testTarget(name: "StencilTests", dependencies: [
       "Stencil",
       "Spectre"

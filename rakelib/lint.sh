@@ -10,7 +10,7 @@ else
 fi
 
 # possible paths
-paths_sources="Sources"
+paths_sources="Sources/Stencil"
 paths_tests="Tests/StencilTests"
 
 # load selected group
