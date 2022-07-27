@@ -175,7 +175,7 @@ GEM
     zeitwerk (2.6.0)
 
 PLATFORMS
-  x86_64-darwin-21
+  ruby
 
 DEPENDENCIES
   cocoapods (~> 1.11)
@@ -186,4 +186,4 @@ DEPENDENCIES
   xcpretty (~> 0.3)
 
 BUNDLED WITH
-   2.3.5
+   2.2.33
