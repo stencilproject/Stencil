@@ -18,11 +18,11 @@ final class StaticExpression: Expression, CustomStringConvertible {
   }
 
   func evaluate(context: Context) throws -> Bool {
-    return value
+    value
   }
 
   var description: String {
-    return "\(value)"
+    "\(value)"
   }
 }
 
@@ -34,7 +34,7 @@ final class VariableExpression: Expression, CustomStringConvertible {
   }
 
   var description: String {
-    return "(variable: \(variable))"
+    "(variable: \(variable))"
   }
 
   /// Resolves a variable in the given context as boolean
@@ -60,7 +60,7 @@ final class VariableExpression: Expression, CustomStringConvertible {
   }
 
   func evaluate(context: Context) throws -> Bool {
-    return try resolve(context: context, variable: variable)
+    try resolve(context: context, variable: variable)
   }
 }
 
@@ -72,11 +72,11 @@ final class NotExpression: Expression, PrefixOperator, CustomStringConvertible {
   }
 
   var description: String {
-    return "not \(expression)"
+    "not \(expression)"
   }
 
   func evaluate(context: Context) throws -> Bool {
-    return try !expression.evaluate(context: context)
+    try !expression.evaluate(context: context)
   }
 }
 
@@ -90,7 +90,7 @@ final class InExpression: Expression, InfixOperator, CustomStringConvertible {
   }
 
   var description: String {
-    return "(\(lhs) in \(rhs))"
+    "(\(lhs) in \(rhs))"
   }
 
   func evaluate(context: Context) throws -> Bool {
@@ -125,7 +125,7 @@ final class OrExpression: Expression, InfixOperator, CustomStringConvertible {
   }
 
   var description: String {
-    return "(\(lhs) or \(rhs))"
+    "(\(lhs) or \(rhs))"
   }
 
   func evaluate(context: Context) throws -> Bool {
@@ -148,7 +148,7 @@ final class AndExpression: Expression, InfixOperator, CustomStringConvertible {
   }
 
   var description: String {
-    return "(\(lhs) and \(rhs))"
+    "(\(lhs) and \(rhs))"
   }
 
   func evaluate(context: Context) throws -> Bool {
@@ -171,7 +171,7 @@ class EqualityExpression: Expression, InfixOperator, CustomStringConvertible {
   }
 
   var description: String {
-    return "(\(lhs) == \(rhs))"
+    "(\(lhs) == \(rhs))"
   }
 
   func evaluate(context: Context) throws -> Bool {
@@ -206,7 +206,7 @@ class NumericExpression: Expression, InfixOperator, CustomStringConvertible {
   }
 
   var description: String {
-    return "(\(lhs) \(symbol) \(rhs))"
+    "(\(lhs) \(symbol) \(rhs))"
   }
 
   func evaluate(context: Context) throws -> Bool {
@@ -225,97 +225,97 @@ class NumericExpression: Expression, InfixOperator, CustomStringConvertible {
   }
 
   var symbol: String {
-    return ""
+    ""
   }
 
   func compare(lhs: Number, rhs: Number) -> Bool {
-    return false
+    false
   }
 }
 
 class MoreThanExpression: NumericExpression {
   override var symbol: String {
-    return ">"
+    ">"
   }
 
   override func compare(lhs: Number, rhs: Number) -> Bool {
-    return lhs > rhs
+    lhs > rhs
   }
 }
 
 class MoreThanEqualExpression: NumericExpression {
   override var symbol: String {
-    return ">="
+    ">="
   }
 
   override func compare(lhs: Number, rhs: Number) -> Bool {
-    return lhs >= rhs
+    lhs >= rhs
   }
 }
 
 class LessThanExpression: NumericExpression {
   override var symbol: String {
-    return "<"
+    "<"
   }
 
   override func compare(lhs: Number, rhs: Number) -> Bool {
-    return lhs < rhs
+    lhs < rhs
   }
 }
 
 class LessThanEqualExpression: NumericExpression {
   override var symbol: String {
-    return "<="
+    "<="
   }
 
   override func compare(lhs: Number, rhs: Number) -> Bool {
-    return lhs <= rhs
+    lhs <= rhs
   }
 }
 
 class InequalityExpression: EqualityExpression {
   override var description: String {
-    return "(\(lhs) != \(rhs))"
+    "(\(lhs) != \(rhs))"
   }
 
   override func evaluate(context: Context) throws -> Bool {
-    return try !super.evaluate(context: context)
+    try !super.evaluate(context: context)
   }
 }
 
 // swiftlint:disable:next cyclomatic_complexity
 func toNumber(value: Any) -> Number? {
-    if let value = value as? Float {
-        return Number(value)
-    } else if let value = value as? Double {
-        return Number(value)
-    } else if let value = value as? UInt {
-        return Number(value)
-    } else if let value = value as? Int {
-        return Number(value)
-    } else if let value = value as? Int8 {
-        return Number(value)
-    } else if let value = value as? Int16 {
-        return Number(value)
-    } else if let value = value as? Int32 {
-        return Number(value)
-    } else if let value = value as? Int64 {
-        return Number(value)
-    } else if let value = value as? UInt8 {
-        return Number(value)
-    } else if let value = value as? UInt16 {
-        return Number(value)
-    } else if let value = value as? UInt32 {
-        return Number(value)
-    } else if let value = value as? UInt64 {
-        return Number(value)
-    } else if let value = value as? Number {
-        return value
-    } else if let value = value as? Float64 {
-        return Number(value)
-    } else if let value = value as? Float32 {
-        return Number(value)
-    }
+  if let value = value as? Float {
+    return Number(value)
+  } else if let value = value as? Double {
+    return Number(value)
+  } else if let value = value as? UInt {
+    return Number(value)
+  } else if let value = value as? Int {
+    return Number(value)
+  } else if let value = value as? Int8 {
+    return Number(value)
+  } else if let value = value as? Int16 {
+    return Number(value)
+  } else if let value = value as? Int32 {
+    return Number(value)
+  } else if let value = value as? Int64 {
+    return Number(value)
+  } else if let value = value as? UInt8 {
+    return Number(value)
+  } else if let value = value as? UInt16 {
+    return Number(value)
+  } else if let value = value as? UInt32 {
+    return Number(value)
+  } else if let value = value as? UInt64 {
+    return Number(value)
+  } else if let value = value as? Number {
+    return value
+  } else if let value = value as? Float64 {
+    return Number(value)
+  } else if let value = value as? Float32 {
+    return Number(value)
+  }
 
-    return nil
+  return nil
 }

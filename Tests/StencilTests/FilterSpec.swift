@@ -103,30 +103,30 @@ final class FilterTests: XCTestCase {
     }
 
     it("allows you to register a custom filter which accepts several arguments") {
-        let template = Template(templateString: """
-          {{ name|repeat:'value"1"',"value'2'",'(key, value)' }}
-          """)
+      let template = Template(templateString: """
+        {{ name|repeat:'value"1"',"value'2'",'(key, value)' }}
+        """)
 
-        let repeatExtension = Extension()
-        repeatExtension.registerFilter("repeat") { value, arguments in
-          guard let value = value else { return nil }
-          let args = arguments.compactMap { $0 }
-          return "\(value) \(value) with args 0: \(args[0]), 1: \(args[1]), 2: \(args[2])"
-        }
+      let repeatExtension = Extension()
+      repeatExtension.registerFilter("repeat") { value, arguments in
+        guard let value = value else { return nil }
+        let args = arguments.compactMap { $0 }
+        return "\(value) \(value) with args 0: \(args[0]), 1: \(args[1]), 2: \(args[2])"
+      }
 
-        let result = try template.render(Context(
-          dictionary: context,
-          environment: Environment(extensions: [repeatExtension])
-        ))
-        try expect(result) == """
-          Kyle Kyle with args 0: value"1", 1: value'2', 2: (key, value)
-          """
+      let result = try template.render(Context(
+        dictionary: context,
+        environment: Environment(extensions: [repeatExtension])
+      ))
+      try expect(result) == """
+        Kyle Kyle with args 0: value"1", 1: value'2', 2: (key, value)
+        """
     }
 
     it("allows whitespace in expression") {
       let template = Template(templateString: """
-          {{ value | join : ", " }}
-          """)
+        {{ value | join : ", " }}
+        """)
       let result = try template.render(Context(dictionary: ["value": ["One", "Two"]]))
       try expect(result) == "One, Two"
     }
@@ -363,10 +363,12 @@ final class FilterTests: XCTestCase {
       Two
       """
     ]))
+    // swiftlint:disable indentation_width
     try expect(result) == """
         One
         Two
       """
+    // swiftlint:enable indentation_width
   }
 
   func testIndentNotEmptyLines() throws {
@@ -383,6 +385,7 @@ final class FilterTests: XCTestCase {
 
       """
     ]))
+    // swiftlint:disable indentation_width
     try expect(result) == """
       One
 
@@ -391,6 +394,7 @@ final class FilterTests: XCTestCase {
 
 
       """
+    // swiftlint:enable indentation_width
   }
 
   func testDynamicFilters() throws {

@@ -2,6 +2,7 @@ import Foundation
 import PathKit
 
 #if os(Linux)
+// swiftlint:disable:next prefixed_toplevel_constant
 let NSFileNoSuchFileError = 4
 #endif
 
@@ -77,6 +78,6 @@ open class Template: ExpressibleByStringLiteral {
   // swiftlint:disable discouraged_optional_collection
   /// Render the given template
   open func render(_ dictionary: [String: Any]? = nil) throws -> String {
-    return try render(Context(dictionary: dictionary ?? [:], environment: environment))
+    try render(Context(dictionary: dictionary ?? [:], environment: environment))
   }
 }

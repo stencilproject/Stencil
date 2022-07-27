@@ -2,20 +2,8 @@ import Spectre
 import Stencil
 import XCTest
 
-private struct CustomNode: NodeType {
-  let token: Token?
-  func render(_ context: Context) throws -> String {
-    return "Hello World"
-  }
-}
-
-private struct Article {
-  let title: String
-  let author: String
-}
-
 final class StencilTests: XCTestCase {
-  lazy var environment: Environment = {
+  private lazy var environment: Environment = {
     let exampleExtension = Extension()
     exampleExtension.registerSimpleTag("simpletag") { _ in
       "Hello World"
@@ -32,7 +20,7 @@ final class StencilTests: XCTestCase {
         There are {{ articles.count }} articles.
 
         {% for article in articles %}\
-            - {{ article.title }} by {{ article.author }}.
+          - {{ article.title }} by {{ article.author }}.
         {% endfor %}
         """
 
@@ -49,8 +37,8 @@ final class StencilTests: XCTestCase {
       try expect(result) == """
         There are 2 articles.
 
-            - Migrating from OCUnit to XCTest by Kyle Fuller.
-            - Memory Management with ARC by Kyle Fuller.
+          - Migrating from OCUnit to XCTest by Kyle Fuller.
+          - Memory Management with ARC by Kyle Fuller.
 
         """
     }
@@ -65,4 +53,18 @@ final class StencilTests: XCTestCase {
       try expect(result) == "Hello World"
     }
   }
+}
+
+// MARK: - Helpers
+
+private struct CustomNode: NodeType {
+  let token: Token?
+  func render(_ context: Context) throws -> String {
+    "Hello World"
+  }
+}
+
+private struct Article {
+  let title: String
+  let author: String
 }

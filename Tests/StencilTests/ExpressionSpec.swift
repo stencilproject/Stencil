@@ -3,7 +3,7 @@ import Spectre
 import XCTest
 
 final class ExpressionsTests: XCTestCase {
-  let parser = TokenParser(tokens: [], environment: Environment())
+  private let parser = TokenParser(tokens: [], environment: Environment())
 
   private func makeExpression(_ components: [String]) -> Expression {
     do {

@@ -16,8 +16,8 @@ class FilterExpression: Resolvable {
     let filterBits = bits[bits.indices.suffix(from: 1)]
 
     do {
-      filters = try filterBits.map {
-        let (name, arguments) = parseFilterComponents(token: $0)
+      filters = try filterBits.map { bit in
+        let (name, arguments) = parseFilterComponents(token: bit)
         let filter = try environment.findFilter(name)
         return (filter, arguments)
       }
@@ -208,13 +208,14 @@ protocol Normalizable {
 
 extension Array: Normalizable {
   func normalize() -> Any? {
-    return map { $0 as Any }
+    map { $0 as Any }
   }
 }
 
+// swiftlint:disable:next legacy_objc_type
 extension NSArray: Normalizable {
   func normalize() -> Any? {
-    return map { $0 as Any }
+    map { $0 as Any }
   }
 }
 
@@ -273,8 +274,10 @@ protocol AnyOptional {
 extension Optional: AnyOptional {
   var wrapped: Any? {
     switch self {
-    case let .some(value): return value
-    case .none: return nil
+    case let .some(value):
+      return value
+    case .none:
+      return nil
     }
   }
 }

@@ -2,10 +2,6 @@ import Spectre
 @testable import Stencil
 import XCTest
 
-private struct SomeType {
-  let value: String? = nil
-}
-
 final class IfNodeTests: XCTestCase {
   func testParseIf() {
     it("can parse an if block") {
@@ -285,4 +281,10 @@ final class IfNodeTests: XCTestCase {
     try expect(renderNodes(nodes, Context(dictionary: ["value": 3]))) == "true"
     try expect(renderNodes(nodes, Context(dictionary: ["value": 4]))) == "false"
   }
+}
+
+// MARK: - Helpers
+
+private struct SomeType {
+  let value: String? = nil
 }

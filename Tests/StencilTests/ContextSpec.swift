@@ -4,35 +4,35 @@ import XCTest
 
 final class ContextTests: XCTestCase {
   func testContextSubscripting() {
-    describe("Context Subscripting") {
+    describe("Context Subscripting") { test in
       var context = Context()
-      $0.before {
+      test.before {
         context = Context(dictionary: ["name": "Kyle"])
       }
 
-      $0.it("allows you to get a value via subscripting") {
+      test.it("allows you to get a value via subscripting") {
         try expect(context["name"] as? String) == "Kyle"
       }
 
-      $0.it("allows you to set a value via subscripting") {
+      test.it("allows you to set a value via subscripting") {
         context["name"] = "Katie"
 
         try expect(context["name"] as? String) == "Katie"
       }
 
-      $0.it("allows you to remove a value via subscripting") {
+      test.it("allows you to remove a value via subscripting") {
         context["name"] = nil
 
         try expect(context["name"]).to.beNil()
       }
 
-      $0.it("allows you to retrieve a value from a parent") {
+      test.it("allows you to retrieve a value from a parent") {
         try context.push {
           try expect(context["name"] as? String) == "Kyle"
         }
       }
 
-      $0.it("allows you to override a parent's value") {
+      test.it("allows you to override a parent's value") {
         try context.push {
           context["name"] = "Katie"
           try expect(context["name"] as? String) == "Katie"
@@ -42,13 +42,13 @@ final class ContextTests: XCTestCase {
   }
 
   func testContextRestoration() {
-    describe("Context Restoration") {
+    describe("Context Restoration") { test in
       var context = Context()
-      $0.before {
+      test.before {
         context = Context(dictionary: ["name": "Kyle"])
       }
 
-      $0.it("allows you to pop to restore previous state") {
+      test.it("allows you to pop to restore previous state") {
         context.push {
           context["name"] = "Katie"
         }
@@ -56,7 +56,7 @@ final class ContextTests: XCTestCase {
         try expect(context["name"] as? String) == "Kyle"
       }
 
-      $0.it("allows you to remove a parent's value in a level") {
+      test.it("allows you to remove a parent's value in a level") {
         try context.push {
           context["name"] = nil
           try expect(context["name"]).to.beNil()
@@ -65,7 +65,7 @@ final class ContextTests: XCTestCase {
         try expect(context["name"] as? String) == "Kyle"
       }
 
-      $0.it("allows you to push a dictionary and run a closure then restoring previous state") {
+      test.it("allows you to push a dictionary and run a closure then restoring previous state") {
         var didRun = false
 
         try context.push(dictionary: ["name": "Katie"]) {
@@ -77,7 +77,7 @@ final class ContextTests: XCTestCase {
         try expect(context["name"] as? String) == "Kyle"
       }
 
-      $0.it("allows you to flatten the context contents") {
+      test.it("allows you to flatten the context contents") {
         try context.push(dictionary: ["test": "abc"]) {
           let flattened = context.flatten()
 

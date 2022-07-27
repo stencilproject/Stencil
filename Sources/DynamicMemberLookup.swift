@@ -6,10 +6,13 @@ public protocol DynamicMemberLookup {
 }
 
 public extension DynamicMemberLookup where Self: RawRepresentable {
+  /// Get a value for a given `String` key
   subscript(dynamicMember member: String) -> Any? {
     switch member {
-    case "rawValue": return rawValue
-    default: return nil
+    case "rawValue":
+      return rawValue
+    default:
+      return nil
     }
   }
 }

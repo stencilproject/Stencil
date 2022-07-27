@@ -19,7 +19,7 @@ extension String {
       if character == separate {
         if separate != separator {
           word.append(separate)
-        } else if (singleQuoteCount % 2 == 0 || doubleQuoteCount % 2 == 0) && !word.isEmpty {
+        } else if (singleQuoteCount.isMultiple(of: 2) || doubleQuoteCount.isMultiple(of: 2)) && !word.isEmpty {
           appendWord(word, to: &components)
           word = ""
         }
@@ -75,7 +75,7 @@ public struct SourceMap: Equatable {
   static let unknown = SourceMap()
 
   public static func == (lhs: SourceMap, rhs: SourceMap) -> Bool {
-    return lhs.filename == rhs.filename && lhs.location == rhs.location
+    lhs.filename == rhs.filename && lhs.location == rhs.location
   }
 }
 
@@ -106,25 +106,25 @@ public class Token: Equatable {
 
   /// A token representing a piece of text.
   public static func text(value: String, at sourceMap: SourceMap) -> Token {
-    return Token(contents: value, kind: .text, sourceMap: sourceMap)
+    Token(contents: value, kind: .text, sourceMap: sourceMap)
   }
 
   /// A token representing a variable.
   public static func variable(value: String, at sourceMap: SourceMap) -> Token {
-    return Token(contents: value, kind: .variable, sourceMap: sourceMap)
+    Token(contents: value, kind: .variable, sourceMap: sourceMap)
   }
 
   /// A token representing a comment.
   public static func comment(value: String, at sourceMap: SourceMap) -> Token {
-    return Token(contents: value, kind: .comment, sourceMap: sourceMap)
+    Token(contents: value, kind: .comment, sourceMap: sourceMap)
   }
 
   /// A token representing a template block.
   public static func block(value: String, at sourceMap: SourceMap) -> Token {
-    return Token(contents: value, kind: .block, sourceMap: sourceMap)
+    Token(contents: value, kind: .block, sourceMap: sourceMap)
   }
 
   public static func == (lhs: Token, rhs: Token) -> Bool {
-    return lhs.contents == rhs.contents && lhs.kind == rhs.kind && lhs.sourceMap == rhs.sourceMap
+    lhs.contents == rhs.contents && lhs.kind == rhs.kind && lhs.sourceMap == rhs.sourceMap
   }
 }

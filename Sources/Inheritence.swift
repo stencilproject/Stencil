@@ -1,5 +1,5 @@
 class BlockContext {
-  class var contextKey: String { return "block_context" }
+  class var contextKey: String { "block_context" }
 
   // contains mapping of block names to their nodes and templates where they are defined
   var blocks: [String: [BlockNode]]

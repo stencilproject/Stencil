@@ -12,11 +12,11 @@ class ForNode: NodeType {
     let components = token.components
 
     func hasToken(_ token: String, at index: Int) -> Bool {
-      return components.count > (index + 1) && components[index] == token
+      components.count > (index + 1) && components[index] == token
     }
 
     func endsOrHasToken(_ token: String, at index: Int) -> Bool {
-      return components.count == index || hasToken(token, at: index)
+      components.count == index || hasToken(token, at: index)
     }
 
     guard hasToken("in", at: 2) && endsOrHasToken("where", at: 4) else {
@@ -154,9 +154,9 @@ class ForNode: NodeType {
     } else if let resolved = resolved {
       let mirror = Mirror(reflecting: resolved)
       switch mirror.displayStyle {
-      case .struct?, .tuple?:
+      case .struct, .tuple:
         values = Array(mirror.children)
-      case .class?:
+      case .class:
         var children = Array(mirror.children)
         var currentMirror: Mirror? = mirror
         while let superclassMirror = currentMirror?.superclassMirror {
