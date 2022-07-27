@@ -20,7 +20,9 @@ _None_
 
 ### Internal Changes
 
-_None_
+- Updated internal maintenance scripts, and switched to GitHub actions.  
+  [David Jennes](https://github.com/djbe)
+  [#321](https://github.com/stencilproject/Stencil/pull/321)
 
 ## 0.14.2
 
