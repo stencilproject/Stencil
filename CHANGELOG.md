@@ -179,7 +179,7 @@ _None_
 - The `{% for %}` tag can now iterate over tuples, structures and classes via
   their stored properties.  
   [Ilya Puchka](https://github.com/ilyapuchka)
-  [#172](https://github.com/stencilproject/Stencil/pull/173)
+  [#173](https://github.com/stencilproject/Stencil/pull/173)
 - Added `split` filter.  
   [Ilya Puchka](https://github.com/ilyapuchka)
   [#187](https://github.com/stencilproject/Stencil/pull/187)
@@ -288,7 +288,7 @@ _None_
 ### Bug Fixes
 
 - You can now use literal filter arguments which contain quotes.
-  [#98](https://github.com/kylef/Stencil/pull/98)
+  [#98](https://github.com/stencilproject/Stencil/pull/98)
 
 
 ## 0.8.0
@@ -432,10 +432,10 @@ _None_
 
 - Variables (`{{ variable.5 }}`) that reference an array index at an unknown
   index will now resolve to `nil` instead of causing a crash.  
-  [#72](https://github.com/kylef/Stencil/issues/72)
+  [#72](https://github.com/stencilproject/Stencil/issues/72)
 
 - Templates can now extend templates that extend other templates.  
-  [#60](https://github.com/kylef/Stencil/issues/60)
+  [#60](https://github.com/stencilproject/Stencil/issues/60)
 
 - If comparisons will now treat 0 and below numbers as negative.
 
