@@ -1,0 +1,23 @@
+name: Check Versions
+
+on:
+  push:
+    branches: 
+      - 'release/**'
+
+jobs:
+  check_versions:
+    name: Check Versions
+    runs-on: ubuntu-latest
+    steps:
+      - 
+        name: Checkout
+        uses: actions/checkout@v3
+      - 
+        name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      -
+        name: Check versions
+        run: bundle exec rake release:check_versions

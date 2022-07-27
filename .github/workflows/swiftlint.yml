@@ -1,0 +1,26 @@
+name: SwiftLint
+
+on:
+  push:
+    branches: master
+  pull_request:
+
+jobs:
+  lint:
+    name: SwiftLint
+    runs-on: macos-latest
+    steps:
+      - 
+        name: Checkout
+        uses: actions/checkout@v3
+      - 
+        name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      -
+        name: Lint source code
+        run: bundle exec rake lint:code
+      -
+        name: Lint tests source code
+        run: bundle exec rake lint:tests

@@ -1,0 +1,25 @@
+name: Danger
+
+on:
+  push:
+    branches: master
+  pull_request:
+
+jobs:
+  check:
+    name: Danger Check
+    runs-on: ubuntu-latest
+    steps:
+      - 
+        name: Checkout
+        uses: actions/checkout@v3
+      - 
+        name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      -
+        name: Run Danger
+        run: bundle exec danger --verbose --dangerfile=rakelib/Dangerfile
+        env:
+          DANGER_GITHUB_API_TOKEN: ${{ secrets.danger_github_api_token }}
