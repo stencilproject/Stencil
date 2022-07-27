@@ -2,7 +2,9 @@
 
 ### Breaking
 
-_None_
+- Drop support for Swift < 5. For Swift 4.2 support, you should use Stencil 0.14.2.  
+  [David Jennes](https://github.com/djbe)
+  [#323](https://github.com/stencilproject/Stencil/pull/323)
 
 ### Enhancements
 
