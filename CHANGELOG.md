@@ -12,6 +12,10 @@ _None_
 - Made the `Template.render(_:)` method (that accepts a `Context`) public.  
   [David Jennes](https://github.com/djbe)
   [#322](https://github.com/stencilproject/Stencil/pull/322)
+- Enable dynamic member lookup using a new `DynamicMemberLookup` protocol. Conform your own types to this protocol to support dynamic member from with contexts.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#219](https://github.com/stencilproject/Stencil/issues/219)
+  [#246](https://github.com/stencilproject/Stencil/pull/246)
 
 ### Deprecations
 
