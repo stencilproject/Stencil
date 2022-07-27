@@ -1,0 +1,66 @@
+name: Test SPM
+
+on:
+  push:
+    branches: master
+  pull_request:
+
+jobs:
+  linux:
+    name: Test SPM Linux
+    runs-on: ubuntu-latest
+    container: swiftgen/swift:5.6
+    steps:
+      - 
+        name: Checkout
+        uses: actions/checkout@v3
+      - 
+        # Note: we can't use `ruby/setup-ruby` on custom docker images, so we
+        # have to do our own caching
+        name: Cache gems
+        uses: actions/cache@v3
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-
+      - 
+        name: Cache SPM
+        uses: actions/cache@v3
+        with:
+          path: .build
+          key: ${{ runner.os }}-spm-${{ hashFiles('Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-spm-
+      -
+        name: Bundle install
+        run: |
+          bundle config path vendor/bundle
+          bundle install --jobs 4 --retry 3
+      -
+        name: Run tests
+        run: bundle exec rake spm:test
+
+  macos:
+    name: Test SPM macOS
+    runs-on: macos-latest
+    steps:
+      - 
+        name: Checkout
+        uses: actions/checkout@v3
+      - 
+        name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - 
+        name: Cache SPM
+        uses: actions/cache@v3
+        with:
+          path: .build
+          key: ${{ runner.os }}-spm-${{ hashFiles('Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-spm-
+      -
+        name: Run tests
+        run: bundle exec rake spm:test

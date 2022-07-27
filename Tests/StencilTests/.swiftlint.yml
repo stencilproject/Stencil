@@ -1,3 +1,5 @@
+parent_config: ../../.swiftlint.yml
+
 disabled_rules: # rule identifiers to exclude from running
   - type_body_length
   - file_length

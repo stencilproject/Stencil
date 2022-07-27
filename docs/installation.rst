@@ -14,7 +14,7 @@ dependencies inside ``Package.swift``.
     let package = Package(
       name: "MyApplication",
       dependencies: [
-        .Package(url: "https://github.com/stencilproject/Stencil.git", majorVersion: 0, minor: 13),
+        .package(url: "https://github.com/stencilproject/Stencil.git", from: "0.14.2"),
       ]
     )
 
