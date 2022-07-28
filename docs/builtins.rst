@@ -41,8 +41,7 @@ You can iterate over range literals created using ``N...M`` syntax, both in asce
       {% endfor %}
     </ul>
 
-The ``for`` tag can contain optional ``where`` expression to filter out
-elements on which this expression evaluates to false.
+The ``for`` tag can contain optional ``where`` expression to filter out elements on which this expression evaluates to false.
 
 .. code-block:: html+django
 
@@ -52,8 +51,7 @@ elements on which this expression evaluates to false.
       {% endfor %}
     </ul>
 
-The ``for`` tag can take an optional ``{% empty %}`` block that will be
-displayed if the given list is empty or could not be found.
+The ``for`` tag can take an optional ``{% empty %}`` block that will be displayed if the given list is empty or could not be found.
 
 .. code-block:: html+django
 
@@ -89,12 +87,74 @@ For example:
       This is user number {{ forloop.counter }} user.
     {% endfor %}
 
+The ``for`` tag accepts an optional label, so that it may later be referred to by name. The contexts of parent labeled loops can be accessed via the `forloop` property:
+
+.. code-block:: html+django
+
+    {% outer: for item in users %}
+      {% for item in 1..3 %}
+        {% if forloop.outer.first %}
+          This is the first user.
+        {% endif %}
+      {% endfor %}
+    {% endfor %}
+
+``break``
+~~~~~~~~~
+
+The ``break`` tag lets you jump out of a for loop, for example if a certain condition is met:
+
+.. code-block:: html+django
+
+    {% for user in users %}
+      {% if user.inaccessible %}
+        {% break %}
+      {% endif %}
+      This is user {{ user.name }}.
+    {% endfor %}
+
+Break tags accept an optional label parameter, so that you may break out of multiple loops:
+
+.. code-block:: html+django
+
+    {% outer: for user in users %}
+      {% for address in user.addresses %}
+        {% if address.isInvalid %}
+          {% break outer %}
+        {% endif %}
+      {% endfor %}
+    {% endfor %}
+
+``continue``
+~~~~~~~~~
+
+The ``continue`` tag lets you skip the rest of the blocks in a loop, for example if a certain condition is met:
+
+.. code-block:: html+django
+
+    {% for user in users %}
+      {% if user.inaccessible %}
+        {% continue %}
+      {% endif %}
+      This is user {{ user.name }}.
+    {% endfor %}
+
+Continue tags accept an optional label parameter, so that you may skip the execution of multiple loops:
+
+.. code-block:: html+django
+
+    {% outer: for user in users %}
+      {% for address in user.addresses %}
+        {% if address.isInvalid %}
+          {% continue outer %}
+        {% endif %}
+      {% endfor %}
+    {% endfor %}
 
 ``if``
 ~~~~~~
 
-The ``{% if %}`` tag evaluates a variable, and if that variable evaluates to
-true the contents of the block are processed. Being true is defined as:
+The ``{% if %}`` tag evaluates a variable, and if that variable evaluates to true the contents of the block are processed. Being true is defined as:
 
 * Present in the context
 * Being non-empty (dictionaries or arrays)
@@ -115,8 +175,7 @@ true the contents of the block are processed. Being true is defined as:
 Operators
 ^^^^^^^^^
 
-``if`` tags may combine ``and``, ``or`` and ``not`` to test multiple variables
-or to negate a variable.
+``if`` tags may combine ``and``, ``or`` and ``not`` to test multiple variables or to negate a variable.
 
 .. code-block:: html+django
 
@@ -279,8 +338,7 @@ By default the included file gets passed the current context. You can pass a sub
 
     {% include "comment.html" comment %}
 
-The `include` tag requires you to provide a loader which will be used to lookup
-the template.
+The `include` tag requires you to provide a loader which will be used to lookup the template.
 
 .. code-block:: swift
 
@@ -301,8 +359,7 @@ See :ref:`template-inheritance` for more information.
 ``block``
 ~~~~~~~~~
 
-Defines a block that can be overridden by child templates. See
-:ref:`template-inheritance` for more information.
+Defines a block that can be overridden by child templates. See :ref:`template-inheritance` for more information.
 
 .. _built-in-filters:
 
@@ -312,8 +369,7 @@ Built-in Filters
 ``capitalize``
 ~~~~~~~~~~~~~~
 
-The capitalize filter allows you to capitalize a string.
-For example, `stencil` to `Stencil`. Can be applied to array of strings to change each string.
+The capitalize filter allows you to capitalize a string. For example, `stencil` to `Stencil`. Can be applied to array of strings to change each string.
 
 .. code-block:: html+django
 
@@ -322,8 +378,7 @@ For example, `stencil` to `Stencil`. Can be applied to array of strings to chang
 ``uppercase``
 ~~~~~~~~~~~~~
 
-The uppercase filter allows you to transform a string to uppercase.
-For example, `Stencil` to `STENCIL`. Can be applied to array of strings to change each string.
+The uppercase filter allows you to transform a string to uppercase. For example, `Stencil` to `STENCIL`. Can be applied to array of strings to change each string.
 
 .. code-block:: html+django
 
@@ -332,8 +387,7 @@ For example, `Stencil` to `STENCIL`. Can be applied to array of strings to chang
 ``lowercase``
 ~~~~~~~~~~~~~
 
-The uppercase filter allows you to transform a string to lowercase.
-For example, `Stencil` to `stencil`. Can be applied to array of strings to change each string.
+The uppercase filter allows you to transform a string to lowercase. For example, `Stencil` to `stencil`. Can be applied to array of strings to change each string.
 
 .. code-block:: html+django
 
@@ -342,8 +396,7 @@ For example, `Stencil` to `stencil`. Can be applied to array of strings to chang
 ``default``
 ~~~~~~~~~~~
 
-If a variable not present in the context, use given default. Otherwise, use the
-value of the variable. For example:
+If a variable not present in the context, use given default. Otherwise, use the value of the variable. For example:
 
 .. code-block:: html+django
 
