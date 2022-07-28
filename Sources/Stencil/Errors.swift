@@ -20,12 +20,12 @@ public class TemplateDoesNotExist: Error, CustomStringConvertible {
 
 public struct TemplateSyntaxError: Error, Equatable, CustomStringConvertible {
   public let reason: String
-  public var description: String { return reason }
+  public var description: String { reason }
   public internal(set) var token: Token?
   public internal(set) var stackTrace: [Token]
-  public var templateName: String? { return token?.sourceMap.filename }
+  public var templateName: String? { token?.sourceMap.filename }
   var allTokens: [Token] {
-    return stackTrace + (token.map { [$0] } ?? [])
+    stackTrace + (token.map { [$0] } ?? [])
   }
 
   public init(reason: String, token: Token? = nil, stackTrace: [Token] = []) {

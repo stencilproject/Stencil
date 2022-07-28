@@ -82,6 +82,7 @@ final class LexerTests: XCTestCase {
   }
 
   func testNewlines() throws {
+    // swiftlint:disable indentation_width
     let templateString = """
       My name is {%
           if name
@@ -92,6 +93,7 @@ final class LexerTests: XCTestCase {
       }}{%
       endif %}.
       """
+    // swiftlint:enable indentation_width
     let lexer = Lexer(templateString: templateString)
     let tokens = lexer.tokenize()
 

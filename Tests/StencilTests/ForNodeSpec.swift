@@ -3,9 +3,10 @@ import Spectre
 import XCTest
 
 final class ForNodeTests: XCTestCase {
-  let context = Context(dictionary: [
+  private let context = Context(dictionary: [
     "items": [1, 2, 3],
     "anyItems": [1, 2, 3] as [Any],
+    // swiftlint:disable:next legacy_objc_type
     "nsItems": NSArray(array: [1, 2, 3]),
     "emptyItems": [Int](),
     "dict": [
@@ -312,6 +313,8 @@ final class ForNodeTests: XCTestCase {
     try expect(try parser.parse()).toThrow(error)
   }
 }
+
+// MARK: - Helpers
 
 private struct MyStruct {
   let string: String

@@ -10,23 +10,23 @@ enum Operator {
       return name
     }
   }
+
+  static let all: [Operator] = [
+    .infix("in", 5, InExpression.self),
+    .infix("or", 6, OrExpression.self),
+    .infix("and", 7, AndExpression.self),
+    .prefix("not", 8, NotExpression.self),
+    .infix("==", 10, EqualityExpression.self),
+    .infix("!=", 10, InequalityExpression.self),
+    .infix(">", 10, MoreThanExpression.self),
+    .infix(">=", 10, MoreThanEqualExpression.self),
+    .infix("<", 10, LessThanExpression.self),
+    .infix("<=", 10, LessThanEqualExpression.self)
+  ]
 }
 
-let operators: [Operator] = [
-  .infix("in", 5, InExpression.self),
-  .infix("or", 6, OrExpression.self),
-  .infix("and", 7, AndExpression.self),
-  .prefix("not", 8, NotExpression.self),
-  .infix("==", 10, EqualityExpression.self),
-  .infix("!=", 10, InequalityExpression.self),
-  .infix(">", 10, MoreThanExpression.self),
-  .infix(">=", 10, MoreThanEqualExpression.self),
-  .infix("<", 10, LessThanExpression.self),
-  .infix("<=", 10, LessThanEqualExpression.self)
-]
-
 func findOperator(name: String) -> Operator? {
-  for `operator` in operators where `operator`.name == name {
+  for `operator` in Operator.all where `operator`.name == name {
     return `operator`
   }
 
@@ -106,7 +106,7 @@ final class IfExpressionParser {
   }
 
   static func parser(components: [String], environment: Environment, token: Token) throws -> IfExpressionParser {
-    return try IfExpressionParser(components: ArraySlice(components), environment: environment, token: token)
+    try IfExpressionParser(components: ArraySlice(components), environment: environment, token: token)
   }
 
   private init(components: ArraySlice<String>, environment: Environment, token: Token) throws {
@@ -117,7 +117,7 @@ final class IfExpressionParser {
 
       if component == "(" {
         bracketsBalance += 1
-        let (expression, parsedCount) = try IfExpressionParser.subExpression(
+        let (expression, parsedCount) = try Self.subExpression(
           from: components.suffix(from: index + 1),
           environment: environment,
           token: token
@@ -152,11 +152,11 @@ final class IfExpressionParser {
     token: Token
   ) throws -> (Expression, Int) {
     var bracketsBalance = 1
-    let subComponents = components.prefix {
-      if $0 == "(" {
-          bracketsBalance += 1
-      } else if $0 == ")" {
-          bracketsBalance -= 1
+    let subComponents = components.prefix { component in
+      if component == "(" {
+        bracketsBalance += 1
+      } else if component == ")" {
+        bracketsBalance -= 1
       }
       return bracketsBalance != 0
     }
@@ -220,7 +220,7 @@ final class IfCondition {
   }
 
   func render(_ context: Context) throws -> String {
-    return try context.push {
+    try context.push {
       try renderNodes(nodes, context)
     }
   }

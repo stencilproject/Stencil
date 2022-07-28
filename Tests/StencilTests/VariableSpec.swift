@@ -2,47 +2,8 @@ import Spectre
 @testable import Stencil
 import XCTest
 
-#if os(OSX)
-@objc
-class Superclass: NSObject {
-  @objc let name = "Foo"
-}
-@objc
-class Object: Superclass {
-  @objc let title = "Hello World"
-}
-#endif
-
-private struct Person {
-  let name: String
-}
-
-private struct Article {
-  let author: Person
-}
-
-private class WebSite {
-  let url: String = "blog.com"
-}
-
-private class Blog: WebSite {
-  let articles: [Article] = [Article(author: Person(name: "Kyle"))]
-  let featuring: Article? = Article(author: Person(name: "Jhon"))
-}
-
-@dynamicMemberLookup
-private struct DynamicStruct: DynamicMemberLookup {
-  subscript(dynamicMember member: String) -> Any? {
-    member == "test" ? "this is a dynamic response" : nil
-  }
-}
-
-private enum DynamicEnum: String, DynamicMemberLookup {
-  case someValue = "this is raw value"
-}
-
 final class VariableTests: XCTestCase {
-  let context: Context = {
+  private let context: Context = {
     let ext = Extension()
     ext.registerFilter("incr") { arg in
       (arg.flatMap { toNumber(value: $0) } ?? 0) + 1
@@ -66,9 +27,9 @@ final class VariableTests: XCTestCase {
         "struct": DynamicStruct()
       ]
     ], environment: environment)
-#if os(OSX)
+    #if os(OSX)
     context["object"] = Object()
-#endif
+    #endif
     return context
   }()
 
@@ -145,9 +106,9 @@ final class VariableTests: XCTestCase {
       let result = try variable.resolve(self.context) as? String
       try expect(result) == "Katie"
 
-        let variable1 = Variable("contacts.1")
-        let result1 = try variable1.resolve(self.context) as? String
-        try expect(result1) == "Carlton"
+      let variable1 = Variable("contacts.1")
+      let result1 = try variable1.resolve(self.context) as? String
+      try expect(result1) == "Carlton"
     }
 
     it("can resolve an item from an array via unknown index") {
@@ -214,7 +175,7 @@ final class VariableTests: XCTestCase {
   }
 
   func testKVO() {
-#if os(OSX)
+    #if os(OSX)
     it("can resolve a value via KVO") {
       let variable = Variable("object.title")
       let result = try variable.resolve(self.context) as? String
@@ -232,7 +193,7 @@ final class VariableTests: XCTestCase {
       let result = try variable.resolve(self.context) as? String
       try expect(result).to.beNil()
     }
-#endif
+    #endif
   }
 
   func testTuple() {
@@ -285,7 +246,7 @@ final class VariableTests: XCTestCase {
       }
     }
 
-#if os(OSX)
+    #if os(OSX)
     it("can resolve a subscript via KVO") {
       try self.context.push(dictionary: ["property": "name"]) {
         let variable = Variable("object[property]")
@@ -293,7 +254,7 @@ final class VariableTests: XCTestCase {
         try expect(result) == "Foo"
       }
     }
-#endif
+    #endif
 
     it("can resolve an optional subscript via reflection") {
       try self.context.push(dictionary: ["property": "featuring"]) {
@@ -393,4 +354,45 @@ final class VariableTests: XCTestCase {
       try expect(makeVariable("1...")).toThrow()
     }
   }
+}
+
+// MARK: - Helpers
+
+#if os(OSX)
+@objc
+class Superclass: NSObject {
+  @objc let name = "Foo"
+}
+@objc
+class Object: Superclass {
+  @objc let title = "Hello World"
+}
+#endif
+
+private struct Person {
+  let name: String
+}
+
+private struct Article {
+  let author: Person
+}
+
+private class WebSite {
+  let url: String = "blog.com"
+}
+
+private class Blog: WebSite {
+  let articles: [Article] = [Article(author: Person(name: "Kyle"))]
+  let featuring: Article? = Article(author: Person(name: "Jhon"))
+}
+
+@dynamicMemberLookup
+private struct DynamicStruct: DynamicMemberLookup {
+  subscript(dynamicMember member: String) -> Any? {
+    member == "test" ? "this is a dynamic response" : nil
+  }
+}
+
+private enum DynamicEnum: String, DynamicMemberLookup {
+  case someValue = "this is raw value"
 }

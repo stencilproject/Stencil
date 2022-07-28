@@ -1,12 +1,16 @@
 import Foundation
 import PathKit
 
+/// Type used for loading a template
 public protocol Loader {
+  /// Load a template with the given name
   func loadTemplate(name: String, environment: Environment) throws -> Template
+  /// Load a template with the given list of names
   func loadTemplate(names: [String], environment: Environment) throws -> Template
 }
 
 extension Loader {
+  /// Default implementation, tries to load the first template that exists from the list of given names
   public func loadTemplate(names: [String], environment: Environment) throws -> Template {
     for name in names {
       do {
@@ -31,13 +35,13 @@ public class FileSystemLoader: Loader, CustomStringConvertible {
   }
 
   public init(bundle: [Bundle]) {
-    self.paths = bundle.map {
-      Path($0.bundlePath)
+    self.paths = bundle.map { bundle in
+      Path(bundle.bundlePath)
     }
   }
 
   public var description: String {
-    return "FileSystemLoader(\(paths))"
+    "FileSystemLoader(\(paths))"
   }
 
   public func loadTemplate(name: String, environment: Environment) throws -> Template {
@@ -119,6 +123,6 @@ class SuspiciousFileOperation: Error {
   }
 
   var description: String {
-    return "Path `\(path)` is located outside of base path `\(basePath)`"
+    "Path `\(path)` is located outside of base path `\(basePath)`"
   }
 }

@@ -23,10 +23,10 @@ struct Lexer {
     self.templateName = templateName
     self.templateString = templateString
 
-    self.lines = templateString.components(separatedBy: .newlines).enumerated().compactMap {
-      guard !$0.element.isEmpty,
-        let range = templateString.range(of: $0.element) else { return nil }
-      return (content: $0.element, number: UInt($0.offset + 1), range)
+    self.lines = zip(1..., templateString.components(separatedBy: .newlines)).compactMap { index, line in
+      guard !line.isEmpty,
+        let range = templateString.range(of: line) else { return nil }
+      return (content: line, number: UInt(index), range)
     }
   }
 
@@ -79,12 +79,12 @@ struct Lexer {
 
     let scanner = Scanner(templateString)
     while !scanner.isEmpty {
-      if let (char, text) = scanner.scanForTokenStart(Lexer.tokenChars) {
+      if let (char, text) = scanner.scanForTokenStart(Self.tokenChars) {
         if !text.isEmpty {
           tokens.append(createToken(string: text, at: scanner.range))
         }
 
-        guard let end = Lexer.tokenCharMap[char] else { continue }
+        guard let end = Self.tokenCharMap[char] else { continue }
         let result = scanner.scanForTokenEnd(end)
         tokens.append(createToken(string: result, at: scanner.range))
       } else {
@@ -127,7 +127,7 @@ class Scanner {
   }
 
   var isEmpty: Bool {
-    return content.isEmpty
+    content.isEmpty
   }
 
   /// Scans for the end of a token, with a specific ending character. If we're
@@ -144,8 +144,8 @@ class Scanner {
   func scanForTokenEnd(_ tokenChar: Unicode.Scalar) -> String {
     var foundChar = false
 
-    for (index, char) in content.unicodeScalars.enumerated() {
-      if foundChar && char == Scanner.tokenEndDelimiter {
+    for (index, char) in zip(0..., content.unicodeScalars) {
+      if foundChar && char == Self.tokenEndDelimiter {
         let result = String(content.unicodeScalars.prefix(index + 1))
         content = String(content.unicodeScalars.dropFirst(index + 1))
         range = range.upperBound..<originalContent.unicodeScalars.index(range.upperBound, offsetBy: index + 1)
@@ -178,14 +178,14 @@ class Scanner {
     var foundBrace = false
 
     range = range.upperBound..<range.upperBound
-    for (index, char) in content.unicodeScalars.enumerated() {
+    for (index, char) in zip(0..., content.unicodeScalars) {
       if foundBrace && tokenChars.contains(char) {
         let result = String(content.unicodeScalars.prefix(index - 1))
         content = String(content.unicodeScalars.dropFirst(index - 1))
         range = range.upperBound..<originalContent.unicodeScalars.index(range.upperBound, offsetBy: index - 1)
         return (char, result)
       } else {
-        foundBrace = (char == Scanner.tokenStartDelimiter)
+        foundBrace = (char == Self.tokenStartDelimiter)
       }
     }
 
@@ -227,4 +227,5 @@ extension String {
   }
 }
 
+/// Location in some content (text)
 public typealias ContentLocation = (content: String, lineNumber: UInt, lineOffset: Int)

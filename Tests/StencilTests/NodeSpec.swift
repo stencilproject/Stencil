@@ -2,19 +2,8 @@ import Spectre
 @testable import Stencil
 import XCTest
 
-class ErrorNode: NodeType {
-  let token: Token?
-  init(token: Token? = nil) {
-    self.token = token
-  }
-
-  func render(_ context: Context) throws -> String {
-    throw TemplateSyntaxError("Custom Error")
-  }
-}
-
 final class NodeTests: XCTestCase {
-  let context = Context(dictionary: [
+  private let context = Context(dictionary: [
     "name": "Kyle",
     "age": 27,
     "items": [1, 2, 3]

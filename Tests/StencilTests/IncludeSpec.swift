@@ -4,9 +4,9 @@ import Spectre
 import XCTest
 
 final class IncludeTests: XCTestCase {
-  let path = Path(#file as String) + ".." + "fixtures"
-  lazy var loader = FileSystemLoader(paths: [path])
-  lazy var environment = Environment(loader: loader)
+  private let path = Path(#file as String) + ".." + "fixtures"
+  private lazy var loader = FileSystemLoader(paths: [path])
+  private lazy var environment = Environment(loader: loader)
 
   func testParsing() {
     it("throws an error when no template is given") {

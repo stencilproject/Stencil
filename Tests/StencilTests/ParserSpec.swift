@@ -57,8 +57,8 @@ final class TokenParserTests: XCTestCase {
 
       try expect(try parser.parse()).toThrow(TemplateSyntaxError(
         reason: "Unknown template tag 'unknown'",
-        token: tokens.first)
-      )
+        token: tokens.first
+      ))
     }
   }
 }

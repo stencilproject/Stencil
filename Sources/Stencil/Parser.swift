@@ -1,5 +1,7 @@
+/// Creates a checker that will stop parsing if it encounters a list of tags.
+/// Useful for example for scanning until a given "end"-node.
 public func until(_ tags: [String]) -> ((TokenParser, Token) -> Bool) {
-  return { _, token in
+  { _, token in
     if let name = token.components.first {
       for tag in tags where name == tag {
         return true
@@ -12,11 +14,13 @@ public func until(_ tags: [String]) -> ((TokenParser, Token) -> Bool) {
 
 /// A class for parsing an array of tokens and converts them into a collection of Node's
 public class TokenParser {
+  /// Parser for finding a kind of node
   public typealias TagParser = (TokenParser, Token) throws -> NodeType
 
   fileprivate var tokens: [Token]
   fileprivate let environment: Environment
 
+  /// Simple initializer
   public init(tokens: [Token], environment: Environment) {
     self.tokens = tokens
     self.environment = environment
@@ -24,9 +28,11 @@ public class TokenParser {
 
   /// Parse the given tokens into nodes
   public func parse() throws -> [NodeType] {
-    return try parse(nil)
+    try parse(nil)
   }
 
+  /// Parse nodes until a specific "something" is detected, determined by the provided closure.
+  /// Combine this with the `until(:)` function above to scan nodes until a given token.
   public func parse(_ parseUntil: ((_ parser: TokenParser, _ token: Token) -> (Bool))?) throws -> [NodeType] {
     var nodes = [NodeType]()
 
@@ -61,6 +67,7 @@ public class TokenParser {
     return nodes
   }
 
+  /// Pop the next token (returning it)
   public func nextToken() -> Token? {
     if !tokens.isEmpty {
       return tokens.remove(at: 0)
@@ -69,23 +76,24 @@ public class TokenParser {
     return nil
   }
 
+  /// Insert a token 
   public func prependToken(_ token: Token) {
     tokens.insert(token, at: 0)
   }
 
   /// Create filter expression from a string contained in provided token
   public func compileFilter(_ filterToken: String, containedIn token: Token) throws -> Resolvable {
-    return try environment.compileFilter(filterToken, containedIn: token)
+    try environment.compileFilter(filterToken, containedIn: token)
   }
 
   /// Create boolean expression from components contained in provided token
   public func compileExpression(components: [String], token: Token) throws -> Expression {
-    return try environment.compileExpression(components: components, containedIn: token)
+    try environment.compileExpression(components: components, containedIn: token)
   }
 
   /// Create resolvable (i.e. range variable or filter expression) from a string contained in provided token
   public func compileResolvable(_ token: String, containedIn containingToken: Token) throws -> Resolvable {
-    return try environment.compileResolvable(token, containedIn: containingToken)
+    try environment.compileResolvable(token, containedIn: containingToken)
   }
 }
 
@@ -111,10 +119,12 @@ extension Environment {
     if suggestedFilters.isEmpty {
       throw TemplateSyntaxError("Unknown filter '\(name)'.")
     } else {
-      throw TemplateSyntaxError("""
+      throw TemplateSyntaxError(
+        """
         Unknown filter '\(name)'. \
         Found similar filters: \(suggestedFilters.map { "'\($0)'" }.joined(separator: ", ")).
-        """)
+        """
+      )
     }
   }
 
@@ -122,9 +132,9 @@ extension Environment {
     let allFilters = extensions.flatMap { $0.filters.keys }
 
     let filtersWithDistance = allFilters
-                .map { (filterName: $0, distance: $0.levenshteinDistance(name)) }
-                // do not suggest filters which names are shorter than the distance
-                .filter { $0.filterName.count > $0.distance }
+      .map { (filterName: $0, distance: $0.levenshteinDistance(name)) }
+      // do not suggest filters which names are shorter than the distance
+      .filter { $0.filterName.count > $0.distance }
     guard let minDistance = filtersWithDistance.min(by: { $0.distance < $1.distance })?.distance else {
       return []
     }
@@ -134,7 +144,7 @@ extension Environment {
 
   /// Create filter expression from a string
   public func compileFilter(_ token: String) throws -> Resolvable {
-    return try FilterExpression(token: token, environment: self)
+    try FilterExpression(token: token, environment: self)
   }
 
   /// Create filter expression from a string contained in provided token
@@ -165,26 +175,26 @@ extension Environment {
 
   /// Create resolvable (i.e. range variable or filter expression) from a string
   public func compileResolvable(_ token: String) throws -> Resolvable {
-    return try RangeVariable(token, environment: self)
+    try RangeVariable(token, environment: self)
       ?? compileFilter(token)
   }
 
   /// Create resolvable (i.e. range variable or filter expression) from a string contained in provided token
   public func compileResolvable(_ token: String, containedIn containingToken: Token) throws -> Resolvable {
-    return try RangeVariable(token, environment: self, containedIn: containingToken)
-        ?? compileFilter(token, containedIn: containingToken)
+    try RangeVariable(token, environment: self, containedIn: containingToken)
+      ?? compileFilter(token, containedIn: containingToken)
   }
 
   /// Create boolean expression from components contained in provided token
   public func compileExpression(components: [String], containedIn token: Token) throws -> Expression {
-    return try IfExpressionParser.parser(components: components, environment: self, token: token).parse()
+    try IfExpressionParser.parser(components: components, environment: self, token: token).parse()
   }
 }
 
 // https://en.wikipedia.org/wiki/Levenshtein_distance#Iterative_with_two_matrix_rows
 extension String {
   subscript(_ index: Int) -> Character {
-    return self[self.index(self.startIndex, offsetBy: index)]
+    self[self.index(self.startIndex, offsetBy: index)]
   }
 
   func levenshteinDistance(_ target: String) -> Int {

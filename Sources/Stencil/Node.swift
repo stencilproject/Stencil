@@ -1,5 +1,6 @@
 import Foundation
 
+/// Represents a parsed node
 public protocol NodeType {
   /// Render the node in the given context
   func render(_ context: Context) throws -> String
@@ -10,17 +11,18 @@ public protocol NodeType {
 
 /// Render the collection of nodes in the given context
 public func renderNodes(_ nodes: [NodeType], _ context: Context) throws -> String {
-  return try nodes
-    .map {
+  try nodes
+    .map { node in
       do {
-        return try $0.render(context)
+        return try node.render(context)
       } catch {
-        throw error.withToken($0.token)
+        throw error.withToken(node.token)
       }
     }
     .joined()
 }
 
+/// Simple node, used for triggering a closure during rendering
 public class SimpleNode: NodeType {
   public let handler: (Context) throws -> String
   public let token: Token?
@@ -31,10 +33,11 @@ public class SimpleNode: NodeType {
   }
 
   public func render(_ context: Context) throws -> String {
-    return try handler(context)
+    try handler(context)
   }
 }
 
+/// Represents a block of text, renders the text
 public class TextNode: NodeType {
   public let text: String
   public let token: Token?
@@ -45,14 +48,17 @@ public class TextNode: NodeType {
   }
 
   public func render(_ context: Context) throws -> String {
-    return self.text
+    self.text
   }
 }
 
+/// Representing something that can be resolved in a context
 public protocol Resolvable {
+  /// Try to resolve this with the given context
   func resolve(_ context: Context) throws -> Any?
 }
 
+/// Represents a variable, renders the variable, may have conditional expressions.
 public class VariableNode: NodeType {
   public let variable: Resolvable
   public var token: Token?
@@ -63,7 +69,7 @@ public class VariableNode: NodeType {
     let components = token.components
 
     func hasToken(_ token: String, at index: Int) -> Bool {
-      return components.count > (index + 1) && components[index] == token
+      components.count > (index + 1) && components[index] == token
     }
 
     let condition: Expression?
@@ -137,7 +143,7 @@ func stringify(_ result: Any?) -> String {
 }
 
 func unwrap(_ array: [Any?]) -> [Any] {
-  return array.map { (item: Any?) -> Any in
+  array.map { (item: Any?) -> Any in
     if let item = item {
       if let items = item as? [Any?] {
         return unwrap(items)

@@ -23,9 +23,9 @@ final class FilterTagTests: XCTestCase {
 
     it("can render filters with arguments") {
       let ext = Extension()
-      ext.registerFilter("split") {
-        guard let value = $0 as? String,
-          let argument = $1.first as? String else { return $0 }
+      ext.registerFilter("split") { value, args in
+        guard let value = value as? String,
+          let argument = args.first as? String else { return value }
         return value.components(separatedBy: argument)
       }
       let env = Environment(extensions: [ext])
@@ -37,11 +37,11 @@ final class FilterTagTests: XCTestCase {
 
     it("can render filters with quote as an argument") {
       let ext = Extension()
-      ext.registerFilter("replace") {
-        guard let value = $0 as? String,
-          $1.count == 2,
-          let search = $1.first as? String,
-          let replacement = $1.last as? String else { return $0 }
+      ext.registerFilter("replace") { value, args in
+        guard let value = value as? String,
+          args.count == 2,
+          let search = args.first as? String,
+          let replacement = args.last as? String else { return value }
         return value.replacingOccurrences(of: search, with: replacement)
       }
       let env = Environment(extensions: [ext])

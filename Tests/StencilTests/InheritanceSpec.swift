@@ -4,9 +4,9 @@ import Stencil
 import XCTest
 
 final class InheritanceTests: XCTestCase {
-  let path = Path(#file as String) + ".." + "fixtures"
-  lazy var loader = FileSystemLoader(paths: [path])
-  lazy var environment = Environment(loader: loader)
+  private let path = Path(#file as String) + ".." + "fixtures"
+  private lazy var loader = FileSystemLoader(paths: [path])
+  private lazy var environment = Environment(loader: loader)
 
   func testInheritance() {
     it("can inherit from another template") {

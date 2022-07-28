@@ -16,7 +16,7 @@
     "tag": "0.14.2"
   },
   "source_files": [
-    "Sources/*.swift"
+    "Sources/Stencil/*.swift"
   ],
   "platforms": {
     "ios": "8.0",
@@ -25,7 +25,6 @@
   },
   "cocoapods_version": ">= 1.7.0",
   "swift_versions": [
-    "4.2",
     "5.0"
   ],
   "requires_arc": true,

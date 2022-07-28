@@ -32,7 +32,7 @@ final class TemplateLoaderTests: XCTestCase {
 
   func testDictionaryLoader() {
     let loader = DictionaryLoader(templates: [
-        "index.html": "Hello World"
+      "index.html": "Hello World"
     ])
     let environment = Environment(loader: loader)
 

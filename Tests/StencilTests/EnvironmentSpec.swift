@@ -4,8 +4,8 @@ import Spectre
 import XCTest
 
 final class EnvironmentTests: XCTestCase {
-  var environment = Environment(loader: ExampleLoader())
-  var template: Template = ""
+  private var environment = Environment(loader: ExampleLoader())
+  private var template: Template = ""
 
   override func setUp() {
     super.setUp()
@@ -24,6 +24,10 @@ final class EnvironmentTests: XCTestCase {
     environment = Environment(loader: ExampleLoader())
     environment.extensions += [errorExtension]
     template = ""
+  }
+
+  override func tearDown() {
+    super.tearDown()
   }
 
   func testLoading() {
@@ -207,242 +211,11 @@ final class EnvironmentTests: XCTestCase {
   }
 }
 
-final class EnvironmentIncludeTemplateTests: XCTestCase {
-  var environment = Environment(loader: ExampleLoader())
-  var template: Template = ""
-  var includedTemplate: Template = ""
-
-  override func setUp() {
-    super.setUp()
-
-    let path = Path(#file as String) + ".." + "fixtures"
-    let loader = FileSystemLoader(paths: [path])
-    environment = Environment(loader: loader)
-    template = ""
-    includedTemplate = ""
-  }
-
-  func testSyntaxError() throws {
-    template = Template(templateString: """
-      {% include "invalid-include.html" %}
-      """, environment: environment)
-    includedTemplate = try environment.loadTemplate(name: "invalid-include.html")
-
-    try expectError(reason: "Unknown filter 'unknown'. Found similar filters: 'uppercase'.",
-                    token: """
-                      include "invalid-include.html"
-                      """,
-                    includedToken: "target|unknown")
-  }
-
-  func testRuntimeError() throws {
-    let filterExtension = Extension()
-    filterExtension.registerFilter("unknown") {  (_: Any?) in
-      throw TemplateSyntaxError("filter error")
-    }
-    environment.extensions += [filterExtension]
-
-    template = Template(templateString: """
-      {% include "invalid-include.html" %}
-      """, environment: environment)
-    includedTemplate = try environment.loadTemplate(name: "invalid-include.html")
-
-    try expectError(reason: "filter error",
-                    token: "include \"invalid-include.html\"",
-                    includedToken: "target|unknown")
-  }
-
-  private func expectError(
-    reason: String,
-    token: String,
-    includedToken: String,
-    file: String = #file,
-    line: Int = #line,
-    function: String = #function
-  ) throws {
-    var expectedError = expectedSyntaxError(token: token, template: template, description: reason)
-    expectedError.stackTrace = [
-      expectedSyntaxError(
-        token: includedToken,
-        template: includedTemplate,
-        description: reason
-      ).token
-    ].compactMap { $0 }
-
-    let error = try expect(
-      self.environment.render(template: self.template, context: ["target": "World"]),
-      file: file,
-      line: line,
-      function: function
-    ).toThrow() as TemplateSyntaxError
-    let reporter = SimpleErrorReporter()
-    try expect(
-      reporter.renderError(error),
-      file: file,
-      line: line,
-      function: function
-    ) == reporter.renderError(expectedError)
-  }
-}
-
-final class EnvironmentBaseAndChildTemplateTests: XCTestCase {
-  var environment = Environment(loader: ExampleLoader())
-  var childTemplate: Template = ""
-  var baseTemplate: Template = ""
-
-  override func setUp() {
-    super.setUp()
-
-    let path = Path(#file as String) + ".." + "fixtures"
-    let loader = FileSystemLoader(paths: [path])
-    environment = Environment(loader: loader)
-    childTemplate = ""
-    baseTemplate = ""
-  }
-
-  func testSyntaxErrorInBaseTemplate() throws {
-    childTemplate = try environment.loadTemplate(name: "invalid-child-super.html")
-    baseTemplate = try environment.loadTemplate(name: "invalid-base.html")
-
-    try expectError(reason: "Unknown filter 'unknown'. Found similar filters: 'uppercase'.",
-                    childToken: "extends \"invalid-base.html\"",
-                    baseToken: "target|unknown")
-  }
-
-  func testRuntimeErrorInBaseTemplate() throws {
-    let filterExtension = Extension()
-    filterExtension.registerFilter("unknown") {  (_: Any?) in
-      throw TemplateSyntaxError("filter error")
-    }
-    environment.extensions += [filterExtension]
-
-    childTemplate = try environment.loadTemplate(name: "invalid-child-super.html")
-    baseTemplate = try environment.loadTemplate(name: "invalid-base.html")
-
-    try expectError(reason: "filter error",
-                    childToken: "extends \"invalid-base.html\"",
-                    baseToken: "target|unknown")
-  }
-
-  func testSyntaxErrorInChildTemplate() throws {
-    childTemplate = Template(
-      templateString: """
-      {% extends "base.html" %}
-      {% block body %}Child {{ target|unknown }}{% endblock %}
-      """,
-      environment: environment,
-      name: nil
-    )
-
-    try expectError(reason: "Unknown filter 'unknown'. Found similar filters: 'uppercase'.",
-                    childToken: "target|unknown",
-                    baseToken: nil)
-  }
-
-  func testRuntimeErrorInChildTemplate() throws {
-    let filterExtension = Extension()
-    filterExtension.registerFilter("unknown") {  (_: Any?) in
-      throw TemplateSyntaxError("filter error")
-    }
-    environment.extensions += [filterExtension]
-
-    childTemplate = Template(
-      templateString: """
-      {% extends "base.html" %}
-      {% block body %}Child {{ target|unknown }}{% endblock %}
-      """,
-      environment: environment,
-      name: nil
-    )
-
-    try expectError(reason: "filter error",
-                    childToken: "target|unknown",
-                    baseToken: nil)
-  }
-
-  private func expectError(
-    reason: String,
-    childToken: String,
-    baseToken: String?,
-    file: String = #file,
-    line: Int = #line,
-    function: String = #function
-  ) throws {
-    var expectedError = expectedSyntaxError(token: childToken, template: childTemplate, description: reason)
-    if let baseToken = baseToken {
-      expectedError.stackTrace = [
-        expectedSyntaxError(
-          token: baseToken,
-          template: baseTemplate,
-          description: reason
-        ).token
-      ].compactMap { $0 }
-    }
-    let error = try expect(
-      self.environment.render(template: self.childTemplate, context: ["target": "World"]),
-      file: file,
-      line: line,
-      function: function
-    ).toThrow() as TemplateSyntaxError
-    let reporter = SimpleErrorReporter()
-    try expect(
-      reporter.renderError(error),
-      file: file,
-      line: line,
-      function: function
-    ) == reporter.renderError(expectedError)
-  }
-}
-
-extension Expectation {
-  @discardableResult
-  func toThrow<T: Error>() throws -> T {
-    var thrownError: Error?
-
-    do {
-      _ = try expression()
-    } catch {
-      thrownError = error
-    }
-
-    if let thrownError = thrownError {
-      if let thrownError = thrownError as? T {
-        return thrownError
-      } else {
-        throw failure("\(thrownError) is not \(T.self)")
-      }
-    } else {
-      throw failure("expression did not throw an error")
-    }
-  }
-}
-
-extension XCTestCase {
-  func expectedSyntaxError(token: String, template: Template, description: String) -> TemplateSyntaxError {
-    guard let range = template.templateString.range(of: token) else {
-      fatalError("Can't find '\(token)' in '\(template)'")
-    }
-    let lexer = Lexer(templateString: template.templateString)
-    let location = lexer.rangeLocation(range)
-    let sourceMap = SourceMap(filename: template.name, location: location)
-    let token = Token.block(value: token, at: sourceMap)
-    return TemplateSyntaxError(reason: description, token: token, stackTrace: [])
-  }
-}
-
-private class ExampleLoader: Loader {
-  func loadTemplate(name: String, environment: Environment) throws -> Template {
-    if name == "example.html" {
-      return Template(templateString: "Hello World!", environment: environment, name: name)
-    }
-
-    throw TemplateDoesNotExist(templateNames: [name], loader: self)
-  }
-}
+// MARK: - Helpers
 
 private class CustomTemplate: Template {
   // swiftlint:disable discouraged_optional_collection
   override func render(_ dictionary: [String: Any]? = nil) throws -> String {
-    return "here"
+    "here"
   }
 }
