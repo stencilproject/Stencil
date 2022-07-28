@@ -30,6 +30,12 @@
   [Ilya Puchka](https://github.com/ilyapuchka)
   [#158](https://github.com/stencilproject/Stencil/issues/158)
   [#182](https://github.com/stencilproject/Stencil/pull/182)
+- Added `break` and `continue` tags to break or continue current loop.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#175](https://github.com/stencilproject/Stencil/pull/175)
+- You can now access outer loop's scope by labeling it: `{% outer: for ... %}... {% for ... %} {{ outer.counter }} {% endfor %}{% endfor %}`.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#175](https://github.com/stencilproject/Stencil/pull/175)
 
 ### Deprecations
 
