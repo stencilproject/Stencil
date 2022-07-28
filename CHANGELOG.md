@@ -19,7 +19,10 @@ _None_
 
 ### Bug Fixes
 
-_None_
+- Fixed using `{{ block.super }}` inside nodes other than `block`.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#266](https://github.com/stencilproject/Stencil/issues/266)
+  [#267](https://github.com/stencilproject/Stencil/pull/267)
 
 ### Internal Changes
 
