@@ -4,6 +4,8 @@ public struct Environment {
   public let templateClass: Template.Type
   /// List of registered extensions
   public var extensions: [Extension]
+  /// How to handle whitespace
+  public var trimBehaviour: TrimBehaviour
   /// Mechanism for loading new files
   public var loader: Loader?
 
@@ -13,14 +15,17 @@ public struct Environment {
   ///  - loader: Mechanism for loading new files
   ///  - extensions: List of extension containers
   ///  - templateClass: Class for newly loaded templates
+  ///  - trimBehaviour: How to handle whitespace
   public init(
     loader: Loader? = nil,
     extensions: [Extension] = [],
-    templateClass: Template.Type = Template.self
+    templateClass: Template.Type = Template.self,
+    trimBehaviour: TrimBehaviour = .nothing
   ) {
     self.templateClass = templateClass
     self.loader = loader
     self.extensions = extensions + [DefaultExtension()]
+    self.trimBehaviour = trimBehaviour
   }
 
   /// Load a template with the given name

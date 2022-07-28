@@ -41,14 +41,27 @@ public class SimpleNode: NodeType {
 public class TextNode: NodeType {
   public let text: String
   public let token: Token?
+  public let trimBehaviour: TrimBehaviour
 
-  public init(text: String) {
+  public init(text: String, trimBehaviour: TrimBehaviour = .nothing) {
     self.text = text
     self.token = nil
+    self.trimBehaviour = trimBehaviour
   }
 
   public func render(_ context: Context) throws -> String {
-    self.text
+    var string = self.text
+    if trimBehaviour.leading != .nothing, !string.isEmpty {
+      let range = NSRange(..<string.endIndex, in: string)
+      string = TrimBehaviour.leadingRegex(trim: trimBehaviour.leading)
+        .stringByReplacingMatches(in: string, options: [], range: range, withTemplate: "")
+    }
+    if trimBehaviour.trailing != .nothing, !string.isEmpty {
+      let range = NSRange(..<string.endIndex, in: string)
+      string = TrimBehaviour.trailingRegex(trim: trimBehaviour.trailing)
+        .stringByReplacingMatches(in: string, options: [], range: range, withTemplate: "")
+    }
+    return string
   }
 }
 

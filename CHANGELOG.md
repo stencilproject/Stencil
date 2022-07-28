@@ -18,6 +18,14 @@
   [Ilya Puchka](https://github.com/ilyapuchka)
   [#219](https://github.com/stencilproject/Stencil/issues/219)
   [#246](https://github.com/stencilproject/Stencil/pull/246)
+- Added support for trimming whitespace around blocks with Jinja2 whitespace control symbols. eg `{%- if value +%}`.  
+  [Miguel Bejar](https://github.com/bejar37)
+  [Yonas Kolb](https://github.com/yonaskolb)
+  [#92](https://github.com/stencilproject/Stencil/pull/92)
+  [#287](https://github.com/stencilproject/Stencil/pull/287)
+- Added support for adding default whitespace trimming behaviour to an environment.  
+  [Yonas Kolb](https://github.com/yonaskolb)
+  [#287](https://github.com/stencilproject/Stencil/pull/287)
 
 ### Deprecations
 

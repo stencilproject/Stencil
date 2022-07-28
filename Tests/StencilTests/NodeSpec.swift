@@ -14,6 +14,48 @@ final class NodeTests: XCTestCase {
       let node = TextNode(text: "Hello World")
       try expect(try node.render(self.context)) == "Hello World"
     }
+    it("Trims leading whitespace") {
+      let text = "      \n Some text     "
+      let trimBehaviour = TrimBehaviour(leading: .whitespace, trailing: .nothing)
+      let node = TextNode(text: text, trimBehaviour: trimBehaviour)
+      try expect(try node.render(self.context)) == "\n Some text     "
+    }
+    it("Trims leading whitespace and one newline") {
+      let text = "\n\n Some text     "
+      let trimBehaviour = TrimBehaviour(leading: .whitespaceAndOneNewLine, trailing: .nothing)
+      let node = TextNode(text: text, trimBehaviour: trimBehaviour)
+      try expect(try node.render(self.context)) == "\n Some text     "
+    }
+    it("Trims leading whitespace and one newline") {
+      let text = "\n\n Some text     "
+      let trimBehaviour = TrimBehaviour(leading: .whitespaceAndNewLines, trailing: .nothing)
+      let node = TextNode(text: text, trimBehaviour: trimBehaviour)
+      try expect(try node.render(self.context)) == "Some text     "
+    }
+    it("Trims trailing whitespace") {
+      let text = "      Some text     \n"
+      let trimBehaviour = TrimBehaviour(leading: .nothing, trailing: .whitespace)
+      let node = TextNode(text: text, trimBehaviour: trimBehaviour)
+      try expect(try node.render(self.context)) == "      Some text\n"
+    }
+    it("Trims trailing whitespace and one newline") {
+      let text = "      Some text     \n \n "
+      let trimBehaviour = TrimBehaviour(leading: .nothing, trailing: .whitespaceAndOneNewLine)
+      let node = TextNode(text: text, trimBehaviour: trimBehaviour)
+      try expect(try node.render(self.context)) == "      Some text     \n "
+    }
+    it("Trims trailing whitespace and newlines") {
+      let text = "      Some text     \n \n "
+      let trimBehaviour = TrimBehaviour(leading: .nothing, trailing: .whitespaceAndNewLines)
+      let node = TextNode(text: text, trimBehaviour: trimBehaviour)
+      try expect(try node.render(self.context)) == "      Some text"
+    }
+    it("Trims all whitespace") {
+      let text = "    \n  \nSome text \n    "
+      let trimBehaviour = TrimBehaviour(leading: .whitespaceAndNewLines, trailing: .whitespaceAndNewLines)
+      let node = TextNode(text: text, trimBehaviour: trimBehaviour)
+      try expect(try node.render(self.context)) == "Some text"
+    }
   }
 
   func testVariableNode() {

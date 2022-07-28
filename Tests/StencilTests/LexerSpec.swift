@@ -51,9 +51,9 @@ final class LexerTests: XCTestCase {
     let tokens = lexer.tokenize()
 
     try expect(tokens.count) == 3
-    try expect(tokens[0]) == Token.text(value: "My name is ", at: makeSourceMap("My name is ", for: lexer))
-    try expect(tokens[1]) == Token.variable(value: "myname", at: makeSourceMap("myname", for: lexer))
-    try expect(tokens[2]) == Token.text(value: ".", at: makeSourceMap(".", for: lexer))
+    try expect(tokens[0]) == .text(value: "My name is ", at: makeSourceMap("My name is ", for: lexer))
+    try expect(tokens[1]) == .variable(value: "myname", at: makeSourceMap("myname", for: lexer))
+    try expect(tokens[2]) == .text(value: ".", at: makeSourceMap(".", for: lexer))
   }
 
   func testVariablesWithoutBeingGreedy() throws {
@@ -62,8 +62,8 @@ final class LexerTests: XCTestCase {
     let tokens = lexer.tokenize()
 
     try expect(tokens.count) == 2
-    try expect(tokens[0]) == Token.variable(value: "thing", at: makeSourceMap("thing", for: lexer))
-    try expect(tokens[1]) == Token.variable(value: "name", at: makeSourceMap("name", for: lexer))
+    try expect(tokens[0]) == .variable(value: "thing", at: makeSourceMap("thing", for: lexer))
+    try expect(tokens[1]) == .variable(value: "name", at: makeSourceMap("name", for: lexer))
   }
 
   func testUnclosedBlock() throws {
@@ -98,11 +98,26 @@ final class LexerTests: XCTestCase {
     let tokens = lexer.tokenize()
 
     try expect(tokens.count) == 5
-    try expect(tokens[0]) == Token.text(value: "My name is ", at: makeSourceMap("My name is", for: lexer))
-    try expect(tokens[1]) == Token.block(value: "if name and name", at: makeSourceMap("{%", for: lexer))
-    try expect(tokens[2]) == Token.variable(value: "name", at: makeSourceMap("name", for: lexer, options: .backwards))
-    try expect(tokens[3]) == Token.block(value: "endif", at: makeSourceMap("endif", for: lexer))
-    try expect(tokens[4]) == Token.text(value: ".", at: makeSourceMap(".", for: lexer))
+    try expect(tokens[0]) == .text(value: "My name is ", at: makeSourceMap("My name is", for: lexer))
+    try expect(tokens[1]) == .block(value: "if name and name", at: makeSourceMap("{%", for: lexer))
+    try expect(tokens[2]) == .variable(value: "name", at: makeSourceMap("name", for: lexer, options: .backwards))
+    try expect(tokens[3]) == .block(value: "endif", at: makeSourceMap("endif", for: lexer))
+    try expect(tokens[4]) == .text(value: ".", at: makeSourceMap(".", for: lexer))
+  }
+
+  func testTrimSymbols() throws {
+    let fBlock = "if hello"
+    let sBlock = "ta da"
+    let lexer = Lexer(templateString: "{%+ \(fBlock) -%}{% \(sBlock) -%}")
+    let tokens = lexer.tokenize()
+    let behaviours = (
+      WhitespaceBehaviour(leading: .keep, trailing: .trim),
+      WhitespaceBehaviour(leading: .unspecified, trailing: .trim)
+    )
+
+    try expect(tokens.count) == 2
+    try expect(tokens[0]) == .block(value: fBlock, at: makeSourceMap(fBlock, for: lexer), whitespace: behaviours.0)
+    try expect(tokens[1]) == .block(value: sBlock, at: makeSourceMap(sBlock, for: lexer), whitespace: behaviours.1)
   }
 
   func testEscapeSequence() throws {
@@ -111,11 +126,11 @@ final class LexerTests: XCTestCase {
     let tokens = lexer.tokenize()
 
     try expect(tokens.count) == 5
-    try expect(tokens[0]) == Token.text(value: "class Some ", at: makeSourceMap("class Some ", for: lexer))
-    try expect(tokens[1]) == Token.variable(value: "'{'", at: makeSourceMap("'{'", for: lexer))
-    try expect(tokens[2]) == Token.block(value: "if true", at: makeSourceMap("if true", for: lexer))
-    try expect(tokens[3]) == Token.variable(value: "stuff", at: makeSourceMap("stuff", for: lexer))
-    try expect(tokens[4]) == Token.block(value: "endif", at: makeSourceMap("endif", for: lexer))
+    try expect(tokens[0]) == .text(value: "class Some ", at: makeSourceMap("class Some ", for: lexer))
+    try expect(tokens[1]) == .variable(value: "'{'", at: makeSourceMap("'{'", for: lexer))
+    try expect(tokens[2]) == .block(value: "if true", at: makeSourceMap("if true", for: lexer))
+    try expect(tokens[3]) == .variable(value: "stuff", at: makeSourceMap("stuff", for: lexer))
+    try expect(tokens[4]) == .block(value: "endif", at: makeSourceMap("endif", for: lexer))
   }
 
   func testPerformance() throws {
