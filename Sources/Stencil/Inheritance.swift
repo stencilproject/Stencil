@@ -151,6 +151,8 @@ class BlockNode: NodeType {
       }
     }
 
-    return try renderNodes(nodes, context)
+    let result = try renderNodes(nodes, context)
+    context.cacheBlock(name, content: result)
+    return result
   }
 }

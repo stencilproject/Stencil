@@ -85,4 +85,19 @@ public class Context {
 
     return accumulator
   }
+
+  /// Cache result of block by its name in the context top-level, so that it can be later rendered
+  /// via `{{ block.name }}`
+  ///
+  /// - Parameters:
+  ///   - name: The name of the stored block
+  ///   - content: The block's rendered content
+  public func cacheBlock(_ name: String, content: String) {
+    if var block = dictionaries.first?["block"] as? [String: String] {
+      block[name] = content
+      dictionaries[0]["block"] = block
+    } else {
+      dictionaries.insert(["block": [name: content]], at: 0)
+    }
+  }
 }

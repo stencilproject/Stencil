@@ -26,6 +26,10 @@
 - Added support for adding default whitespace trimming behaviour to an environment.  
   [Yonas Kolb](https://github.com/yonaskolb)
   [#287](https://github.com/stencilproject/Stencil/pull/287)
+- Blocks now can be used repeatedly in the template. When block is rendered for the first time its content will be cached and it can be rendered again later using `{{ block.block_name }}`.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#158](https://github.com/stencilproject/Stencil/issues/158)
+  [#182](https://github.com/stencilproject/Stencil/pull/182)
 
 ### Deprecations
 
