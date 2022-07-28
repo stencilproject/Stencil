@@ -11,15 +11,24 @@ public protocol NodeType {
 
 /// Render the collection of nodes in the given context
 public func renderNodes(_ nodes: [NodeType], _ context: Context) throws -> String {
-  try nodes
-    .map { node in
-      do {
-        return try node.render(context)
-      } catch {
-        throw error.withToken(node.token)
-      }
+  var result = ""
+
+  for node in nodes {
+    do {
+      result += try node.render(context)
+    } catch {
+      throw error.withToken(node.token)
     }
-    .joined()
+
+    let shouldBreak = context[LoopTerminationNode.breakContextKey] != nil
+    let shouldContinue = context[LoopTerminationNode.continueContextKey] != nil
+
+    if shouldBreak || shouldContinue {
+      break
+    }
+  }
+
+  return result
 }
 
 /// Simple node, used for triggering a closure during rendering

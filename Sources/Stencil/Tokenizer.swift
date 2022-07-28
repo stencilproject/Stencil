@@ -45,7 +45,12 @@ extension String {
 
     if !components.isEmpty {
       if let precedingChar = components.last?.last, specialCharacters.contains(precedingChar) {
-        components[components.count - 1] += word
+        // special case for labeled for-loops
+        if components.count == 1 && word == "for" {
+          components.append(word)
+        } else {
+          components[components.count - 1] += word
+        }
       } else if specialCharacters.contains(word) {
         components[components.count - 1] += word
       } else if word != "(" && word.first == "(" || word != ")" && word.first == ")" {

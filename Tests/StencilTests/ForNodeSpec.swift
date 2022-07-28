@@ -312,6 +312,253 @@ final class ForNodeTests: XCTestCase {
     )
     try expect(try parser.parse()).toThrow(error)
   }
+
+  func testBreak() {
+    it("can break from loop") {
+      let template = Template(templateString: """
+        {% for item in items %}\
+        {{ item }}{% break %}\
+        {% endfor %}
+        """)
+      try expect(template.render(self.context)) == """
+        1
+        """
+    }
+
+    it("can break from inner node") {
+      let template = Template(templateString: """
+        {% for item in items %}\
+        {{ item }}\
+        {% if forloop.first %}<{% break %}>{% endif %}!\
+        {% endfor %}
+        """)
+      try expect(template.render(self.context)) == """
+        1<
+        """
+    }
+
+    it("does not allow break outside loop") {
+      let template = Template(templateString: "{% for item in items %}{% endfor %}{% break %}")
+      let error = self.expectedSyntaxError(
+        token: "break",
+        template: template,
+        description: "'break' can be used only inside loop body"
+      )
+      try expect(template.render(self.context)).toThrow(error)
+    }
+  }
+
+  func testBreakNested() {
+    it("breaks outer loop") {
+      let template = Template(templateString: """
+        {% for item in items %}\
+        outer: {{ item }}
+        {% for item in items %}\
+        inner: {{ item }}
+        {% endfor %}\
+        {% break %}\
+        {% endfor %}
+        """)
+      try expect(template.render(self.context)) == """
+        outer: 1
+        inner: 1
+        inner: 2
+        inner: 3
+
+        """
+    }
+
+    it("breaks inner loop") {
+      let template = Template(templateString: """
+        {% for item in items %}\
+        outer: {{ item }}
+        {% for item in items %}\
+        inner: {{ item }}
+        {% break %}\
+        {% endfor %}\
+        {% endfor %}
+        """)
+      try expect(template.render(self.context)) == """
+        outer: 1
+        inner: 1
+        outer: 2
+        inner: 1
+        outer: 3
+        inner: 1
+
+        """
+    }
+  }
+
+  func testBreakLabeled() {
+    it("breaks labeled loop") {
+      let template = Template(templateString: """
+        {% outer: for item in items %}\
+        outer: {{ item }}
+        {% for item in items %}\
+        {% break outer %}\
+        inner: {{ item }}
+        {% endfor %}\
+        {% endfor %}
+        """)
+      try expect(template.render(self.context)) == """
+        outer: 1
+
+        """
+    }
+
+    it("throws when breaking with unknown label") {
+      let template = Template(templateString: """
+        {% outer: for item in items %}
+        {% break inner %}
+        {% endfor %}
+        """)
+      try expect(template.render(self.context)).toThrow()
+    }
+  }
+
+  func testContinue() {
+    it("can continue loop") {
+      let template = Template(templateString: """
+        {% for item in items %}\
+        {{ item }}{% continue %}!\
+        {% endfor %}
+        """)
+      try expect(template.render(self.context)) == "123"
+    }
+
+    it("can continue from inner node") {
+      let template = Template(templateString: """
+        {% for item in items %}\
+        {% if forloop.last %}<{% continue %}>{% endif %}!\
+        {{ item }}\
+        {% endfor %}
+        """)
+      try expect(template.render(self.context)) == "!1!2<"
+    }
+
+    it("does not allow continue outside loop") {
+      let template = Template(templateString: "{% for item in items %}{% endfor %}{% continue %}")
+      let error = self.expectedSyntaxError(
+        token: "continue",
+        template: template,
+        description: "'continue' can be used only inside loop body"
+      )
+      try expect(template.render(self.context)).toThrow(error)
+    }
+  }
+
+  func testContinueNested() {
+    it("breaks outer loop") {
+      let template = Template(templateString: """
+        {% for item in items %}\
+        {% for item in items %}\
+        inner: {{ item }}\
+        {% endfor %}
+        {% continue %}
+        outer: {{ item }}
+        {% endfor %}
+        """)
+      try expect(template.render(self.context)) == """
+        inner: 1inner: 2inner: 3
+        inner: 1inner: 2inner: 3
+        inner: 1inner: 2inner: 3
+
+        """
+    }
+
+    it("breaks inner loop") {
+      let template = Template(templateString: """
+        {% for item in items %}\
+        {% for item in items %}\
+        {% continue %}\
+        inner: {{ item }}
+        {% endfor %}\
+        outer: {{ item }}
+        {% endfor %}
+        """)
+      try expect(template.render(self.context)) == """
+        outer: 1
+        outer: 2
+        outer: 3
+
+        """
+    }
+  }
+
+  func testContinueLabeled() {
+    it("continues labeled loop") {
+      let template = Template(templateString: """
+        {% outer: for item in items %}\
+        {% for item in items %}\
+        inner: {{ item }}
+        {% continue outer %}\
+        {% endfor %}\
+        outer: {{ item }}
+        {% endfor %}
+        """)
+      try expect(template.render(self.context)) == """
+        inner: 1
+        inner: 1
+        inner: 1
+
+        """
+    }
+
+    it("throws when continuing with unknown label") {
+      let template = Template(templateString: """
+        {% outer: for item in items %}
+        {% continue inner %}
+        {% endfor %}
+        """)
+      try expect(template.render(self.context)).toThrow()
+    }
+  }
+
+  func testAccessLabeled() {
+    it("can access labeled outer loop context from inner loop") {
+      let template = Template(templateString: """
+        {% outer: for item in 1...2 %}\
+        {% for item in items %}\
+        {{ forloop.counter }}-{{ forloop.outer.counter }},\
+        {% endfor %}---\
+        {% endfor %}
+        """)
+      try expect(template.render(self.context)) == """
+        1-1,2-1,3-1,---1-2,2-2,3-2,---
+        """
+    }
+
+    it("can access labeled outer loop from double inner loop") {
+      let template = Template(templateString: """
+        {% outer: for item in 1...2 %}{% for item in 1...2 %}\
+        {% for item in items %}\
+        {{ forloop.counter }}-{{ forloop.outer.counter }},\
+        {% endfor %}---{% endfor %}
+        {% endfor %}
+        """)
+      try expect(template.render(self.context)) == """
+        1-1,2-1,3-1,---1-1,2-1,3-1,---
+        1-2,2-2,3-2,---1-2,2-2,3-2,---
+
+        """
+    }
+
+    it("can access two labeled outer loop contexts from inner loop") {
+      let template = Template(templateString: """
+        {% outer1: for item in 1...2 %}{% outer2: for item in 1...2 %}\
+        {% for item in items %}\
+        {{ forloop.counter }}-{{ forloop.outer2.counter }}-{{ forloop.outer1.counter }},\
+        {% endfor %}---{% endfor %}
+        {% endfor %}
+        """)
+      try expect(template.render(self.context)) == """
+        1-1-1,2-1-1,3-1-1,---1-2-1,2-2-1,3-2-1,---
+        1-1-2,2-1-2,3-1-2,---1-2-2,2-2-2,3-2-2,---
+
+        """
+    }
+  }
 }
 
 // MARK: - Helpers

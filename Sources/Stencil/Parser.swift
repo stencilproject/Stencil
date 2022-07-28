@@ -18,6 +18,7 @@ public class TokenParser {
   public typealias TagParser = (TokenParser, Token) throws -> NodeType
 
   fileprivate var tokens: [Token]
+  fileprivate(set) var parsedTokens: [Token] = []
   fileprivate let environment: Environment
   fileprivate var previousWhiteSpace: WhitespaceBehaviour.Behaviour?
 
@@ -53,8 +54,13 @@ public class TokenParser {
           return nodes
         }
 
-        if let tag = token.components.first {
+        if var tag = token.components.first {
           do {
+            // special case for labeled tags (such as for loops)
+            if tag.hasSuffix(":") && token.components.count >= 2 {
+              tag = token.components[1]
+            }
+
             let parser = try environment.findTag(name: tag)
             let node = try parser(self, token)
             nodes.append(node)
@@ -74,7 +80,9 @@ public class TokenParser {
   /// Pop the next token (returning it)
   public func nextToken() -> Token? {
     if !tokens.isEmpty {
-      return tokens.remove(at: 0)
+      let nextToken = tokens.remove(at: 0)
+      parsedTokens.append(nextToken)
+      return nextToken
     }
 
     return nil
@@ -87,6 +95,9 @@ public class TokenParser {
   /// Insert a token 
   public func prependToken(_ token: Token) {
     tokens.insert(token, at: 0)
+    if parsedTokens.last == token {
+      parsedTokens.removeLast()
+    }
   }
 
   /// Create filter expression from a string contained in provided token
