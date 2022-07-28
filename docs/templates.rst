@@ -22,6 +22,7 @@ following lookup:
 - Dictionary lookup
 - Array and string lookup (first, last, count, by index)
 - Key value coding lookup
+- @dynamicMemberLookup when conforming to our `DynamicMemberLookup` marker protocol
 - Type introspection (via ``Mirror``)
 
 For example, if `people` was an array:

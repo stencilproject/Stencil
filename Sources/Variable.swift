@@ -110,6 +110,8 @@ public struct Variable: Equatable, Resolvable {
           return object.value(forKey: bit)
         }
       #endif
+    } else if let value = context as? DynamicMemberLookup {
+      return value[dynamicMember: bit]
     } else if let value = context {
       return Mirror(reflecting: value).getValue(for: bit)
     }

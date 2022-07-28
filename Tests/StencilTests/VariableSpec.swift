@@ -30,6 +30,17 @@ private class Blog: WebSite {
   let featuring: Article? = Article(author: Person(name: "Jhon"))
 }
 
+@dynamicMemberLookup
+private struct DynamicStruct: DynamicMemberLookup {
+  subscript(dynamicMember member: String) -> Any? {
+    member == "test" ? "this is a dynamic response" : nil
+  }
+}
+
+private enum DynamicEnum: String, DynamicMemberLookup {
+  case someValue = "this is raw value"
+}
+
 final class VariableTests: XCTestCase {
   let context: Context = {
     let ext = Extension()
@@ -49,7 +60,11 @@ final class VariableTests: XCTestCase {
       ],
       "article": Article(author: Person(name: "Kyle")),
       "blog": Blog(),
-      "tuple": (one: 1, two: 2)
+      "tuple": (one: 1, two: 2),
+      "dynamic": [
+        "enum": DynamicEnum.someValue,
+        "struct": DynamicStruct()
+      ]
     ], environment: environment)
 #if os(OSX)
     context["object"] = Object()
@@ -155,6 +170,20 @@ final class VariableTests: XCTestCase {
       let variable = Variable("contacts.last")
       let result = try variable.resolve(self.context) as? String
       try expect(result) == "Carlton"
+    }
+  }
+
+  func testDynamicMemberLookup() {
+    it("can resolve dynamic member lookup") {
+      let variable = Variable("dynamic.struct.test")
+      let result = try variable.resolve(self.context) as? String
+      try expect(result) == "this is a dynamic response"
+    }
+
+    it("can resolve dynamic enum rawValue") {
+      let variable = Variable("dynamic.enum.rawValue")
+      let result = try variable.resolve(self.context) as? String
+      try expect(result) == "this is raw value"
     }
   }
 
