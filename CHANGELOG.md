@@ -36,6 +36,11 @@
 - You can now access outer loop's scope by labeling it: `{% outer: for ... %}... {% for ... %} {{ outer.counter }} {% endfor %}{% endfor %}`.  
   [Ilya Puchka](https://github.com/ilyapuchka)
   [#175](https://github.com/stencilproject/Stencil/pull/175)
+- Boolean expressions can now be rendered, i.e `{{ name == "John" }}` will render `true` or `false` depending on the evaluation result.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [David Jennes](https://github.com/djbe)
+  [#164](https://github.com/stencilproject/Stencil/pull/164)
+  [#325](https://github.com/stencilproject/Stencil/pull/325)
 
 ### Deprecations
 
