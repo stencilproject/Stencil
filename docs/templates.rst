@@ -50,6 +50,14 @@ For example, if you have the following context:
 
     The result of {{ item[key] }} will be the same as {{ item.name }}. It will first evaluate the result of {{ key }}, and only then evaluate the lookup expression.
 
+You can use the `LazyValueWrapper` type to have values in your context that will be lazily evaluated. The provided value will only be evaluated when it's first accessed in your template, and will be cached afterwards. For example:
+
+.. code-block:: swift
+
+    [
+      "magic": LazyValueWrapper(myHeavyCalculations())
+    ]
+
 Boolean expressions
 -------------------
 
@@ -59,7 +67,6 @@ For example, this will output string `true` if variable is equal to 1 and `false
 .. code-block:: html+django
 
     {{ variable == 1 }}
-
 
 Filters
 ~~~~~~~
