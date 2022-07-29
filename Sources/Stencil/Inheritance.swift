@@ -1,3 +1,9 @@
+//
+// Stencil
+// Copyright © 2022 Stencil
+// MIT Licence
+//
+
 class BlockContext {
   class var contextKey: String { "block_context" }
 

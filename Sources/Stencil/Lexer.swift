@@ -1,3 +1,9 @@
+//
+// Stencil
+// Copyright © 2022 Stencil
+// MIT Licence
+//
+
 import Foundation
 
 typealias Line = (content: String, number: UInt, range: Range<String.Index>)

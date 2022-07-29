@@ -1,3 +1,9 @@
+//
+// Stencil
+// Copyright © 2022 Stencil
+// MIT Licence
+//
+
 import Foundation
 
 extension String {
