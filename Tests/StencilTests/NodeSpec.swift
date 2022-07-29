@@ -90,4 +90,22 @@ final class NodeTests: XCTestCase {
       try expect(try renderNodes(nodes, self.context)).toThrow(TemplateSyntaxError("Custom Error"))
     }
   }
+
+  func testRenderingBooleans() {
+    it("can render true & false") {
+      try expect(Template(templateString: "{{ true }}").render()) == "true"
+      try expect(Template(templateString: "{{ false }}").render()) == "false"
+    }
+
+    it("can resolve variable") {
+      let template = Template(templateString: "{{ value == \"known\" }}")
+      try expect(template.render(["value": "known"])) == "true"
+      try expect(template.render(["value": "unknown"])) == "false"
+    }
+
+    it("can render a boolean expression") {
+      try expect(Template(templateString: "{{ 1 > 0 }}").render()) == "true"
+      try expect(Template(templateString: "{{ 1 == 2 }}").render()) == "false"
+    }
+  }
 }

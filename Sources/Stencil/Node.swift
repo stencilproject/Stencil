@@ -93,30 +93,36 @@ public class VariableNode: NodeType {
     func hasToken(_ token: String, at index: Int) -> Bool {
       components.count > (index + 1) && components[index] == token
     }
+    func compileResolvable(_ components: [String], containedIn token: Token) throws -> Resolvable {
+      try (try? parser.compileExpression(components: components, token: token)) ??
+        parser.compileFilter(components.joined(separator: " "), containedIn: token)
+    }
 
+    let variable: Resolvable
     let condition: Expression?
     let elseExpression: Resolvable?
 
     if hasToken("if", at: 1) {
+      variable = try compileResolvable([components[0]], containedIn: token)
+
       let components = components.suffix(from: 2)
       if let elseIndex = components.firstIndex(of: "else") {
         condition = try parser.compileExpression(components: Array(components.prefix(upTo: elseIndex)), token: token)
-        let elseToken = components.suffix(from: elseIndex.advanced(by: 1)).joined(separator: " ")
-        elseExpression = try parser.compileResolvable(elseToken, containedIn: token)
+        let elseToken = Array(components.suffix(from: elseIndex.advanced(by: 1)))
+        elseExpression = try compileResolvable(elseToken, containedIn: token)
       } else {
         condition = try parser.compileExpression(components: Array(components), token: token)
         elseExpression = nil
       }
-    } else {
+    } else if !components.isEmpty {
+      variable = try compileResolvable(components, containedIn: token)
       condition = nil
       elseExpression = nil
-    }
-
-    guard let resolvable = components.first else {
+    } else {
       throw TemplateSyntaxError(reason: "Missing variable name", token: token)
     }
-    let filter = try parser.compileResolvable(resolvable, containedIn: token)
-    return VariableNode(variable: filter, token: token, condition: condition, elseExpression: elseExpression)
+
+    return VariableNode(variable: variable, token: token, condition: condition, elseExpression: elseExpression)
   }
 
   public init(variable: Resolvable, token: Token? = nil) {

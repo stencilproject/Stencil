@@ -115,12 +115,12 @@ final class ExpressionsTests: XCTestCase {
 
   func testNotExpression() {
     it("returns truthy for positive expressions") {
-      let expression = NotExpression(expression: StaticExpression(value: true))
+      let expression = NotExpression(expression: VariableExpression(variable: Variable("true")))
       try expect(expression.evaluate(context: Context())).to.beFalse()
     }
 
     it("returns falsy for negative expressions") {
-      let expression = NotExpression(expression: StaticExpression(value: false))
+      let expression = NotExpression(expression: VariableExpression(variable: Variable("false")))
       try expect(expression.evaluate(context: Context())).to.beTrue()
     }
   }
