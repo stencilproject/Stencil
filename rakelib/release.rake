@@ -13,6 +13,8 @@ namespace :release do
   task :check_versions do
     results = []
 
+    Utils.table_header('Check', 'Status')
+
     # Check if bundler is installed first, as we'll need it for the cocoapods task (and we prefer to fail early)
     `which bundler`
     results << Utils.table_result(
