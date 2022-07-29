@@ -8,16 +8,6 @@
 
 ### Enhancements
 
-- Made the `tokens` property on a `Template` public.  
-  [Stefanomondino](https://github.com/stefanomondino)
-  [#292](https://github.com/stencilproject/Stencil/pull/292)
-- Made the `Template.render(_:)` method (that accepts a `Context`) public.  
-  [David Jennes](https://github.com/djbe)
-  [#322](https://github.com/stencilproject/Stencil/pull/322)
-- Enable dynamic member lookup using a new `DynamicMemberLookup` protocol. Conform your own types to this protocol to support dynamic member from with contexts.  
-  [Ilya Puchka](https://github.com/ilyapuchka)
-  [#219](https://github.com/stencilproject/Stencil/issues/219)
-  [#246](https://github.com/stencilproject/Stencil/pull/246)
 - Added support for trimming whitespace around blocks with Jinja2 whitespace control symbols. eg `{%- if value +%}`.  
   [Miguel Bejar](https://github.com/bejar37)
   [Yonas Kolb](https://github.com/yonaskolb)
@@ -41,13 +31,13 @@
   [David Jennes](https://github.com/djbe)
   [#164](https://github.com/stencilproject/Stencil/pull/164)
   [#325](https://github.com/stencilproject/Stencil/pull/325)
+- Enable dynamic member lookup using a new `DynamicMemberLookup` marker protocol. Conform your own types to this protocol to support dynamic member from with contexts.  
+  [Ilya Puchka](https://github.com/ilyapuchka)
+  [#219](https://github.com/stencilproject/Stencil/issues/219)
+  [#246](https://github.com/stencilproject/Stencil/pull/246)
 - Allow providing lazily evaluated context data, using the `LazyValueWrapper` structure.  
   [David Jennes](https://github.com/djbe)
   [#324](https://github.com/stencilproject/Stencil/pull/324)
-
-### Deprecations
-
-_None_
 
 ### Bug Fixes
 
@@ -61,6 +51,12 @@ _None_
 - Updated internal maintenance scripts, and switched to GitHub actions.  
   [David Jennes](https://github.com/djbe)
   [#321](https://github.com/stencilproject/Stencil/pull/321)
+- Made the `tokens` property on a `Template` public.  
+  [Stefanomondino](https://github.com/stefanomondino)
+  [#292](https://github.com/stencilproject/Stencil/pull/292)
+- Made the `Template.render(_:)` method (that accepts a `Context`) public.  
+  [David Jennes](https://github.com/djbe)
+  [#322](https://github.com/stencilproject/Stencil/pull/322)
 
 ## 0.14.2
 
