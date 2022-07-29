@@ -78,6 +78,8 @@ public struct Variable: Equatable, Resolvable {
 
       if current == nil {
         return nil
+      } else if let lazyCurrent = current as? LazyValueWrapper {
+        current = try lazyCurrent.value(context: context)
       }
     }
 

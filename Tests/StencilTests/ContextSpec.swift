@@ -94,4 +94,73 @@ final class ContextTests: XCTestCase {
       }
     }
   }
+
+  func testContextLazyEvaluation() {
+    let ticker = Ticker()
+    var context = Context()
+    var wrapper = LazyValueWrapper("")
+
+    describe("Lazy evaluation") { test in
+      test.before {
+        ticker.count = 0
+        wrapper = LazyValueWrapper(ticker.tick())
+        context = Context(dictionary: ["name": wrapper])
+      }
+
+      test.it("Evaluates lazy data") {
+        let template = Template(templateString: "{{ name }}")
+        let result = try template.render(context)
+        try expect(result) == "Kyle"
+        try expect(ticker.count) == 1
+      }
+
+      test.it("Evaluates lazy only once") {
+        let template = Template(templateString: "{{ name }}{{ name }}")
+        let result = try template.render(context)
+        try expect(result) == "KyleKyle"
+        try expect(ticker.count) == 1
+      }
+
+      test.it("Does not evaluate lazy data when not used") {
+        let template = Template(templateString: "{{ 'Katie' }}")
+        let result = try template.render(context)
+        try expect(result) == "Katie"
+        try expect(ticker.count) == 0
+      }
+    }
+  }
+
+  func testContextLazyAccessTypes() {
+    it("Supports evaluation via context reference") {
+      let context = Context(dictionary: ["name": "Kyle"])
+      context["alias"] = LazyValueWrapper { $0["name"] ?? "" }
+      let template = Template(templateString: "{{ alias }}")
+
+      try context.push(dictionary: ["name": "Katie"]) {
+        let result = try template.render(context)
+        try expect(result) == "Katie"
+      }
+    }
+
+    it("Supports evaluation via context copy") {
+      let context = Context(dictionary: ["name": "Kyle"])
+      context["alias"] = LazyValueWrapper(copying: context) { $0["name"] ?? "" }
+      let template = Template(templateString: "{{ alias }}")
+
+      try context.push(dictionary: ["name": "Katie"]) {
+        let result = try template.render(context)
+        try expect(result) == "Kyle"
+      }
+    }
+  }
+}
+
+// MARK: - Helpers
+
+private final class Ticker {
+  var count: Int = 0
+  func tick() -> String {
+    count += 1
+    return "Kyle"
+  }
 }

@@ -11,19 +11,21 @@ public class Context {
   /// The context's environment, such as registered extensions, classes, …
   public let environment: Environment
 
+  init(dictionaries: [[String: Any?]], environment: Environment) {
+    self.dictionaries = dictionaries
+    self.environment = environment
+  }
+
   /// Create a context from a dictionary (and an env.)
   ///
   /// - Parameters:
   ///   - dictionary: The context's data
   ///   - environment: Environment such as extensions, …
-  public init(dictionary: [String: Any] = [:], environment: Environment? = nil) {
-    if !dictionary.isEmpty {
-      dictionaries = [dictionary]
-    } else {
-      dictionaries = []
-    }
-
-    self.environment = environment ?? Environment()
+  public convenience init(dictionary: [String: Any] = [:], environment: Environment? = nil) {
+    self.init(
+      dictionaries: dictionary.isEmpty ? [] : [dictionary],
+      environment: environment ?? Environment()
+    )
   }
 
   /// Access variables in this context by name

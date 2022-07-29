@@ -41,6 +41,9 @@
   [David Jennes](https://github.com/djbe)
   [#164](https://github.com/stencilproject/Stencil/pull/164)
   [#325](https://github.com/stencilproject/Stencil/pull/325)
+- Allow providing lazily evaluated context data, using the `LazyValueWrapper` structure.  
+  [David Jennes](https://github.com/djbe)
+  [#324](https://github.com/stencilproject/Stencil/pull/324)
 
 ### Deprecations
 
