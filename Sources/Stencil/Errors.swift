@@ -1,3 +1,9 @@
+//
+// Stencil
+// Copyright © 2022 Stencil
+// MIT Licence
+//
+
 public class TemplateDoesNotExist: Error, CustomStringConvertible {
   let templateNames: [String]
   let loader: Loader?

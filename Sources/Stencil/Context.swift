@@ -1,3 +1,9 @@
+//
+// Stencil
+// Copyright © 2022 Stencil
+// MIT Licence
+//
+
 /// A container for template variables.
 public class Context {
   var dictionaries: [[String: Any?]]

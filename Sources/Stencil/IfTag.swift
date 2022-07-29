@@ -1,3 +1,9 @@
+//
+// Stencil
+// Copyright © 2022 Stencil
+// MIT Licence
+//
+
 enum Operator {
   case infix(String, Int, InfixOperator.Type)
   case prefix(String, Int, PrefixOperator.Type)

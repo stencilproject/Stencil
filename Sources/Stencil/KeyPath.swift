@@ -1,3 +1,9 @@
+//
+// Stencil
+// Copyright © 2022 Stencil
+// MIT Licence
+//
+
 import Foundation
 
 /// A structure used to represent a template variable, and to resolve it in a given context.
