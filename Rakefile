@@ -32,7 +32,9 @@ namespace :files do
       /^version = .*/ => %Q(version = '#{version}'),
       /^release = .*/ => %Q(release = '#{version}')
     )
+    docs_package = Utils.first_match_in_file('docs/installation.rst', /\.package\(url: .+ from: "(.+)"/, 1)
     replace("docs/installation.rst",
+      /\.package\(url: .+, from: "(.+)"/ => %Q(.package\(url: "https://github.com/stencilproject/Stencil.git", from: "#{version}"),
       /pod 'Stencil', '.*'/ => %Q(pod 'Stencil', '~> #{version}'),
       /github "stencilproject\/Stencil" ~> .*/ => %Q(github "stencilproject/Stencil" ~> #{version})
     )
