@@ -1,26 +1,10 @@
-## Master
-
-### Breaking
-
-_None_
-
-### Enhancements
-
-_None_
-
-### Deprecations
-
-_None_
+## 0.15.1
 
 ### Bug Fixes
 
 - Fix bug in `LazyValueWrapper`, causing it to never resolve.  
   [David Jennes](https://github.com/djbe)
   [#328](https://github.com/stencilproject/Stencil/pull/328)
-
-### Internal Changes
-
-_None_
 
 ## 0.15.0
 
