@@ -113,18 +113,18 @@ To comment out part of your template, you can use the following syntax:
 
     {# My comment is completely hidden #}
 
-.. _template-inheritance:
-
 Whitespace Control
 ------------------
 
-Stencil supports the same syntax as Jinja for whitespace control, see [their docs for more information](https://jinja.palletsprojects.com/en/3.1.x/templates/#whitespace-control).
+Stencil supports the same syntax as Jinja for whitespace control, see `their docs for more information <https://jinja.palletsprojects.com/en/3.1.x/templates/#whitespace-control>`_.
 
 Essentially, Stencil will **not** trim whitespace by default. However you can:
 
 - Control how this is handled for the whole template by setting the trim behaviour. We provide a few pre-made combinations such as `nothing` (default), `smart` and `all`. More granular combinations are possible.
 - You can disable this per-block using the `+` control character. For example `{{+ if … }}` to preserve whitespace before.
 - You can force trimming per-block by using the `-` control character. For example `{{ if … -}}` to trim whitespace after.
+
+.. _template-inheritance:
 
 Template inheritance
 --------------------
