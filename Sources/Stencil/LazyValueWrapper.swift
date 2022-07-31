@@ -61,9 +61,3 @@ extension LazyValueWrapper: Resolvable {
     return try (value as? Resolvable)?.resolve(context) ?? value
   }
 }
-
-extension LazyValueWrapper: Normalizable {
-  public func normalize() -> Any? {
-    (cachedValue as? Normalizable)?.normalize() ?? cachedValue
-  }
-}
