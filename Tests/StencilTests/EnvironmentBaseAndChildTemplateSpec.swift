@@ -33,7 +33,7 @@ final class EnvironmentBaseAndChildTemplateTests: XCTestCase {
     baseTemplate = try environment.loadTemplate(name: "invalid-base.html")
 
     try expectError(
-      reason: "Unknown filter 'unknown'. Found similar filters: 'uppercase'.",
+      reason: "Unknown filter 'unknown'. Found similar filters: 'unique'.",
       childToken: "extends \"invalid-base.html\"",
       baseToken: "target|unknown"
     )
@@ -67,7 +67,7 @@ final class EnvironmentBaseAndChildTemplateTests: XCTestCase {
     )
 
     try expectError(
-      reason: "Unknown filter 'unknown'. Found similar filters: 'uppercase'.",
+      reason: "Unknown filter 'unknown'. Found similar filters: 'unique'.",
       childToken: "target|unknown",
       baseToken: nil
     )

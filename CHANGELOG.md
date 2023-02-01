@@ -1,3 +1,10 @@
+# 0.15.2
+
+### Enhancements
+
+- Added support for unique filter using `unique`. This filter allows you to extract unique values from an array
+  [David Bertet](https://github.com/DavidBertet)
+
 ## 0.15.1
 
 ### Bug Fixes

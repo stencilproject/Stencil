@@ -449,3 +449,14 @@ Applies the filter with the name provided as an argument to the current expressi
     {{ string|filter:myfilter }}
 
 This expression will resolve the `myfilter` variable, find a filter named the same as resolved value, and will apply it to the `string` variable. I.e. if `myfilter` variable resolves to string `uppercase` this expression will apply file `uppercase` to `string` variable.
+
+``unique``
+~~~~~~~~~
+
+Returns a list of unique items from the given value.
+
+.. code-block:: html+django
+
+    {{ value|unique }}
+
+The unique items are yielded in the same order as their first occurrence in the iterable passed to the filter.

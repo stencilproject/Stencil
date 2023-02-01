@@ -137,3 +137,12 @@ func filterFilter(value: Any?, arguments: [Any?], context: Context) throws -> An
     try expr.resolve(context)
   }
 }
+
+func unique(_ value: Any?) -> Any? {
+  if let array = value as? [any Hashable] {
+    var seen: Set<String> = []
+    return array.filter { seen.insert(stringify($0)).inserted }
+  } else {
+    return value
+  }
+}

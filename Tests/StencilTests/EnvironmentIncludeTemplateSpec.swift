@@ -35,7 +35,7 @@ final class EnvironmentIncludeTemplateTests: XCTestCase {
     includedTemplate = try environment.loadTemplate(name: "invalid-include.html")
 
     try expectError(
-      reason: "Unknown filter 'unknown'. Found similar filters: 'uppercase'.",
+      reason: "Unknown filter 'unknown'. Found similar filters: 'unique'.",
       token: #"include "invalid-include.html""#,
       includedToken: "target|unknown"
     )
