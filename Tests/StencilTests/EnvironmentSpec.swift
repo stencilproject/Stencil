@@ -91,7 +91,7 @@ final class EnvironmentTests: XCTestCase {
     it("reports syntax error in for tag") {
       self.template = "{% for name in names|unknown %}{{ name }}{% endfor %}"
       try self.expectError(
-        reason: "Unknown filter 'unknown'. Found similar filters: 'uppercase'.",
+        reason: "Unknown filter 'unknown'. Found similar filters: 'unique'.",
         token: "names|unknown"
       )
     }
@@ -99,7 +99,7 @@ final class EnvironmentTests: XCTestCase {
     it("reports syntax error in for-where tag") {
       self.template = "{% for name in names where name|unknown %}{{ name }}{% endfor %}"
       try self.expectError(
-        reason: "Unknown filter 'unknown'. Found similar filters: 'uppercase'.",
+        reason: "Unknown filter 'unknown'. Found similar filters: 'unique'.",
         token: "name|unknown"
       )
     }
@@ -107,7 +107,7 @@ final class EnvironmentTests: XCTestCase {
     it("reports syntax error in if tag") {
       self.template = "{% if name|unknown %}{{ name }}{% endif %}"
       try self.expectError(
-        reason: "Unknown filter 'unknown'. Found similar filters: 'uppercase'.",
+        reason: "Unknown filter 'unknown'. Found similar filters: 'unique'.",
         token: "name|unknown"
       )
     }
@@ -115,7 +115,7 @@ final class EnvironmentTests: XCTestCase {
     it("reports syntax error in elif tag") {
       self.template = "{% if name %}{{ name }}{% elif name|unknown %}{% endif %}"
       try self.expectError(
-        reason: "Unknown filter 'unknown'. Found similar filters: 'uppercase'.",
+        reason: "Unknown filter 'unknown'. Found similar filters: 'unique'.",
         token: "name|unknown"
       )
     }
@@ -123,7 +123,7 @@ final class EnvironmentTests: XCTestCase {
     it("reports syntax error in ifnot tag") {
       self.template = "{% ifnot name|unknown %}{{ name }}{% endif %}"
       try self.expectError(
-        reason: "Unknown filter 'unknown'. Found similar filters: 'uppercase'.",
+        reason: "Unknown filter 'unknown'. Found similar filters: 'unique'.",
         token: "name|unknown"
       )
     }
@@ -131,7 +131,7 @@ final class EnvironmentTests: XCTestCase {
     it("reports syntax error in filter tag") {
       self.template = "{% filter unknown %}Text{% endfilter %}"
       try self.expectError(
-        reason: "Unknown filter 'unknown'. Found similar filters: 'uppercase'.",
+        reason: "Unknown filter 'unknown'. Found similar filters: 'unique'.",
         token: "filter unknown"
       )
     }
@@ -139,7 +139,7 @@ final class EnvironmentTests: XCTestCase {
     it("reports syntax error in variable tag") {
       self.template = "{{ name|unknown }}"
       try self.expectError(
-        reason: "Unknown filter 'unknown'. Found similar filters: 'uppercase'.",
+        reason: "Unknown filter 'unknown'. Found similar filters: 'unique'.",
         token: "name|unknown"
       )
     }

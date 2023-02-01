@@ -423,6 +423,26 @@ final class FilterTests: XCTestCase {
     }
   }
 
+  func testUniqueFilter() {
+    let template = Template(templateString: """
+      {{ value|unique }}
+      """)
+
+    it("collection of strings") {
+      let result = try template.render(Context(dictionary: ["value": ["One", "Two", "One", "two"]]))
+      try expect(result) == """
+      ["One", "Two", "two"]
+      """
+    }
+
+    it("mixed-type collection") {
+      let result = try template.render(Context(dictionary: ["value": ["One", 2, true, 2, true, 10.5, "2", "five", "One"]]))
+      try expect(result) == """
+      ["One", 2, true, 10.5, "five"]
+      """
+    }
+  }
+
   private func expectError(
     reason: String,
     token: String,

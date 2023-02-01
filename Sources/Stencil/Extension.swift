@@ -84,6 +84,7 @@ class DefaultExtension: Extension {
     registerFilter("split", filter: splitFilter)
     registerFilter("indent", filter: indentFilter)
     registerFilter("filter", filter: filterFilter)
+    registerFilter("unique", filter: unique)
   }
 }
 
