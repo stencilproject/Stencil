@@ -5,7 +5,6 @@
 //
 
 import Foundation
-import PathKit
 
 #if os(Linux)
 // swiftlint:disable:next prefixed_toplevel_constant
@@ -41,19 +40,7 @@ open class Template: ExpressibleByStringLiteral {
       throw NSError(domain: NSCocoaErrorDomain, code: NSFileNoSuchFileError, userInfo: nil)
     }
 
-    try self.init(URL: url)
-  }
-
-  /// Create a template with a file found at the given URL
-  @available(*, deprecated, message: "Use Environment/FileSystemLoader instead")
-  public convenience init(URL: Foundation.URL) throws {
-    try self.init(path: Path(URL.path))
-  }
-
-  /// Create a template with a file found at the given path
-  @available(*, deprecated, message: "Use Environment/FileSystemLoader instead")
-  public convenience init(path: Path, environment: Environment? = nil, name: String? = nil) throws {
-    self.init(templateString: try path.read(), environment: environment, name: name)
+    try self.init(templateString: String(contentsOf: url))
   }
 
   // MARK: ExpressibleByStringLiteral

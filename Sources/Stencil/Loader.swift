@@ -5,7 +5,6 @@
 //
 
 import Foundation
-import PathKit
 
 /// Type used for loading a template
 public protocol Loader {
@@ -34,15 +33,17 @@ extension Loader {
 
 // A class for loading a template from disk
 public class FileSystemLoader: Loader, CustomStringConvertible {
-  public let paths: [Path]
+  public let paths: [String]
 
-  public init(paths: [Path]) {
-    self.paths = paths
+  public init(paths: [URL]) {
+    self.paths = paths.map {
+      $0.withUnsafeFileSystemRepresentation { String(cString: $0!) }
+    }
   }
 
   public init(bundle: [Bundle]) {
-    self.paths = bundle.map { bundle in
-      Path(bundle.bundlePath)
+    self.paths = bundle.map {
+      URL(fileURLWithPath: $0.bundlePath).withUnsafeFileSystemRepresentation { String(cString: $0!) }
     }
   }
 
@@ -51,27 +52,19 @@ public class FileSystemLoader: Loader, CustomStringConvertible {
   }
 
   public func loadTemplate(name: String, environment: Environment) throws -> Template {
-    for path in paths {
-      let templatePath = try path.safeJoin(path: Path(name))
-
-      if !templatePath.exists {
-        continue
-      }
-
-      let content: String = try templatePath.read()
-      return environment.templateClass.init(templateString: content, environment: environment, name: name)
-    }
-
-    throw TemplateDoesNotExist(templateNames: [name], loader: self)
+    return try loadTemplate(names: [name], environment: environment)
   }
 
   public func loadTemplate(names: [String], environment: Environment) throws -> Template {
     for path in paths {
       for templateName in names {
-        let templatePath = try path.safeJoin(path: Path(templateName))
+        let templatePath = URL(fileURLWithPath: templateName, relativeTo: URL(fileURLWithPath: path))
+        if !templatePath.withUnsafeFileSystemRepresentation({ String(cString: $0!) }).hasPrefix(path) {
+          throw SuspiciousFileOperation(basePath: path, path: templateName)
+        }
 
-        if templatePath.exists {
-          let content: String = try templatePath.read()
+        if FileManager.default.fileExists(atPath: templatePath.path) {
+          let content = try String(contentsOf: templatePath)
           return environment.templateClass.init(templateString: content, environment: environment, name: templateName)
         }
       }
@@ -107,23 +100,11 @@ public class DictionaryLoader: Loader {
   }
 }
 
-extension Path {
-  func safeJoin(path: Path) throws -> Path {
-    let newPath = self + path
-
-    if !newPath.absolute().description.hasPrefix(absolute().description) {
-      throw SuspiciousFileOperation(basePath: self, path: newPath)
-    }
-
-    return newPath
-  }
-}
-
 class SuspiciousFileOperation: Error {
-  let basePath: Path
-  let path: Path
+  let basePath: String
+  let path: String
 
-  init(basePath: Path, path: Path) {
+  init(basePath: String, path: String) {
     self.basePath = basePath
     self.path = path
   }

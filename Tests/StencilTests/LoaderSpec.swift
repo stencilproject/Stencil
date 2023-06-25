@@ -4,14 +4,13 @@
 // MIT Licence
 //
 
-import PathKit
 import Spectre
 import Stencil
 import XCTest
 
 final class TemplateLoaderTests: XCTestCase {
   func testFileSystemLoader() {
-    let path = Path(#file as String) + ".." + "fixtures"
+    let path = URL(fileURLWithPath: #file).deletingLastPathComponent().appendingPathComponent("fixtures")
     let loader = FileSystemLoader(paths: [path])
     let environment = Environment(loader: loader)
 
