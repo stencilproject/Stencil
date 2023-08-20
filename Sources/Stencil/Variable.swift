@@ -113,7 +113,7 @@ public struct Variable: Equatable, Resolvable {
     } else if let value = context as? DynamicMemberLookup {
       return value[dynamicMember: bit]
     } else if let object = context as? NSObject {  // NSKeyValueCoding
-      #if canImport(ObjectiveC)
+      #if !canImport(ObjectiveC)
         return nil
       #else
         if object.responds(to: Selector(bit)) {
