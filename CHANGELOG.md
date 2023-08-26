@@ -5,6 +5,9 @@
 - Fix bug in `LazyValueWrapper`, causing it to never resolve.  
   [David Jennes](https://github.com/djbe)
   [#328](https://github.com/stencilproject/Stencil/pull/328)
+- Prefer `DynamicMemberLookup` over KVC.  
+  [##342](https://github.com/stencilproject/Stencil/pull/342)
+  [@art-divin](https://github.com/art-divin)
 
 ## 0.15.0
 
