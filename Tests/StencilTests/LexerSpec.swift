@@ -4,7 +4,6 @@
 // MIT Licence
 //
 
-import PathKit
 import Spectre
 @testable import Stencil
 import XCTest
@@ -140,8 +139,11 @@ final class LexerTests: XCTestCase {
   }
 
   func testPerformance() throws {
-    let path = Path(#file as String) + ".." + "fixtures" + "huge.html"
-    let content: String = try path.read()
+    let path = URL(fileURLWithPath: #file)
+      .deletingLastPathComponent()
+      .appendingPathComponent("fixtures")
+      .appendingPathComponent("huge.html")
+    let content: String = try String(contentsOf: path)
 
     measure {
       let lexer = Lexer(templateString: content)

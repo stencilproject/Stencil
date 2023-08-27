@@ -4,13 +4,12 @@
 // MIT Licence
 //
 
-import PathKit
 import Spectre
 import Stencil
 import XCTest
 
 final class InheritanceTests: XCTestCase {
-  private let path = Path(#file as String) + ".." + "fixtures"
+  private let path = URL(fileURLWithPath: #file).deletingLastPathComponent().appendingPathComponent("fixtures")
   private lazy var loader = FileSystemLoader(paths: [path])
   private lazy var environment = Environment(loader: loader)
 

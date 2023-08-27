@@ -4,7 +4,6 @@
 // MIT Licence
 //
 
-import PathKit
 import Spectre
 @testable import Stencil
 import XCTest
@@ -17,7 +16,7 @@ final class EnvironmentIncludeTemplateTests: XCTestCase {
   override func setUp() {
     super.setUp()
 
-    let path = Path(#file as String) + ".." + "fixtures"
+    let path = URL(fileURLWithPath: #file).deletingLastPathComponent().appendingPathComponent("fixtures")
     let loader = FileSystemLoader(paths: [path])
     environment = Environment(loader: loader)
     template = ""
