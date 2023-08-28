@@ -110,16 +110,16 @@ public struct Variable: Equatable, Resolvable {
       return resolve(bit: bit, collection: array)
     } else if let string = context as? String {
       return resolve(bit: bit, collection: string)
+    } else if let value = context as? DynamicMemberLookup {
+      return value[dynamicMember: bit]
     } else if let object = context as? NSObject {  // NSKeyValueCoding
-      #if os(Linux)
-        return nil
-      #else
+      #if canImport(ObjectiveC)
         if object.responds(to: Selector(bit)) {
           return object.value(forKey: bit)
         }
+      #else
+        return nil
       #endif
-    } else if let value = context as? DynamicMemberLookup {
-      return value[dynamicMember: bit]
     } else if let value = context {
       return Mirror(reflecting: value).getValue(for: bit)
     }

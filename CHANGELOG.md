@@ -1,3 +1,11 @@
+## 0.15.2
+
+### Enhancements
+
+- Prefer `DynamicMemberLookup` over KVC.  
+  [##342](https://github.com/stencilproject/Stencil/pull/342)
+  [@art-divin](https://github.com/art-divin)
+
 ## 0.15.1
 
 ### Bug Fixes
