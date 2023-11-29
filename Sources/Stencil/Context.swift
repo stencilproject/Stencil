@@ -9,7 +9,7 @@ public class Context {
   var dictionaries: [[String: Any?]]
 
   /// The context's environment, such as registered extensions, classes, …
-  public let environment: Environment
+  public var environment: Environment
 
   init(dictionaries: [[String: Any?]], environment: Environment) {
     self.dictionaries = dictionaries

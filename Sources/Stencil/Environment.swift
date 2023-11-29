@@ -14,7 +14,8 @@ public struct Environment {
   public var trimBehaviour: TrimBehaviour
   /// Mechanism for loading new files
   public var loader: Loader?
-
+  /// Already loaded templates
+  public var loadedTemplates = [String: Template]()
   /// Basic initializer
   ///
   /// - Parameters:
@@ -39,9 +40,14 @@ public struct Environment {
   /// - Parameters:
   ///  - name: Name of the template
   /// - returns: Loaded template instance
-  public func loadTemplate(name: String) throws -> Template {
-    if let loader = loader {
-      return try loader.loadTemplate(name: name, environment: self)
+  public mutating func loadTemplate(name: String) throws -> Template {
+    if let template = loadedTemplates[name] {
+        return template
+    }
+    else if let loader = loader {
+      let result = try loader.loadTemplate(name: name, environment: self)
+      loadedTemplates[name] = result
+      return result
     } else {
       throw TemplateDoesNotExist(templateNames: [name], loader: nil)
     }
@@ -66,7 +72,7 @@ public struct Environment {
   ///  - name: Name of the template
   ///  - context: Data for rendering
   /// - returns: Rendered output
-  public func renderTemplate(name: String, context: [String: Any] = [:]) throws -> String {
+  public mutating func renderTemplate(name: String, context: [String: Any] = [:]) throws -> String {
     let template = try loadTemplate(name: name)
     return try render(template: template, context: context)
   }
